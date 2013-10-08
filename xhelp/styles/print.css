@@ -1,0 +1,13 @@
+body {
+	background-color: white;
+}
+
+th {
+	text-decoration: underline;
+	font-weight: bold;
+	text-align: left;
+}
+
+h2 {
+	text-align: center;
+}
