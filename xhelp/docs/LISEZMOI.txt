@@ -1,0 +1,48 @@
+Module Proposé
+-----------------------------------------------------------------------
+xhelp est dessiné en vu de vous apporter une réponse adéquate en matière
+de support utilisateurs dans une application "helpdesk" sous la forme
+d'un module dans un environnement applicatif XOOPS. 
+
+Pré-requis d'installation
+-----------------------------------------------------------------------
+XOOPS 2.0.4+
+
+Instructions d'installation
+-----------------------------------------------------------------------
+Unzippez l'archive fournit dans le répertoire 'modules'. 
+Installer l'applicatif en utilisant le panneau de contrôle Xoops usuel. 
+Ajustez vos préférences pour le module si cela est nécéssaire.
+Ajouter les départements opérateurs des traitements de tickets (catégories).
+Paramètre les comptes utilisateurs XOOPS en les répartissant dans leur(s) département(s)
+Respectifs.
+Tout est fin pret!!!
+
+Instructions de mise à jour
+-----------------------------------------------------------------------
+Unzippez l'archive fournit dans le répertoire 'modules'.
+Mettez à jour le module en utilisant le panneau de contrôle Xoops usuel. 
+Cliquez sur 'Contrôle de Tables' à partir du menu principal xhelp, ou du menu pop-up.
+Contrôlez et Ajustez vos préférences pour le module si cela est nécéssaire.
+Tout est fin pret!!!
+
+License
+-----------------------------------------------------------------------
+GPL consultez LICENSE.txt
+
+Mises à jour, Erreurs ou Retours
+-----------------------------------------------------------------------
+Pour mettre à jour les versions ou nous faire un retour d'expérience
+quant à votre utilisation sur cette version d'application veuillez vous 
+diriger sur le site de développement xhelp :
+
+http://dev.xoops.org/modules/xfmod/project/?xhelp
+
+Crédits et Remerciements
+-----------------------------------------------------------------------
+Ackbarr (Brian Wahoff)    - Chef de Projet
+ejuden (Eric Juden)       - Développeur
+ajuden (Alan Juden)       - Testeur
+Outch (Eric Wegrzynowski) - Traduction Française
+CeRbErO                   - Traduction Espagnole
+silviotech                - Traduction Portugaise Brésilienne

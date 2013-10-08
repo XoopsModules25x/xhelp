@@ -1,0 +1,64 @@
+$Id: TODO,v 1.1 2005/06/21 15:31:19 eric_juden Exp $
+
+++TODO
+
+In rough order of priority...
+
+- Other issues with i18n? MB strings?
+
+    Status: Javascript strings are now serialized as utf8 so string
+    lengths are correct for PHP. Probably more i18n issues to deal
+    with (e.g. HTTP headers - charsets etc)
+
+- Implement alternatives to Javascript extensions .toPHP() and
+    var_dump() which _act on_ data structure but don't show
+    up when looping through properties.
+    
+    Status: partially done - serializer now implemented. Needs
+    an equivalent for var_dump
+
+- Implement mechanism for attaching loggers (and other stuff)
+    to servers (observer?)
+
+- Implement alternative "network" mechanisms to XmlHttpRequest
+    such as something using script src attribute.
+    
+    Status: messing with PseudoXmlHttpRequest which adapts
+    approaches based on iframes to the XmlHttpRequest API. Right
+    now _very_ broken.
+
+- Explore / implement client/server authentication (sessions, HTTP digest)
+
+    Status: partially complete - example provided with HTTP Basic
+    auth
+
+- Implement different types of server (alternatives to PostOffice)
+    to allow different styles of RPC (REST?)
+
+- Alternative encoding mechanisms? (e.g. native XML, XML-RPC, WDDX)
+
+
+++DONE
+
+Following things done (were TODO)
+
+- (done 20041010) Allow for i18n error messages
+
+- (done 20041010) Standardize error codes
+
+    Status: complete
+
+- (done 20040910) Implement timeout for XmlHttpClient requests
+    Note this is only supported for async requests - not possible for sync requests
+    as far as I know
+
+- (done 20040909): Implement a PHP error handler which generates Javascript exceptions
+
+- SECURITY issue (done 20040909): by hacking the serialized string sent to the server
+    PHP can be tricked into creating "unplanned" objects. Currently
+    ScriptServer checks for this in the ScriptServer_Unserializer class;
+    the validate() method but by this time the object is already created
+    and the constructor has run.
+    A parser for the serialized strings is required which checks for
+    illegal object before unserialization.
+
