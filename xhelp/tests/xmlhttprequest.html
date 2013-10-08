@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>xhelp XMLHTTPREQUEST tester</title>
+<script type="text/javascript" src="../../../include/xoops.js"></script>
+<script type="text/javascript" src="../include/functions.js"></script>
+<script type="text/javascript">
+<!--
+var http;
+function tester_onClick() 
+{
+    http = xhelpGetHTTPObject();
+    http.open("GET", "http://bwahoff2/xoops/modules/xhelp/scripts/addTicketDeptChange.php?deptid=1", true);
+    http.onreadystatechange = function() {
+        if (http.readyState == 4) {
+            if (http.status == 200) {
+                atProcessXML(http.responseXML, 'owner', 'custfld');
+            }
+        }
+    }
+    http.send(null);
+}
+
+function atProcessXML(xml, selname, tblname)
+{
+    var staffCol = xml.getElementsByTagName('staff');
+    var fldsCol = xml.getElementsByTagName('fields');
+    staffCol = staffCol[0];
+    fldCol = fldsCol[0];
+    
+    var sel = xoopsGetElementById(selname);
+    var tbl = xoopsGetElementById(tblname);
+    tbody = tbl.tBodies[0];
+    
+    xhelpFillStaffSelect(sel, staffCol);
+    xhelpFillCustomFlds(tbody, fldCol);
+}
+
+function window_onload()
+{
+    xhelpDOMAddEvent(xoopsGetElementById('tester'), 'click', tester_onClick, false);
+}
+
+window.onload = window_onload;
+//-->
+</script>
+</head>
+<body>
+<h2>XMLHTTPRequest Tester</h2>
+<div id="tester">Click This!</div>
+<select id="owner" name="owner"><option value="0">No Value</option><option value="1">Default Value</option></select><br />
+<textarea id="testerbox" cols="50" rows="10"></textarea>
+<table id="custfld">
+<tr><th colspan="2" align="left">Custom Fields</th></tr>
+</table>
+</div>
+</body>
+</html>
+
