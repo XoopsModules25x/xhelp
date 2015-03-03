@@ -74,9 +74,11 @@ class JPSpan_Handle {
                     'Maximum constructor arg count exceeded',
                 E_USER_ERROR
                 );
+
                 return FALSE;
                 break;
         }
+
         return TRUE;
     }
 
@@ -162,5 +164,3 @@ class JPSpan_HandleDescription {
     var $methods = array();
 
 }
-
-

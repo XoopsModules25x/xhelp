@@ -71,4 +71,3 @@ $graph->Add($lplot);
 
 // .. and finally send it back to the browser
 $graph->Stroke();
-?>

@@ -65,7 +65,7 @@ class xhelpStaffReviewHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpstaffreview';
@@ -81,19 +81,18 @@ class xhelpStaffReviewHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpStaffReviewHandler(&$db)
     {
         parent::init($db);
     }
 
-
     /**
      * retrieve a StaffReview object meeting certain criteria
-     * @param int $ticketid ID of ticket
-     * @param int $responseid ID of response
-     * @param int $submittedBy UID of ticket submitter
+     * @param  int    $ticketid    ID of ticket
+     * @param  int    $responseid  ID of response
+     * @param  int    $submittedBy UID of ticket submitter
      * @return object (@link xhelpStaffReview}
      * @access public
      */
@@ -122,9 +121,8 @@ class xhelpStaffReviewHandler extends xhelpBaseObjectHandler {
         }
 
         $sql = sprintf("INSERT INTO %s (id, staffid, rating, ticketid, responseid, comments, submittedBy, userIP)
-            VALUES (%u, %u, %u, %u, %u, %s, %u, %s)", $this->_db->prefix($this->_dbtable), $id, $staffid, $rating, 
+            VALUES (%u, %u, %u, %u, %u, %s, %u, %s)", $this->_db->prefix($this->_dbtable), $id, $staffid, $rating,
         $ticketid, $responseid, $this->_db->quoteString($comments), $submittedBy, $this->_db->quoteString($userIP));
-
 
         return $sql;
 
@@ -147,9 +145,8 @@ class xhelpStaffReviewHandler extends xhelpBaseObjectHandler {
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
-
 }
-?>

@@ -40,4 +40,3 @@ $plot->SetCSIMTargets( $targets , $alts );
 
 $graph->Add($plot);
 $graph->StrokeCSIM();
-?>

@@ -3,7 +3,6 @@ require_once '../jpgraph.php';
 require_once '../jpgraph_canvas.php';
 require_once '../jpgraph_canvtools.php';
 
-
 class ContCanvas {
     public $g;
     public $shape,$scale;
@@ -107,6 +106,7 @@ function polygonArea($aX, $aY) {
         }
         $area += ($aX[i]+$aX[j])*($aY[i]-$aY[j]);
     }
+
     return area*.5;
 }
 
@@ -187,6 +187,7 @@ class SingleTestTriangle {
         for( $i=0; $i < count($this->cont); ++$i ) {
             if( $val < $this->cont[$i] ) return $i;
         }
+
         return count($this->cont);
     }
 
@@ -210,7 +211,6 @@ class SingleTestTriangle {
     function labelProx($x1,$y1,$v1) {
 
         list($w,$h) = $this->getPlotSize();
-
 
         if( $x1 < 20 || $x1 > $w-20 )
         return true;
@@ -327,6 +327,7 @@ class SingleTestTriangle {
         $x1p = $x1*(1-$alpha) + $x2*$alpha;
         $y1p = $y1*(1-$alpha) + $y2*$alpha;
         $v1p = $v1 + $alpha*($v2-$v1);
+
         return array($x1p,$y1p,$v1p);
     }
 
@@ -786,5 +787,3 @@ $tt->Fillmesh($meshdata, 8, 'rect');
 //$tt->Fill(1,7,4,5);
 
 $tt->Stroke();
-
-?>

@@ -32,7 +32,6 @@ foreach($deptmboxes as $mbox) {
                 $msg_logs = array();
                 $skip_msg = false;
 
-
                 //Check if there are any errors parsing msg
                 if ($parsed =& $msgParser->parseMessage($msg)) {
 
@@ -63,7 +62,6 @@ foreach($deptmboxes as $mbox) {
                                 $skip_msg = true;
                             }
                         }
-
 
                         if ($skip_msg == false) {
                             //Store Message In Server
@@ -103,7 +101,6 @@ foreach($deptmboxes as $mbox) {
     }
 }
 
-
 function _logMessages($mbox, $arr)
 {
     global $hMailEvent;
@@ -130,7 +127,6 @@ function _isDepartmentEmail($email)
     }
 
     $ret = in_array($email, $email_arr);
+
     return $ret;
 }
-
-?>

@@ -16,7 +16,6 @@ $graph->SetColor('lightyellow');
 $graph->SetAxisStyle(AXSTYLE_BOXIN);
 $graph->xgrid->Show();
 
-
 //$graph->xaxis->SetLabelFormat('%.0f');
 
 $graph->img->SetMargin(50,50,60,40);
@@ -33,5 +32,3 @@ $lp1->SetWeight(2);
 $graph->Add($lp1);
 $graph->Stroke();
 ?>
-
-

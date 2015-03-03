@@ -39,4 +39,3 @@ $g->img->RoundedRectangle(300,30,350,80,10);
 $g->Stroke();
 
 ?>
-

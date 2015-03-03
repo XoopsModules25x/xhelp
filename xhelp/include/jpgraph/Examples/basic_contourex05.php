@@ -42,5 +42,3 @@ $graph->Add($cp);
 
 // ... and send the graph back to the browser
 $graph->Stroke();
-
-?>

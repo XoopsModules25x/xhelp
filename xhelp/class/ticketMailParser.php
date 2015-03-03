@@ -54,6 +54,7 @@ class xhelpTicketMailParser
         //
         if ($hTicket->insert($ticket)){
             $this->_ticket = $ticket;
+
             return true;
         } else {
             return false;
@@ -70,5 +71,3 @@ class xhelpTicketMailParser
     }
 
 }
-
-?>

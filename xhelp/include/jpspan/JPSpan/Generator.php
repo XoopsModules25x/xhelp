@@ -56,6 +56,7 @@ class JPSpan_Generator {
         require_once JPSPAN . 'CodeWriter.php';
         $Code = & new JPSpan_CodeWriter();
         $this->ClientGenerator->generate($Code);
+
         return $Code->toString();
     }
 
@@ -218,6 +219,7 @@ return oParent; }
 
         // HACK - this needs to change
         $I->loadString(__FILE__,$client);
+
         return $I->getCode();
     }
 }

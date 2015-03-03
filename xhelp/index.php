@@ -4,8 +4,6 @@ require_once('header.php');
 require_once(XHELP_INCLUDE_PATH.'/events.php');
 include_once(XOOPS_ROOT_PATH . '/class/pagenav.php');
 
-
-
 // Setup event handlers for page
 
 //Initialise Necessary Data Handler Classes
@@ -725,12 +723,12 @@ function delete_display()
     }
     $sortedTickets =& _updateBatchTicketInfo($sortedTickets, $users, $j);
 
-    $hiddenvars = array('delete' => _XHELP_BUTTON_SET,		//'tickets' => implode($_POST['tickets'], ','),
+    $hiddenvars = array('delete' => _XHELP_BUTTON_SET,        //'tickets' => implode($_POST['tickets'], ','),
         'op' => 'delete');
     $aHiddens[] = array('name' => 'delete',
-					    'value' => _XHELP_BUTTON_SET);
+                        'value' => _XHELP_BUTTON_SET);
     $aHiddens[] = array('name' => 'op',
-						'value' => 'delete');
+                        'value' => 'delete');
     $xoopsOption['template_main'] = 'xhelp_deletetickets.html';
     require(XOOPS_ROOT_PATH.'/header.php');
     $xoopsTpl->assign('xhelp_message', _XHELP_MESSAGE_TICKET_DELETE_CNFRM);
@@ -753,6 +751,7 @@ function getAnnouncements($topicid, $limit=5, $start=0)
 
     if(!$count =& $module_handler->getByDirname('news') || $topicid == 0){
         $xoopsTpl->assign('xhelp_useAnnouncements', false);
+
         return false;
     }
     include_once XOOPS_ROOT_PATH.'/modules/news/class/class.newsstory.php';
@@ -847,6 +846,7 @@ function getDepartmentName($dept)
     } else {    // Else, fill it with 0
         $department = _XHELP_TEXT_NO_DEPT;
     }
+
     return $department;
 }
 
@@ -861,6 +861,7 @@ function _cleanTickets($tickets)
         }
     }
     unset($t_tickets);
+
     return $ret;
 }
 
@@ -1004,6 +1005,7 @@ function _safeDepartmentName($deptObj)
     } else {    // Else, fill it with 0
         $department = _XHELP_TEXT_NO_DEPT;
     }
+
     return $department;
 }
 
@@ -1042,8 +1044,8 @@ function staffviewall_display()
     //Prepare Database Query and Querystring
     $crit     = new CriteriaCompo(new Criteria('uid', $uid, '=', 'j'));
     $qs       = array('op' => 'staffViewAll', //Common Query String Values
-		            'start' => $start,
-		            'limit' => $limit);
+                    'start' => $start,
+                    'limit' => $limit);
 
     if ($dept) {
         $qs['dept'] = $dept;
@@ -1085,7 +1087,6 @@ function staffviewall_display()
                         'sortby' => $col_sortby,
                         'sortdir' => strtolower($col_qs['order']));
     }
-
 
     $allTickets  = $hTickets->getObjectsByStaff($crit, true);
     $count       = $hTickets->getCountByStaff($crit);
@@ -1326,8 +1327,8 @@ function userviewall_display()
     //Prepare Database Query and Querystring
     $crit     = new CriteriaCompo(new Criteria ('uid', $uid));
     $qs       = array('op' => 'userViewAll', //Common Query String Values
-		            'start' => $start,
-		            'limit' => $limit);
+                    'start' => $start,
+                    'limit' => $limit);
 
     if ($dept) {
         $qs['dept'] = $dept;
@@ -1525,6 +1526,7 @@ function _makeBatchTicketArray(&$oTickets, &$depts, &$all_users, &$j, $task)
         $all_users[$ticket->getVar('closedBy')] = '';
         $j++;
     }
+
     return $sortedTickets;
 }
 
@@ -1549,6 +1551,6 @@ function _updateBatchTicketInfo(&$sortedTickets, &$users, &$j)
             }
         }
     }
+
     return $sortedTickets;
 }
-?>

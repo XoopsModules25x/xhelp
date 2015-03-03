@@ -245,9 +245,6 @@ function manageFiles()
         echo "</table></form>";
     }
 
-
 include_once "admin_footer.php";
 
 }
-
-?>

@@ -34,4 +34,3 @@ $t->Stroke($g->img);
 $g->Stroke();
 
 ?>
-

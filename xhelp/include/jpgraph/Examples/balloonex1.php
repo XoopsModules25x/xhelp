@@ -16,6 +16,7 @@ function FCallback($aVal) {
     if( $aVal < 30 ) $c = "blue";
     elseif( $aVal < 70 ) $c = "green";
     else $c="red";
+
     return array(floor($aVal/3),"",$c);
 }
 
@@ -52,5 +53,3 @@ $graph->Add($sp1);
 $graph->Stroke();
 
 ?>
-
-

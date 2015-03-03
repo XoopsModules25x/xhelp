@@ -10,4 +10,3 @@ $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/images/');
 $xoopsTpl->assign('xhelp_message', _XHELP_MESSAGE_NO_REGISTER);
 
 include(XOOPS_ROOT_PATH . '/footer.php');
-?>

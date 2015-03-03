@@ -3,7 +3,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_canvas.php');
 
-
 if( empty($_GET['r']) )
 $r = 0.44;
 else
@@ -21,7 +20,6 @@ $h = $_GET['h'];
 
 if( $w < 60 ) $w=60;
 if( $h < 60 ) $h=60;
-
 
 function SeaShell($img,$x,$y,$w,$h,$r,$n=12,$color1='navy',$color2='red') {
 
@@ -75,4 +73,3 @@ $g->img->StrokeText($w/2,0,"Canvas Spiral");
 
 $g->Stroke();
 ?>
-

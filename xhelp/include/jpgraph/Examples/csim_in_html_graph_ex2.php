@@ -71,5 +71,3 @@ $piegraph->Add($p1);
 $piegraph->StrokeCSIMImage();
 
 ?>
-
-

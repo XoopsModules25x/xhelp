@@ -55,6 +55,7 @@ class JPSpan_Unserializer {
                 $U = & new JPSpan_Unserializer_XML();
                 break;
         }
+
         return $U->unserialize($data);
     }
 
@@ -71,6 +72,4 @@ class JPSpan_Unserializer {
         $GLOBALS['_JPSPAN_UNSERIALIZER_MAP'][strtolower($class)] = $file;
     }
 
-
 }
-

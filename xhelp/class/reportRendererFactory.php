@@ -30,6 +30,7 @@ class xhelpReportRendererFactory {
 
             // Step 4 - return adapter class
             $ret = new $classname($report);
+
             return $ret;
         } else {
             return $ret;
@@ -47,5 +48,3 @@ class xhelpReportRendererFactory {
         }
     }
 }
-
-?>

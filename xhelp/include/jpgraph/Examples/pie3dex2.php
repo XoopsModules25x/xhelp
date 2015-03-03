@@ -10,7 +10,6 @@ $data = array(20,27,45,75,90);
 $graph = new PieGraph(350,200);
 $graph->SetShadow();
 
-
 // Set A title for the plot
 $graph->title->Set("Example 2 3D Pie plot");
 $graph->title->SetFont(FF_VERDANA,FS_BOLD,18);
@@ -41,5 +40,3 @@ $graph->Add($p1);
 $graph->Stroke();
 
 ?>
-
-

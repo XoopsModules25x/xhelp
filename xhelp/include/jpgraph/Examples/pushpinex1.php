@@ -58,5 +58,3 @@ $graph->Add($sp);
 $graph->Stroke();
 
 ?>
-
-

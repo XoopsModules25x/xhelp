@@ -85,7 +85,6 @@ $txt2->Set("Remember this!");
 $txt2->SetBox('yellow');
 $graph->Add($txt2);
 
-
 // Add a vertical line
 $vline = new GanttVLine("2001-12-24","Phase 1");
 $vline->SetDayOffset(0.5);
@@ -93,4 +92,3 @@ $vline->SetDayOffset(0.5);
 
 // ... and display it
 $graph->Stroke();
-?>

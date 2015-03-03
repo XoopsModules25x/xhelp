@@ -26,4 +26,3 @@ while( list($key,$val) = each($flags->iCountryNameMap) ) {
 echo "</tr></table>";
 
 ?>
-

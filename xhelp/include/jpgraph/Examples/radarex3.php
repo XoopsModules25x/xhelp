@@ -18,4 +18,3 @@ $plot->SetFillColor('lightblue');
 // Add the plot and display the graph
 $graph->Add($plot);
 $graph->Stroke();
-?>

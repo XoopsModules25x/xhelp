@@ -42,7 +42,7 @@ class xhelpRoleHandler extends xhelpBaseObjectHandler{
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelprole';
@@ -50,7 +50,7 @@ class xhelpRoleHandler extends xhelpBaseObjectHandler{
     /**
      * DB Table Name
      *
-     * @var 		string
+     * @var string
      * @access 	private
      */
     var $_dbtable = 'xhelp_roles';
@@ -58,7 +58,7 @@ class xhelpRoleHandler extends xhelpBaseObjectHandler{
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpRoleHandler(&$db)
     {
@@ -97,16 +97,16 @@ class xhelpRoleHandler extends xhelpBaseObjectHandler{
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
-
 
     /**
      * delete a role from the database
      *
-     * @param object $obj reference to the {@link xhelpRole} obj to delete
-     * @param bool $force
-     * @return bool FALSE if failed.
+     * @param  object $obj   reference to the {@link xhelpRole} obj to delete
+     * @param  bool   $force
+     * @return bool   FALSE if failed.
      * @access	public
      */
     function delete(&$obj, $force = false)
@@ -118,6 +118,7 @@ class xhelpRoleHandler extends xhelpBaseObjectHandler{
         }
          
         $ret = parent::delete($obj, $force);
+
         return $ret;
          
     }
@@ -135,7 +136,7 @@ class xhelpRoleHandler extends xhelpBaseObjectHandler{
                 $aRoles[$role->getVar('id')] = $role;
             }
         }
+
         return $aRoles;
     }
 }
-?>

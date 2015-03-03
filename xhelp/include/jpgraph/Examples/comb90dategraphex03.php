@@ -32,7 +32,6 @@ for( $i=0; $i < NDATAPOINTS-1; ++$i ) {
 }
 $xdata[$i] = $start + $i * SAMPLERATE;
 
-
 //DEFINE('BKG_COLOR','lightgray:1.7');
 DEFINE('BKG_COLOR','green:1.98');
 DEFINE('WIND_HEIGHT',800);
@@ -143,5 +142,3 @@ $mgraph->title->Set('Climate diagram 12 March 2009');
 $mgraph->title->SetFont(FF_ARIAL,FS_BOLD,20);
 $mgraph->title->SetMargin(8);
 $mgraph->Stroke();
-
-?>

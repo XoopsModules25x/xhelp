@@ -45,9 +45,11 @@ function _runQuery($query, $goodmsg, $badmsg)
     $ret = $xoopsDB->query($query);
     if (! $ret) {
         echo "<li class='err'>$badmsg</li>";
+
         return false;
     } else {
         echo "<li class='ok'>$goodmsg</li>";
+
         return true;
     }
 }
@@ -72,7 +74,6 @@ function checkTables()
 
     printf('<h2>'._AM_XHELP_CURRENTVER.'</h2>', $currentVer);
     printf('<h2>'._AM_XHELP_DBVER.'</h2>', $ver);
-
 
     if ($ver == $currentVer) {
         //No updates are necessary
@@ -217,7 +218,7 @@ function upgradeDB()
                                                              emailHash VARCHAR(100) DEFAULT NULL,
                                                              email VARCHAR(100) DEFAULT NULL,
                                                              overdueTime INT(11) NOT NULL DEFAULT '0',
-                                                             KEY emailHash (emailHash))", $xoopsDB->prefix('xhelp_tickets')), 
+                                                             KEY emailHash (emailHash))", $xoopsDB->prefix('xhelp_tickets')),
             sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'),
             sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets')) ;
 
@@ -292,7 +293,6 @@ function upgradeDB()
                             echo "<li>".sprintf(_AM_XHELP_MSG_UPD_PERMS, $uid, $dept->getVar('department'))."</li>";
                         }
                     }
-
 
                     $stf->setVar('permTimestamp', time());        // Set initial value for permTimestamp field
                     if(!$hStaff->insert($stf)){
@@ -389,7 +389,6 @@ function upgradeDB()
             sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_submit_emails'),
             sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_submit_emails'));
 
-
             // Add records to xhelp_ticket_submit_emails for existing tickets
             $count = $hTicket->getCount();
             $batchsize = 100;
@@ -445,7 +444,7 @@ function upgradeDB()
 
             set_time_limit(60);
             $ret = $ret && _runQuery(sprintf("ALTER TABLE %s ADD (active INT(11) NOT NULL DEFAULT 1,
-                                                          KEY active (active))", $xoopsDB->prefix('xhelp_department_mailbox')), 
+                                                          KEY active (active))", $xoopsDB->prefix('xhelp_department_mailbox')),
             sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_department_mailbox'),
             sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_department_mailbox'));
 
@@ -531,7 +530,6 @@ function upgradeDB()
             $ret = $ret && _runQuery(sprintf("ALTER TABLE %s ADD PRIMARY KEY(ticketid, uid, email)", $xoopsDB->prefix('xhelp_ticket_submit_emails')),
             sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_ticket_submit_emails'),
             sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_ticket_submit_emails'));
-
 
             $ret = $ret && _runQuery(sprintf("ALTER TABLE %s MODIFY department int(11) NOT NULL default '0'", $xoopsDB->prefix('xhelp_jstaffdept')),
             sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_jstaffdept'),

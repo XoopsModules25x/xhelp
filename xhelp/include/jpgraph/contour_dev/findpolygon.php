@@ -23,6 +23,7 @@ class Findpolygon {
             $fp[] = $p[$i][0];
             $fp[] = $p[$i][1];
         }
+
         return $fp;
     }
 
@@ -76,6 +77,7 @@ class Findpolygon {
                 $pp[$j][$i] = array($p[$j][2*$i],$p[$j][2*$i+1]);
             }
         }
+
         return $pp;
     }
 
@@ -125,6 +127,7 @@ class Findpolygon {
                 ++$j;
             }
         }
+
         return $j >= $n1;
     }
 
@@ -140,6 +143,7 @@ class Findpolygon {
         if( $y1==$this->scale[2] || $y1==$this->scale[3] ) {
             return true;
         }
+
         return false;
     }
 
@@ -257,6 +261,7 @@ class FillGridRect {
                 return $this->colors[$i];
             }
         }
+
         return $this->colors[$i]; // The color for all values above the highest isobar
     }
 
@@ -273,6 +278,7 @@ class FillGridRect {
         }
         if( $i >= $n )
         die("Internal error. Cannot find isobar values for ($a,$b)");
+
         return $this->isoBars[$i];
     }
 
@@ -302,6 +308,7 @@ class FillGridRect {
         if( $this->invert ) {
             $ycoord = $this->nbrRows-1 - $ycoord;
         }
+
         return array($xcoord,$ycoord);
     }
 
@@ -532,7 +539,6 @@ class FillGridRect {
     }
 }
 
-
 class ContCanvas {
     public $g;
     public $shape,$scale;
@@ -546,7 +552,6 @@ class ContCanvas {
         $this->g->SetMargin(5,5,5,5);
         $this->g->SetMarginColor('white@1');
         $this->g->InitFrame();
-
 
         $this->shape->SetColor('gray');
         for( $col=1; $col<$xmax; ++$col ) {
@@ -621,7 +626,6 @@ class ContCanvas {
 
 }
 
-
 class PixelFill {
 
     private $edges,$dataPoints,$colors,$isoBars;
@@ -639,6 +643,7 @@ class PixelFill {
                 return $this->colors[$i];
             }
         }
+
         return $this->colors[$i]; // The color for all values above the highest isobar
     }
 
@@ -712,8 +717,6 @@ $edges[HORIZ_EDGE][2][2] = true;
 $edges[HORIZ_EDGE][3][1] = true;
 $edges[HORIZ_EDGE][3][2] = true;
 
-
-
 $isobars = array(5,10,15);
 $colors = array('lightgray','lightblue','lightred','red');
 
@@ -723,7 +726,6 @@ $engine->Fill($canvas);
 $canvas->SetDatapoints($datapoints);
 $canvas->Stroke();
 die();
-
 
 //$tst = new Findpolygon();
 //$p1 = $tst->SetupTestData();
@@ -793,6 +795,4 @@ die();
 //
 //echo "\n\nAll tests ready.\n\n";
 //
-
-
-?>
+;

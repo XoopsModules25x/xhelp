@@ -7,7 +7,3 @@ require_once ('jpgraph/jpgraph_led.php');
 $led = new DigitalLED74(6);
 $led->SetSupersampling(4);
 $led->StrokeNumber('123.',LEDC_RED);
-
-
-
-?>

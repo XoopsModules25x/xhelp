@@ -70,6 +70,7 @@ class JPSpan_Unserializer_PHP {
         if ( $result !== FALSE || $data == 'b:0;' ) {
             return $result;
         }
+
         return $data;
     }
 
@@ -86,6 +87,7 @@ class JPSpan_Unserializer_PHP {
             if ( !array_key_exists(strtolower($class),$GLOBALS['_JPSPAN_UNSERIALIZER_MAP']) ) {
 
                 trigger_error('Illegal type: '.strtolower($class),E_USER_ERROR);
+
                 return FALSE;
 
             }

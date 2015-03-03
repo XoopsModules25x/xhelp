@@ -91,5 +91,3 @@ function JPSpan_Register_Unserialization_Types() {
     JPSpan_Unserializer::addType('JPSpan_Object');
     JPSpan_Unserializer::addType('JPSpan_Error');
 }
-
-

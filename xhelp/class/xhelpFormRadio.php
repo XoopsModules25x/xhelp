@@ -7,7 +7,7 @@ class xhelpFormRadio extends XoopsFormRadio
     /**
      * Prepare HTML for output
      *
-     * @return	string	HTML
+     * @return string HTML
      */
     function render(){
         $ret = "";
@@ -19,7 +19,7 @@ class xhelpFormRadio extends XoopsFormRadio
             }
             $ret .= $this->getExtra()." />".$name."\n";
         }
+
         return $ret;
     }
 }
-?>

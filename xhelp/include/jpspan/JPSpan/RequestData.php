@@ -35,6 +35,7 @@ class JPSpan_RequestData_RawPost {
      */
     function fetch($encoding) {
         global $HTTP_RAW_POST_DATA;
+
         return JPSpan_Unserializer::unserialize($HTTP_RAW_POST_DATA, $encoding);
     }
 }
@@ -73,6 +74,7 @@ class JPSpan_RequestData_Post {
             }
             $return[$name] = $value;
         }
+
         return $return;
     }
 }
@@ -111,8 +113,7 @@ class JPSpan_RequestData_Get {
             }
             $return[$name] = $value;
         }
+
         return $return;
     }
 }
-
-

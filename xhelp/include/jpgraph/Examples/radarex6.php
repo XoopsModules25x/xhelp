@@ -32,4 +32,3 @@ $plot->SetLegend("QA results");
 // Add the plot and display the graph
 $graph->Add($plot);
 $graph->Stroke();
-?>

@@ -15,7 +15,6 @@ for($i=0; $i < 480; ++$i) {
     $months[$i] = 'xx';
 }
 
-
 // New graph with a drop shadow
 $graph = new Graph(400,200);
 //$graph->SetShadow();
@@ -47,5 +46,3 @@ $graph->Add($lp1);
 $graph->Stroke();
 
 ?>
-
-

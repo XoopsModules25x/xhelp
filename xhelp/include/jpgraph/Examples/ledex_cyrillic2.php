@@ -23,5 +23,3 @@ $text =     'Р'.
             'Ю'.
             'Я';
 $led->StrokeNumber($text, LEDC_RED);
-
-?>

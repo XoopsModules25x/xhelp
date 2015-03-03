@@ -25,7 +25,7 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA //
 //  ------------------------------------------------------------------------ //
 if (!defined('XOOPS_ROOT_PATH')) {
-	die('XOOPS root path not defined');
+    die('XOOPS root path not defined');
 }
 
 $modversion['name'] = _MI_XHELP_NAME;
@@ -158,7 +158,6 @@ $modversion['contributors']['testers'][2]['uname']      = "marcan";
 $modversion['contributors']['testers'][2]['email']      = "";
 $modversion['contributors']['testers'][2]['website']    = "http://www.smartfactory.ca";
 
-
 // Documenters
 $modversion['contributors']['documenters'][0]['name']       = "Ryan Johnson";
 $modversion['contributors']['documenters'][0]['uname']      = "rcjohnson";
@@ -287,7 +286,6 @@ $modversion['templates'][30]['file'] = 'xhelp_addFaq.html';
 $modversion['templates'][30]['description'] = _MI_XHELP_TEMP_ADD_FAQ;
 $modversion['templates'][31]['file'] = 'xhelp_report.html';
 $modversion['templates'][31]['description'] = _MI_XHELP_TEMP_REPORT;
-
 
 // Blocks
 // Block that displays open tickets

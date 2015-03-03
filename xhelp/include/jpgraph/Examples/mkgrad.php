@@ -10,7 +10,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_bar.php');
 require_once ('jpgraph/jpgraph_canvas.php');
 
-
 // Must have a global comparison method for usort()
 function _cmp($a,$b) {
     return strcmp($a,$b);
@@ -27,13 +26,13 @@ class Form {
         usort($this->iColors,'_cmp');
 
         $this->iGradstyles = array(
-	    "Vertical",2,
-	    "Horizontal",1,
-	    "Vertical from middle",3,
-	    "Horizontal from middle",4,
-	    "Horizontal wider middle",6,
-	    "Vertical wider middle",7,
-	    "Rectangle",5 );
+        "Vertical",2,
+        "Horizontal",1,
+        "Vertical from middle",3,
+        "Horizontal from middle",4,
+        "Horizontal wider middle",6,
+        "Vertical wider middle",7,
+        "Rectangle",5 );
     }
 
     function Run() {
@@ -65,7 +64,6 @@ class Form {
         return '<INPUT TYPE=submit name="ok"  value=" Ok " >';
     }
 
-
     function GenHTMLInput($name,$len,$maxlen=100,$val='') {
         return '<INPUT TYPE=TEXT NAME='.$name.' VALUE="'.$val.'" SIZE='.$len.' MAXLENGTH='.$maxlen.'>';
     }
@@ -82,6 +80,7 @@ class Form {
             else
             $txt=$txt."<option value=\"".$option[$i]."\">$option[$i]</option>\n";
         }
+
         return $txt."</select>\n";
     }
 
@@ -97,6 +96,7 @@ class Form {
             else
             $txt=$txt."<option value=\"".$option[($i+1)]."\">$option[$i]</option>\n";
         }
+
         return $txt."</select>\n";
     }
 
@@ -117,7 +117,7 @@ class Driver {
 
     function GenGradImage() {
 
-        $aWidth	 = (int)@$_POST['w'];
+        $aWidth     = (int)@$_POST['w'];
         $aHeight = (int)@$_POST['h'];
         $aFrom   = @$_POST['fc'];
         $aTo     = @$_POST['tc'];
@@ -146,7 +146,6 @@ class Driver {
         $this->graph->Stroke();
     }
 
-
     function Run() {
 
         global $HTTP_POST_VARS;
@@ -167,5 +166,3 @@ class Driver {
 
 $driver = new Driver();
 $driver->Run();
-
-?>

@@ -3,7 +3,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_line.php');
 require_once ('jpgraph/jpgraph_iconplot.php');
 
-
 //$datay = array(20,15,23,15,17,35,22);
 $datay = array(30,25,33,25,27,45,32);
 $datay2 = array(3,25,10,15,50,5,18);
@@ -45,5 +44,3 @@ $graph->Add($icon);
 $graph->Stroke();
 
 ?>
-
-

@@ -21,4 +21,3 @@ Class xhelpFaqCategoryHandler extends XoopsObjectHandler {
         return new xhelpFaqCategory();
     }
 }
-?>

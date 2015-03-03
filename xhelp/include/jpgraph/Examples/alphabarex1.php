@@ -72,4 +72,3 @@ $graph->Add($gbarplot);
 
 $graph->Stroke();
 ?>
-

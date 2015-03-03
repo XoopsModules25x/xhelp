@@ -23,7 +23,6 @@ class IconPlot {
     private $iScalePosY=null,$iScalePosX=null;
     private $iImgString='';
 
-
     function __construct($aFile="",$aX=0,$aY=0,$aScale=1.0,$aMix=100) {
         $this->iFile = $aFile;
         $this->iX=$aX;
@@ -93,7 +92,6 @@ class IconPlot {
         return array(false,false);
     }
 
-
     // The next four function are framework function tht gets called
     // from Gantt and is not menaiungfull in the context of Icons but
     // they must be implemented to avoid errors.
@@ -101,7 +99,6 @@ class IconPlot {
     function GetMinDate() { return false;   }
     function GetLineNbr() { return 0;   }
     function GetAbsHeight() {return 0;  }
-
 
     function Min() {
         return array(false,false);
@@ -129,6 +126,7 @@ class IconPlot {
 
     function GetWidthHeight() {
         $dummy=0;
+
         return $this->_Stroke($dummy,null,null,true);
     }
 
@@ -186,5 +184,3 @@ class IconPlot {
         $this->iMix);
     }
 }
-
-?>

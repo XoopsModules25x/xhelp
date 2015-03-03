@@ -3,7 +3,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_gantt.php');
 
-
 // Some dummy data for some activities
 $data = array(
 array(0,"Group 1  Johan", "2001-10-23","2001-11-06",FF_FONT1,FS_BOLD,8),
@@ -27,7 +26,6 @@ $graph->scale->week->SetFont(FF_FONT0);
 // Setup a horizontal grid
 $graph->hgrid->Show();
 $graph->hgrid->SetRowFillColor('darkblue@0.9');
-
 
 for($i=0; $i<count($data); ++$i) {
     $bar = new GanttBar($data[$i][0],$data[$i][1],$data[$i][2],$data[$i][3],"[5%]",10);
@@ -59,5 +57,3 @@ $graph->Add($icon);
 $graph->Stroke();
 
 ?>
-
-

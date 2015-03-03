@@ -17,8 +17,6 @@ foreach($myConfigs as $myConf){
     $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
 }
 
-
-
 if($xoopsModuleConfig['xhelp_allowAnonymous'] == 0){
     header("Location: ".XHELP_BASE_URL."/error.php");
 }
@@ -120,7 +118,7 @@ if(!isset($_POST['addTicket'])){
 <script type=\"text/javascript\" src='".XHELP_SCRIPT_URL."/addTicketDeptChange.php?client'></script>
 <script type=\"text/javascript\">
 <!--
-function departments_onchange() 
+function departments_onchange()
 {
     dept = xoopsGetElementById('departments');
     var wl = new xhelpweblib(fieldHandler);
@@ -143,7 +141,7 @@ function window_onload()
 
 window.setTimeout('window_onload()', 1500);
 //-->
-</script>";      
+</script>";
 
     $xoopsTpl->assign('xoops_module_header', $javascript. $xhelp_module_header);
     $xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
@@ -390,4 +388,3 @@ window.setTimeout('window_onload()', 1500);
 
     redirect_header(XOOPS_URL.'/user.php', 3, $message);
 }
-?>

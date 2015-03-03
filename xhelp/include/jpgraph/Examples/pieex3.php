@@ -48,6 +48,3 @@ $graph->Add($p4);
 $graph->Stroke();
 
 ?>
-
-
-

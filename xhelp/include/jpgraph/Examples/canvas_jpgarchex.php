@@ -23,9 +23,9 @@ $shape = new Shape($g,$scale);
 $shape->SetColor('black');
 
 // ... basic parameters for the overall image
-$l = 2;		// Left margin
-$r = 18;	// Row number to start the lowest line on
-$width = 16;	// Total width
+$l = 2;        // Left margin
+$r = 18;    // Row number to start the lowest line on
+$width = 16;    // Total width
 
 // Setup the two basic rectangle text object we  will use
 $tt = new CanvasRectangleText();
@@ -38,7 +38,6 @@ $t = new CanvasRectangleText();
 $t->SetFont(FF_ARIAL,FS_NORMAL,14);
 $t->SetFillColor('goldenrod1');
 $t->SetFontColor('navy');
-
 
 // Now start drawing the arch overview from the bottom and up
 // This is all pretty manual and one day I will write a proper
@@ -59,7 +58,6 @@ $shape->IndentedRectangle($l,$r,$width,$h,$s*3,1,2,'lightgreen');
 $tt->Set("GD Basic library\n(1.8.x or 2.x)",$l,$r,$width,$h-1);
 $tt->Stroke($g->img,$scale);
 
-
 // Area: Basic internal JpGraph architecture
 $t->SetFillColor('goldenrod1');
 $h = 2;
@@ -72,7 +70,6 @@ $t->Stroke($g->img,$scale);
 $r -= $h; $d=8;
 $t->Set("2D Rot & Transformation",$l,$r,$width*0.5,$h-0.5); $t->Stroke($g->img,$scale);
 
-
 $r -= 2; $h = 4;
 $shape->IndentedRectangle($l,$r,$width*0.9,$h,$d,2,3,'goldenrod1');
 $tt->Set("Axis, Labelling, (Auto)-Scaling",$l,$r,$width*0.9,$h-2); $tt->Stroke($g->img,$scale);
@@ -80,7 +77,6 @@ $tt->Set("Axis, Labelling, (Auto)-Scaling",$l,$r,$width*0.9,$h-2); $tt->Stroke($
 $r -= 1;
 $shape->IndentedRectangle($l,$r,$width,7,$width*0.9,6,3,'goldenrod1');
 $tt->Set("Error handling & Utility classes",$l,$r,$width,1); $tt->Stroke($g->img,$scale);
-
 
 // Area: Top area with graph components
 $t->SetFillColor('gold1');
@@ -140,4 +136,3 @@ $tt->Stroke($g->img,$scale);
 $g->Stroke();
 
 ?>
-

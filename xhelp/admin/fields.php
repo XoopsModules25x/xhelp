@@ -133,7 +133,6 @@ function manageFields()
                         <a href='$del_url'>{$imagearray['deleteimg']}</a></td>
                     </tr>";
 
-
             }
             echo '</table>';
             //Render Page Nav
@@ -192,7 +191,6 @@ function manageFields()
             $control_select->addOption($key, $control['label']);
         }
 
-
         $datatypes = array(
         _XHELP_DATATYPE_TEXT => _XHELP_DATATYPE_TEXT,
         _XHELP_DATATYPE_NUMBER_INT => _XHELP_DATATYPE_NUMBER_INT,
@@ -201,14 +199,11 @@ function manageFields()
         $datatype_select = new XoopsFormSelect(_AM_XHELP_TEXT_DATATYPE, 'fld_datatype', $fld_datatype);
         $datatype_select->addOptionArray($datatypes);
 
-
-
         $dept_select = new XoopsFormSelect(_AM_XHELP_TEXT_DEPARTMENTS, 'fld_departments', $fld_departments, 5, true);
         foreach($depts as $obj) {
             $dept_select->addOptionArray($deptarr);
         }
         unset($depts);
-
 
         $form = new xhelpForm(_AM_XHELP_ADD_FIELD, 'add_field', xhelpMakeURI(XHELP_ADMIN_URL.'/fields.php', array('op'=>'managefields')));
         $nameEle = new XoopsFormText(_AM_XHELP_TEXT_NAME, 'fld_name', 30, 64, $fld_name);
@@ -256,7 +251,6 @@ function manageFields()
         $values->setDescription(_AM_XHELP_TEXT_FIELDVALUES_DESC);
         $form->addElement($values);
 
-
         $btn_tray = new XoopsFormElementTray('');
         $btn_tray->addElement(new XoopsFormButton('', 'addField', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
 
@@ -280,7 +274,6 @@ include_once "admin_footer.php";
         $fld_needslength = $control['needs_length'];
         $fld_needsvalues = $control['needs_values'];
 
-
         //name field filled?
         if (trim($_POST['fld_name']) == '') {
             $has_errors = true;
@@ -294,7 +287,6 @@ include_once "admin_footer.php";
             $has_errors = true;
             $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME;
         }
-
 
         //fieldname unique?
         $crit = new CriteriaCompo(new Criteria('fieldname', $fld_fieldname));
@@ -333,8 +325,6 @@ include_once "admin_footer.php";
             $errors['fld_values'][] = _AM_XHELP_VALID_ERR_VALUE;
         }
 
-
-
         if ($has_errors) {
             $afield = array();
 
@@ -372,8 +362,6 @@ include_once "admin_footer.php";
         $field->addValues($values);
         $field->addDepartments($_POST['fld_departments']);
 
-
-
         if ($hField->insert($field)) {
             _clearAddSessionVars();
             redirect_header(xhelpMakeURI(XHELP_ADMIN_URL.'/fields.php'), 3, _AM_XHELP_MSG_FIELD_ADD_OK);
@@ -391,6 +379,7 @@ function _formatValues($values_arr)
     foreach($values_arr as $key=>$value) {
         $ret .= "$key=$value\r\n";
     }
+
     return $ret;
 }
 
@@ -523,7 +512,6 @@ function editField()
             $fld_validation = $field->getVar('validation');
         }
 
-
         //Display Field modification
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manfields');
@@ -603,7 +591,6 @@ function editField()
         $values = new XoopsFormTextArea(_AM_XHELP_TEXT_FIELDVALUES, 'fld_values', $fld_values, 5, 60);
         $values->setDescription(_AM_XHELP_TEXT_FIELDVALUES_DESC);
         $form->addElement($values);
-
 
         $btn_tray = new XoopsFormElementTray('');
         $btn_tray->addElement(new XoopsFormButton('', 'editField', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
@@ -753,9 +740,6 @@ function setFieldRequired()
         redirect_header(xhelpMakeURI(XHELP_ADMIN_URL .'/fields.php'), 3, _AM_XHELP_MESSAGE_NO_FIELD);
     }
 
-
-
-
 }
 
 function clearAddSession()
@@ -785,6 +769,3 @@ function _clearEditSessionVars($id)
     $session->del("xhelp_editField_$id");
     $session->del("xhelp_editFieldErrors_$id");
 }
-
-
-?>

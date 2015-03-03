@@ -7,4 +7,3 @@ define('_XHELP_STAFF_INFO_DESC', 'Retrieves staff name, number of tickets respon
 define('_XHELP_STAFF_INFO_DB1', 'Tickets Responded');
 define('_XHELP_STAFF_INFO_DB2', 'Calls Closed');
 define('_XHELP_STAFF_INFO_DB3', 'Average Response Time (in Minutes)');
-?>

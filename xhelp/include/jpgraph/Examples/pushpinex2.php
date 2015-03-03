@@ -59,5 +59,3 @@ $graph->Add($lp);
 $graph->Stroke();
 
 ?>
-
-

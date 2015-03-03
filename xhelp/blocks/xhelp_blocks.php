@@ -93,6 +93,7 @@ function b_xhelp_open_show($options)
         $block['noTickets'] = _MB_XHELP_TEXT_NO_TICKETS;
         unset($tickets);
         $block['picPath'] = XOOPS_URL . '/modules/xhelp/images/';
+
         return $block;
     }
 }
@@ -114,11 +115,11 @@ function b_xhelp_performance_show($options)
 
     if ($xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
         $sql = sprintf(
-            "SELECT COUNT(*) as TicketCount, d.department, d.id FROM %s t INNER JOIN %s d ON t.department = d.id  INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 GROUP BY d.department, d.id ORDER BY d.department", 
+            "SELECT COUNT(*) as TicketCount, d.department, d.id FROM %s t INNER JOIN %s d ON t.department = d.id  INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 GROUP BY d.department, d.id ORDER BY d.department",
         $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_status'));
     } else {
         $sql = sprintf(
-            "SELECT COUNT(*) as TicketCount, d.department, d.id FROM %s t INNER JOIN %s j on t.department = j.department INNER JOIN %s d ON t.department = d.id INNER JOIN %s s on t.status = s.id WHERE s.state = 1 AND j.uid = %u GROUP BY d.department, d.id", 
+            "SELECT COUNT(*) as TicketCount, d.department, d.id FROM %s t INNER JOIN %s j on t.department = j.department INNER JOIN %s d ON t.department = d.id INNER JOIN %s s on t.status = s.id WHERE s.state = 1 AND j.uid = %u GROUP BY d.department, d.id",
         $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_jstaffdept'), $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_status'), $xoopsUser->getVar('uid'));
     }
 
@@ -219,6 +220,7 @@ function b_xhelp_recent_show($options)
             }
         }
         $block['ticketcount'] = count($tickets);
+
         return $block;
     } else {
         return false;
@@ -267,9 +269,6 @@ function b_xhelp_actions_show()
     if (!isset($ticketInfo)) {
         $ticketInfo =& $hTickets->get($block['ticketid']);
     }
-
-
-
 
     if($xoopsModuleConfig['xhelp_staffTicketActions'] == 2){
         $aOwnership = array();
@@ -366,7 +365,6 @@ function b_xhelp_actions_show()
     $block['departments'] =& $aDept;
     $block['departmentid'] = $ticketInfo->getVar('department');
 
-
     foreach ($checkRights as $right=>$desc) {
         if(($right == XHELP_SEC_RESPONSE_ADD) && count($ticketEmails > 0)){
             $block[$desc[0]] = true;
@@ -448,9 +446,9 @@ function b_xhelp_mainactions_show($options)
             $aSavedSearches = array();
             foreach($savedSearches as $sSearch){
                 $aSavedSearches[$sSearch->getVar('id')] = array('id' => $sSearch->getVar('id'),
-																'name' => $sSearch->getVar('name'),
-																'search' => $sSearch->getVar('search'),
-																'pagenav_vars' => $sSearch->getVar('pagenav_vars'));
+                                                                'name' => $sSearch->getVar('name'),
+                                                                'search' => $sSearch->getVar('search'),
+                                                                'pagenav_vars' => $sSearch->getVar('pagenav_vars'));
             }
             $block['savedSearches'] = (count($aSavedSearches) < 1) ? false : $aSavedSearches;
         }
@@ -474,7 +472,6 @@ function b_xhelp_mainactions_edit($options)
     $form .= "<input type='radio' name='options[1]' value='1'".(($options[1]==1)?" checked='checked'":"")." />"._YES."</td></tr>";
 
     $form .= "</table>";
+
     return $form;
 }
-
-?>

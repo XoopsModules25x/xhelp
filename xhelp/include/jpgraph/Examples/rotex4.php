@@ -21,5 +21,3 @@ $graph->Add($line);
 $graph->Stroke();
 
 ?>
-
-

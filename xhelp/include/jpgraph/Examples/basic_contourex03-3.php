@@ -11,7 +11,6 @@ array ( 13,9,5,12),
 array (  5,3,8, 9 ),
 array (  1,8,5, 7 ));
 
-
 // Basic contour graph
 $graph = new Graph(350,250);
 $graph->SetScale('intint');
@@ -36,5 +35,3 @@ $graph->Add($cp);
 
 // ... and send the graph back to the browser
 $graph->Stroke();
-
-?>

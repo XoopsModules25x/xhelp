@@ -35,7 +35,6 @@ $b1 = new BarPlot($databary);
 $b1->SetLegend("Temperature");
 $b1->SetWidth(0.4);
 
-
 // The order the plots are added determines who's ontop
 $graph->Add($b1);
 
@@ -43,5 +42,3 @@ $graph->Add($b1);
 $graph->Stroke();
 
 ?>
-
-

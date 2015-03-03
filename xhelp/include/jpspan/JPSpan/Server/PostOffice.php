@@ -70,6 +70,7 @@ class JPSpan_Server_PostOffice extends JPSpan_Server {
 
         if ( $_SERVER['REQUEST_METHOD'] != 'POST' ) {
             trigger_error('Invalid HTTP request method: '.$_SERVER['REQUEST_METHOD'],E_USER_ERROR);
+
             return FALSE;
         }
 
@@ -127,11 +128,13 @@ class JPSpan_Server_PostOffice extends JPSpan_Server {
             } else {
 
                 trigger_error('Invalid handle for: '.$this->calledClass,E_USER_ERROR);
+
                 return FALSE;
 
             }
 
         }
+
         return FALSE;
     }
 
@@ -157,26 +160,31 @@ class JPSpan_Server_PostOffice extends JPSpan_Server {
 
         if ( count($uriPath) != 2 ) {
             trigger_error('Invalid call syntax',E_USER_ERROR);
+
             return FALSE;
         }
 
         if ( preg_match('/^[a-z]+[0-9a-z_]*$/',$uriPath[0]) != 1 ) {
             trigger_error('Invalid handler name: '.$uriPath[0],E_USER_ERROR);
+
             return FALSE;
         }
 
         if ( preg_match('/^[a-z]+[0-9a-z_]*$/',$uriPath[1]) != 1 ) {
             trigger_error('Invalid handler method: '.$uriPath[1],E_USER_ERROR);
+
             return FALSE;
         }
 
         if ( !array_key_exists($uriPath[0],$this->descriptions) ) {
             trigger_error('Unknown handler: '.$uriPath[0],E_USER_ERROR);
+
             return FALSE;
         }
 
         if ( !in_array($uriPath[1],$this->descriptions[$uriPath[0]]->methods) ) {
             trigger_error('Unknown handler method: '.$uriPath[1],E_USER_ERROR);
+
             return FALSE;
         }
 
@@ -223,6 +231,7 @@ class JPSpan_Server_PostOffice extends JPSpan_Server {
         $this->serverUrl,
         $this->RequestEncoding
         );
+
         return $G;
     }
 }
@@ -351,5 +360,3 @@ return oParent; }
         ob_end_clean();
     }
 }
-
-

@@ -143,7 +143,6 @@ define('PGOTHIC_TTF_FONT','ipagp.ttf');
 // automatically in the library using the mbstring module in PHP.
 define('ASSUME_EUCJP_ENCODING',false);
 
-
 //=================================================================
 // CLASS LanguageConv
 // Description:
@@ -161,6 +160,7 @@ class LanguageConv {
             } else  {
                 $unistring = LanguageConv::gr_iso2uni($aTxt);
             }
+
             return $unistring;
         } elseif( LANGUAGE_CYRILLIC ) {
             if( CYRILLIC_FROM_WINDOWS && (!defined('LANGUAGE_CHARSET') || stristr(LANGUAGE_CHARSET, 'windows-1251')) ) {
@@ -173,6 +173,7 @@ class LanguageConv {
             else {
                 $unistring = $aTxt;
             }
+
             return $unistring;
         }
         elseif( $aFF === FF_SIMSUN ) {
@@ -181,6 +182,7 @@ class LanguageConv {
                 include_once 'jpgraph_gb2312.php' ;
                 $this->g2312 = new GB2312toUTF8();
             }
+
             return $this->g2312->gb2utf8($aTxt);
         }
         elseif( $aFF === FF_BIG5 ) {
@@ -188,6 +190,7 @@ class LanguageConv {
                 JpGraphError::RaiseL(25006);
                 //('Usage of FF_CHINESE (FF_BIG5) font family requires that your PHP setup has the iconv() function. By default this is not compiled into PHP (needs the "--width-iconv" when configured).');
             }
+
             return iconv('BIG5','UTF-8',$aTxt);
         }
         elseif( ASSUME_EUCJP_ENCODING &&
@@ -195,6 +198,7 @@ class LanguageConv {
             if( !function_exists('mb_convert_encoding') ) {
                 JpGraphError::RaiseL(25127);
             }
+
             return mb_convert_encoding($aTxt, 'UTF-8','EUC-JP');
         }
         elseif( $aFF == FF_DAVID || $aFF == FF_MIRIAM || $aFF == FF_AHRON ) {
@@ -212,6 +216,7 @@ class LanguageConv {
             $charcode=ord($thischar);
             $uniline.=($charcode>175) ? "&#" . (1040+($charcode-176)). ";" : $thischar;
         }
+
         return $uniline;
     }
 
@@ -223,6 +228,7 @@ class LanguageConv {
             $charcode=ord($thischar);
             $uniline.=($charcode>179 && $charcode!=183 && $charcode!=187 && $charcode!=189) ? "&#" . (900+($charcode-180)). ";" : $thischar;
         }
+
         return $uniline;
     }
 
@@ -239,6 +245,7 @@ class LanguageConv {
                 $uniline.=(($charcode>183 && $charcode!=187 && $charcode!=189) || $charcode==180) ? "&#" . (900+($charcode-180)). ";" : $thischar;
             }
         }
+
         return $uniline;
     }
 
@@ -251,6 +258,7 @@ class LanguageConv {
             $c=ord( substr($isoline,$i,1) );
             $o .= ($c > 223) && ($c < 251) ? '&#'.(1264+$c).';' : chr($c);
         }
+
         return utf8_encode($o);
     }
 }
@@ -434,7 +442,6 @@ class TTF {
         FS_ITALIC =>array('DejaVuSerifCondensed-Italic.ttf','DejaVuCondensedSerifItalic.ttf'),
         FS_BOLDITALIC =>array('DejaVuSerifCondensed-BoldItalic.ttf','DejaVuCondensedSerifBoldItalic.ttf') ),
 
-
         /* Placeholders for defined fonts */
         FF_USERFONT1 => array(
         FS_NORMAL =>'',
@@ -497,6 +504,7 @@ class TTF {
         if( !file_exists($f) ) {
             JpGraphError::RaiseL(25049,$f);//("Font file \"$f\" is not readable or does not exist.");
         }
+
         return $f;
     }
 
@@ -606,12 +614,10 @@ class  SymChar {
             $s = $ca[2];
             else
             $s = $ca[1];
+
             return sprintf('&#%04d;',hexdec($s));
         }
         else
         return '';
     }
 }
-
-
-?>

@@ -6,7 +6,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_bar.php');
 require_once ('jpgraph/jpgraph_line.php');
 
-
 // Utility function to calculate the accumulated frequence
 // for a set of values and ocurrences
 function accfreq($data) {
@@ -19,6 +18,7 @@ function accfreq($data) {
         $as[$i] = $as[$i-1]+$data[$i];
         $asp[$i] = 100.0*$as[$i]/$s;
     }
+
     return $asp;
 }
 
@@ -69,7 +69,6 @@ $targ=array("#1","#2","#3","#4","#5","#6","#7");
 $alts=array("val=%d","val=%d","val=%d","val=%d","val=%d","val=%d","val=%d");
 $bplot->SetCSIMTargets($targ,$alts);
 
-
 // Create accumulative graph
 $lplot = new LinePlot($data_accfreq);
 
@@ -81,7 +80,6 @@ $lplot->SetFillColor('lightblue@0.6');
 $lplot->SetColor('blue@0.6');
 //$lplot->SetColor('blue');
 $graph->AddY2($lplot);
-
 
 // Setup the bars
 $bplot->SetFillColor("orange@0.2");
@@ -96,5 +94,3 @@ $graph->Add($bplot);
 // Send back the HTML page which will call this script again
 // to retrieve the image.
 $graph->StrokeCSIM();
-
-?>

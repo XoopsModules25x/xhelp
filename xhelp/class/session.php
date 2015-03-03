@@ -5,7 +5,6 @@
  * @author Harry Fuecks (PHP Anthology Volume II)
  */
 
-
 class Session {
 
     /**
@@ -58,7 +57,6 @@ class Session {
         unset($_SESSION[$name]);
     }
 
-
     /**
      * Destroys the whole session
      * @return void
@@ -77,7 +75,7 @@ class Session {
         if (!isset($_sess)) {
             $_sess = new Session();
         }
+
         return $_sess;
     }
 }
-?>

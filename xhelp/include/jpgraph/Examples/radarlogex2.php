@@ -44,4 +44,3 @@ $plot->SetColor('forestgreen');
 $graph->Add($plot);
 $graph->Stroke();
 ?>
-

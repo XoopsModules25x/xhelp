@@ -16,7 +16,6 @@ if (!$hStaff->isStaff($xoopsUser->getVar('uid'))) {
     redirect_header(XHELP_BASE_URL."/index.php", 3, _NOPERM);
 }
 
-
 if($xoopsUser){
     $start = $limit = 0;
     $page_vars    = array('limit', 'start', 'sort', 'order');
@@ -283,7 +282,6 @@ if($xoopsUser){
             $date_max_use = new XoopsFormCheckBox('', 'datemax_use', $datemax_use);
             $date_max_use ->addOption(1, _XHELP_TEXT_USE);
 
-
             $aff_date->addElement($date_min);
             $aff_date->addElement($date_min_use);
             $aff_date->addElement($date_max);
@@ -522,7 +520,6 @@ if($xoopsUser){
                     $xoopsTpl->assign('xhelp_has_tickets', false);
                 }
 
-
                 $tpl_cols = array();
                 //Setup Column Sorting Vars
                 foreach ($sort_columns as $col) {
@@ -616,10 +613,7 @@ if($xoopsUser){
             break;
     }
 
-
-
     require(XOOPS_ROOT_PATH.'/footer.php');
 } else {    // If not a user
     redirect_header(XOOPS_URL .'/user.php', 3);
 }
-?>

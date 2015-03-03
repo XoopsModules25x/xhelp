@@ -12,4 +12,3 @@ define('_XHELP_DS_DB4', 'Unresolved Tickets');
 define('_XHELP_DS_PARAM1', 'Start Date');
 define('_XHELP_DS_PARAM2', 'End Date');
 define('_XHELP_DS_PARAM3', 'Department');
-?>

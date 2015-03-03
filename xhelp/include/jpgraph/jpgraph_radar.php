@@ -211,7 +211,6 @@ class RadarLinearTicks extends Ticks {
     }
 }
 
-
 //===================================================
 // CLASS RadarAxis
 // Description: Implements axis for the radar graph
@@ -684,6 +683,7 @@ class RadarGraph extends Graph {
             JpGraphError::RaiseL(18006,$min);
             //("Minimum data $min (Radar plots should only be used when all data points > 0)");
         }
+
         return array($min,$max);
     }
 
@@ -784,7 +784,6 @@ class RadarGraph extends Graph {
                 $this->StrokeIcons();
             }
 
-
             // Prepare legends
             for($i=0; $i < $n; ++$i) {
                 $this->plots[$i]->Legend($this);
@@ -857,5 +856,4 @@ class RadarGraph extends Graph {
     }
 } // Class
 
-/* EOF */
-?>
+/* EOF */;

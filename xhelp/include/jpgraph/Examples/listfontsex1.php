@@ -14,7 +14,6 @@ $g->SetColor('white');
 $g->SetMarginColor("teal");
 $g->InitFrame();
 
-
 $t = new CanvasRectangleText();
 $t->SetFont(FF_ARIAL,FS_NORMAL,16);
 $t->SetFillColor('lemonchiffon2');
@@ -25,7 +24,6 @@ $t->Stroke($g->img,$scale);
 $t->SetFillColor('lemonchiffon3');
 $t->Set("\n\n\n\nBitmap Fonts",0.5,5,26,13.5);
 $t->Stroke($g->img,$scale);
-
 
 $t = new CanvasRectangleText();
 $t->SetFillColor('');
@@ -42,7 +40,6 @@ $t->Stroke($g->img,$scale);
 
 $t->Set('Bold style',17.5,1,8);
 $t->Stroke($g->img,$scale);
-
 
 $t->SetFillColor('yellow');
 $t->SetFontColor('black');
@@ -71,7 +68,6 @@ array("Arial bold",FF_ARIAL,FS_BOLD),
 array("Verdana",FF_VERDANA,FS_NORMAL),
 array("Verdana italic",FF_VERDANA,FS_ITALIC),
 array("Verdana bold",FF_VERDANA,FS_BOLD),
-
 
 array("Trebuche",FF_TREBUCHE,FS_NORMAL),
 array("Trebuche italic",FF_TREBUCHE,FS_ITALIC),
@@ -127,7 +123,6 @@ array("DejaVuCond sans serif",FF_DV_SANSSERIFCOND,FS_BOLD),
 
 );
 
-
 $n=count($fonts);
 
 for( $i=0; $i < $n; ++$i ) {
@@ -151,4 +146,3 @@ for( $i=0; $i < $n; ++$i ) {
 
 $g->Stroke();
 ?>
-

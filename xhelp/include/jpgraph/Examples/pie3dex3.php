@@ -38,5 +38,3 @@ $graph->Add($p1);
 $graph->Stroke();
 
 ?>
-
-

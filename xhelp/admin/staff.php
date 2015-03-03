@@ -101,7 +101,7 @@ function addRole()
         echo "<tr>
                   <td colspan='2' class='foot'>
                       <input type='submit' name='add' value='". _AM_XHELP_BUTTON_CREATE_ROLE ."' class='formButton'>
-                      <input type='button' name='cancel' value='"._AM_XHELP_BUTTON_CANCEL."' onclick='history.go(-1)' class='formButton' />                  
+                      <input type='button' name='cancel' value='"._AM_XHELP_BUTTON_CANCEL."' onclick='history.go(-1)' class='formButton' />
                   </td>
               </tr>";
         echo "</table></form>";
@@ -466,7 +466,7 @@ function editRole()
         echo "<tr>
                   <td colspan='2' class='foot'>
                       <input type='submit' name='edit' value='". _AM_XHELP_BUTTON_UPDATE ."' class='formButton' />
-                      <input type='button' name='cancel' value='"._AM_XHELP_BUTTON_CANCEL."' onclick='history.go(-1)' class='formButton' />                  
+                      <input type='button' name='cancel' value='"._AM_XHELP_BUTTON_CANCEL."' onclick='history.go(-1)' class='formButton' />
                       <input type='submit' name='deleteRole' value='"._AM_XHELP_BUTTON_DELETE."' class='formButton' />
                       
                   </td>
@@ -712,7 +712,6 @@ function editStaff()
                 $dept_roles = $roles;
             }
 
-
             foreach ($dept_roles as $role) {
                 $hStaff->addStaffRole($uid, $role, $dept);
             }
@@ -832,7 +831,7 @@ function manageStaff()
             echo '<script type="text/javascript" src="'.XOOPS_URL.'/modules/xhelp/include/functions.js"></script>';
             echo "<form method='post' id='manageStaff' name='manageStaff' action='staff.php?op=manageStaff'>";
             echo "<table width='100%' cellspacing='1' class='outer'>
-                  <tr><th colspan='2'>"._AM_XHELP_ADD_STAFF."</th></tr>"; 
+                  <tr><th colspan='2'>"._AM_XHELP_ADD_STAFF."</th></tr>";
 
             echo "<tr><td class='head' width='20%'>". _AM_XHELP_TEXT_USER ."</td>
                       <td class='even'>
@@ -956,7 +955,7 @@ function manageStaff()
                 }
                 echo "</select>
                             &nbsp;&nbsp;&nbsp;
-                            "._AM_XHELP_TEXT_DEPARTMENTS.": "._AM_XHELP_BUTTON_SEARCH." 
+                            "._AM_XHELP_TEXT_DEPARTMENTS.": "._AM_XHELP_BUTTON_SEARCH."
                               <input type='text' name='dept_search' value='$dept_search' />
                             "._AM_XHELP_TEXT_NUMBER_PER_PAGE."
                               <select name='dlimit'>";

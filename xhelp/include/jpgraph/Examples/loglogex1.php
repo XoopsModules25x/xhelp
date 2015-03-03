@@ -4,7 +4,6 @@ require_once ('jpgraph/jpgraph_log.php');
 require_once ('jpgraph/jpgraph_line.php');
 require_once ('jpgraph/jpgraph_scatter.php');
 
-
 $ab2  = array( 1.5,  2.0,  2.5,  3.0,  4.0,  5.0,  6.0,  8.0, 10.0,
 12.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 60.0 ,75.0,
 100., 125., 150.);
@@ -55,5 +54,3 @@ $graph->Add($lineplot);
 
 // Display the graph
 $graph->Stroke();
-
-?>

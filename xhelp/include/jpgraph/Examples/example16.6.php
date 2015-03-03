@@ -55,5 +55,3 @@ $graph->Add($lplot);
 $graph->Stroke();
 
 ?>
-
-

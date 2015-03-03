@@ -112,5 +112,3 @@ class JPSpan_NullResponder {
      */
     function execute(& $payload) {}
 }
-
-

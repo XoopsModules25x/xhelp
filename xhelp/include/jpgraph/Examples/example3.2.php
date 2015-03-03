@@ -31,4 +31,3 @@ $graph->SetShadow();
 
 // Display the graph
 $graph->Stroke();
-?>

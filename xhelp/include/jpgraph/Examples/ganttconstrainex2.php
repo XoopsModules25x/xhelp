@@ -3,7 +3,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_gantt.php');
 
-
 //
 // The data for the graphs
 //
@@ -35,5 +34,3 @@ $graph->CreateSimple($data,$constrains,$progress);
 $graph->Stroke();
 
 ?>
-
-

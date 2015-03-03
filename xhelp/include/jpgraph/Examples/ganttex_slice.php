@@ -23,7 +23,6 @@ $graph->ShowHeaders(GANTT_HYEAR | GANTT_HMONTH | GANTT_HDAY | GANTT_HWEEK);
 $graph->scale->week->SetStyle(WEEKSTYLE_FIRSTDAY);
 $graph->scale->week->SetFont(FF_FONT1);
 
-
 $data = array(
 array(0,"Group 1\tJohan", "2002-1-23","2002-01-28",FF_FONT1,FS_BOLD,8),
 array(1,"  Label 2", "2001-10-26","2001-11-16"),
@@ -33,7 +32,6 @@ array(5,"  Label 4", "2001-11-30","2001-12-1"),
 array(6,"  Label 5", "2001-12-6","2001-12-8"),
 array(8,"    Label 8", "2001-11-30","2002-01-02")
 );
-
 
 // make up some fictionary activity bars
 for($i=0; $i<count($data); ++$i) {
@@ -58,7 +56,6 @@ for($i=0; $i<count($data); ++$i) {
     $graph->Add($bar);
 }
 
-
 // The line will NOT be shown since it is outside the specified slice
 $vline = new GanttVLine("2002-02-28");
 $vline->title->Set("2002-02-28");
@@ -72,7 +69,4 @@ $graph->Add($ms);
 
 $graph->Stroke();
 
-
 ?>
-
-

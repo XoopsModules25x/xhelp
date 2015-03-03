@@ -139,7 +139,6 @@ define('LABELBKG_YAXISFULL',4);
 define('LABELBKG_XYFULL',5);
 define('LABELBKG_XY',6);
 
-
 // Style for background gradient fills
 define('BGRAD_FRAME',1);
 define('BGRAD_MARGIN',2);
@@ -236,6 +235,7 @@ function CheckPHPVersion($aMinVersion) {
     if ($minorC < $minorR) return false;
     // and same minor
     if ($editC  >= $editR)  return true;
+
     return true;
 }
 
@@ -296,7 +296,6 @@ function GenImgName() {
     elseif( $supported & IMG_WBMP ) $img_format="wbmp";
     elseif( $supported & IMG_XPM ) $img_format="xpm";
 
-
     if( !isset($_SERVER['PHP_SELF']) ) {
         JpGraphError::RaiseL(25005);
         //(" Can't access PHP_SELF, PHP global variable. You can't run PHP from command line if you want to use the 'auto' naming of cache or image files.");
@@ -309,6 +308,7 @@ function GenImgName() {
     else {
         $fname = substr($fname,0,strlen($fname)-4).'.'.$img_format;
     }
+
     return $fname;
 }
 
@@ -338,6 +338,7 @@ class JpgTimer {
         list($ms,$s)=explode(" ",microtime());
         $etime=floor($ms*1000) + (1000*$s);
         $this->idx--;
+
         return $etime-$this->start[$this->idx];
     }
 } // Class
@@ -362,6 +363,7 @@ class DateLocale {
     function Set($aLocale) {
         if ( in_array($aLocale, array_keys($this->iDayAbb)) ){
             $this->iLocale = $aLocale;
+
             return TRUE;  // already cached nothing else to do!
         }
 
@@ -404,7 +406,6 @@ class DateLocale {
 
         return TRUE;
     }
-
 
     function GetDayAbb() {
         return $this->iDayAbb[$this->iLocale];
@@ -482,7 +483,6 @@ class Footer {
         $this->right->Stroke($aImg,$x,$y);
     }
 }
-
 
 //===================================================
 // CLASS Graph
@@ -925,7 +925,6 @@ class Graph {
         $this->background_cflag_mix = $aMix;
     }
 
-
     // Specify a background image
     function SetBackgroundImage($aFileName,$aBgType=BGIMG_FILLPLOT,$aImgFormat='auto') {
 
@@ -1153,7 +1152,6 @@ class Graph {
         }
     }
 
-
     // Get a string of all image map areas
     function GetCSIMareas() {
         if( !$this->iHasStroked ) {
@@ -1219,6 +1217,7 @@ class Graph {
         $im = "<map name=\"$aMapName\" id=\"$aMapName\" >\n";
         $im .= $this->GetCSIMareas();
         $im .= "</map>";
+
         return $im;
     }
 
@@ -1261,6 +1260,7 @@ class Graph {
                 else {
                     if ($fh = @fopen($basecsim, "r")) {
                         fpassthru($fh);
+
                         return true;
                     }
                     else {
@@ -1269,6 +1269,7 @@ class Graph {
                 }
             }
         }
+
         return false;
     }
 
@@ -1398,6 +1399,7 @@ class Graph {
             $aScriptName=basename($_SERVER['PHP_SELF']);
         }
         $urlarg = $this->GetURLArguments(true);
+
         return "<img src=\"".$aScriptName.'?'.$urlarg."\" ismap=\"ismap\" usemap=\"#".$aCSIMName.'" height="'.$this->img->height."\" alt=\"".$this->iCSIMImgAlt."\" />\n";
     }
 
@@ -1504,6 +1506,7 @@ class Graph {
                 }
             }
         }
+
         return array($min,$max);
     }
 
@@ -1704,7 +1707,6 @@ class Graph {
         }
     }
 
-
     function doAutoScaleYnAxis() {
 
         if( $this->y2scale != null) {
@@ -1750,7 +1752,6 @@ class Graph {
 
             }
         }
-
 
         //
         // Autoscale the extra Y-axises
@@ -1901,7 +1902,6 @@ class Graph {
             }
         }
     }
-
 
     // Stroke the graph
     // $aStrokeFileName If != "" the image will be written to this file and NOT
@@ -2352,7 +2352,6 @@ class Graph {
         }
     }
 
-
     // Private helper function for backgound image
     static function LoadBkgImage($aImgFormat='',$aFile='',$aImgStr='') {
         if( $aImgStr != '' ) {
@@ -2388,7 +2387,6 @@ class Graph {
             JpGraphError::RaiseL(25037,$aFile);//('The image format of your background image ('.$aFile.') is not supported in your system configuration. ');
         }
 
-
         if( $imgtag == "jpg" || $imgtag == "jpeg") {
             $f = "imagecreatefromjpeg";
             $imgtag = "jpg";
@@ -2407,6 +2405,7 @@ class Graph {
         if( !$img ) {
             JpGraphError::RaiseL(25039,$aFile);//(" Can't read background image: '".$aFile."'");
         }
+
         return $img;
     }
 
@@ -2684,7 +2683,6 @@ class Graph {
         $this->titlebackground_bevelheight = $aBevelHeight ;
     }
 
-
     function StrokeTitles() {
 
         $margin=3;
@@ -2929,6 +2927,7 @@ class Graph {
                 if( $max < $v ) $max = $v ;
             }
         }
+
         return $flg ? array($min,$max) : false ;
     }
 
@@ -2947,6 +2946,7 @@ class Graph {
                 if( $max < $v ) $max = $v ;
             }
         }
+
         return $flg ? array($min,$max) : false ;
     }
 
@@ -2979,6 +2979,7 @@ class Graph {
             // Special case if all values are 0
             $min=0;$max=1;
         }
+
         return array($min,$max);
     }
 
@@ -3216,6 +3217,7 @@ class SuperScriptText extends Text {
         $aImg->SetFont($this->sfont_family,$this->sfont_style,$this->sfont_size);
         $w += $aImg->GetTextWidth($this->iSuper);
         $w += $this->iSuperMargin;
+
         return $w;
     }
 
@@ -3225,6 +3227,7 @@ class SuperScriptText extends Text {
         $h = $aImg->GetFontHeight();
         $aImg->SetFont($this->sfont_family,$this->sfont_style,$this->sfont_size);
         $h += $aImg->GetFontHeight();
+
         return $h;
     }
 
@@ -3234,6 +3237,7 @@ class SuperScriptText extends Text {
         $h = $aImg->GetTextHeight($this->t);
         $aImg->SetFont($this->sfont_family,$this->sfont_style,$this->sfont_size);
         $h += $aImg->GetTextHeight($this->iSuper);
+
         return $h;
     }
 
@@ -3333,7 +3337,6 @@ class SuperScriptText extends Text {
         $aImg->PopColor();
     }
 }
-
 
 //===================================================
 // CLASS Grid
@@ -3475,6 +3478,7 @@ class Grid {
         else {
             JpGraphError::RaiseL(25054,$this->scale->type);//('Internal error: Unknown grid axis ['.$this->scale->type.']');
         }
+
         return true;
     }
 } // Class
@@ -3960,7 +3964,6 @@ class Axis extends AxisPrototype {
 
 }
 
-
 //===================================================
 // CLASS Ticks
 // Description: Abstract base class for drawing linear and logarithmic
@@ -4281,7 +4284,6 @@ class LinearTicks extends Ticks {
         $this->iAdjustForDST = $aFlg;
     }
 
-
     function _doLabelFormat($aVal,$aIdx,$aNbrTicks) {
 
         // If precision hasn't been specified set it to a sensible value
@@ -4349,6 +4351,7 @@ class LinearTicks extends Ticks {
         if( ($this->supress_zerolabel && $l==0) ||  ($this->supress_first && $aIdx==0) || ($this->supress_last  && $aIdx==$aNbrTicks-1) ) {
             $l='';
         }
+
         return $l;
     }
 
@@ -4497,6 +4500,7 @@ class LinearScale {
         if( $this->GetMinVal()==$this->GetMaxVal() ) {  // Scale not set
             return false;
         }
+
         return true;
     }
 
@@ -4552,6 +4556,7 @@ class LinearScale {
             if( $aCoord != '' && $aCoord != '-' && $aCoord != 'x' ) {
                 JpGraphError::RaiseL(25070);//('Your data contains non-numeric values.');
             }
+
             return 0;
         }
         else {
@@ -4566,6 +4571,7 @@ class LinearScale {
             if( $aCoord != '' && $aCoord != '-' && $aCoord != 'x'  ) {
                 JpGraphError::RaiseL(25070);//('Your data contains non-numeric values.');
             }
+
             return 0;
         }
         else {
@@ -4692,7 +4698,6 @@ class LinearScale {
         }
     }
 
-
     // Calculate autoscale. Used if user hasn't given a scale and ticks
     // $maxsteps is the maximum number of major tickmarks allowed.
     function AutoScale($img,$min,$max,$maxsteps,$majend=true) {
@@ -4703,6 +4708,7 @@ class LinearScale {
 
         if( $this->intscale ) {
             $this->IntAutoScale($img,$min,$max,$maxsteps,$majend);
+
             return;
         }
         if( abs($min-$max) < 0.00001 ) {
@@ -4849,7 +4855,6 @@ class LinearScale {
         $this->scale_abs=array($this->off,$this->off+$this->world_size*$this->scale_factor);
     }
 
-
     // Calculate number of ticks steps with a specific division
     // $a is the divisor of 10**x to generate the first maj tick intervall
     // $a=1, $b=2 give major ticks with multiple of 10, ...,0.1,1,10,...
@@ -4922,9 +4927,9 @@ class LinearScale {
             ++$ld;
         }
         $minstep=$majstep/$b;
+
         return array($numsteps,$minstep,$majstep);
     }
-
 
     function IntCalcTicks($maxsteps,$min,$max,$a,$majend=true) {
         $diff=$max-$min;
@@ -4973,7 +4978,6 @@ class LinearScale {
         return array($numsteps,$adjmin,$adjmax,$majstep);
     }
 
-
     function IntCalcTicksFreeze($maxsteps,$min,$max,$a) {
         // Same as IntCalcTick but don't change min/max values
         $diff=$max-$min;
@@ -5016,6 +5020,7 @@ class LinearScale {
         elseif( $b < ($c*$weight) ) {
             return 2; // $b smallest
         }
+
         return 3; // $c smallest
     }
 } // Class
@@ -5231,6 +5236,7 @@ class Plot {
         if( substr($aGraph->axtype,0,4) == "text" && (isset($this->coords[1])) ) {
             JpGraphError::RaiseL(25123);//("JpGraph: You can't use a text X-scale with specified X-coords. Use a \"int\" or \"lin\" scale instead.");
         }
+
         return true;
     }
 
@@ -5271,6 +5277,7 @@ class Plot {
         else {
             $ym='';
         }
+
         return array($xm,$ym);
     }
 
@@ -5306,6 +5313,7 @@ class Plot {
         else {
             $ym='';
         }
+
         return array($xm,$ym);
     }
 
@@ -5392,10 +5400,11 @@ class ColorFactory {
     static function getColor() {
         if( ColorFactory::$iIdx >= ColorFactory::$iNum )
         ColorFactory::$iIdx = 0;
+
         return ColorFactory::$iColorList[ColorFactory::$iIdx++];
     }
 
 }
 
 // <EOF>
-?>
+;

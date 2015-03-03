@@ -77,7 +77,6 @@ $icon->SetMix(50);
 $icon->SetPos(5,5);
 $graph->Add($icon);
 
-
 // Add a vertical line
 $vline = new GanttVLine("2001-12-24","Phase 1");
 $vline->SetDayOffset(0.5);
@@ -85,4 +84,3 @@ $vline->SetDayOffset(0.5);
 
 // ... and display it
 $graph->Stroke();
-?>

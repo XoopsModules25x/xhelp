@@ -87,7 +87,6 @@ function displayEvents($mailEvents, $mailboxes)
     echo "<a href='index.php?op=searchMailEvents'>"._AM_XHELP_SEARCH_EVENTS."</a>";
 }
 
-
 function mailEvents()
 {
     // Will display the last 50 mail events
@@ -201,8 +200,10 @@ function xhelpChangeHour($mode, $hour)
 
     if($mode == 2){
         $hour = $hour + 12;
+
         return $hour;
     }
+
     return $hour;
 }
 
@@ -281,7 +282,6 @@ function xhelp_default()
         $crit = new Criteria('status', $status->getVar('id'));
         $numTickets =& $hTickets->getCount($crit);
         $totalTickets += $numTickets;
-
 
         echo "<tr class='".$class."'><td>".$status->getVar('description')."</td><td>".$numTickets."</td></tr>";
         if($class == "odd"){
@@ -453,4 +453,3 @@ function setperm()
     redirect_header(XHELP_ADMIN_URL.'/index.php', 2, $msg . ': ' . $path);
     exit();
 }
-?>

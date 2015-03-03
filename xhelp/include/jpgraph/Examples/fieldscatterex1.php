@@ -66,7 +66,6 @@ $graph = new Graph(300,200);
 $graph->SetScale("intlin",0,100,0,10);
 $graph->SetMarginColor('lightblue');
 
-
 // ..and titles
 $graph->title->Set("Field plot");
 
@@ -88,5 +87,3 @@ $graph->Add($fp);
 $graph->Stroke();
 
 ?>
-
-

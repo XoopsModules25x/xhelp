@@ -30,4 +30,3 @@ $bplot->SetPattern(PATTERN_CROSS1,'navy');
 $graph->Add($bplot);
 
 $graph->Stroke();
-?>

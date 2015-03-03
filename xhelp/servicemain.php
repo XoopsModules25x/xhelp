@@ -58,4 +58,3 @@ $xoopsModule =& xhelpGetModule();
 $xoopsModuleConfig =& xhelpGetModuleConfig();
 
 xhelpIncludeLang('main');
-?>

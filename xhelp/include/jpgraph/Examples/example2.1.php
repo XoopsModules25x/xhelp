@@ -15,7 +15,6 @@ $lineplot->value->Show();
 $lineplot->value->SetColor("red");
 $lineplot->value->SetFont(FF_FONT1,FS_BOLD);
 
-
 // Add the plot to the graph
 $graph->Add($lineplot);
 
@@ -24,7 +23,5 @@ $graph->title->Set("Example 2.1");
 $graph->xaxis->title->Set("X-title");
 $graph->yaxis->title->Set("Y-title");
 
-
 // Display the graph
 $graph->Stroke();
-?>

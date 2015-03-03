@@ -24,7 +24,7 @@ class xhelpStaffRolesByDeptReport extends xhelpReport {
         'description' => _XHELP_SRD_DESC,
         'version' => '1.0',
         'dbFields' => array(
-			'Department' => _XHELP_SRD_DB3,
+            'Department' => _XHELP_SRD_DB3,
             'Role' => _XHELP_SRD_DB2,
             'name' => _XHELP_SRD_DB1));
 
@@ -105,4 +105,3 @@ class xhelpStaffRolesByDeptReport extends xhelpReport {
         return true;
     }
 }
-?>

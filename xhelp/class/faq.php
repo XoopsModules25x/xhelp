@@ -12,4 +12,3 @@ class xhelpFaq extends XoopsObject {
         $this->initVar('url', XOBJ_DTYPE_TXTBOX, null, true);
     }
 }
-?>

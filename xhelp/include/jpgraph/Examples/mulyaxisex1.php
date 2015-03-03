@@ -44,5 +44,3 @@ $graph->ynaxis[2]->SetColor('blue');
 // Output line
 $graph->Stroke();
 ?>
-
-

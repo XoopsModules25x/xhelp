@@ -6,13 +6,13 @@ require_once ('jpgraph/jpgraph_gantt.php');
 
 $data = array(
 array(0,ACTYPE_GROUP,    "Phase 1",        "2001-10-26","2001-11-23",'',
-	'#1','Go home'),
+    '#1','Go home'),
 array(1,ACTYPE_NORMAL,   "  Label 2",      "2001-10-26","2001-11-16",'ab,cd',
-	'#2','Go home'),
+    '#2','Go home'),
 array(2,ACTYPE_NORMAL,   "  Label 3",      "2001-11-20","2001-11-22",'ek',
-	'#3','Go home'),
+    '#3','Go home'),
 array(3,ACTYPE_MILESTONE,"  Phase 1 Done", "2001-11-23",'M2',
-	'#4','Go home') );
+    '#4','Go home') );
 
 // The constrains between the activities
 $constrains = array(array(1,2,CONSTRAIN_ENDSTART),
@@ -34,7 +34,4 @@ $graph->CreateSimple($data,$constrains,$progress);
 // And stroke
 $graph->StrokeCSIM();
 
-
 ?>
-
-

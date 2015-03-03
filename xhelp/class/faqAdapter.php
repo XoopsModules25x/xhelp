@@ -7,7 +7,6 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 require_once(XHELP_CLASS_PATH .'/faq.php');
 
-
 define('XHELP_FAQ_CATEGORY_SING', 0);
 define('XHELP_FAQ_CATEGORY_MULTI', 1);
 define('XHELP_FAQ_CATEGORY_NONE', 2);
@@ -28,7 +27,7 @@ class xhelpFaqAdapter {
      * @access public
      */
     var $meta = array(
-            'name' => '', 
+            'name' => '',
             'author' => '',
             'author_email' => '',
             'version' => '',
@@ -104,4 +103,3 @@ class xhelpFaqAdapter {
         }
     }
 }
-?>

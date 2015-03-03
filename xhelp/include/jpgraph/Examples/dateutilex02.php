@@ -43,5 +43,3 @@ $graph->Add($lp2);
 
 // And send back to the client
 $graph->Stroke();
-
-?>

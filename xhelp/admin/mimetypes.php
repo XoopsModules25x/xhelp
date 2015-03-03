@@ -99,8 +99,6 @@ function add()
             $mime_user = $mime_type['mime_user'];
         }
 
-
-
         // Display add form
         echo "<form action='mimetypes.php?op=add' method='post'>";
         echo "<table width='100%' cellspacing='1' class='outer'>";
@@ -153,7 +151,6 @@ function add()
 
         echo "</table></form>";
 
-
 include_once "admin_footer.php";
     } else {
         $has_errors = false;
@@ -163,7 +160,6 @@ include_once "admin_footer.php";
         $mime_types = $_POST['mime_types'];
         $mime_admin = intval($_POST['mime_admin']);
         $mime_user = intval($_POST['mime_user']);
-
 
         //Validate Mimetype entry
         if (strlen(trim($mime_ext)) == 0) {
@@ -193,7 +189,6 @@ include_once "admin_footer.php";
             $session->set('xhelp_addMimeErr', $error);
             header('Location: '. xhelpMakeURI(XHELP_ADMIN_URL.'/mimetypes.php', array('op'=>'add'), false));
         }
-
 
         $mimetype =& $hMime->create();
         $mimetype->setVar('mime_ext', $mime_ext);
@@ -509,7 +504,6 @@ function search()
 {
     global $hMime, $limit, $start, $imagearray, $aSearchBy, $aOrderBy, $aLimitBy, $aSortBy;
 
-
     if(isset($_POST['deleteMimes'])){
         $aMimes = $_POST['mimes'];
 
@@ -725,6 +719,7 @@ function _changeMimeValue($mime_value)
     } else {
         $mime_value = 1;
     }
+
     return $mime_value;
 }
 
@@ -755,4 +750,3 @@ function clearEditSession()
     _clearEditSessionVars($mimeid);
     header('Location: ' . xhelpMakeURI(XHELP_ADMIN_URL.'/mimetypes.php', array('op'=>'edit', 'id'=>$mimeid), false));
 }
-?>

@@ -60,5 +60,3 @@ $errorplot=new ErrorPlot($ydata, $xdata);
 $graph->Add($errorplot);
 
 $graph->Stroke();
-
-?>

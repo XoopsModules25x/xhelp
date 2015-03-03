@@ -51,5 +51,3 @@ $graph->Add($p1);
 // Output line
 $graph->Stroke();
 ?>
-
-

@@ -10,6 +10,7 @@ class xhelpTree extends XoopsObjectTree {
             $ret .= '<option value="0"></option>';
         }
         $this->_makeSelBoxOptions($fieldName, $selected, $key, $ret, $prefix);
+
         return $ret.'</select>';
     }
 }

@@ -9,5 +9,3 @@ define('_XHELP_TSBS_DB2', 'Total Time (Minutes)');
 
 define('_XHELP_TSBS_PARAM1', 'Start Date');
 define('_XHELP_TSBS_PARAM2', 'End Date');
-
-?>

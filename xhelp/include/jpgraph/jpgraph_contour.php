@@ -102,6 +102,7 @@ class Contour {
             if( ($mi=min($this->dataPoints[$i])) < $min )  $min = $mi;
             if( ($ma=max($this->dataPoints[$i])) > $max )  $max = $ma;
         }
+
         return array($min,$max);
     }
 
@@ -236,6 +237,7 @@ class Contour {
         if( $this->invert ) {
             $ycoord = $this->nbrRows-1 - $ycoord;
         }
+
         return array($xcoord,$ycoord);
 
     }
@@ -375,10 +377,10 @@ class Contour {
             // No manually specified colors. Calculate them automatically.
             $this->CalculateColors();
         }
+
         return array( $this->isobarCoord, $this->isobarValues, $this->isobarColors );
     }
 }
-
 
 /**
  * This class represent a plotting of a contour outline of data given as a X-Y matrice
@@ -437,7 +439,6 @@ class ContourPlot extends Plot {
         $this->nbrContours = $aIsobar;
     }
 
-
     /**
      * Flipe the data around the center
      *
@@ -467,7 +468,6 @@ class ContourPlot extends Plot {
     function ShowLegend($aFlg=true) {
         $this->showLegend = $aFlg;
     }
-
 
     /**
      * @param $aFlg true if the legend should start with the lowest isobar on top
@@ -511,7 +511,6 @@ class ContourPlot extends Plot {
             }
         }
     }
-
 
     /**
      *  Framework function which gets called before the Stroke() method is called
@@ -584,4 +583,4 @@ class ContourPlot extends Plot {
 }
 
 // EOF
-?>
+;

@@ -65,6 +65,4 @@ $bplot->value->SetFormat('%.1f mkr');
 // Add the bar to the graph
 $graph->Add($bplot);
 
-
 $graph->Stroke();
-?>

@@ -4,7 +4,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_polar.php');
 
-
 $data = array(0,1,30,2,30,25,40,60,
 50,110,60,160,70,210,75,230,80,260,85,370,
 90,480,
@@ -17,7 +16,6 @@ for($i=0; $i < $n; $i+=2 ) {
     $data[$n+$i] = 360-$data[$i];
     $data[$n+$i+1] = $data[$i+1];
 }
-
 
 $graph = new PolarGraph(300,400);
 $graph->SetScale('log',100);
@@ -49,5 +47,3 @@ $p->SetLegend("Mirophone #1\n(No amps)");
 $graph->Add($p);
 
 $graph->Stroke();
-
-?>

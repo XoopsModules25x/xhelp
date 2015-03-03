@@ -49,4 +49,3 @@ $b1->SetShadow();
 $graph->Add($b1);
 
 $graph->Stroke();
-?>

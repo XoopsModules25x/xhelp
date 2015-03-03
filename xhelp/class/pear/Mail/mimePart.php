@@ -209,8 +209,8 @@ class Mail_mimePart {
      * it in the encoded member variable
      *
      * @return An associative array containing two elements,
-     *         body and headers. The headers element is itself
-     *         an indexed array.
+     *            body and headers. The headers element is itself
+     *            an indexed array.
      * @access public
      */
     function encode()
@@ -256,14 +256,15 @@ class Mail_mimePart {
      * @param $params The parameters for the subpart, same
      *                as the $params argument for constructor.
      * @return A reference to the part you just added. It is
-     *         crucial if using multipart/* in your subparts that
-     *         you use =& in your script when calling this function,
-     *         otherwise you will not be able to add further subparts.
+     *           crucial if using multipart/* in your subparts that
+     *           you use =& in your script when calling this function,
+     *           otherwise you will not be able to add further subparts.
      * @access public
      */
     function &addSubPart($body, $params)
     {
         $this->_subparts[] = new Mail_mimePart($body, $params);
+
         return $this->_subparts[count($this->_subparts) - 1];
     }
 
@@ -346,4 +347,4 @@ class Mail_mimePart {
         return $output;
     }
 } // End of class
-?>
+;

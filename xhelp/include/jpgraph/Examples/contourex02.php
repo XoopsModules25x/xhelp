@@ -26,7 +26,6 @@ $graph->SetAxisStyle(AXSTYLE_BOXOUT);
 $graph->xgrid->Show();
 $graph->ygrid->Show();
 
-
 // A simple contour plot with 12 isobar lines and flipped Y-coordinates
 $cp = new ContourPlot($data,12,true);
 
@@ -38,5 +37,3 @@ $graph->Add($cp);
 
 // ... and send the graph back to the browser
 $graph->Stroke();
-
-?>

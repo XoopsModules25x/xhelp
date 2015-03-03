@@ -73,6 +73,7 @@ class ErrorPlot extends Plot {
             $img->Line($xt-$this->errwidth,$yt1,$xt+$this->errwidth,$yt1);
             $img->Line($xt-$this->errwidth,$yt2,$xt+$this->errwidth,$yt2);
         }
+
         return true;
     }
 } // Class
@@ -153,5 +154,4 @@ class LineErrorPlot extends ErrorPlot {
 } // Class
 
 
-/* EOF */
-?>
+/* EOF */;

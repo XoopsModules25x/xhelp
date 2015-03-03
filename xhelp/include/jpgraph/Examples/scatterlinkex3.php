@@ -2,7 +2,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_scatter.php');
 
-
 // Make a circle with a scatterplot
 $steps=16;
 for($i=0; $i<$steps; ++$i) {
@@ -23,7 +22,6 @@ $graph->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->subtitle->Set('(BOXOUT Axis style)');
 $graph->subtitle->SetFont(FF_FONT1,FS_NORMAL);
 
-
 // 10% top and bottom grace
 $graph->yscale->SetGrace(5,5);
 $graph->xscale->SetGrace(1,1);
@@ -41,5 +39,3 @@ $graph->Add($sp1);
 $graph->Stroke();
 
 ?>
-
-

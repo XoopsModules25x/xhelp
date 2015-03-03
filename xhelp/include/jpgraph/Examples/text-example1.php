@@ -14,5 +14,3 @@ $t1->SetColor("black");
 $graph->AddText($t1);
 
 $graph->Stroke();
-
-?>

@@ -17,7 +17,7 @@ function resize()
 if( !strstr($target,"csim") )
 echo "<frame src=\"show-image.php?target=".basename($target)."\" name=\"image\">";
 else
-echo	"<frame src=\"".basename($target)."\" name=\"image\">";
+echo    "<frame src=\"".basename($target)."\" name=\"image\">";
 ?>
 	<frame src="show-source.php?target=<?php echo basename($target); ?>"
 		name="source">

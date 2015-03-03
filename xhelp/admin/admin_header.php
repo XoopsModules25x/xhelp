@@ -40,7 +40,6 @@ include_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
 xhelpIncludeLang('main');
 xhelpIncludeLang('modinfo');
 
-
 global $xoopsModule;
 /*
 $module_id = $xoopsModule->getVar('mid');
@@ -78,7 +77,7 @@ $pathIcon32 = '../'.$xoopsModule->getInfo('icons32');
 $pathModuleAdmin = $xoopsModule->getInfo('dirmoduleadmin');
 
 $imagearray = array(
-	'editimg' => "<img src='". XHELP_IMAGE_URL ."/button_edit.png' alt='" . _AM_XHELP_ICO_EDIT . "' align='middle' />",
+    'editimg' => "<img src='". XHELP_IMAGE_URL ."/button_edit.png' alt='" . _AM_XHELP_ICO_EDIT . "' align='middle' />",
     'deleteimg' => "<img src='". XHELP_IMAGE_URL ."/button_delete.png' alt='" . _AM_XHELP_ICO_DELETE . "' align='middle' />",
     'online' => "<img src='". XHELP_IMAGE_URL ."/on.png' alt='" . _AM_XHELP_ICO_ONLINE . "' align='middle' />",
     'offline' => "<img src='". XHELP_IMAGE_URL ."/off.png' alt='" . _AM_XHELP_ICO_OFFLINE . "' align='middle' />",
@@ -110,6 +109,5 @@ if($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']){
         }
     }
 }
-
 
 include_once $GLOBALS['xoops']->path($pathModuleAdmin.'/moduleadmin.php');

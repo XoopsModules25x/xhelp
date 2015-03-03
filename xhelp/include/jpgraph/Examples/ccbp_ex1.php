@@ -32,5 +32,3 @@ $graph->Add($sp_hist);
 $graph->Add($sp);
 
 $graph->Stroke();
-
-?>

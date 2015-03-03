@@ -86,5 +86,3 @@ $graph->AddY2($b1);
 $graph->Stroke();
 
 ?>
-
-

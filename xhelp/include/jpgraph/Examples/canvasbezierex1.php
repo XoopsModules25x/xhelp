@@ -37,4 +37,3 @@ $shape->Rectangle(0.5,2,9.5,9.5);
 // ... and stroke it
 $g->Stroke();
 ?>
-

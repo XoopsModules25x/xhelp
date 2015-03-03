@@ -27,5 +27,3 @@ $graph->CreateSimple($data);
 $graph->Stroke();
 
 ?>
-
-

@@ -28,5 +28,3 @@ $graph->Add($icon);
 $graph->Stroke();
 
 ?>
-
-

@@ -90,8 +90,10 @@ class JPSpan_Server {
         $name = strtolower($name);
         if ( isset($this->handlers[$name]) ) {
             JPSpan_Handle::resolve($this->handlers[$name]);
+
             return $this->handlers[$name];
         }
+
         return FALSE;
     }
 
@@ -106,6 +108,7 @@ class JPSpan_Server {
         if ( isset($this->descriptions[$name]) ) {
             return $this->descriptions[$name];
         }
+
         return FALSE;
     }
 
@@ -179,6 +182,7 @@ class JPSpan_Server {
             $uriPath = substr($uriPath,0,$pos);
         }
         $uriPath = preg_replace(array('/^\//','/\/$/'),'',$uriPath);
+
         return $uriPath;
 
     }
@@ -196,6 +200,7 @@ class JPSpan_Server {
         } else {
             $script_name = $_SERVER['SCRIPT_NAME'];
         }
+
         return $script_name;
     }
 
@@ -234,5 +239,3 @@ class JPSpan_Server {
     }
 
 }
-
-

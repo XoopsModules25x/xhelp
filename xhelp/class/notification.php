@@ -11,7 +11,6 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
 
-
 /**
  * xhelpNotification class
  *
@@ -51,7 +50,7 @@ class xhelpNotificationHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpnotification';
@@ -69,7 +68,7 @@ class xhelpNotificationHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpNotificationHandler(&$db)
     {
@@ -99,13 +98,14 @@ class xhelpNotificationHandler extends xhelpBaseObjectHandler {
 
         $sql = sprintf("UPDATE %s SET staff_setting = %u, user_setting = %u, staff_options = %s WHERE notif_id = %u",
         $this->_db->prefix($this->_dbtable), $staff_setting, $user_setting, $this->_db->quoteString($staff_options), $notif_id);
+
         return $sql;
     }
 
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 }
-?>

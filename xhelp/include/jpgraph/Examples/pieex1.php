@@ -23,10 +23,7 @@ $p1->value->SetFont(FF_ARIAL,FS_NORMAL,10);
 // Set how many pixels each slice should explode
 $p1->Explode(array(0,15,15,25,15));
 
-
 $graph->Add($p1);
 $graph->Stroke();
 
 ?>
-
-

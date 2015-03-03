@@ -307,8 +307,6 @@ define('_XHELP_ROLE_VAL1', 2047);
 define('_XHELP_ROLE_VAL2', 241);
 define('_XHELP_ROLE_VAL3', 0);
 
-
-
 // Ticket.php - Actions
 define('_XHELP_TEXT_SELECTED','With Selected:');
 define('_XHELP_TEXT_ADD_RESPONSE','Add Response');
@@ -420,7 +418,6 @@ define("_XHELP_ANNOUNCE_ONECOMMENT","1 comment");
 define("_XHELP_ANNOUNCE_NUMCOMMENTS","%s comments");
 define("_XHELP_TICKET_MD5SIGNATURE","Support Key:");
 
-
 define('_XHELP_NO_OWNER','No Owner');
 define('_XHELP_RESPONSE_EDIT','Response modified by %s on %s');
 
@@ -516,6 +513,4 @@ define('_XHELP_MSG_NO_REPORT_LOAD','Error: the report you specified could not be
 define('_XHELP_TEXT_VIEW_REPORT','View Report');
 
 define('_XHELP_TEXT_TOTAL','Total');
-define('_XHELP_TEXT_NO_JPGRAPH','Error: JPGraph is not installed on your server. Please look at readme.txt for xHelp.')
-
-?>
+define('_XHELP_TEXT_NO_JPGRAPH','Error: JPGraph is not installed on your server. Please look at readme.txt for xHelp.');

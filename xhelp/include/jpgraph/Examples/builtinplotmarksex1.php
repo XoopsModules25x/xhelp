@@ -62,5 +62,3 @@ $graph->Add($l1);
 $graph->Stroke();
 
 ?>
-
-

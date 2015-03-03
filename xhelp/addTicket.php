@@ -23,7 +23,6 @@ if(isset($_GET['view_id'])){
 require_once('header.php');
 require_once(XHELP_INCLUDE_PATH.'/events.php');
 
-
 /* $_eventsrv->advise('new_ticket', xhelp_notificationService::singleton());
  $_eventsrv->advise('new_ticket', xhelp_logService::singleton());
  $_eventsrv->advise('new_ticket', xhelp_cacheService::singleton());
@@ -194,7 +193,7 @@ if($xoopsUser){
 <script type=\"text/javascript\" src='".XHELP_SCRIPT_URL."/addTicketDeptChange.php?client'></script>
 <script type=\"text/javascript\">
 <!--
-function departments_onchange() 
+function departments_onchange()
 {
     dept = xoopsGetElementById('departments');
     var wl = new xhelpweblib(fieldHandler);
@@ -237,7 +236,7 @@ function window_onload()
 
 window.setTimeout('window_onload()', 1500);
 //-->
-</script>";      
+</script>";
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
         $xoopsTpl->assign('xhelp_includeURL', XHELP_INCLUDE_URL);
         $xoopsTpl->assign('xoops_module_header', $javascript. $xhelp_module_header);
@@ -589,4 +588,3 @@ function _saveTicket($fields = "")
 
     return true;
 }
-?>

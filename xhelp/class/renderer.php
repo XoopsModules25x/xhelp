@@ -25,6 +25,4 @@ class xhelp_Renderer
 
     }
 
-
 }
-?>

@@ -31,7 +31,7 @@ class xhelpTicketsByDeptReport extends xhelpReport {
         'description' => _XHELP_TBD_DESC,
         'version' => '1.0',
         'dbFields' => array(
-            'department' => _XHELP_TBD_DB1, 
+            'department' => _XHELP_TBD_DB1,
             'TicketCount' => _XHELP_TBD_DB2));
 
     var $parameters = array(
@@ -144,4 +144,3 @@ class xhelpTicketsByDeptReport extends xhelpReport {
         return true;
     }
 }
-?>

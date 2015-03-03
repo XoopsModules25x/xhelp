@@ -86,5 +86,3 @@ $mgraph->AddMix($graph2,0,250,85);
 $mgraph->Stroke();
 
 ?>
-
-

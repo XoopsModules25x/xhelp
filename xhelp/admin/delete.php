@@ -84,6 +84,4 @@ if(isset($_REQUEST['deleteDept'])){
         }
     }
 
-
 }
-?>

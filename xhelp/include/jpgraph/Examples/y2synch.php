@@ -3,7 +3,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_line.php');
 require_once ('jpgraph/jpgraph_bar.php');
 
-
 function toFahrenheit($aVal) {
     return round(($aVal*9/5)+32,2);
 }
@@ -11,7 +10,6 @@ function toFahrenheit($aVal) {
 function toCelcius($aVal) {
     return round(($aVal-32)*5/9,2);
 }
-
 
 $datay =array(2,3,8,19,7,17,6,22);
 
@@ -21,7 +19,6 @@ $graph = new Graph(400,280);
 // Slightly bigger margins than default to make room for titles
 $graph->SetMargin(50,60,40,45);
 $graph->SetMarginColor('white');
-
 
 // Setup the scales for X,Y and Y2 axis
 $graph->SetScale("intlin"); // X and Y axis
@@ -57,4 +54,3 @@ $graph->y2axis->SetColor('navy');
 $graph->AddY2($l2plot);
 
 $graph->Stroke();
-?>

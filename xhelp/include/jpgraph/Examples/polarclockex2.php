@@ -38,8 +38,6 @@ $graph->title->Set('Clockwise polar plot (rotated)');
 $graph->title->SetFont(FF_COMIC,FS_NORMAL,16);
 $graph->title->SetColor('navy');
 
-
-
 $p = new PolarPlot($data);
 $p->SetFillColor('lightblue@0.5');
 $graph->Add($p);
@@ -49,5 +47,3 @@ $graph->Add($p);
 //$graph->Add($p2);
 
 $graph->Stroke();
-
-?>

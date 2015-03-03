@@ -9,5 +9,3 @@ define('_XHELP_TBD_DB2', 'Number of Tickets');
 
 define('_XHELP_TBD_PARAM1', 'Start Date');
 define('_XHELP_TBD_PARAM2', 'End Date');
-
-?>

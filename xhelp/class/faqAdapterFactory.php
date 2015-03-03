@@ -67,6 +67,7 @@ Class xhelpFaqAdapterFactory {
 
             // Step 4 - return adapter class
             $ret = new $classname();
+
             return $ret;
         } else {
             return $ret;
@@ -82,7 +83,6 @@ Class xhelpFaqAdapterFactory {
     {
         // Step 1 - check that $name is a valid adapter
         $isValid = xhelpFaqAdapterFactory::_adapterValid($name);
-
 
         // Step 2 - store in xhelp_meta table
         $ret = false;
@@ -117,4 +117,3 @@ Class xhelpFaqAdapterFactory {
         return $ret;
     }
 }
-?>

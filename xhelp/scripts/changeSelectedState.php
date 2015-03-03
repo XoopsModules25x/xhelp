@@ -53,4 +53,3 @@ class xhelpWebLib {
         return $aStatuses;
     }
 }
-?>

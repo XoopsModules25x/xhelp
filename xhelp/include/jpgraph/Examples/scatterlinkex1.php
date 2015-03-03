@@ -22,5 +22,3 @@ $graph->Add($sp1);
 $graph->Stroke();
 
 ?>
-
-

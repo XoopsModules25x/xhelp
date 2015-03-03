@@ -11,8 +11,6 @@ array(4,5,19,'lightblue'),
 array(5,70,22,'yellow')
 );
 
-
-
 // We need to create X,Y data vectors suitable for the
 // library from the above raw data.
 $n = count($data);
@@ -27,13 +25,13 @@ for( $i=0; $i < $n; ++$i ) {
 
 }
 
-
 // Callback for markers
 // Must return array(width,border_color,fill_color,filename,imgscale)
 // If any of the returned values are '' then the
 // default value for that parameter will be used (possible empty)
 function FCallback($aYVal,$aXVal) {
     global $format;
+
     return array($format[strval($aXVal)][strval($aYVal)][0],'',
     $format[strval($aXVal)][strval($aYVal)][1],'','');
 }
@@ -77,5 +75,3 @@ $graph->Add($sp1);
 $graph->Stroke();
 
 ?>
-
-

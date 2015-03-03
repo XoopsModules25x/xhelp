@@ -56,4 +56,3 @@ $graph->xaxis->SetTextTickInterval(2);
 
 // Display the graph
 $graph->Stroke();
-?>

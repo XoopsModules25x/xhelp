@@ -75,7 +75,6 @@ class CanvasGraph extends Graph {
                 $this->iImgTransBorder);
             }
 
-
             // If the filename is given as the special _IMG_HANDLER
             // then the image handler is returned and the image is NOT
             // streamed back
@@ -85,11 +84,11 @@ class CanvasGraph extends Graph {
             else {
                 // Finally stream the generated picture
                 $this->cache->PutAndStream($this->img,$this->cache_name,$this->inline,$aStrokeFileName);
+
                 return true;
             }
         }
     }
 } // Class
 
-/* EOF */
-?>
+/* EOF */;

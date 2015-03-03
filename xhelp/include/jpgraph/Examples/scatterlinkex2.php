@@ -2,7 +2,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_scatter.php');
 
-
 // Make a circle with a scatterplot
 $steps=16;
 for($i=0; $i<$steps; ++$i) {
@@ -10,7 +9,6 @@ for($i=0; $i<$steps; ++$i) {
     $datax[$i]=cos($a);
     $datay[$i]=sin($a);
 }
-
 
 $graph = new Graph(300,200);
 $graph->SetScale("linlin");
@@ -39,5 +37,3 @@ $graph->Add($sp1);
 $graph->Stroke();
 
 ?>
-
-

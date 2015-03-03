@@ -38,7 +38,5 @@ $graph->xaxis->title->SetFont(FF_FONT1,FS_BOLD);
 $datax = $gDateLocale->GetShortMonth();
 $graph->xaxis->SetTickLabels($datax);
 
-
 // Display the graph
 $graph->Stroke();
-?>

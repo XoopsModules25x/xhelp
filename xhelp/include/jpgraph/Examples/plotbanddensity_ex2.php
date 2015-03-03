@@ -18,7 +18,6 @@ $graph->ygrid->Show(false);
 $bplot = new BarPlot($datay);
 $bplot->SetFillColor("lightblue");
 
-
 // .. and add the plot to the graph
 $graph->Add($bplot);
 
@@ -33,6 +32,4 @@ $graph->title->SetFont(FF_ARIAL,FS_BOLD,10);
 $graph->title->SetColor('darkred');
 $graph->title->Set('BAND_3DPLANE, Density=80');
 
-
 $graph->Stroke();
-?>

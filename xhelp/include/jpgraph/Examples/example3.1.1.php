@@ -40,4 +40,3 @@ $graph->Add($lineplot);
 
 // Display the graph
 $graph->Stroke();
-?>

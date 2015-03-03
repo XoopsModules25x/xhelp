@@ -52,4 +52,3 @@ $graph->Add($plot);
 $graph->Add($plot2);
 $graph->Stroke();
 ?>
-

@@ -36,5 +36,3 @@ $graph->Add($b1);
 $graph->Stroke();
 
 ?>
-
-

@@ -45,4 +45,3 @@ $bplot->SetFillColor("orange");
 $graph->Add($bplot);
 
 $graph->Stroke();
-?>

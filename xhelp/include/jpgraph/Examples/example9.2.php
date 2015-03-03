@@ -3,7 +3,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_log.php');
 require_once ('jpgraph/jpgraph_line.php');
 
-
 $ydata = array(11,3,8,42,5,1,9,13,5,7);
 $datax = array("Jan","Feb","Mar","Apr","Maj","Jun","Jul","aug","Sep","Oct");
 
@@ -22,7 +21,6 @@ $a = $gDateLocale->GetShortMonth();
 $graph->xaxis->SetTickLabels($a);
 //$graph->xaxis->SetTextLabelInterval(2);
 $graph->xaxis->SetLabelAngle(90);
-
 
 // Create the linear plot
 $lineplot=new LinePlot($ydata);
@@ -49,4 +47,3 @@ $graph->legend->Pos(0.05,0.5,"right","center");
 
 // Display the graph
 $graph->Stroke();
-?>

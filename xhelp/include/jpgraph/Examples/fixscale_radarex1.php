@@ -32,5 +32,3 @@ $plot->SetLineWeight(2);
 
 $graph->Add($plot);
 $graph->Stroke();
-
-?>

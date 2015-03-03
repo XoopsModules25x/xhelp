@@ -25,7 +25,6 @@ $graph->scale->week->SetStyle(WEEKSTYLE_FIRSTDAY);
 $graph->scale->week->SetFont(FF_FONT0);
 $graph->scale->year->SetFont(FF_ARIAL,FS_BOLD,12);
 
-
 // Setup some data for the gantt bars
 $data = array(
 array(0,"Group 1", "2001-10-29","2001-11-27",FF_FONT1,FS_BOLD,8),
@@ -84,4 +83,4 @@ $graph->Add($vl);
 $graph->Stroke();
 
 // EOF
-?>
+;

@@ -44,6 +44,7 @@ class TestDriver {
             die("PANIC: Apache/PHP does not have enough permission to read the scripts in directory: $this->iDir");
         }
         sort($a);
+
         return $a;
     }
 
@@ -60,9 +61,9 @@ class TestDriver {
             die("PANIC: Apache/PHP does not have enough permission to read the CSIM scripts in directory: $this->iDir");
         }
         sort($a);
+
         return $a;
     }
-
 
     function Run() {
         switch( $this->iType ) {
@@ -103,5 +104,3 @@ if( empty($type) ) {
 
 $driver = new TestDriver($type);
 $driver->Run();
-
-?>

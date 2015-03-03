@@ -33,7 +33,6 @@
  ***** END LICENSE BLOCK *****
  */
 
-
 class xhelpNaiveBayesian
 {
     /** min token length for it to be taken into consideration */
@@ -52,6 +51,7 @@ class xhelpNaiveBayesian
     function xhelpNaiveBayesian($nbs)
     {
         $this->nbs = $nbs;
+
         return true;
     }
 
@@ -91,6 +91,7 @@ class xhelpNaiveBayesian
                 }
             }
         }
+
         return $this->_rescale($scores);
     }
 
@@ -113,6 +114,7 @@ class xhelpNaiveBayesian
             $this->nbs->updateWord($token, $count, $category_id);
         }
         $this->nbs->saveReference($doc_id, $category_id, $content);
+
         return true;
     }
 
@@ -132,6 +134,7 @@ class xhelpNaiveBayesian
             $this->nbs->removeWord($token, $count, $ref['category_id']);
         }
         $this->nbs->removeReference($doc_id);
+
         return true;
     }
 
@@ -163,9 +166,9 @@ class xhelpNaiveBayesian
             $scores[$cat] = (float) $scores[$cat]/$total;
         }
         reset($scores);
+
         return $scores;
     }
-
 
     /** update the probabilities of the categories and word count.
      This function must be run after a set of training
@@ -188,6 +191,7 @@ class xhelpNaiveBayesian
     {
         global $xhelp_noise_words;
         @xhelpIncludeLang('noise_words');
+
         return $xhelp_noise_words;
     }
 
@@ -221,6 +225,7 @@ class xhelpNaiveBayesian
             ))
             $tokens[$token]++;
         }
+
         return $tokens;
     }
 
@@ -247,6 +252,7 @@ class xhelpNaiveBayesian
         /* U */   chr(217).chr(218).chr(219).chr(220).
         /* u */   chr(249).chr(250).chr(251).chr(252).
         /* yNn */ chr(255).chr(209).chr(241);
+
         return strtolower(strtr($string, $diac, 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn'));
     }
 
@@ -273,6 +279,7 @@ class xhelpNaiveBayesianStorage
     {
         $this->con =& XoopsDatabaseFactory::getDatabaseConnection();
         $this->myts =& MyTextSanitizer::getInstance();
+
         return true;
 
     }
@@ -309,6 +316,7 @@ class xhelpNaiveBayesianStorage
             return false;
         } else {
             $arr = $this->con->fetchRow($ret);
+
             return $arr['WordCount'] > 0;
         }
     }
@@ -331,6 +339,7 @@ class xhelpNaiveBayesianStorage
         } else {
             $details = $this->con->fetchRow($ret);
         }
+
         return $details;
     }
 
@@ -400,6 +409,7 @@ class xhelpNaiveBayesianStorage
         }
         if ($total_words == 0) {
             $this->con->query('UPDATE '. $this->con->prefix('xhelp_bayes_wordfreqs') .' SET word_count=0, probability=0');
+
             return true;
         }
         foreach ($cat as $cat_id => $cat_total) {
@@ -408,6 +418,7 @@ class xhelpNaiveBayesianStorage
             $this->con->query(sprintf('UPDATE %s SET word_count = %d, probability = %f WHERE category_id = %s',
             $this->con->prefix('xhelp_bayes_wordfreqs'), $cat_total, $proba, $this->con->quoteString($this->_cleanVar($cat_id))));
         }
+
         return true;
     }
 
@@ -439,6 +450,7 @@ class xhelpNaiveBayesianStorage
         $ref['id'] = $ticket->getVar('ticketid');
         $ref['content'] = $ticket->getVar('subject') . "\r\n" . $ticket->getVar('description');
         $ref['category_id'] = 'P'.$ticket->getVar('ticketid');
+
         return $ref;
     }
 
@@ -457,7 +469,4 @@ class xhelpNaiveBayesianStorage
         return $this->myts->stripSlashesGPC($this->myts->censorString($var));
     }
 
-
 }
-
-?>

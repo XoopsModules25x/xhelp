@@ -14,7 +14,6 @@ $graph->subtitle->Set("(ganttex15.php)");
 // Show day, week and month scale
 $graph->ShowHeaders(GANTT_HDAY | GANTT_HWEEK | GANTT_HMONTH);
 
-
 // Use the short name of the month together with a 2 digit year
 // on the month scale
 $graph->scale->month->SetStyle(MONTHSTYLE_SHORTNAMEYEAR2);
@@ -65,4 +64,3 @@ $vline->SetDayOffset(0.5);
 
 // ... and display it
 $graph->Stroke();
-?>

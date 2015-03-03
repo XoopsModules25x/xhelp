@@ -93,8 +93,8 @@ class xhelpSmartfaqAdapter extends xhelpFaqAdapter {
 
     /**
      * storeFaq: store the FAQ in the application's specific database (required)
-     * @param xhelpFaq $faq The faq to add
-     * @return bool true (success) / false (failure)
+     * @param  xhelpFaq $faq The faq to add
+     * @return bool     true (success) / false (failure)
      * @access public
      */
     function storeFaq(&$faq)
@@ -158,4 +158,3 @@ class xhelpSmartfaqAdapter extends xhelpFaqAdapter {
         return XHELP_SMARTFAQ_URL ."/faq.php?faqid=".$faq->getVar('id');
     }
 }
-?>

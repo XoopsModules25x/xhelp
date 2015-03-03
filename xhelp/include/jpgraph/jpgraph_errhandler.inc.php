@@ -89,6 +89,7 @@ class ErrMsgText {
                 $msg = sprintf($ea[0]);
                 break;
         }
+
         return $msg;
     }
 }
@@ -196,7 +197,6 @@ class JpGraphErrObject {
     protected $iTitle = "JpGraph error: ";
     protected $iDest = false;
 
-
     function __construct() {
         // Empty. Reserved for future use
     }
@@ -268,7 +268,6 @@ class JpGraphErrObjectImg extends JpGraphErrObject {
      'vd69OLMddVOPCGVnmrFD8bVYd3JXfxXPtLR/+mtv59/ALWiiMx'.
      'qL72fwAAAABJRU5ErkJggg==' ;
 
-
         if( function_exists("imagetypes") ) {
             $supported = imagetypes();
         } else {
@@ -297,7 +296,6 @@ class JpGraphErrObjectImg extends JpGraphErrObject {
         $h=100 + 15*max(0,$lines-3);
 
         $img = new Image($w,$h);
-
 
         // Drop shadow
         $img->SetColor("gray");
@@ -360,9 +358,6 @@ class JpGraphErrObjectImg extends JpGraphErrObject {
     }
 }
 
-
-
 if( ! USE_IMAGE_ERROR_HANDLER ) {
     JpGraphError::SetImageFlag(false);
 }
-?>

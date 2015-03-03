@@ -15,7 +15,6 @@ $graph->SetMargin(30,50,30,30);
 
 $graph->title->Set('Filled Y-grid');
 
-
 $graph->yaxis->HideZeroLabel();
 $graph->ygrid->SetFill(true,'#EFEFEF@0.5','#BBCCFF@0.5');
 $graph->xgrid->Show();
@@ -46,5 +45,3 @@ $graph->legend->SetPos(0.1,0.1,'right','top');
 $graph->Stroke();
 
 ?>
-
-

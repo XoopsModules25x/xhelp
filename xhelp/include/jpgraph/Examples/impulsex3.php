@@ -28,7 +28,7 @@ $graph->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->yaxis->SetLabelFormatCallback("mycallback");
 
 // Set X-axis at the minimum value of Y-axis (default will be at 0)
-$graph->xaxis->SetPos("min");	// "min" will position the x-axis at the minimum value of the Y-axis
+$graph->xaxis->SetPos("min");    // "min" will position the x-axis at the minimum value of the Y-axis
 
 // Extend the margin for the labels on the Y-axis and reverse the direction
 // of the ticks on the Y-axis
@@ -49,5 +49,3 @@ $sp1->mark->SetWidth(3);
 $graph->Add($sp1);
 
 $graph->Stroke();
-
-?>

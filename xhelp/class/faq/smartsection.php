@@ -100,13 +100,14 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
         }
         unset ($categories);
         ksort($ret);
+
         return $ret;
     }
 
     /**
      * storeFaq: store the FAQ in the application's specific database (required)
-     * @param xhelpFaq $faq The faq to add
-     * @return bool true (success) / false (failure)
+     * @param  xhelpFaq $faq The faq to add
+     * @return bool     true (success) / false (failure)
      * @access public
      */
     function storeFaq(&$faq)
@@ -124,7 +125,6 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
         // Create page in smartsection from xhelpFAQ object
         $hSSItem =& smartsection_gethandler('item');
         $itemObj =& $hSSItem->create();
-
 
         //$faq->getVar('categories') is an array. If your application
         //only supports single categories use the first element
@@ -173,6 +173,7 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
                 $itemObj->sendNotifications(array(_SSECTION_NOT_ITEM_SUBMITTED));
             }
         }
+
         return $ret;
     }
 
@@ -193,4 +194,3 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
         return (XHELP_SSECTION_FORCEAPPROVAL == 2 && $ssConfig['autoapprove_submitted'] ==  0) || XHELP_SSECTION_FORCEAPPROVAL == 1;
     }
 }
-?>

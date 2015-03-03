@@ -50,7 +50,7 @@ class xhelpStaff extends XoopsObject {
     /**
      * Used to make sure that the user has rights to do an action
      *
-     * @param int $task
+     * @param int   $task
      * @param mixed $depts integer/array of department id(s)
      *
      * @return TRUE if success, FALSE if failure
@@ -86,6 +86,7 @@ class xhelpStaff extends XoopsObject {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -120,6 +121,7 @@ class xhelpStaff extends XoopsObject {
     {
         $_xhelpSession = new Session();
         $_xhelpSession->del("xhelp_staffRights");
+
         return true;
     }
 }
@@ -139,7 +141,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpstaff';
@@ -155,17 +157,16 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpStaffHandler(&$db)
     {
         parent::init($db);
     }
 
-
     /**
      * retrieve a staff object from the database
-     * @param int $uid user id
+     * @param  int    $uid user id
      * @return object {@link xhelpStaff}
      * @access public
      */
@@ -180,16 +181,18 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
             }
             if($arr = $this->_db->fetchArray($result)) {
                 $ret = new $this->classname($arr);
+
                 return $ret;
             }
         }
+
         return $ret;
     }
 
     /**
      * Add user to a new role
      *
-     * @param int $uid user id
+     * @param int $uid    user id
      * @param int $roleid role id
      * @param int $deptid department id
      *
@@ -206,6 +209,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if(!$hStaffRole->insert($role)){
             return false;
         }
+
         return true;
     }
     /**
@@ -224,6 +228,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if(!$roles =& $hStaffRole->getObjectsByStaff($uid, $id_as_key)){
             return false;
         }
+
         return $roles;
     }
 
@@ -233,8 +238,10 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
 
         if($myRoles =& $_xhelpSession->get("xhelp_hasRights")){
             $_xhelpSession->del("xhelp_hasRights");
+
             return true;
         }
+
         return false;
     }
 
@@ -257,13 +264,14 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if(!$roles =& $hStaffRole->getObjects($crit, $id_as_key)){
             return false;
         }
+
         return $roles;
     }
 
     /**
      * Remove user from a role
      *
-     * @param int $uid user id
+     * @param int $uid    user id
      * @param int $roleid role id
      * @param int $deptid department id
      *
@@ -281,7 +289,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
     /**
      * Check if a user is in a particular role
      *
-     * @param int $uid user id
+     * @param int $uid    user id
      * @param int $roleid role id
      *
      * @return TRUE on success, FALSE on failure
@@ -293,12 +301,13 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if(!$inRole = $hStaffRole->staffInRole($uid, $roleid)){
             return false;
         }
+
         return true;
     }
 
     /**
      * Retrieve amount of time spent by staff member
-     * @param int $uid user id
+     * @param  int $uid user id
      * @return int $timeSpent
      * @access public
      */
@@ -317,16 +326,16 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
             $newTime = $response->getVar('timeSpent');
             $timeSpent = $timeSpent + $newTime;
         }
+
         return $timeSpent;
     }
-
 
     function &getByAllDepts()
     {
         $ret = $this->getObjects(new Criteria('allDepartments', 1), true);
+
         return $ret;
     }
-
 
     /**
      * creates new staff member
@@ -343,18 +352,20 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         $numNotify = $notify->getNumDeptNotifications();
         $staff->setVar('notify', pow(2, $numNotify)-1);
         $staff->setVar('permTimestamp', time());
+
         return $this->insert($staff);
     }
 
     /**
      * checks to see if the user is a staff member
      *
-     * @param int $uid User ID to look for
+     * @param  int  $uid User ID to look for
      * @return bool TRUE if user is a staff member, false if not
      */
     function isStaff($uid)
     {
         $count = $this->getCount(new Criteria('uid', intval($uid)));
+
         return ($count > 0);
     }
 
@@ -388,16 +399,16 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
-
 
     /**
      * delete a staff member from the database
      *
-     * @param object $obj reference to the {@link xhelpStaff} obj to delete
-     * @param bool $force
-     * @return bool FALSE if failed.
+     * @param  object $obj   reference to the {@link xhelpStaff} obj to delete
+     * @param  bool   $force
+     * @return bool   FALSE if failed.
      * @access	public
      */
     function delete(&$obj, $force = false)
@@ -431,15 +442,15 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         }
 
         $ret = parent::delete($obj, $force);
+
         return $ret;
     }
-
 
     /**
      * Adjust the # of calls closed for the given user by the given offset
      *
-     * @param int $uid User ID to modify
-     * @param int $offset Number of tickets to add to current call count (Negative for decrementing)
+     * @param  int  $uid    User ID to modify
+     * @param  int  $offset Number of tickets to add to current call count (Negative for decrementing)
      * @return bool FALSE if query failed
      * @access	public
      */
@@ -454,15 +465,16 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if (!$result = $this->_db->query($sql)) {
             return false;
         }
+
         return true;
     }
 
     /**
      * Adjust the responseTime for the specified staff member
      *
-     * @param int $uid User ID to modify
-     * @param int $responseTime If $ticketCount is specified, the total # of response seconds, otherwise the number of seconds to add
-     * @param int $ticketCount If = 0, increments 'responseTime' and 'ticketsResponded' otherwise, total # of tickets
+     * @param  int  $uid          User ID to modify
+     * @param  int  $responseTime If $ticketCount is specified, the total # of response seconds, otherwise the number of seconds to add
+     * @param  int  $ticketCount  If = 0, increments 'responseTime' and 'ticketsResponded' otherwise, total # of tickets
      * @return bool FALSE if query failed
      * @access	public
      */
@@ -480,15 +492,16 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if (!$result = $this->_db->query($sql)) {
             return false;
         }
+
         return true;
     }
 
     /**
      * Adjust the rating for the specified staff member
      *
-     * @param int $uid Staff ID to modify
-     * @param int $rating If $numReviews is specified, the total # of rating points, otherwise the number of rating points to add
-     * @param int $numReviews If = 0, increments 'rating' and 'numReviews', otherwise total # of reviews
+     * @param  int  $uid        Staff ID to modify
+     * @param  int  $rating     If $numReviews is specified, the total # of rating points, otherwise the number of rating points to add
+     * @param  int  $numReviews If = 0, increments 'rating' and 'numReviews', otherwise total # of reviews
      * @return bool FALSE if query failed
      * @access public
      */
@@ -506,6 +519,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if (!$result = $this->_db->query($sql)) {
             return false;
         }
+
         return true;
     }
 
@@ -547,5 +561,3 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         return $hStaff->getObjects($crit, $id_as_key);
     }
 }
-
-?>

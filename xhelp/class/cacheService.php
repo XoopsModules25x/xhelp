@@ -16,7 +16,7 @@ class xhelpCacheService extends xhelpService
     /**
      * Location of Xoops Cache Directory
      *
-     * @var	object
+     * @var object
      * @access	private
      */
     var $_cacheDir;
@@ -45,8 +45,8 @@ class xhelpCacheService extends xhelpService
      
     /**
      * Reset Performance Images on 'new_ticket' event
-     * @param	xhelpTicket	$ticket Ticket that was added
-     * @return  bool True on success, false on error
+     * @param  xhelpTicket $ticket Ticket that was added
+     * @return bool        True on success, false on error
      * @access	public
      */
     function new_ticket($ticket)
@@ -57,8 +57,8 @@ class xhelpCacheService extends xhelpService
 
     /**
      * Reset Performance Images on 'close_ticket' event
-     * @param xhelpTicket $ticket Ticket that was closed
-     * @return bool True on success, false on error
+     * @param  xhelpTicket $ticket Ticket that was closed
+     * @return bool        True on success, false on error
      * @access public
      */
     function close_ticket($ticket)
@@ -68,8 +68,8 @@ class xhelpCacheService extends xhelpService
 
     /**
      * Call Backback function for 'delete_ticket'
-     * @param	xhelpTicket $ticket Ticket being deleted
-     * @return  bool True on success, false on error
+     * @param  xhelpTicket $ticket Ticket being deleted
+     * @return bool        True on success, false on error
      * @access	public
      */
     function delete_ticket($ticket)
@@ -84,8 +84,8 @@ class xhelpCacheService extends xhelpService
 
     /**
      * Reset Performance Images on 'reopen_ticket' event
-     * @param xhelpTicket $ticket Ticket that was re-opened
-     * @return bool True on success, false on error
+     * @param  xhelpTicket $ticket Ticket that was re-opened
+     * @return bool        True on success, false on error
      * @access public
      */
     function reopen_ticket($ticket)
@@ -95,8 +95,8 @@ class xhelpCacheService extends xhelpService
 
     /**
      * Callback function for the 'new_department' event
-     * @param	array	$args Array of arguments passed to EventService
-     * @return  bool True on success, false on error
+     * @param  array $args Array of arguments passed to EventService
+     * @return bool  True on success, false on error
      * @access	public
      */
     function new_department($args)
@@ -106,8 +106,8 @@ class xhelpCacheService extends xhelpService
 
     /**
      * Callback function for the 'delete_department' event
-     * @param	array	$args Array of arguments passed to EventService
-     * @return  bool True on success, false on error
+     * @param  array $args Array of arguments passed to EventService
+     * @return bool  True on success, false on error
      * @access	public
      */
     function delete_department($args)
@@ -122,7 +122,7 @@ class xhelpCacheService extends xhelpService
 
     /**
      * Removes all cached images for the Department Performance block
-     * @return  bool True on success, false on error
+     * @return bool True on success, false on error
      * @access	private
      */
     function _clearPerfImages()
@@ -138,6 +138,7 @@ class xhelpCacheService extends xhelpService
 
             unlink($this->_cacheDir.'/'.$file);
         }
+
         return true;
     }
     /**
@@ -155,7 +156,7 @@ class xhelpCacheService extends xhelpService
             $c = __CLASS__;
             $instance = new $c;
         }
+
         return($instance);
     }
 }
-?>

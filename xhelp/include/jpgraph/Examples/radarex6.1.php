@@ -37,9 +37,7 @@ $plot2->SetColor('red');
 $plot2->SetFill(false);
 $plot2->SetLineWeight(2);
 
-
 // Add the plot and display the graph
 $graph->Add($plot);
 $graph->Add($plot2);
 $graph->Stroke();
-?>

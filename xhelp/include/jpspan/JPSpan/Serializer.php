@@ -90,6 +90,7 @@ class JPSpan_Serializer {
         $code = & new JPSpan_CodeWriter();
         $root = & new JPSpan_RootElement($data);
         $root->generate($code);
+
         return $code->toString();
     }
     /**
@@ -135,6 +136,7 @@ class JPSpan_Serializer {
         }
         $element->setTmpVar();
         $element->setValue($data);
+
         return $element;
     }
 }
@@ -154,6 +156,7 @@ function JPSpan_getTmpVar($refresh = FALSE) {
     if ( !$refresh ) {
         $name = 't'.$count;
         $count++;
+
         return $name;
     }
     $count = 1;
@@ -565,5 +568,3 @@ class JPSpan_SerializedError {
         $code->enabled = FALSE;
     }
 }
-
-

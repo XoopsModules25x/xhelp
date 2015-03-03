@@ -42,5 +42,3 @@ $graph->xaxis->title->Set("X-title");
 
 // Send back the image when we are called from within the <img> tag
 $graph->StrokeCSIMImage();
-
-?>

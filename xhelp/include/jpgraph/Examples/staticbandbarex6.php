@@ -71,4 +71,3 @@ $graph->xaxis->title->SetFont(FF_ARIAL,FS_BOLD,11);
 
 $graph->Stroke();
 ?>
-

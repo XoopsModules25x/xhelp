@@ -47,7 +47,6 @@ $activity->rightMark->title->SetColor("white");
 // Set absolute height
 $activity->SetHeight(1);
 
-
 // Format the bar for the second activity
 // ($row,$title,$startdate,$enddate)
 $activity2 = new GanttBar(1,"Project","2001-12-21","2002-02-20");
@@ -69,7 +68,6 @@ $activity2->rightMark->title->SetColor("white");
 // Set absolute height
 $activity2->SetHeight(1);
 
-
 // Finally add the bar to the graph
 $graph->Add($activity);
 $graph->Add($activity2);
@@ -87,4 +85,3 @@ $vline->SetDayOffset(0.5);
 
 // ... and display it
 $graph->Stroke();
-?>

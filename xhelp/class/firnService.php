@@ -28,7 +28,7 @@ class xhelpFirnService extends xhelpService
      * Event: new_faq
      * Triggered after FAQ addition
      * @param xhelpTicket $ticket Ticket used as base for FAQ
-     * @param xhelpFaq $faq FAQ that was added
+     * @param xhelpFaq    $faq    FAQ that was added
      */
     function new_faq($ticket, $faq)
     {
@@ -42,6 +42,7 @@ class xhelpFirnService extends xhelpService
         $sol->setVar('url', $faq->getVar('url'));
         $sol->setVar('title', $faq->getVar('subject'));
         $sol->setVar('uid', $xoopsUser->getVar('uid'));
+
         return $hTicketSol->addSolution($ticket, $sol);
 
     }
@@ -61,8 +62,8 @@ class xhelpFirnService extends xhelpService
             $c = __CLASS__;
             $instance = new $c;
         }
+
         return($instance);
     }
 
 }
-?>

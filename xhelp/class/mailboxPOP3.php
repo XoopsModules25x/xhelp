@@ -4,7 +4,6 @@ if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
-
 require_once(XHELP_CLASS_PATH.'/mailbox.php');
 require_once(XHELP_PEAR_PATH.'/Net/POP3.php');
 
@@ -86,7 +85,7 @@ class xhelpMailBoxPOP3 extends xhelpMailBox
     /**
      * Get Message Body
      * @param  $msg_id Message number
-     * @return mixed   Either message body or false on error
+     * @return mixed Either message body or false on error
      */
     function getBody($i)
     {
@@ -97,7 +96,7 @@ class xhelpMailBoxPOP3 extends xhelpMailBox
      * Returns the entire message with given message number.
      *
      * @param  $msg_id Message number
-     * @return mixed   Either entire message or false on error
+     * @return mixed Either entire message or false on error
      */
     function getMsg($i)
     {
@@ -127,4 +126,3 @@ class xhelpMailBoxPOP3 extends xhelpMailBox
         return $this->_pop3->disconnect();
     }
 }
-?>

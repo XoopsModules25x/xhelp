@@ -51,4 +51,3 @@ $g->Add($bplot);
 $g->Stroke();
 
 ?>
-

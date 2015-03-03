@@ -91,7 +91,6 @@ define("MONTHSTYLE_LONGNAMEYEAR4",4);
 define("MONTHSTYLE_SHORTNAMEYEAR4",5);
 define("MONTHSTYLE_FIRSTLETTER",6);
 
-
 // Types of constrain links
 define('CONSTRAIN_STARTSTART',0);
 define('CONSTRAIN_STARTEND',1);
@@ -123,7 +122,6 @@ define('ACTYPE_MILESTONE',2);
 define('ACTINFO_3D',1);
 define('ACTINFO_2D',0);
 
-
 // Check if array_fill() exists
 if (!function_exists('array_fill')) {
     function array_fill($iStart, $iLen, $vValue) {
@@ -131,6 +129,7 @@ if (!function_exists('array_fill')) {
         for ($iCount = $iStart; $iCount < $iLen + $iStart; $iCount++) {
             $aResult[$iCount] = $vValue;
         }
+
         return $aResult;
     }
 }
@@ -232,6 +231,7 @@ class GanttActivityInfo {
         }
         $this->iHeight = $h+$this->iTopHeaderMargin;
         $txt='';
+
         return $w;
     }
 
@@ -321,7 +321,6 @@ class GanttActivityInfo {
         }
     }
 }
-
 
 //===================================================
 // CLASS GanttGraph
@@ -476,7 +475,6 @@ class GanttGraph extends Graph {
         $this->iZoomFactor = $aZoom;
     }
 
-
     // Set what headers should be shown
     function ShowHeaders($aFlg) {
         $this->scale->ShowHeaders($aFlg);
@@ -492,7 +490,6 @@ class GanttGraph extends Graph {
     function SetVMarginFactor($aVal) {
         $this->iLabelVMarginFactor = $aVal;
     }
-
 
     // Add a new Gantt object
     function Add($aObject) {
@@ -579,6 +576,7 @@ class GanttGraph extends Graph {
                 }
             }
         }
+
         return $m;
     }
 
@@ -595,6 +593,7 @@ class GanttGraph extends Graph {
                 }
             }
         }
+
         return $m;
     }
 
@@ -607,6 +606,7 @@ class GanttGraph extends Graph {
                 $m=max($m,$this->iObj[$i]->GetAbsHeight($this->img));
             }
         }
+
         return $m;
     }
 
@@ -620,6 +620,7 @@ class GanttGraph extends Graph {
                 $m=max($m,$this->iObj[$i]->GetLineNbr());
             }
         }
+
         return $m;
     }
 
@@ -649,6 +650,7 @@ class GanttGraph extends Graph {
         $min = strtotime($minDate);
         $maxDate = date("Y-m-d 23:59",$max);
         $max = strtotime($maxDate);
+
         return array($min,$max);
     }
 
@@ -944,6 +946,7 @@ class GanttGraph extends Graph {
                 $w[$j] = max($w[$j],$tmp[$j]);
             }
         }
+
         return $w;
     }
 
@@ -1019,7 +1022,6 @@ class GanttGraph extends Graph {
             $this->StrokeConstrains();
             $this->footer->Stroke($this->img);
 
-
             if( $this->iIconDepth == DEPTH_FRONT) {
                 $this->StrokeIcons();
             }
@@ -1039,7 +1041,6 @@ class GanttGraph extends Graph {
                 $this->iImgTransMinSize,$this->iImgTransFillColor,
                 $this->iImgTransBorder);
             }
-
 
             // If the filename is given as the special "__handle"
             // then the image handler is returned and the image is NOT
@@ -1150,6 +1151,7 @@ class GanttGraph extends Graph {
         $n = count($this->iObj);
         for( $i=$n-1; $i >= 0; --$i )
         $csim .= $this->iObj[$i]->GetCSIMArea();
+
         return $csim;
     }
 }
@@ -1184,6 +1186,7 @@ class PredefIcons {
             JpGraphError::RaiseL(6010,$aIdx);
             //('Illegal icon index for Gantt builtin icon ['.$aIdx.']');
         }
+
         return Image::CreateFromString(base64_decode($this->iBuiltinIcon[$aIdx][1]));
     }
 
@@ -1537,7 +1540,6 @@ class IconImage {
     }
 }
 
-
 //===================================================
 // CLASS TextProperty
 // Description: Holds properties for a text
@@ -1635,7 +1637,6 @@ class TextProperty {
         $this->iFontArray = $aFontArray;
     }
 
-
     function IsColumns() {
         return is_array($this->iText) ;
     }
@@ -1651,6 +1652,7 @@ class TextProperty {
             $tmp = preg_split('/\t/',$this->iText);
             if( count($tmp) <= 1 || !$aUseTabs ) {
                 $w = $aImg->GetTextWidth($this->iText);
+
                 return $w + 2*$extra_margin;
             }
             else {
@@ -1660,6 +1662,7 @@ class TextProperty {
                     $res[$i] = $aImg->GetTextWidth($tmp[$i]);
                     $tot += $res[$i]*$aTabExtraMargin;
                 }
+
                 return array(round($tot),$res);
             }
         }
@@ -1690,6 +1693,7 @@ class TextProperty {
                     $w += $tmp->GetWidth()+$extra_margin;
                 }
             }
+
             return $w;
         }
         else {
@@ -1723,6 +1727,7 @@ class TextProperty {
                     $w[$i] = $tmp->GetWidth()+$aMargin;
                 }
             }
+
             return $w;
         }
         else {
@@ -1748,6 +1753,7 @@ class TextProperty {
         $aImg->SetFont($this->iFFamily,$this->iFStyle,$this->iFSize);
         $height = $aImg->GetFontHeight();
         $maxheight = max($height,$maxheight);
+
         return $maxheight;
     }
 
@@ -1877,16 +1883,19 @@ class HeaderProperty {
 
     function GetFontHeight($aImg) {
         $aImg->SetFont($this->iFFamily,$this->iFStyle,$this->iFSize);
+
         return $aImg->GetFontHeight();
     }
 
     function GetFontWidth($aImg) {
         $aImg->SetFont($this->iFFamily,$this->iFStyle,$this->iFSize);
+
         return $aImg->GetFontWidth();
     }
 
     function GetStrWidth($aImg,$aStr) {
         $aImg->SetFont($this->iFFamily,$this->iFStyle,$this->iFSize);
+
         return $aImg->GetTextWidth($aStr);
     }
 
@@ -1927,7 +1936,6 @@ class HeaderProperty {
     function SetFormatString($aStr) {
         $this->SetLabelFormatString($aStr);
     }
-
 
 }
 
@@ -2055,6 +2063,7 @@ class GanttScale {
     // The width of the actual plot area
     function GetPlotWidth() {
         $img=$this->iImg;
+
         return $img->width - $img->left_margin - $img->right_margin;
     }
 
@@ -2083,7 +2092,6 @@ class GanttScale {
     function IsDisplayHour() {
         return $this->hour->iShowLabels;
     }
-
 
     // Do we show day scale?
     function IsDisplayDay() {
@@ -2116,7 +2124,6 @@ class GanttScale {
         $this->iStartDate = $this->NormalizeDate($aMin);
         $this->iEndDate = $this->NormalizeDate($aMax);
     }
-
 
     // Adjust the start and end date so they fit to beginning/ending
     // of the week taking the specified week start day into account.
@@ -2189,6 +2196,7 @@ class GanttScale {
             $height += $this->year->GetFontHeight($img);
             $height += $this->year->iTitleVertMargin;
         }
+
         return $height;
     }
 
@@ -2258,6 +2266,7 @@ class GanttScale {
         if( $aYear % 4 == 0)
         if( !($aYear % 100 == 0) || ($aYear % 400 == 0) )
         return true;
+
         return false;
     }
 
@@ -2314,6 +2323,7 @@ class GanttScale {
             $offset = -3600;
         }
         $img=$this->iImg;
+
         return ($aDate-$this->iStartDate-$offset)/SECPERDAY*$this->GetDayWidth()+$img->left_margin+$this->iLabelWidth;;
     }
 
@@ -2352,6 +2362,7 @@ class GanttScale {
                 JpGraphError::RaiseL(6016,$aDate);
                 //("Date string ($aDate) specified for Gantt activity can not be interpretated. Please make sure it is a valid time string, e.g. 2005-04-23 13:30");
             }
+
             return $t;
         }
         elseif( is_int($aDate) || is_float($aDate) )
@@ -2360,7 +2371,6 @@ class GanttScale {
         JpGraphError::RaiseL(6017,$aDate);
         //Unknown date format in GanttScale ($aDate).");
     }
-
 
     // Convert a time string to minutes
 
@@ -2377,6 +2387,7 @@ class GanttScale {
             $minint = floor(substr($aTimeString,$pos+1));
         }
         $minint += 60 * $hourint;
+
         return $minint;
     }
 
@@ -2405,7 +2416,6 @@ class GanttScale {
                 JpGraphError::RaiseL(6018,$minint);
                 //'Intervall for minutes must divide the hour evenly, e.g. 1,5,10,12,15,20,30 etc You have specified an intervall of '.$minint.' minutes.');
             }
-
 
             $n = 60 / $minint;
             $datestamp = $this->iStartDate;
@@ -2470,8 +2480,10 @@ class GanttScale {
             $img->SetColor($this->minute->iFrameColor);
             $img->SetLineWeight($this->minute->iFrameWeight);
             $img->Rectangle($xt,$yt,$xb,$yb);
+
             return $yb - $img->top_margin;
         }
+
         return $aYCoord;
     }
 
@@ -2557,11 +2569,12 @@ class GanttScale {
             $img->SetColor($this->hour->iFrameColor);
             $img->SetLineWeight($this->hour->iFrameWeight);
             $img->Rectangle($xt,$yt,$xb,$yb);
+
             return $yb - $img->top_margin;
         }
+
         return $aYCoord;
     }
-
 
     // Stroke the day scale (including gridlines)
     function StrokeDays($aYCoord,$getHeight=false) {
@@ -2677,8 +2690,10 @@ class GanttScale {
             $img->SetColor($this->day->iFrameColor);
             $img->SetLineWeight($this->day->iFrameWeight);
             $img->Rectangle($xt,$yt,$xb,$yb);
+
             return $yb - $img->top_margin;
         }
+
         return $aYCoord;
     }
 
@@ -2754,8 +2769,10 @@ class GanttScale {
             $img->SetColor($this->week->iFrameColor);
             $img->SetLineWeight($this->week->iFrameWeight);
             $img->Rectangle($xt,$yt,$xb,$yb);
+
             return $yb-$img->top_margin;
         }
+
         return $aYCoord;
     }
 
@@ -2786,6 +2803,7 @@ class GanttScale {
                 $m=$sn[0];
                 break;
         }
+
         return $m;
     }
 
@@ -2851,8 +2869,10 @@ class GanttScale {
             $img->SetColor($this->month->iFrameColor);
             $img->SetLineWeight($this->month->iFrameWeight);
             $img->Rectangle($xt,$yt,$xb,$yb);
+
             return $yb-$img->top_margin;
         }
+
         return $aYCoord;
     }
 
@@ -2910,8 +2930,10 @@ class GanttScale {
             $img->SetColor($this->year->iFrameColor);
             $img->SetLineWeight($this->year->iFrameWeight);
             $img->Rectangle($xt,$yt,$xb,$yb);
+
             return $yb-$img->top_margin;
         }
+
         return $aYCoord;
     }
 
@@ -2934,7 +2956,6 @@ class GanttScale {
         }
 
         $this->actinfo->Stroke($img,$xt,$yt,$xb,$yb,$this->tableTitle->iShow);
-
 
         // Draw the horizontal dividing line
         $this->dividerh->Stroke($img,$xt,$yb,$img->width-$img->right_margin,$yb);
@@ -2990,7 +3011,6 @@ class GanttScale {
         $offh=$this->StrokeHours($offd,true);
         $offmin=$this->StrokeMinutes($offh,true);
 
-
         // ... then we can stroke them in the "backwards order to ensure that
         // the larger scale gridlines is stroked over the smaller scale gridline
         $this->StrokeMinutes($offh);
@@ -3013,7 +3033,6 @@ class GanttScale {
     }
 }
 
-
 //===================================================
 // CLASS GanttConstraint
 // Just a structure to store all the values for a constraint
@@ -3035,7 +3054,6 @@ class GanttConstraint {
         $this->iConstrainArrowType=$aArrowType;
     }
 }
-
 
 //===================================================
 // CLASS GanttPlotObject
@@ -3241,7 +3259,6 @@ class HorizontalGridLine {
     }
 }
 
-
 //===================================================
 // CLASS GanttBar
 // Responsible for formatting individual gantt bars
@@ -3324,6 +3341,7 @@ class GanttBar extends GanttPlotObject {
             $m = max($m,$this->leftMark->width*2);
             if( $this->rightMark->show )
             $m = max($m,$this->rightMark->width*2);
+
             return $m;
         }
         else
@@ -3398,11 +3416,8 @@ class GanttBar extends GanttPlotObject {
         if( $en <  $aScale->iStartDate || $st > $aScale->iEndDate )
         return;
 
-
         // Remember the positions for the bar
         $this->SetConstrainPos($xt,$yt,$xb,$yb);
-
-
 
         $prect->ShowFrame(false);
         $prect->SetBackground($this->iFillColor);
@@ -3602,7 +3617,6 @@ class MileStone extends GanttPlotObject {
         $this->csimarea .= $this->mark->GetCSIMAreas();
     }
 }
-
 
 //===================================================
 // CLASS GanttVLine
@@ -3952,4 +3966,4 @@ class GanttLink {
 }
 
 // <EOF>
-?>
+;

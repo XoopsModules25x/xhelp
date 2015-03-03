@@ -52,5 +52,3 @@ $graph->Add($p2);
 $graph->Stroke();
 
 ?>
-
-

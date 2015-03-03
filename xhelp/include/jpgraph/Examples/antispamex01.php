@@ -15,4 +15,3 @@ if( $spam->Stroke() === false ) {
 }
 
 ?>
-

@@ -15,27 +15,27 @@ class xhelpPlugin {
     /**
      * Array of Plugin Meta Information
      * @access private
-     * @var	array
+     * @var array
      */
     var $_meta   = array();
 
     /**
      * Array of subscribed events
-     * @var	array
+     * @var array
      * @access private
      */
     var $_events = array();
 
     /**
      * A reference to a {@link xhelpEventService} object
-     * @var	object
+     * @var object
      * @access private
      */
     var $_event_srv;
 
     /**
      * Class Constructor
-     * @param object $event_srv a reference to a {@link xhelpEventService} object
+     * @param  object $event_srv a reference to a {@link xhelpEventService} object
      * @return void
      */
     function xhelpPlugin(&$event_srv)
@@ -45,7 +45,7 @@ class xhelpPlugin {
 
     /**
      * Retrieve the specified meta field
-     * @param string $var name of variable to return
+     * @param  string $var name of variable to return
      * @return string if var is set, false if not
      * @access public
      */
@@ -58,7 +58,6 @@ class xhelpPlugin {
     {
         $this->_meta[$var] = $value;
     }
-
 
     /**
      * Initialization function, triggered when a plugin is "loaded" by the system
@@ -100,7 +99,6 @@ class xhelpPlugin {
         $this->_events[$event_ctx][] = $this->_event_srv->advise($event_ctx, $this, $event_func);
     }
 
-
     /**
      * Only have 1 instance of class used
      * @return object {@link xhelpPlugin}
@@ -115,10 +113,10 @@ class xhelpPlugin {
         if(!isset($instance)) {
             $instance = new $this->getMeta('classname');
         }
+
         return($instance);
     }
 }
-
 
 /**
  * Manages the retrieval, loading, and unloading of plugins
@@ -132,7 +130,7 @@ class xhelpPluginHandler
     /**
      * Database connection
      *
-     * @var	object
+     * @var object
      * @access	private
      */
     var $_db;
@@ -158,9 +156,9 @@ class xhelpPluginHandler
                 }
             }
         }
+
         return $plugins;
     }
-
 
     function getActivePlugins()
     {
@@ -172,7 +170,6 @@ class xhelpPluginHandler
             }
         }
     }
-
 
     function activatePlugin($script)
     {
@@ -198,9 +195,9 @@ class xhelpPluginHandler
         if (!isset($this->_plugins[$filename])) {
             trigger_error('Plugin does not exist<br />Module: '.XHELP_DIRNAME.'<br />Name: '.$filename, E_USER_ERROR);
         }
+
         return isset($this->_plugins[$filename]) ? $this->_plugins[$filename] : false;
          
     }
 
 }
-?>

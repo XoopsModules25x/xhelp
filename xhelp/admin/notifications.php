@@ -19,36 +19,36 @@ $aUserSettings = array('1' => _AM_XHELP_USER_SETTING1, '2' => _AM_XHELP_USER_SET
 
 // Also in profile.php
 $aNotifications = array(XHELP_NOTIF_NEWTICKET => array(
-                                     'name' => _AM_XHELP_NOTIF_NEW_TICKET, 
-                                     'email_tpl' => array('1'=>$templates[1], 
-                                                          '18'=>$templates[18], '20'=>$templates[20], '21'=>$templates[21], 
+                                     'name' => _AM_XHELP_NOTIF_NEW_TICKET,
+                                     'email_tpl' => array('1'=>$templates[1],
+                                                          '18'=>$templates[18], '20'=>$templates[20], '21'=>$templates[21],
                                                           '22'=>$templates[22], '23'=>$templates[23], '24'=>$templates[24])),
 XHELP_NOTIF_DELTICKET => array(
-                                     'name' => _AM_XHELP_NOTIF_DEL_TICKET, 
+                                     'name' => _AM_XHELP_NOTIF_DEL_TICKET,
                                      'email_tpl' => array('2'=>$templates[2], '12'=>$templates[12])),
 XHELP_NOTIF_EDITTICKET => array(
-                                     'name' => _AM_XHELP_NOTIF_MOD_TICKET, 
+                                     'name' => _AM_XHELP_NOTIF_MOD_TICKET,
                                      'email_tpl' => array('3'=>$templates[3], '13'=>$templates[13])),
 XHELP_NOTIF_NEWRESPONSE => array(
-                                     'name' => _AM_XHELP_NOTIF_NEW_RESPONSE, 
+                                     'name' => _AM_XHELP_NOTIF_NEW_RESPONSE,
                                      'email_tpl' => array('4'=>$templates[4], '14'=>$templates[14])),
 XHELP_NOTIF_EDITRESPONSE => array(
-                                     'name' => _AM_XHELP_NOTIF_MOD_RESPONSE, 
+                                     'name' => _AM_XHELP_NOTIF_MOD_RESPONSE,
                                      'email_tpl' => array('5'=>$templates[5], '15'=>$templates[15])),
 XHELP_NOTIF_EDITSTATUS => array(
-                                     'name' => _AM_XHELP_NOTIF_MOD_STATUS, 
+                                     'name' => _AM_XHELP_NOTIF_MOD_STATUS,
                                      'email_tpl' => array('6'=>$templates[6], '16'=>$templates[16])),
 XHELP_NOTIF_EDITPRIORITY => array(
-                                     'name' => _AM_XHELP_NOTIF_MOD_PRIORITY, 
+                                     'name' => _AM_XHELP_NOTIF_MOD_PRIORITY,
                                      'email_tpl' => array('7'=>$templates[7], '17'=>$templates[17])),
 XHELP_NOTIF_EDITOWNER => array(
-                                     'name' => _AM_XHELP_NOTIF_MOD_OWNER, 
+                                     'name' => _AM_XHELP_NOTIF_MOD_OWNER,
                                      'email_tpl' => array('8'=>$templates[8], '11'=>$templates[11])),
 XHELP_NOTIF_CLOSETICKET => array(
-                                     'name' => _AM_XHELP_NOTIF_CLOSE_TICKET, 
+                                     'name' => _AM_XHELP_NOTIF_CLOSE_TICKET,
                                      'email_tpl' => array('9'=>$templates[9], '19'=>$templates[19])),
 XHELP_NOTIF_MERGETICKET => array(
-                                     'name' => _AM_XHELP_NOTIF_MERGE_TICKET, 
+                                     'name' => _AM_XHELP_NOTIF_MERGE_TICKET,
                                      'email_tpl' => array('10'=>$templates[10], '25'=>$templates[25])));
 
 $op = 'default';

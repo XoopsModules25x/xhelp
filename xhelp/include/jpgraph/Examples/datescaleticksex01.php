@@ -60,4 +60,3 @@ $graph->Add($line);
 
 // Send the graph back to the client
 $graph->Stroke();
-?>

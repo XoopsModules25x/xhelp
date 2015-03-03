@@ -79,8 +79,4 @@ class xhelpService
         }
     }
 
-
-
 }
-
-?>

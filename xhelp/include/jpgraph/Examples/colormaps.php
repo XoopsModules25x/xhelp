@@ -114,7 +114,6 @@ $reverse = false;
 $n = 64; $s=0; $e=9;
 $showNames = false;
 
-
 /*
  $title = "Center maps";
  $reverse = false;
@@ -129,5 +128,3 @@ $showNames = false;
  $showNames = false;
  */
 $driver->Draw($title,$s,$e,$n,$reverse,$showNames);
-
-?>

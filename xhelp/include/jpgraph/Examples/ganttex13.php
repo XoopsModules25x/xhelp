@@ -61,4 +61,3 @@ $graph->Add($activity2);
 
 // ... and display it
 $graph->Stroke();
-?>

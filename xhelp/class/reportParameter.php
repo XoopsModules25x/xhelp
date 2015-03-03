@@ -38,18 +38,19 @@ class xhelpReportParameter{
     function &create()
     {
         $ret = new xhelpReportParameter();
+
         return $ret;
     }
 
     /**
      * Add a new report parameter
      *
-     * @param int $controltype
+     * @param int    $controltype
      * @param string $name
      * @param string $fieldname
      * @param string $value
-     * @param array $values
-     * @param int $fieldlength
+     * @param array  $values
+     * @param int    $fieldlength
      * @param string $dbfield
      * @param string $dbaction
      *
@@ -111,6 +112,7 @@ class xhelpReportParameter{
                     $ret .= "<option value='".$key."' ". (($this->value == $key) ? "selected='selected'" : "").">".$value."</option>";
                 }
                 $ret .= "</select>";
+
                 return $ret;
                 break;
 
@@ -121,6 +123,7 @@ class xhelpReportParameter{
                     $ret .= "<option value='".$key."' ". (($this->value == $key) ? "selected='selected'" : "").">".$value."</option>";
                 }
                 $ret .= "</select>";
+
                 return $ret;
                 break;
 
@@ -135,6 +138,7 @@ class xhelpReportParameter{
                 foreach($this->values as $key=>$value){
                     $ret .= "<input type='checkbox' name='".$this->fieldname."' id='".$this->fieldname."1' value='1' ".(($key == $this->value) ? "checked='checked'" : "") ." />".$value;
                 }
+
                 return $ret;
                 break;
 
@@ -150,5 +154,3 @@ class xhelpReportParameter{
         }
     }
 }
-
-?>

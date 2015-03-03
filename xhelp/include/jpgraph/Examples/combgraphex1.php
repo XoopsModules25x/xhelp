@@ -85,5 +85,3 @@ $mgraph->Add($graph2,0,240);
 $mgraph->Stroke();
 
 ?>
-
-

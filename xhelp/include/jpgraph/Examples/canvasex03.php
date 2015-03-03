@@ -27,7 +27,6 @@ $scale->Set(0,$xmax,0,$ymax);
 $shape = new Shape($g,$scale);
 $shape->SetColor('black');
 
-
 // Add a black line
 $shape->SetColor('black');
 $shape->Line(0,0,20,20);
@@ -50,9 +49,7 @@ $shape->FilledRoundedRectangle(2,3,8,6);
 $shape->SetColor('darkgreen');
 $shape->RoundedRectangle(2,3,8,6);
 
-
 // Stroke the graph
 $g->Stroke();
 
 ?>
-

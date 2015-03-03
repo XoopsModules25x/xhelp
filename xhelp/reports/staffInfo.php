@@ -33,8 +33,8 @@ class xhelpStaffInfoReport extends xhelpReport {
         'description' => _XHELP_STAFF_INFO_DESC,
         'version' => '1.0',
         'dbFields' => array(
-            'name' => 'Name', 
-            'ticketsResponded' => 'Tickets Responded', 
+            'name' => 'Name',
+            'ticketsResponded' => 'Tickets Responded',
             'callsClosed' => 'Calls Closed',
             'avgResponseTime' => 'Average Response Time (in Minutes)'));
 
@@ -103,7 +103,6 @@ class xhelpStaffInfoReport extends xhelpReport {
         //$graph->ygrid->Show(true,true);
         $graph->ygrid->SetColor('gray','lightgray@0.5');
 
-
         // Setup graph colors
         $graph->SetMarginColor('white');
 
@@ -159,4 +158,3 @@ class xhelpStaffInfoReport extends xhelpReport {
 
     }
 }
-?>

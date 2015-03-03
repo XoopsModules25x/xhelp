@@ -83,6 +83,7 @@ class JPSpan_Unserializer_XML {
         if ( !array_key_exists($tag,$this->dict) ) {
             $errorMsg = 'Illegal tag name: '.$tag;
             $this->raiseError($errorMsg);
+
             return;
         }
 
@@ -96,7 +97,6 @@ class JPSpan_Unserializer_XML {
 
             $current = & new $class($this, $attrs);
             $this->stack[] = & $current;
-
 
             if ( $tag == 'r' ) {
                 $this->root = & $current;
@@ -490,6 +490,7 @@ class JPSpan_Unserializer_XML_Object extends JPSpan_Unserializer_XML_Node {
 
                 $errorMsg = 'Illegal object type: '.strtolower($class);
                 $this->Handler->raiseError($errorMsg);
+
                 return;
             }
 

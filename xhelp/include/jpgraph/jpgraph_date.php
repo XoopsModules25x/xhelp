@@ -28,7 +28,6 @@ define('SECADJ_10',2);
 define('SECADJ_15',3);
 define('SECADJ_30',4);
 
-
 define('YEARADJ_1',0+30);
 define('YEARADJ_2',1+30);
 define('YEARADJ_5',2+30);
@@ -44,7 +43,6 @@ define('SECPERYEAR',31536000);
 define('SECPERDAY',86400);
 define('SECPERHOUR',3600);
 define('SECPERMIN',60);
-
 
 class DateScale extends LinearScale {
     private $date_format = '';
@@ -63,7 +61,6 @@ class DateScale extends LinearScale {
         $this->ticks = new LinearTicks();
         $this->intscale=true;
     }
-
 
     //------------------------------------------------------------------------------------------
     // Utility Function AdjDate()
@@ -120,6 +117,7 @@ class DateScale extends LinearScale {
                 }
             }
         }
+
         return mktime($h,$i,$s,$m,$d,$y);
 
     }
@@ -202,6 +200,7 @@ class DateScale extends LinearScale {
                 }
             }
         }
+
         return mktime($h,$i,$s,$m,$d,$y);
     }
 
@@ -370,6 +369,7 @@ class DateScale extends LinearScale {
             }
             ++$i;
         }
+
         return array($start,$end,$major,$minor,$format);
     }
 
@@ -382,7 +382,6 @@ class DateScale extends LinearScale {
     function AdjustForDST($aFlg=true) {
         $this->ticks->AdjustForDST($aFlg);
     }
-
 
     function SetDateAlign($aStartAlign,$aEndAlign=false) {
         if( $aEndAlign === false ) {
@@ -399,7 +398,6 @@ class DateScale extends LinearScale {
         $this->iStartTimeAlign = $aStartAlign;
         $this->iEndTimeAlign = $aEndAlign;
     }
-
 
     function AutoScale($img,$aStartTime,$aEndTime,$aNumSteps,$_adummy=false) {
         // We need to have one dummy argument to make the signature of AutoScale()
@@ -461,8 +459,6 @@ class DateScale extends LinearScale {
             }
         }
 
-
-
         if( $this->iStartAlign !== false ) {
             if( $this->iStartAlign >= 30 ) {
                 $adjstart = $this->AdjStartDate($aStartTime,$this->iStartAlign-30);
@@ -494,6 +490,3 @@ class DateScale extends LinearScale {
         $this->ticks->SetLabelDateFormat($this->date_format);
     }
 }
-
-
-?>

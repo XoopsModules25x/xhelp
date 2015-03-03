@@ -4,7 +4,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_polar.php');
 
-
 $data = array(0,1,10,2,30,25,40,60,
 50,110,60,160,70,210,75,230,80,260,85,370,
 90,480,
@@ -49,5 +48,3 @@ $p->SetLegend("Mirophone #1\n(No amps)");
 $graph->Add($p);
 
 $graph->Stroke();
-
-?>

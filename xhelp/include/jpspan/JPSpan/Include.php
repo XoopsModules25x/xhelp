@@ -31,6 +31,7 @@ if ( !function_exists('file_get_contents') ) {
         $fd = fopen("$filename", 'rb');
         $content = fread($fd, filesize($filename));
         fclose($fd);
+
         return $content;
     }
 }
@@ -149,7 +150,6 @@ function JPSpan_Include_ErrorReader($lang='en',$app=array(),$ser=array(),$cli=ar
         $script .= "JPSpan_Util_ErrorReader.prototype.errorList[$key] = '$value';\n";
     }
 
-
     $Includer = & JPSpan_Include::instance();
     $Includer->loadString('errorreaderlist',$script);
 }
@@ -166,6 +166,7 @@ function JPSpan_Include_ErrorReader($lang='en',$app=array(),$ser=array(),$cli=ar
  */
 function JPSpan_Includes_Fetch() {
     $Includer = & JPSpan_Include::instance();
+
     return $Includer->getCode();
 }
 
@@ -237,6 +238,7 @@ class JPSpan_Include {
         if ( JPSPAN_INCLUDE_COMPRESS ) {
             require_once JPSPAN . 'Script.php';
             $code = $this->Manager->getCode();
+
             return JPSpan_Script::compress($code);
         } else {
             return $this->Manager->getCode();
@@ -339,6 +341,7 @@ class JPSpan_Include_Manager {
         foreach ( $includes as $include ) {
             $code .= $this->code[$include];
         }
+
         return $code;
     }
 
@@ -388,6 +391,7 @@ class JPSpan_Include_File {
      */
     function script($script, $state) {
         $this->src .= $script;
+
         return TRUE;
     }
 
@@ -414,6 +418,7 @@ class JPSpan_Include_File {
             $file = str_replace(array("'",'"'),'',$file);
             $this->includes[] = JPSPAN . 'js/' . trim($file);
         }
+
         return TRUE;
     }
 

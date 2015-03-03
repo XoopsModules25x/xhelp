@@ -44,6 +44,7 @@ function xhelpFormatTime($time)
     }
 
     $ret[] = $seconds . ' ' . ($seconds == 1 ? _XHELP_TIME_SEC : _XHELP_TIME_SECS);
+
     return implode(', ', $ret);
 }
 
@@ -100,6 +101,7 @@ function xhelpMakeURI($page, $vars = array(), $encodeAmp = true)
         $qs .= $joinStr . $key . '=' . $value;
         $joinStr = $amp;
     }
+
     return $page . '?'. $qs;
 }
 
@@ -121,6 +123,7 @@ function xhelpGetPriority($priority)
     5 => _XHELP_TEXT_PRIORITY5);
 
     $priority = intval($priority);
+
     return (isset($priorities[$priority]) ? $priorities[$priority] : $priority);
 
 }
@@ -185,6 +188,7 @@ function xhelpGetRating($rating)
     4 => _XHELP_RATING4,
     5 => _XHELP_RATING5);
     $rating = intval($rating);
+
     return (isset($ratings[$rating]) ? $ratings[$rating] : $rating);
 }
 
@@ -196,6 +200,7 @@ function xhelpGetEventClass($class)
     2 => _XHELP_MAIL_CLASS2,
     3 => _XHELP_MAIL_CLASS3);
     $class = intval($class);
+
     return (isset($classes[$class]) ? $classes[$class] : $class);
 }
 
@@ -212,6 +217,7 @@ function xhelpSetDept($tickets, $dept)
 {
     $hTicket =& xhelpGetHandler('ticket');
     $crit    = new Criteria('id', "(". implode($tickets, ',') .")", "IN");
+
     return $hTicket->updateAll('department', intval($dept), $crit);
 }
 
@@ -228,6 +234,7 @@ function xhelpSetPriority($tickets, $priority)
 {
     $hTicket =& xhelpGetHandler('ticket');
     $crit    = new Criteria('id', "(". implode($tickets, ',') .")", 'IN');
+
     return $hTicket->updateAll('priority', intval($priority), $crit);
 }
 
@@ -244,6 +251,7 @@ function xhelpSetStatus($tickets, $status)
 {
     $hTicket =& xhelpGetHandler('ticket');
     $crit    = new Criteria('id', "(". implode($tickets, ',') .")", 'IN');
+
     return $hTicket->updateAll('status', intval($status), $crit);
 }
 
@@ -262,6 +270,7 @@ function xhelpSetOwner($tickets, $owner)
 {
     $hTicket =& xhelpGetHandler('ticket');
     $crit    = new Criteria('id', "(". implode($tickets, ',') .")", 'IN');
+
     return $hTicket->updateAll('ownership', intval($owner), $crit);
 }
 
@@ -309,6 +318,7 @@ function &xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = fals
         $ret  = $hTicket->updateAll('lastUpdated', $updateTime, $crit);
         $response->setVar('ticketid', 0);
         $response->setVar('id', 0);
+
         return $response;
     }
 
@@ -327,6 +337,7 @@ function xhelpDeleteTickets($tickets)
 {
     $hTicket =& xhelpGetHandler('ticket');
     $crit    = new Criteria('id', "(". implode($tickets, ',') .")", 'IN');
+
     return $hTicket->deleteAll($crit);
 }
 
@@ -342,6 +353,7 @@ function &xhelpGetTickets(&$tickets)
 {
     $hTicket =& xhelpGetHandler('ticket');
     $crit    = new Criteria('t.id', "(". implode($tickets, ',') .")", 'IN');
+
     return $hTicket->getObjects($crit);
 }
 
@@ -371,6 +383,7 @@ function xhelpCheckRules(&$rules, &$errors)
             $errors = array();
         }
     }
+
     return $ret;
 
 }
@@ -415,6 +428,7 @@ function xhelpTableExists($table)
         }
     }
     $xoopsDB->freeRecordSet($ret);
+
     return ($bRetVal);
 }
 
@@ -437,6 +451,7 @@ function xhelpGetMeta($key)
         list($value) = $xoopsDB->fetchRow($ret);
 
     }
+
     return $value;
 }
 
@@ -462,6 +477,7 @@ function xhelpSetMeta($key, $value)
     if (!$ret) {
         return false;
     }
+
     return true;
 }
 
@@ -531,6 +547,7 @@ function xhelpFieldExists($table, $field)
             return $row;
         }
     }
+
     return false;
 }
 
@@ -610,7 +627,6 @@ function xhelpGenUserNames($email, $name, $count=20)
     $names = array();
     $userid   = explode('@',$email);
 
-
     $basename = '';
     $hasbasename = false;
     $emailname = $userid[0];
@@ -684,6 +700,7 @@ function xhelpGenRandNumber($digits = 2)
     for ($i = 0; $i < $digits; $i++) {
         $tmp[$i] = (rand()%9);
     }
+
     return implode('', $tmp);
 }
 
@@ -791,6 +808,7 @@ function xhelpCreateStatuses()
             return false;
         }
     }
+
     return true;
 }
 
@@ -867,6 +885,7 @@ function xhelpAddDBField($table, $fieldname, $fieldtype='VARCHAR', $size=0, $att
 
     $sql = sprintf('ALTER TABLE %s ADD COLUMN %s', $xoopsDB->prefix($table), $column_def);
     $ret = $xoopsDB->query($sql);
+
     return $ret;
 }
 
@@ -884,6 +903,7 @@ function xhelpRenameDBField($table, $oldcol, $newcol, $fieldtype='VARCHAR', $siz
     $column_def .= ($size ? sprintf(' %s(%s)', $fieldtype, $size) : " $fieldtype");
     $sql = sprintf('ALTER TABLE %s CHANGE %s %s', $xoopsDB->prefix($table), $oldcol, $column_def);
     $ret = $xoopsDB->query($sql);
+
     return $ret;
 }
 
@@ -899,9 +919,9 @@ function xhelpRemoveDBField($table, $column)
     $xoopsDB =& XoopsDatabaseFactory::getDatabaseConnection();
     $sql = sprintf('ALTER TABLE %s DROP COLUMN `%s`', $xoopsDB->prefix($table), $column);
     $ret = $xoopsDB->query($sql);
+
     return $ret;
 }
-
 
 /**
  * Mark all staff accounts as being updated
@@ -912,6 +932,7 @@ function xhelpRemoveDBField($table, $column)
 function xhelpResetStaffUpdatedTime()
 {
     $hStaff =& xhelpGetHandler('staff');
+
     return $hStaff->updateAll('permTimestamp', time());
 }
 
@@ -936,6 +957,7 @@ function &xhelpGetModule()
         $hModule =& xoops_gethandler('module');
         $_module =& $hModule->getByDirname('xhelp');
     }
+
     return $_module;
 }
 
@@ -956,6 +978,7 @@ function &xhelpGetModuleConfig()
 
         $_config    =& $hModConfig->getConfigsByCat(0, $_module->getVar('mid'));
     }
+
     return $_config;
 }
 
@@ -969,6 +992,7 @@ function &xhelpGetModuleConfig()
 function &xhelpGetHandler($handler)
 {
     $handler =& xoops_getmodulehandler($handler, XHELP_DIR_NAME);
+
     return $handler;
 }
 
@@ -1049,6 +1073,7 @@ function xhelpCreateNotifications()
         }
         $hNotification->insert($template, true);
     }
+
     return true;
 }
 
@@ -1068,6 +1093,7 @@ function &xhelpGetUsers($criteria = null, $displayName = XHELP_DISPLAYNAME_UNAME
     foreach ($users as $i => $user) {
         $ret[$i] = xhelpGetDisplayName($displayName, $user->getVar('name'), $user->getVar('uname'));
     }
+
     return $ret;
 }
 
@@ -1121,7 +1147,6 @@ function xhelpGetDisplayName($displayName, $name = '', $uname = '')
     return (($displayName == XHELP_DISPLAYNAME_REALNAME && $name <> '') ? $name : $uname);
 }
 
-
 /**
  * Retrieve the site's active language
  *
@@ -1138,6 +1163,7 @@ function xhelpGetSiteLanguage()
         $xoopsConfig =& $config_handler->getConfigsByCat(XOOPS_CONF);
         $language = $xoopsConfig['language'];
     }
+
     return $language;
 }
 
@@ -1262,6 +1288,7 @@ function xhelpCreateDefaultTicketLists()
         }
         $i++;
     }
+
     return true;
 }
 
@@ -1272,6 +1299,6 @@ function &xhelpNewEventService()
     if (!isset($instance)) {
         $instance = new xhelpEventService();
     }
+
     return $instance;
 }
-?>

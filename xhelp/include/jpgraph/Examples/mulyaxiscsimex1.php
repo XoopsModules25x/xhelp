@@ -2,7 +2,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_line.php');
 
-
 // Setup some dummy targets for the CSIM
 $n = 5;
 for($i=0; $i < $n; ++$i ) {
@@ -72,4 +71,3 @@ $graph->AddY(1,$lp3);
 // Send back the HTML page which will call this script again
 // to retrieve the image.
 $graph->StrokeCSIM();
-?>

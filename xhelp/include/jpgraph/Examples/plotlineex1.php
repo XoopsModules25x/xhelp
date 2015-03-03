@@ -33,4 +33,3 @@ $graph->legend->SetColumns(10);
 $graph->Add($pline);
 
 $graph->Stroke();
-?>

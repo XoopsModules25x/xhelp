@@ -44,4 +44,3 @@ $graph->Add($bplot);
 
 // Finally send the graph to the browser
 $graph->Stroke();
-?>

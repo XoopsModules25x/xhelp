@@ -48,5 +48,3 @@ $graph->Add($barplot);
 
 // Display the graph
 $graph->Stroke();
-
-?>

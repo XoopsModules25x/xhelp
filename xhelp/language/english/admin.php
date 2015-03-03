@@ -224,9 +224,9 @@ define("_AM_XHELP_MIME_NOMIMEINFO","No mimetypes selected.");
 define("_AM_XHELP_MIME_FINDMIMETYPE","Find New Mimetype?");
 define("_AM_XHELP_MIME_EXTFIND","Search File Extension<div style='padding-top: 8px;'><span style='font-weight: normal;'>Enter file extension you wish to search.</span></div>");
 define("_AM_XHELP_MIME_INFOTEXT","<ul><li>New mimetypes can be created, edit or deleted easily via this form.</li>
-	<li>Search for a new mimetypes via an external website.</li> 
-	<li>View displayed mimetypes for Admin and User uploads.</li> 
-	<li>Change mimetype upload status.</li></ul> 
+	<li>Search for a new mimetypes via an external website.</li>
+	<li>View displayed mimetypes for Admin and User uploads.</li>
+	<li>Change mimetype upload status.</li></ul>
 	");
 
 // Mimetype Buttons
@@ -467,4 +467,3 @@ define('_AM_XHELP_TEXT_AUTHOR','Author');
 define('_AM_XHELP_MESSAGE_NO_NAME','Error: no module name was specified.');
 define('_AM_XHELP_MSG_INSTALL_MODULE','Error: please make sure module is installed.');
 define('_AM_XHELP_TEXT_STAFF','Staff');
-?>

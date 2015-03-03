@@ -166,12 +166,14 @@ class BarPlot extends Plot {
     function Min() {
         $m = parent::Min();
         if( $m[1] >= $this->ybase ) $m[1] = $this->ybase;
+
         return $m;
     }
 
     function Max() {
         $m = parent::Max();
         if( $m[1] <= $this->ybase ) $m[1] = $this->ybase;
+
         return $m;
     }
 
@@ -315,7 +317,6 @@ class BarPlot extends Plot {
             $exist_x = false;
         }
 
-
         $numbars=count($this->coords[0]);
 
         // Use GetMinVal() instead of scale[0] directly since in the case
@@ -419,7 +420,6 @@ class BarPlot extends Plot {
                 $img->FilledPolygon($pts);
                 $img->PopColor();
             }
-
 
             // Remember value of this bar
             $val=$this->coords[0][$i];
@@ -616,6 +616,7 @@ class BarPlot extends Plot {
                 $this->csimareas .= " />\n";
             }
         }
+
         return true;
     }
 } // Class
@@ -666,6 +667,7 @@ class GroupBarPlot extends BarPlot {
             $xmin = max($xmin,$xm);
             $ymin = min($ymin,$ym);
         }
+
         return array($xmin,$ymin);
     }
 
@@ -677,6 +679,7 @@ class GroupBarPlot extends BarPlot {
             $xmax = max($xmax,$xm);
             $ymax = max($ymax,$ym);
         }
+
         return array($xmax,$ymax);
     }
 
@@ -686,6 +689,7 @@ class GroupBarPlot extends BarPlot {
         for($i=0; $i < $n; ++$i) {
             $csimareas .= $this->plots[$i]->csimareas;
         }
+
         return $csimareas;
     }
 
@@ -796,6 +800,7 @@ class AccBarPlot extends BarPlot {
         // Bar always start at baseline
         if( $ymax <= $this->ybase )
         $ymax = $this->ybase;
+
         return array($xmax,$ymax);
     }
 
@@ -828,6 +833,7 @@ class AccBarPlot extends BarPlot {
         // Bar always start at baseline
         if( $ymin >= $this->ybase )
         $ymin = $this->ybase;
+
         return array($xmin,$ymin);
     }
 
@@ -919,7 +925,6 @@ class AccBarPlot extends BarPlot {
                     }
                 }
 
-
                 // If value is NULL or 0, then don't draw a bar at all
                 if ($this->plots[$j]->coords[0][$i] == 0 ) continue;
 
@@ -1007,7 +1012,6 @@ class AccBarPlot extends BarPlot {
                     $prect->SetPos(new Rectangle($rx,$ry,$width,$height));
                     $prect->Stroke($img);
                 }
-
 
                 // CSIM array
 
@@ -1128,9 +1132,9 @@ class AccBarPlot extends BarPlot {
             }
 
         }
+
         return true;
     }
 } // Class
 
-/* EOF */
-?>
+/* EOF */;

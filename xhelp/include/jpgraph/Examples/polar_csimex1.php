@@ -65,5 +65,3 @@ $p->SetCSIMTargets( $targets );
 $graph->Add($p);
 
 $graph->StrokeCSIM();
-
-?>

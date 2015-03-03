@@ -6,5 +6,3 @@ if( empty($_GET['id']) ) {
 else {
     echo 'Some details on bar with id='.$_GET['id'];
 }
-
-?>

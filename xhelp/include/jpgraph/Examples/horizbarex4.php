@@ -45,4 +45,3 @@ $bplot->SetYMin(1990);
 $graph->Add($bplot);
 
 $graph->Stroke();
-?>

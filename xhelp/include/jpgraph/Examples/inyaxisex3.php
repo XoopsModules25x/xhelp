@@ -65,5 +65,3 @@ $graph->AddY2($lp2);
 
 $graph->Stroke();
 ?>
-
-

@@ -49,6 +49,4 @@ $xhelp_module_header = '<link rel="stylesheet" type="text/css" media="all" href=
 
 // @todo - this line is for compatiblity, remove once all references to $isStaff have been modified
 //$isStaff = $xhelp_isStaff;
-
-
-?>
+;

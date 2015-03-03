@@ -11,8 +11,6 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 
 require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
 
-
-
 /**
  * xhelpTicketField class
  *
@@ -28,7 +26,7 @@ class xhelpTicketField extends XoopsObject
     /**
      * Class Constructor
      *
-     * @param mixed $id null for a new object, hash table for an existing object
+     * @param  mixed $id null for a new object, hash table for an existing object
      * @return none
      * @access public
      */
@@ -99,7 +97,6 @@ class xhelpTicketField extends XoopsObject
         $this->setVar('fieldvalues', $values);
     }
 
-
     function addDepartment($dept)
     {
         $dept = intval($dept);
@@ -156,6 +153,7 @@ class xhelpTicketField extends XoopsObject
                       'fieldvalues' => $aValues,
                       'datatype' => $this->getVar('datatype'),
                       'validation' => $this->getVar('validation'));
+
         return $arr;
     }
 }
@@ -165,7 +163,7 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpTicketField';
@@ -173,7 +171,7 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
     /**
      * DB Table Name
      *
-     * @var 		string
+     * @var string
      * @access 	private
      */
     var $_dbtable = 'xhelp_ticket_fields';
@@ -182,7 +180,7 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpTicketFieldHandler(&$db)
     {
@@ -220,10 +218,10 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
         return $sql;
     }
 
-
     function _deleteQuery(&$obj)
     {
         $sql = sprintf("DELETE FROM %s WHERE id = %u", $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
+
         return $sql;
     }
 
@@ -262,6 +260,7 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
                 xhelpRenameDBField('xhelp_ticket_values', $old_name, $new_name, $mysql['fieldtype'], $mysql['length']);
             }
         }
+
         return $ret;
 
     }
@@ -281,6 +280,7 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
 
         //Remove obj from table
         $ret = parent::delete($obj, $force);
+
         return $ret;
     }
 
@@ -288,6 +288,7 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
     {
         $hFieldDept =& xhelpGetHandler('ticketFieldDepartment', 'xhelp');
         $ret =& $hFieldDept->fieldsByDepartment($dept);
+
         return $ret;
     }
 
@@ -431,7 +432,7 @@ class xhelpTicketFieldHandler extends xhelpBaseObjectHandler
                 $mysqldb['length'] = 255;
                 break;
         }
+
         return $mysqldb;
     }
 }
-?>

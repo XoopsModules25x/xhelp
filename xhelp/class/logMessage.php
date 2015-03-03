@@ -40,7 +40,7 @@ class xhelpLogMessage extends XoopsObject {
     /**
      * determine when the log message was updated
      *
-     * @return 	int	Timestamp of last update
+     * @return int Timestamp of last update
      * @access	public
      */
     function lastUpdated()
@@ -63,7 +63,7 @@ class xhelpLogMessageHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelplogmessage';
@@ -79,7 +79,7 @@ class xhelpLogMessageHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpLogMessageHandler(&$db)
     {
@@ -116,8 +116,8 @@ class xhelpLogMessageHandler extends xhelpBaseObjectHandler {
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->_idfield));
+
         return $sql;
     }
 
 }
-?>

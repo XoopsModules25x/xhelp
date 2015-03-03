@@ -56,7 +56,7 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpmailEvent';
@@ -72,7 +72,7 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpMailEventHandler(&$db)
     {
@@ -82,8 +82,8 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
      
     /**
      * Create a "select" SQL query
-     * @param object $criteria {@link CriteriaElement} to match
-     * @return	string SQL query
+     * @param  object $criteria {@link CriteriaElement} to match
+     * @return string SQL query
      * @access	private
      */
     function _selectQuery($criteria = null, $join = false)
@@ -101,17 +101,16 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
                     ' .$criteria->getOrder();
             }
         }
+
         return $sql;
     }
-
-
 
     /**
      * retrieve objects from the database
      *
-     * @param object $criteria {@link CriteriaElement} conditions to be met
-     * @param bool $id_as_key Should the MailEvent ID be used as array key
-     * @return array array of {@link xhelpMailEvent} objects
+     * @param  object $criteria  {@link CriteriaElement} conditions to be met
+     * @param  bool   $id_as_key Should the MailEvent ID be used as array key
+     * @return array  array of {@link xhelpMailEvent} objects
      * @access	public
      */
     function &getObjectsJoin($criteria = null, $id_as_key = false)
@@ -140,6 +139,7 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
             }
             unset($obj);
         }
+
         return $ret;
     }
 
@@ -154,6 +154,7 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
         if(!$this->insert($event, true)){
             return false;
         }
+
         return true;
     }
 
@@ -182,14 +183,15 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
         $sql = sprintf("UPDATE %s SET mbox_id = %u, event_desc = %s, event_class = %u, posted = %u WHERE id = %u",
         $this->_db->prefix($this->_dbtable), $mbox_id, $this->_db->quoteString($event_desc), $event_class,
         $posted, $id);
+
         return $sql;
     }
 
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
 }
-?>

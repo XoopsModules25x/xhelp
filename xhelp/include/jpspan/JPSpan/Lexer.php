@@ -73,6 +73,7 @@ class JPSpan_LexerParallelRegex {
         }
         if (! preg_match($this->_getCompoundedRegex(), $subject, $matches)) {
             $match = "";
+
             return false;
         }
         $match = $matches[0];
@@ -81,6 +82,7 @@ class JPSpan_LexerParallelRegex {
                 return $this->_labels[$i - 1];
             }
         }
+
         return true;
     }
 
@@ -102,6 +104,7 @@ class JPSpan_LexerParallelRegex {
             }
             $this->_regex = "/" . implode("|", $this->_patterns) . "/" . $this->_getPerlMatchingFlags();
         }
+
         return $this->_regex;
     }
 
@@ -163,6 +166,7 @@ class JPSpan_LexerStateStack {
             return false;
         }
         array_pop($this->_stack);
+
         return true;
     }
 }
@@ -310,6 +314,7 @@ class JPSpan_Lexer {
         if (!$parsed) {
             return false;
         }
+
         return $this->_invokeParser($raw, JPSPAN_LEXER_UNMATCHED);
     }
 
@@ -333,6 +338,7 @@ class JPSpan_Lexer {
             if (! $this->_invokeParser($matched, JPSPAN_LEXER_EXIT)) {
                 return false;
             }
+
             return $this->_mode->leave();
         }
         if ($this->_isSpecialMode($mode)) {
@@ -340,12 +346,15 @@ class JPSpan_Lexer {
             if (! $this->_invokeParser($matched, JPSPAN_LEXER_SPECIAL)) {
                 return false;
             }
+
             return $this->_mode->leave();
         }
         if (is_string($mode)) {
             $this->_mode->enter($mode);
+
             return $this->_invokeParser($matched, JPSPAN_LEXER_ENTER);
         }
+
         return $this->_invokeParser($matched, JPSPAN_LEXER_MATCHED);
     }
 
@@ -401,6 +410,7 @@ class JPSpan_Lexer {
         if (isset($this->_mode_handlers[$handler])) {
             $handler = $this->_mode_handlers[$handler];
         }
+
         return $this->_parser->$handler($content, $is_match);
     }
 
@@ -429,9 +439,10 @@ class JPSpan_Lexer {
             $unparsed_character_count = strpos($raw, $match);
             $unparsed = substr($raw, 0, $unparsed_character_count);
             $raw = substr($raw, $unparsed_character_count + strlen($match));
+
             return array($unparsed, $match, $action);
         }
+
         return true;
     }
 }
-?>

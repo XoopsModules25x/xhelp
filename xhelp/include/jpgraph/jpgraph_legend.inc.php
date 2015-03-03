@@ -237,7 +237,6 @@ class Legend {
         // remove the last rows interpace margin (since there is no next row)
         $abs_height -= $this->ylinespacing;
 
-
         // Find out maximum width we need for legend box
         $abs_width = $mtw+$this->xlmargin+($numcolumns-1)*$this->mark_abs_hsize;
 
@@ -351,7 +350,6 @@ class Legend {
             $x1 += $this->mark_abs_hsize;
 
             if ( !empty($p[2]) && $p[2]->GetType() > -1 ) {
-
 
                 // Make a plot mark legend. This is constructed with a mark which
                 // is run through with a line
@@ -480,5 +478,4 @@ class Legend {
         }
     }
 } // Class
-
-?>
+;

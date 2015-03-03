@@ -53,10 +53,8 @@ class xhelpPageNav extends XoopsPageNav
                 $ret .= '<a href="'.$this->url.$next.$this->bookmark.'"><u>&raquo;</u></a> ';
             }
         }
+
         return $ret;
     }
 
 }
-
-
-?>

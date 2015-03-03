@@ -151,7 +151,6 @@ if ( $op == "update" ) {
     redirect_header('myblocksadmin.php',1,$msg); // GIJ +
 }
 
-
 if ( $op == "delete_ok" ) {
     delete_block_ok($bid);
     exit();
@@ -241,6 +240,6 @@ function myblocksadmin_update_block($bid, $bside, $bweight, $bvisible, $btitle, 
     } else {
         $msg = 'Failed update of block. ID:'.$bid;
     }
+
     return $msg ; // GIJ +
 }
-?>

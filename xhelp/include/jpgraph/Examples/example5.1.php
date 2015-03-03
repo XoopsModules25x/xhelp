@@ -44,4 +44,3 @@ $lineplot2->SetLegend("Plot 2");
 
 // Display the graph
 $graph->Stroke();
-?>

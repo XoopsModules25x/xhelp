@@ -215,6 +215,7 @@ class LinePlot extends Plot{
 
         if( $this->iFastStroke ) {
             $this->FastStroke($img,$xscale,$yscale,$startpoint,$exist_x);
+
             return;
         }
 
@@ -262,7 +263,6 @@ class LinePlot extends Plot{
         $img->SetLineStyle($this->line_style);
         $pnts=$startpoint+1;
         $firstnonumeric = false;
-
 
         while( $pnts < $numpoints ) {
 
@@ -520,6 +520,7 @@ class AccLinePlot extends Plot {
             $ymax[$i] = $y;
         }
         $ymax = max($ymax);
+
         return array($xmax,$ymax);
     }
 
@@ -547,6 +548,7 @@ class AccLinePlot extends Plot {
             $ymin[$i] = $y;
         }
         $ymin = Min($ysetmin,Min($ymin));
+
         return array($xmin,$ymin);
     }
 
@@ -640,6 +642,7 @@ class AccLinePlot extends Plot {
                 }
             }
         }
+
         return true;
     }
 
@@ -678,5 +681,4 @@ class AccLinePlot extends Plot {
 } // Class
 
 
-/* EOF */
-?>
+/* EOF */;

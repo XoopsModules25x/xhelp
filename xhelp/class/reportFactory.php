@@ -14,6 +14,7 @@ class xhelpReportFactory {
             include_once(XHELP_REPORT_PATH ."/$name.php");
             $report = new $classname();
         }
+
         return $report;
     }
 
@@ -43,8 +44,7 @@ class xhelpReportFactory {
                 }
             }
         }
+
         return $aReports;
     }
 }
-
-?>
