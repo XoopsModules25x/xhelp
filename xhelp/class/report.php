@@ -7,7 +7,6 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 global $xoopsDB;
 
-
 /**
  * xhelpReport class
  *
@@ -107,6 +106,7 @@ class xhelpReport extends XoopsObject {
                 $i++;
             }
         }
+
         return $aResults;
     }
 
@@ -135,6 +135,7 @@ class xhelpReport extends XoopsObject {
         foreach($this->parameters as $name=>$param){
             $params[] = xhelpReportParameter::addParam($param['controltype'], $name, $param['fieldname'], $param['value'], $param['values'], $param['fieldlength'], $param['dbfield'], $param['dbaction']);
         }
+
         return $params;
     }
 
@@ -167,6 +168,7 @@ class xhelpReport extends XoopsObject {
                 $i++;
             }
         }
+
         return $where;
     }
 
@@ -220,7 +222,6 @@ class xhelpReport extends XoopsObject {
         //$graph->ygrid->Show(true,true);
         $graph->ygrid->SetColor('gray','lightgray@0.5');
 
-
         // Setup graph colors
         $graph->SetMarginColor($marginColor);
         $datazero=array(0,0,0,0);
@@ -252,4 +253,3 @@ class xhelpReport extends XoopsObject {
         $graph->Stroke();
     }
 }
-?>

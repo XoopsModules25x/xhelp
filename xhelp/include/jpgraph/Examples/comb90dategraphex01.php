@@ -27,7 +27,6 @@ for( $i=0; $i < NDATAPOINTS-1; ++$i ) {
 }
 $xdata[$i] = $start + $i * SAMPLERATE;
 
-
 // Setup the Wind direction graph
 $graph = new Graph(300,800);
 $graph->SetMarginColor('lightgray:1.7');
@@ -92,5 +91,3 @@ $mgraph->SetFillColor('lightgray');
 $mgraph->Add($graph);
 $mgraph->Add($graph2,300,0);
 $mgraph->Stroke();
-
-?>

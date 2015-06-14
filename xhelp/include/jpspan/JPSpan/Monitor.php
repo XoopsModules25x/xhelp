@@ -96,6 +96,7 @@ class JPSpan_Monitor {
             $Data['requestHeaders']= apache_request_headers();
             $Data['responseHeaders'] = apache_response_headers();
         }
+
         return $Data;
     }
 
@@ -149,6 +150,7 @@ class JPSpan_Monitor {
                 $Monitor = new JPSpan_Monitor_Null();
             }
         }
+
         return $Monitor;
     }
 

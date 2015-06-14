@@ -38,14 +38,9 @@ $graph->xaxis->SetColor("lightblue","white");
 $graph->yaxis->SetColor("lightblue","white");
 $graph->ygrid->SetColor("blue");
 
-
 $lp1 = new LinePlot($ydata);
 $lp1->SetColor("yellow");
 $lp1->SetWeight(2);
 
-
 $graph->Add($lp1);
 $graph->Stroke();
-?>
-
-

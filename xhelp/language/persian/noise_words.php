@@ -88,4 +88,3 @@ $xhelp_noise_words = array(
     'would',
     'you',
     'your');
-?>

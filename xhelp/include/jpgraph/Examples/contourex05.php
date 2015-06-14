@@ -22,7 +22,6 @@ array(0.000,0.002,0.014,0.076,0.284,0.721,1.257,1.511,1.257,0.728,0.294,0.083,0.
 array(0.000,0.000,0.003,0.016,0.057,0.144,0.250,0.300,0.250,0.144,0.058,0.016,0.003,0.000,0.000),
 );
 
-
 // Setup a basic graph context with some generous margins to be able
 // to fit the legend
 $graph = new Graph(480,390);
@@ -55,5 +54,3 @@ $graph->Add($cp);
 
 // ... and send the graph back to the browser
 $graph->Stroke();
-
-?>

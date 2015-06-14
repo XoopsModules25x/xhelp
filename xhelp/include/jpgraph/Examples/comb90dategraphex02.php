@@ -27,7 +27,6 @@ for( $i=0; $i < NDATAPOINTS-1; ++$i ) {
 }
 $xdata[$i] = $start + $i * SAMPLERATE;
 
-
 DEFINE('BKG_COLOR','lightgray:1.7');
 DEFINE('WIND_HEIGHT',800);
 DEFINE('WIND_WIDTH',280);
@@ -99,5 +98,3 @@ $mgraph->SetFillColor(BKG_COLOR);
 $mgraph->Add($graph);
 $mgraph->Add($graph2,280,0);
 $mgraph->Stroke();
-
-?>

@@ -19,7 +19,7 @@ class xhelpForm extends XoopsForm
     /**
      * create HTML to output the form as a theme-enabled table with validation.
      *
-     * @return	string
+     * @return string
      */
     function render()
     {
@@ -46,7 +46,7 @@ class xhelpForm extends XoopsForm
             }
         }
         $ret .= "</table></form>\n";
+
         return $ret;
     }
 }
-?>

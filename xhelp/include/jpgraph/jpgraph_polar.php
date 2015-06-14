@@ -12,7 +12,6 @@
 require_once ('jpgraph_plotmark.inc.php');
 require_once "jpgraph_log.php";
 
-
 define('POLAR_360',1);
 define('POLAR_180',2);
 
@@ -75,6 +74,7 @@ class PolarPlot {
             $m = max($m,$this->coord[2*$i+1]);
             ++$i;
         }
+
         return $m;
     }
     // Set href targets for CSIM
@@ -518,7 +518,6 @@ class PolarAxis extends Axis {
             //('Unknown alignment specified for X-axis title. ('.$this->title_adjust.')');
         }
 
-
         if (!$this->hide_labels) {
             $this->StrokeLabels($pos,false);
         }
@@ -557,7 +556,6 @@ class PolarAxis extends Axis {
         $n = count($this->scale->ticks->ticks_pos);
         $yu = $pos - $this->scale->ticks->direction*$this->scale->ticks->GetMinTickAbsSize();
 
-
         // Minor ticks
         if( ! $this->scale->ticks->supress_minor_tickmarks ) {
             $i=1;
@@ -570,7 +568,6 @@ class PolarAxis extends Axis {
 
         $n = count($this->scale->ticks->maj_ticks_pos);
         $yu = $pos - $this->scale->ticks->direction*$this->scale->ticks->GetMajTickAbsSize();
-
 
         // Major ticks
         if( ! $this->scale->ticks->supress_tickmarks ) {
@@ -628,6 +625,7 @@ class PolarScale extends LinearScale {
         else {
             $y = ($this->graph->img->top_margin + $this->graph->img->plotheight) - $y;
         }
+
         return array($x,$y);
     }
 }
@@ -672,6 +670,7 @@ class PolarLogScale extends LogScale {
         else {
             $y = ($this->graph->img->top_margin + $this->graph->img->plotheight) - $y;
         }
+
         return array($x,$y);
     }
 }
@@ -741,6 +740,7 @@ class PolarGraph extends Graph {
             $m = max($this->plots[$i]->Max(),$m);
             ++$i;
         }
+
         return $m;
     }
 
@@ -820,7 +820,6 @@ class PolarGraph extends Graph {
             $this->plots[$i]->Stroke($this->img,$this->scale);
         }
 
-
         if( $this->iDoClipping ) {
             // Clipping only supports graphs at 0 and 90 degrees
             if( $this->img->a == 0  ) {
@@ -891,7 +890,3 @@ class PolarGraph extends Graph {
         }
     }
 }
-
-
-
-?>

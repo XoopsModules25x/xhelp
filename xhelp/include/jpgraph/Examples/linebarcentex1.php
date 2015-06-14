@@ -24,7 +24,6 @@ $l1plot->SetLegend("Prediction");
 //Center the line plot in the center of the bars
 $l1plot->SetBarCenter();
 
-
 // Create the bar plot
 $bplot = new BarPlot($l2datay);
 $bplot->SetFillColor("orange");
@@ -34,7 +33,6 @@ $bplot->SetLegend("Result");
 $graph->Add($bplot);
 $graph->Add($l1plot);
 
-
 $graph->title->Set("Adding a line plot to a bar graph v1");
 $graph->xaxis->title->Set("X-title");
 $graph->yaxis->title->Set("Y-title");
@@ -43,7 +41,5 @@ $graph->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->yaxis->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->xaxis->title->SetFont(FF_FONT1,FS_BOLD);
 
-
 // Display the graph
 $graph->Stroke();
-?>

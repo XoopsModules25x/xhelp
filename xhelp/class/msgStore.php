@@ -49,10 +49,10 @@ class xhelpEmailStore
     /**
      * Store the parsed message in database
      * @access public
-     * @param object $msg {@link xhelpParsedMsg} object Message to add
-     * @param object $user {@link xoopsUser} object User that submitted message
-     * @param object $mbox {@link xhelpDepartmentMailBox} object. Originating Mailbox for message
-     * @return mixed Returns {@link xhelpTicket} object if new ticket, {@link xhelpResponses} object if a response, and false if unable to save.
+     * @param  object $msg  {@link xhelpParsedMsg} object Message to add
+     * @param  object $user {@link xoopsUser} object User that submitted message
+     * @param  object $mbox {@link xhelpDepartmentMailBox} object. Originating Mailbox for message
+     * @return mixed  Returns {@link xhelpTicket} object if new ticket, {@link xhelpResponses} object if a response, and false if unable to save.
      */
     function &storeMsg(&$msg, &$user, &$mbox, &$errors)
     {
@@ -91,12 +91,13 @@ class xhelpEmailStore
             case _XHELP_MSGTYPE_RESPONSE:
                 if (!$ticket = $this->_hTicket->getTicketByHash($msg->getHash())) {
                     $this->_setError(_XHELP_RESPONSE_NO_TICKET);
+
                     return false;
                 }
 
-
                 if ($msg->getEmail() != $ticket->getVar('email')) {
                     $this->_setError(sprintf(_XHELP_MISMATCH_EMAIL, $msg->getEmail(), $ticket->getVar('email')));
+
                     return false;
                 }
 
@@ -123,6 +124,7 @@ class xhelpEmailStore
                 //Sanity Check, should never get here
 
         }
+
         return false;
     }
 
@@ -192,4 +194,3 @@ class xhelpEmailStore
         }
     }
 }
-?>

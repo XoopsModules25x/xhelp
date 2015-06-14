@@ -79,7 +79,6 @@ class AdminButtons
             $section = $section . "<a href=\"" . $this->arrTopUrls[$i] . "\">" . $this->arrTopLinks[$i] . "</a></li>\n";
         }
 
-
         $section .= "</ul>\n";
         $section .= "<ul id=\"buttonMenu\">\n";
         //Add the Tabs
@@ -108,4 +107,3 @@ class AdminButtons
         return $this->selectedtab;
     }
 }
-?>

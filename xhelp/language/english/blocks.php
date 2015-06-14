@@ -8,4 +8,3 @@ define('_MB_XHELP_TEXT_SHOWICON','Show icons');
 define('_MB_XHELP_TEXT_MENUSTYLE','Menu style');
 define('_MB_XHELP_OPTION_MENUSTYLE1','Dotted list');
 define('_MB_XHELP_OPTION_MENUSTYLE2','Buttons');
-?>

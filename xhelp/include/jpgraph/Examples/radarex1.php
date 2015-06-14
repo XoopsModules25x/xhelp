@@ -13,4 +13,3 @@ $plot = new RadarPlot($data);
 // Add the plot and display the graph
 $graph->Add($plot);
 $graph->Stroke();
-?>

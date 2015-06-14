@@ -20,7 +20,3 @@ $sp1->mark->SetWidth(3);
 
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>
-
-

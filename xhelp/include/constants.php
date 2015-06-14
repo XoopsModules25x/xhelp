@@ -85,7 +85,6 @@ define('XHELP_JPGRAPH_PATH', XHELP_INCLUDE_PATH .'/jpgraph');
 define('XHELP_JPGRAPH_URL', XHELP_INCLUDE_URL .'/jpgraph');
 define('XHELP_RPT_RENDERER_PATH', XHELP_CLASS_PATH .'/reportRenderer');
 
-
 //Control Types
 define('XHELP_CONTROL_TXTBOX',0);
 define('XHELP_CONTROL_TXTAREA', 1);
@@ -130,4 +129,3 @@ define('XHELP_DISPLAYNAME_UNAME', 1);
 define('XHELP_DISPLAYNAME_REALNAME', 2);
 
 define('XHELP_CONSTANTS_INCLUDED', 1);
-?>

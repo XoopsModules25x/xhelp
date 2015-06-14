@@ -17,7 +17,6 @@ $caption = "Demonstration of different anchor points for texts as specified with
 
 $txt="TextAlign()";
 
-
 // Initial width and height since we need a "dummy" canvas to
 // calculate the height of the text strings
 $w=480;$h=50;
@@ -86,6 +85,3 @@ $img->Rectangle(0,0,$w-1,$h-1);
 
 // .. and send back to browser
 $g->Stroke();
-
-?>
-

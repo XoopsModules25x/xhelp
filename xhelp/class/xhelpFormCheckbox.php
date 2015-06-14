@@ -7,12 +7,10 @@ class xhelpFormCheckbox extends XoopsFormCheckbox
     /**
      * Add an option
      *
-     * @param	string  $value
-     * @param	string  $name
+     * @param string $value
+     * @param string $name
      */
     function addOption($value, $name=""){
         $this->_options[$value] = $name;
     }
 }
-
-?>

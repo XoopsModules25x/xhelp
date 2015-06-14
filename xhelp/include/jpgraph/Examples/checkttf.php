@@ -19,4 +19,3 @@ imagettftext ($im, 30, 0, 90, 60, $black, TTF_DIR.TTF_FONTFILE,TTF_TEXT);
 
 header ("Content-type: image/png");
 imagepng ($im);
-?>

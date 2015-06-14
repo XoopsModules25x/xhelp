@@ -10,8 +10,6 @@ define('HEADER_PRIORITY', 'Importance');
 define('_XHELP_MSGTYPE_TICKET', 1);
 define('_XHELP_MSGTYPE_RESPONSE', 2);
 
-
-
 require_once(XHELP_PEAR_PATH.'/Mail/mimeDecode.php');
 
 /**
@@ -67,7 +65,6 @@ class xhelpEmailParser
         $arr['mime_struct'] = $structure;
         $arr = array_merge($arr, $this->_parseFrom($structure->headers['from']));
 
-
         return $arr;
     }
 
@@ -84,9 +81,6 @@ class xhelpEmailParser
 
         preg_match($pattern['email'], $from, $matches);
         $arr['email'] = $matches[0];
-
-
-
 
         //$arr['email'] = $email[1];
         return $arr;
@@ -110,6 +104,7 @@ class xhelpEmailParser
     {
         $msg = $this->_quoteBody($msg);
         $msg = $this->_stripMd5Key($msg);
+
         return $msg;
     }
 
@@ -192,9 +187,9 @@ class xhelpEmailParser
                 }
             }
         }
+
         return $body;
     }
-
 
 }
 
@@ -272,6 +267,7 @@ class xhelpParsedMessage
         if (isset($this->_headers[$header])) {
             return $this->_headers[$header];
         }
+
         return false;
     }
 
@@ -324,11 +320,10 @@ class xhelpParsedMessage
         unset($_attach);
     }
 
-
     /**
      * Removes unsafe characters from the attachment filename
      *
-     * @param string $name Original Filename
+     * @param  string $name Original Filename
      * @return string "cleaned" filename
      * @access private
      * @todo Get list of other unsafe characters by platform
@@ -336,11 +331,8 @@ class xhelpParsedMessage
     function _cleanFilename($name)
     {
         $name = str_replace(' ', '_', $name);
+
         return $name;
     }
 
-
-
 }
-
-?>

@@ -36,7 +36,3 @@ $graph->Add($lineplot);
 $graph->Add($barplot);
 
 $graph->StrokeCSIM();
-
-?>
-
-

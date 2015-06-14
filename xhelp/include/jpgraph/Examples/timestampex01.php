@@ -56,4 +56,3 @@ $line->SetColor('lightblue');
 $graph->Add($line);
 
 $graph->Stroke();
-?>

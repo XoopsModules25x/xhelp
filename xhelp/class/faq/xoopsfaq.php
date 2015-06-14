@@ -102,6 +102,7 @@ class xhelpXoopsfaqAdapter extends xhelpFaqAdapter {
         if($ret){
             $faq->setVar('id', $newid);
         }
+
         return $ret;
     }
 
@@ -110,5 +111,3 @@ class xhelpXoopsfaqAdapter extends xhelpFaqAdapter {
         return XHELP_XFAQ_URL .'/index.php?cat_id='. $faq->getVar('categories') .'#q'. $faq->getVar('id');
     }
 }
-
-?>

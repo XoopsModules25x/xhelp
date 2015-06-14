@@ -51,7 +51,7 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpticketsolution';
@@ -59,7 +59,7 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
     /**
      * DB Table Name
      *
-     * @var 		string
+     * @var string
      * @access 	private
      */
     var $_dbtable = 'xhelp_ticket_solutions';
@@ -67,7 +67,7 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpTicketSolutionHandler(&$db)
     {
@@ -106,14 +106,15 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
     /**
      * Recommend solutions to a ticket based on similarity
      * to previous tickets and their solutions
-     * @param xhelpTicket $ticket ticket to search for solutions
-     * @return array Value 1 = bayesian likeness probability, Value 2 = xhelpTicketSolution object
+     * @param  xhelpTicket $ticket ticket to search for solutions
+     * @return array       Value 1 = bayesian likeness probability, Value 2 = xhelpTicketSolution object
      * @access public
      */
     function &recommendSolutions($ticket)
@@ -135,6 +136,7 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
                             'solution' => $solution);
         }
         unset($solutions);
+
         return $this->multi_sort($ret, 'probability');
     }
 
@@ -151,6 +153,7 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
 
             return true;
         }
+
         return false;
     }
      
@@ -171,7 +174,7 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
             return $varcmp;
         }
         usort($array, "_compare");
+
         return $array;
     }
 }
-?>

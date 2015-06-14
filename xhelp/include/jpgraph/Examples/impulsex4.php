@@ -38,7 +38,7 @@ $graph->legend->SetFillColor("white");
 $graph->legend->SetLineWeight(2);
 
 // Set X-axis at the minimum value of Y-axis (default will be at 0)
-$graph->xaxis->SetPos("min");	// "min" will position the x-axis at the minimum value of the Y-axis
+$graph->xaxis->SetPos("min");    // "min" will position the x-axis at the minimum value of the Y-axis
 
 // Extend the margin for the labels on the Y-axis and reverse the direction
 // of the ticks on the Y-axis
@@ -72,5 +72,3 @@ $ep1->SetLegend("Positive envelope");
 $graph->Add($ep1);
 
 $graph->Stroke();
-
-?>

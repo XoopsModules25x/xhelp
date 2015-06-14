@@ -19,5 +19,3 @@ $sp1->SetImpuls();
 
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>

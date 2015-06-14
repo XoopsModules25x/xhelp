@@ -58,4 +58,3 @@ $graph->xaxis->SetLabelAngle(90);
 
 // Display the graph
 $graph->Stroke();
-?>

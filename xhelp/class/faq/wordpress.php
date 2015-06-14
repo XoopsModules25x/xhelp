@@ -103,8 +103,8 @@ class xhelpWordpressAdapter extends xhelpFaqAdapter {
         $menu_order = 0;
 
         $sql = "INSERT INTO ". $xoopsDB->prefix('wp_posts') ."
-                    (ID, post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,  post_status, comment_status, ping_status, post_password, post_name, to_ping, post_modified, post_modified_gmt, post_parent, menu_order) 
-                    VALUES 
+                    (ID, post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,  post_status, comment_status, ping_status, post_password, post_name, to_ping, post_modified, post_modified_gmt, post_parent, menu_order)
+                    VALUES
                     ('$post_ID', '$post_author', '$now', '$now_gmt', '$content', '$post_title', '$excerpt', '$post_status', '$comment_status', '$ping_status', '$post_password', '$post_name', '$trackback', '$now', '$now_gmt', '$post_parent', '$menu_order')";
         $ret = $xoopsDB->query($sql);
 
@@ -136,4 +136,3 @@ class xhelpWordpressAdapter extends xhelpFaqAdapter {
         $ret = $xoopsDB->query($sql);
     }
 }
-?>

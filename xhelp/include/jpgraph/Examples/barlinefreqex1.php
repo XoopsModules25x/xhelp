@@ -18,6 +18,7 @@ function accfreq($data) {
         $as[$i] = $as[$i-1]+$data[$i];
         $asp[$i] = 100.0*$as[$i]/$s;
     }
+
     return $asp;
 }
 
@@ -79,5 +80,3 @@ $graph->Add($bplot);
 // Send back the HTML page which will call this script again
 // to retrieve the image.
 $graph->Stroke();
-
-?>

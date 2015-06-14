@@ -44,7 +44,7 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpstaffrole';
@@ -52,7 +52,7 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
     /**
      * DB Table Name
      *
-     * @var 		string
+     * @var string
      * @access 	private
      */
     var $_dbtable = 'xhelp_staffroles';
@@ -76,6 +76,7 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
         if(!$role =& $this->getObjects($crit)){
             return false;
         }
+
         return $role;
     }
      
@@ -89,6 +90,7 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
         if(count($arr) == 0){
             $arr = false;
         }
+
         return $arr;
     }
 
@@ -100,6 +102,7 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
         if(!$role =& $this->getObjects($crit)){
             return false;
         }
+
         return true;
     }
 
@@ -120,9 +123,9 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE uid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('uid'));
+
         return $sql;
     }
 
-
 }   // end of handler class
-?>
+;

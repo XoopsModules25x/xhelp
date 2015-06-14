@@ -23,7 +23,6 @@ $graph->ygrid->SetColor('gray','lightgray@0.5');
 $graph->SetMarginColor('white');
 $graph->y2axis->SetColor('darkred');
 
-
 // Create the "dummy" 0 bplot
 $bplotzero = new BarPlot($datazero);
 
@@ -45,4 +44,3 @@ $graph->AddY2($y2bplot);
 
 // .. and finally stroke the image back to browser
 $graph->Stroke();
-?>

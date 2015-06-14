@@ -78,7 +78,6 @@ switch ($op) {
                     $uploadFile = true;
                 }
 
-
                 // Perform each validation
                 $fields = array();
                 $errors = array();
@@ -197,8 +196,6 @@ switch ($op) {
             }
         }
         break;
-
-
 
     case 'staffFrm':
         $isSubmitter = false;
@@ -386,7 +383,6 @@ switch ($op) {
             }
         }
 
-
         $hResponseTpl =& xhelpGetHandler('responseTemplates');          // Used to display responseTemplates
         $crit = new Criteria('uid', $uid);
         $crit->setSort('name');
@@ -499,7 +495,6 @@ switch ($op) {
             exit();
         }
 
-
         $ticketInfo->setVar('lastUpdated', time());
          
         if ($hTicket->insert($ticketInfo)) {
@@ -540,9 +535,7 @@ switch ($op) {
         _clearResponseFromSession();
         redirect_header($url, 3, $message);
 
-
         break;
-
 
     default:
         break;
@@ -574,4 +567,3 @@ function _clearResponseFromSession()
     $_xhelpSession->del('xhelp_response_private');
     $_xhelpSession->del('xhelp_validateError');
 }
-?>

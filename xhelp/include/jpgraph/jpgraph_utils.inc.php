@@ -45,7 +45,6 @@ class FuncGenerator {
     }
 }
 
-
 //=============================================================================
 // CLASS DateScaleUtils
 // Description: Help to create a manual date scale
@@ -87,7 +86,6 @@ class DateScaleUtils {
             self::$tickPositions[$i++] = mktime(0,0,0,$m,1,$y);
         }
         ++$m;
-
 
         switch( $aType ) {
             case DSUTILS_YEAR1:
@@ -319,6 +317,7 @@ class DateScaleUtils {
 
     static function GetTicks($aData,$aType=1,$aMinor=false,$aEndPoints=false) {
         $n = count($aData);
+
         return self::GetTicksFromMinMax($aData[0],$aData[$n-1],$aType,$aMinor,$aEndPoints);
     }
 
@@ -354,6 +353,7 @@ class DateScaleUtils {
                         $type = $t[3*$j+1];
                         $fs = $t[3*$j+2];
                         list($tickPositions,$minTickPositions) = self::GetTicksFromMinMax($aMin,$aMax,$type,$aMinor);
+
                         return array($fs,$tickPositions,$minTickPositions,$type);
                     }
                 }
@@ -440,6 +440,7 @@ Class ReadFileData {
                 $aData[$cnt++] = floatval($tmp[$i]);
             }
         }
+
         return $cnt;
     }
 
@@ -587,9 +588,9 @@ Class ReadFileData {
             }
             $mat[] = $row;
         }
+
         return $mat;
     }
-
 
 }
 
@@ -657,12 +658,14 @@ class LinearRegression {
     public function GetAB() {
         if( $this->icalculated == false )
         $this->Calc();
+
         return array($this->ia, $this->ib);
     }
 
     public function GetStat() {
         if( $this->icalculated == false )
         $this->Calc();
+
         return array($this->iStdErr, $this->iCorr, $this->iDet);
     }
 
@@ -681,5 +684,3 @@ class LinearRegression {
     }
 
 }
-
-?>

@@ -4,7 +4,7 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
     /**
      * Database connection
      *
-     * @var	object
+     * @var object
      * @access	private
      */
     var $_db;
@@ -19,7 +19,7 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function init(&$db) {
         $this->_db = $db;
@@ -36,8 +36,8 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
     /**
      * delete configoption matching a set of conditions
      *
-     * @param object $criteria {@link CriteriaElement}
-     * @return bool FALSE if deletion failed
+     * @param  object $criteria {@link CriteriaElement}
+     * @return bool   FALSE if deletion failed
      * @access	public
      */
     function deleteAll($criteria = null, $force = false)
@@ -55,14 +55,15 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
                 return false;
             }
         }
+
         return true;
     }
 
     /**
      * Insert a new option in the database
      *
-     * @param	object  &$confoption    reference to a {@link XoopsConfigOption}
-     * @return	bool    TRUE if successfull.
+     * @param  object &$confoption reference to a {@link XoopsConfigOption}
+     * @return bool   TRUE if successfull.
      */
     function insert(&$confoption, $force = false)
     {
@@ -98,8 +99,7 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
             $confop_id = $this->db->getInsertId();
         }
         $confoption->assignVar('confop_id', $confop_id);
+
         return $confop_id;
     }
 }
-
-?>

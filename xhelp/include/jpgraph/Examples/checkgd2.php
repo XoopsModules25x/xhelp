@@ -11,4 +11,3 @@ imagefilledellipse ($im,150,100,210,110,$white);
 imagefilledellipse ($im,150,100,200,100,$darkgreen);
 header ("Content-type: image/png");
 imagepng ($im);
-?>

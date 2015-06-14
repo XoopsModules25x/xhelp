@@ -35,5 +35,3 @@ $graph->Add($p1);
 
 // ... and stroke it
 $graph->Stroke();
-
-?>

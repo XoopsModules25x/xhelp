@@ -36,7 +36,6 @@ class Gradient {
         $this->img = $img;
     }
 
-
     function SetNumColors($aNum) {
         $this->numcolors=$aNum;
     }
@@ -430,5 +429,4 @@ class Gradient {
         }
     }
 } // Class
-
-?>
+;

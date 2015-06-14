@@ -16,10 +16,7 @@ else {
     $idx = $_GET['idx'];
 }
 
-
 $flags = new FlagImages($size) ;
 $img = $flags->GetImgByIdx($idx);
 header ("Content-type: image/png");
 ImagePng ($img);
-
-?>

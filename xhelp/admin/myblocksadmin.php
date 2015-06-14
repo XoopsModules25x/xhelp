@@ -38,7 +38,6 @@ if (!$sysperm_handler->checkRight('system_admin', XOOPS_SYSTEM_BLOCK, $xoopsUser
 // get blocks owned by the module
 $block_arr =& XoopsBlock::getByModule( $xoopsModule->mid() ) ;
 
-
 function list_blocks()
 {
     global $block_arr, $xoopsModule ;
@@ -166,7 +165,7 @@ function list_blocks()
 			</td>
 		</tr>\n" ;
 
-				$class = ( $class == 'even' ) ? 'odd' : 'even' ;
+                $class = ( $class == 'even' ) ? 'odd' : 'even' ;
     }
 
     echo "
@@ -181,7 +180,6 @@ function list_blocks()
 	</form>\n" ;
     //echo "</div>";
 }
-
 
 function list_groups()
 {

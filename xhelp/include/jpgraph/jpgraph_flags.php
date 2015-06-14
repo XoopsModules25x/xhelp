@@ -255,7 +255,6 @@ class FlagImages {
     'Democratic Republic of Congo' => 'zare',
     'Republic of Zimbabwe' => 'zbwe' ) ;
 
-
     private $iFlagCount = -1;
     private $iFlagSetMap = array(
     FLAGSIZE1 => 'flags_thumb35x35',
@@ -291,12 +290,14 @@ class FlagImages {
 
     function GetImgByName($aName,&$outFullName) {
         $idx = $this->GetIdxByName($aName,$outFullName);
+
         return $this->GetImgByIdx($idx);
     }
 
     function GetImgByIdx($aIdx) {
         if( array_key_exists($aIdx,$this->iFlagData) ) {
             $d = $this->iFlagData[$aIdx][1];
+
             return Image::CreateFromString($d);
         }
         else {
@@ -317,12 +318,14 @@ class FlagImages {
             }
             $tmp=$this->iOrdIdx[$aOrd];
             $outFullName = $tmp[1];
+
             return $tmp[0];
              
         }
         elseif( $aOrd >= 0 && $aOrd < $n ) {
             $tmp=$this->iOrdIdx[$aOrd];
             $outFullName = $tmp[1];
+
             return $tmp[0];
         }
         else {
@@ -335,6 +338,7 @@ class FlagImages {
 
         if( is_integer($aName) ) {
             $idx = $this->GetIdxByOrdinal($aName,$outFullName);
+
             return $idx;
         }
 
@@ -361,6 +365,7 @@ class FlagImages {
         }
         if( $found ) {
             $outFullName = $key;
+
             return $val;
         }
         else {
@@ -369,8 +374,3 @@ class FlagImages {
         }
     }
 }
-
-
-
-
-?>

@@ -70,7 +70,7 @@ class xhelpFormRegex extends XoopsFormElement
          
         $this->_tray->addElement($this->_select);
         $this->_tray->addElement($this->_txtbox);
+
         return $this->_tray->render();
     }
 }
-?>

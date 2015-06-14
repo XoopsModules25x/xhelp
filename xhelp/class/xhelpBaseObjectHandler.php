@@ -8,12 +8,11 @@
  * @package xhelp
  */
 
-
 Class xhelpBaseObjectHandler extends XoopsObjectHandler {
     /**
      * Database connection
      *
-     * @var	object
+     * @var object
      * @access	private
      */
     var $_db;
@@ -25,16 +24,14 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
      */
     var $_idfield = 'id';
 
-
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function init(&$db) {
         $this->_db = $db;
     }
-
 
     /**
      * create a new  object
@@ -44,12 +41,13 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
     function &create()
     {
         $obj = new $this->classname();
+
         return $obj;
     }
 
     /**
      * retrieve an object from the database, based on. use in child classes
-     * @param int $id ID
+     * @param  int   $id ID
      * @return mixed object if id exists, false if not
      * @access public
      */
@@ -65,18 +63,20 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
             $numrows = $this->_db->getRowsNum($result);
             if($numrows == 1) {
                 $obj = new $this->classname($this->_db->fetchArray($result));
+
                 return $obj;
             }
         }
+
         return $ret;
     }
 
     /**
      * retrieve objects from the database
      *
-     * @param object $criteria {@link CriteriaElement} conditions to be met
-     * @param bool $id_as_key Should the department ID be used as array key
-     * @return array array of objects
+     * @param  object $criteria  {@link CriteriaElement} conditions to be met
+     * @param  bool   $id_as_key Should the department ID be used as array key
+     * @return array  array of objects
      * @access  public
      */
     function &getObjects($criteria = null, $id_as_key = false)
@@ -107,6 +107,7 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
             }
             unset($obj);
         }
+
         return $ret;
     }
 
@@ -115,18 +116,21 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
         // Make sure object is of correct type
         if (strcasecmp($this->classname, get_class($obj)) != 0) {
             $obj->setErrors('Object is not a ' + $this->classname);
+
             return false;
         }
 
         // Make sure object needs to be stored in DB
         if (!$obj->isDirty()) {
             $obj->setErrors('Object does not need to be saved');
+
             return true;
         }
 
         // Make sure object fields are filled with valid values
         if (!$obj->cleanVars()) {
             $obj->setErrors('Object cannot be sanitized for storage');
+
             return false;
         }
 
@@ -154,12 +158,13 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
         if ($obj->isNew()) {
             $obj->assignVar($this->_idfield, $this->_db->getInsertId());
         }
+
         return true;
     }
 
     /**
      * Create a "select" SQL query
-     * @param object $criteria {@link CriteriaElement} to match
+     * @param  object $criteria {@link CriteriaElement} to match
      * @return string SQL query
      * @access private
      */
@@ -173,14 +178,15 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
                     ' .$criteria->getOrder();
             }
         }
+
         return $sql;
     }
 
     /**
      * count objects matching a criteria
      *
-     * @param object $criteria {@link CriteriaElement} to match
-     * @return int count of objects
+     * @param  object $criteria {@link CriteriaElement} to match
+     * @return int    count of objects
      * @access public
      */
     function getCount($criteria = null)
@@ -193,15 +199,16 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
             return 0;
         }
         list($count) = $this->_db->fetchRow($result);
+
         return $count;
     }
 
     /**
      * delete object based on id
      *
-     * @param object $obj {@link XoopsObject} to delete
-     * @param bool $force override XOOPS delete protection
-     * @return bool deletion successful?
+     * @param  object $obj   {@link XoopsObject} to delete
+     * @param  bool   $force override XOOPS delete protection
+     * @return bool   deletion successful?
      * @access public
      */
     function delete(&$obj, $force = false) {
@@ -219,14 +226,15 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
         if (!$result) {
             return false;
         }
+
         return true;
     }
 
     /**
      * delete department matching a set of conditions
      *
-     * @param object $criteria {@link CriteriaElement}
-     * @return bool FALSE if deletion failed
+     * @param  object $criteria {@link CriteriaElement}
+     * @return bool   FALSE if deletion failed
      * @access	public
      */
     function deleteAll($criteria = null)
@@ -238,14 +246,15 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
         if (!$result = $this->_db->query($sql)) {
             return false;
         }
+
         return true;
     }
 
     /**
      * Assign a value to 1 field for tickets matching a set of conditions
      *
-     * @param object $criteria {@link CriteriaElement}
-     * @return bool FALSE if update failed
+     * @param  object $criteria {@link CriteriaElement}
+     * @return bool   FALSE if update failed
      * @access	public
      */
     function updateAll($fieldname, $fieldvalue, $criteria = null)
@@ -258,6 +267,7 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
         if (!$result = $this->_db->query($sql)) {
             return false;
         }
+
         return true;
     }
 
@@ -274,11 +284,10 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
         return false;
     }
 
-
     /**
      * Singleton - prevent multiple instances of this class
      *
-     * @param object &$db {@link XoopsHandlerFactory}
+     * @param  object &$db {@link XoopsHandlerFactory}
      * @return object {@link pagesCategoryHandler}
      * @access public
      */
@@ -289,8 +298,7 @@ Class xhelpBaseObjectHandler extends XoopsObjectHandler {
             $classname = $this->classname.'Handler';
             $instance = new $classname($db);
         }
+
         return $instance;
     }
 }
-
-?>

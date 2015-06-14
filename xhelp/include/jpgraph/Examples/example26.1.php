@@ -16,7 +16,3 @@ $p1->SetCenter(0.4);
 
 $graph->Add($p1);
 $graph->Stroke();
-
-?>
-
-

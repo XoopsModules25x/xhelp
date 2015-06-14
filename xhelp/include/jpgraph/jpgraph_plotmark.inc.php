@@ -314,6 +314,7 @@ class PlotMark {
             // Stroke title
             $this->title->Align("center","top");
             $this->title->Stroke($img,$x,$y+round($dh/2));
+
             return;
         }
 
@@ -437,7 +438,6 @@ class PlotMark {
 } // Class
 
 
-
 //========================================================================
 // CLASS ImgData
 // Description: Base class for all image data classes that contains the
@@ -470,6 +470,7 @@ class ImgData {
         }
         else
         $idx = $aIdx ;
+
         return Image::CreateFromString(base64_decode($this->{$n}[$idx][1]));
     }
 
@@ -477,7 +478,6 @@ class ImgData {
         return array($this->anchor_x,$this->anchor_y);
     }
 }
-
 
 // Keep a global flag cache to reduce memory usage
 $_gFlagCache=array(
@@ -497,8 +497,7 @@ class FlagCache {
         }
         $f = $_gFlagCache[$aSize];
         $idx = $f->GetIdxByName($aName,$aFullName);
+
         return $f->GetImgByIdx($idx);
     }
 }
-
-?>

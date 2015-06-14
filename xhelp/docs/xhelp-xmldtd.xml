@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE tickets [
     <!ELEMENT tickets         (ticket)>
-    <!ELEMENT ticket          (uid, subject, description, department, priority, status, posted, lastUpdated, ownership, 
-                               closedBy, totalTimeSpent, userIP, serverid, emailHash, email, overdueTime, responses, files, 
+    <!ELEMENT ticket          (uid, subject, description, department, priority, status, posted, lastUpdated, ownership,
+                               closedBy, totalTimeSpent, userIP, serverid, emailHash, email, overdueTime, responses, files,
                                logMessages, subscribedUsers)>
         <!ELEMENT uid             (#PCDATA)>
         <!ELEMENT subject         (#PCDATA)>
@@ -73,7 +73,7 @@
 
 <!DOCTYPE staff_members [
     <!ELEMENT staff_members   (staff)>
-        <!ELEMENT staff           (uid, email, responseTime, numReviews, callsClosed, attachSig, rating, ticketsResponded, 
+        <!ELEMENT staff           (uid, email, responseTime, numReviews, callsClosed, attachSig, rating, ticketsResponded,
                                    notify, permTimestamp, response_templates, roles, saved_searches, staff_depts)>
             <!ELEMENT uid                 (#PCDATA)>
             <!ELEMENT email               (#PCDATA)>
@@ -121,7 +121,7 @@
             <!ELEMENT mime_name       (#PCDATA)>
             <!ELEMENT mime_admin      (#PCDATA)>
             <!ELEMENT mime_user       (#PCDATA)>
-]>                
+]>
 
 <!DOCTYPE roles         [
     <!ELEMENT roles           (role)>

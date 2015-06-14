@@ -51,7 +51,6 @@ $graph->title->SetColor('navy');
 $graph->tabtitle->Set('Microphone #1');
 $graph->tabtitle->SetColor('brown:0.5','lightyellow');
 
-
 $p = new PolarPlot($data);
 $p->SetFillColor('lightblue@0.5');
 $p->mark->SetType(MARK_SQUARE);
@@ -59,5 +58,3 @@ $p->mark->SetType(MARK_SQUARE);
 $graph->Add($p);
 
 $graph->Stroke();
-
-?>

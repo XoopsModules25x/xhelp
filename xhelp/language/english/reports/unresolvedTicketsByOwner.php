@@ -14,5 +14,3 @@ define('_XHELP_UTBO_DB7', 'Post Time');
 
 define('_XHELP_UTBO_PARAM1', 'Start Date');
 define('_XHELP_UTBO_PARAM2', 'End Date');
-
-?>

@@ -40,6 +40,7 @@ class xhelpFile extends XoopsObject {
     function getFilePath()
     {
         $path = XHELP_UPLOAD_PATH . '/'. $this->getVar('filename');
+
         return $path;
     }
 
@@ -77,6 +78,7 @@ class xhelpFile extends XoopsObject {
         if($success){
             $ret = $this->renameAtFS($filename, $newFilename);
         }
+
         return $ret;
     }
 
@@ -104,7 +106,7 @@ class xhelpFileHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpfile';
@@ -120,7 +122,7 @@ class xhelpFileHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpFileHandler(&$db)
     {
@@ -149,12 +151,15 @@ class xhelpFileHandler extends xhelpBaseObjectHandler {
         }
 
         $sql = sprintf("UPDATE %s SET filename = %s, ticketid = %u, responseid = %d, mimetype = %s WHERE id = %u",
-        $this->_db->prefix($this->_dbtable), $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype), $id);        return $sql;
+        $this->_db->prefix($this->_dbtable), $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype), $id);
+
+return $sql;
     }
 
     function _deleteQuery(&$obj)
     {
         $sql = sprintf("DELETE FROM %s WHERE id = %u", $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
@@ -171,8 +176,8 @@ class xhelpFileHandler extends xhelpBaseObjectHandler {
     /**
      * delete file matching a set of conditions
      *
-     * @param object $criteria {@link CriteriaElement}
-     * @return bool FALSE if deletion failed
+     * @param  object $criteria {@link CriteriaElement}
+     * @return bool   FALSE if deletion failed
      * @access	public
      */
     function deleteAll($criteria = null)
@@ -189,6 +194,7 @@ class xhelpFileHandler extends xhelpBaseObjectHandler {
         if (!$result = $this->_db->queryF($sql)) {
             return false;
         }
+
         return true;
     }
 
@@ -202,4 +208,3 @@ class xhelpFileHandler extends xhelpBaseObjectHandler {
         return $ret;
     }
 }
-?>

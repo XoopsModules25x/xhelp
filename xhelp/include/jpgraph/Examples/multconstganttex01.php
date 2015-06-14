@@ -26,5 +26,3 @@ $graph->Add($bar3);
 
 // .. and stroke the graph
 $graph->Stroke();
-
-?>

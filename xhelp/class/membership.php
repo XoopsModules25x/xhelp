@@ -5,7 +5,6 @@ class xhelpMembershipHandler {
     var $_hStaff;
     var $_hDept;
 
-
     /**
      * Constructor
      *
@@ -23,8 +22,8 @@ class xhelpMembershipHandler {
     /**
      * count objects matching a criteria
      *
-     * @param object $criteria {@link CriteriaElement} to match
-     * @return int count of objects
+     * @param  object $criteria {@link CriteriaElement} to match
+     * @return int    count of objects
      * @access public
      */
     function getCount($criteria = null)
@@ -37,13 +36,14 @@ class xhelpMembershipHandler {
             return 0;
         }
         list($count) = $this->_db->fetchRow($result);
+
         return $count;
     }
      
     /**
      * Get all departments a staff user is assigned to
      *
-     * @param int $uid staff user id
+     * @param  int   $uid staff user id
      * @return array array of {@link xhelpDepartment} objects
      * @access public
      */
@@ -89,6 +89,7 @@ class xhelpMembershipHandler {
             $arr[$dept->getVar('id')] = $dept;
             unset($temp);
         }
+
         return $arr;
     }
 
@@ -98,13 +99,14 @@ class xhelpMembershipHandler {
         $sql = sprintf("SELECT COUNT(*) as MemberCount FROM %s WHERE uid = %u AND department = %u", $this->_db->prefix('xhelp_jstaffdept'), $uid, $deptid);
         $ret = $this->_db->query($sql);
         list($memberCount) = $this->_db->fetchRow($ret);
+
         return ($memberCount > 0);
     }
 
     /**
      * Get all staff members assigned to a department
      *
-     * @param int $deptid department id
+     * @param  int   $deptid department id
      * @return array array of {@link xhelpStaff} objects
      * @access public
      */
@@ -191,7 +193,6 @@ class xhelpMembershipHandler {
         return $arr;
     }
 
-
     function inAllDepts($staffDepts)
     {
         $hDept =& xhelpGetHandler('department');
@@ -205,15 +206,16 @@ class xhelpMembershipHandler {
         if($allDepts != $numDepts){
             return false;
         }
+
         return true;
     }
 
     /**
      * Add the given staff member(s) to the given department
      *
-     * @param mixed $staff single or array of uids or {@link xhelpStaff} objects
-     * @param int $deptid Department ID
-     * @return bool True if successful, False if not
+     * @param  mixed $staff  single or array of uids or {@link xhelpStaff} objects
+     * @param  int   $deptid Department ID
+     * @return bool  True if successful, False if not
      * @access public
      */
     function addStaffToDept(&$staff, $deptid)
@@ -227,6 +229,7 @@ class xhelpMembershipHandler {
                     exit;
                 }
             }
+
             return $ret;
         }
     }
@@ -234,9 +237,9 @@ class xhelpMembershipHandler {
     /**
      * Add the given department(s) to the given user
      *
-     * @param mixed $dept single or array of department id's or {@link xhelpDepartment} objects
-     * @param int $uid User ID
-     * @return bool True if successful, False if not
+     * @param  mixed $dept single or array of department id's or {@link xhelpDepartment} objects
+     * @param  int   $uid  User ID
+     * @return bool  True if successful, False if not
      * @access public
      */
     function addDeptToStaff($dept, $uid)
@@ -250,6 +253,7 @@ class xhelpMembershipHandler {
                     break;
                 }
             }
+
             return $ret;
         }
     }
@@ -257,9 +261,9 @@ class xhelpMembershipHandler {
     /**
      * Remove the given staff member(s) to the given department
      *
-     * @param mixed $staff single or array of uids or {@link xhelpStaff} objects
-     * @param int $deptid Department ID
-     * @return bool True if successful, False if not
+     * @param  mixed $staff  single or array of uids or {@link xhelpStaff} objects
+     * @param  int   $deptid Department ID
+     * @return bool  True if successful, False if not
      * @access public
      */
     function  removeStaffFromDept(&$staff, $deptid)
@@ -273,6 +277,7 @@ class xhelpMembershipHandler {
                     exit;
                 }
             }
+
             return $ret;
         }
     }
@@ -280,9 +285,9 @@ class xhelpMembershipHandler {
     /**
      * Remove the given user from the given department(s)
      *
-     * @param mixed $dept single or array of department id's or {@link xhelpDepartment} objects
-     * @param int $uid User ID
-     * @return bool True if successful, False if not
+     * @param  mixed $dept single or array of department id's or {@link xhelpDepartment} objects
+     * @param  int   $uid  User ID
+     * @return bool  True if successful, False if not
      * @access public
      */
     function removeDeptFromStaff(&$dept, $uid)
@@ -296,15 +301,15 @@ class xhelpMembershipHandler {
                     exit;
                 }
             }
+
             return $ret;
         }
     }
 
-
     /**
      * Remove the specified user from all departments
      *
-     * @param int $uid User ID
+     * @param  int  $uid User ID
      * @return bool True if successful, False if not
      * @access public
      */
@@ -312,29 +317,30 @@ class xhelpMembershipHandler {
     function clearStaffMembership($uid)
     {
         $sql = sprintf("DELETE FROM %s WHERE uid=%u", $this->_db->prefix('xhelp_jstaffdept'), $uid);
+
         return $this->_db->query($sql);
     }
 
     /**
      * Remove all users from the specified department
      *
-     * @param int $deptid Department ID
+     * @param  int  $deptid Department ID
      * @return bool True if successful, False if not
      * @access public
      */
     function clearDeptMembership($deptid)
     {
         $sql = sprintf("DELETE FROM %s WHERE department=%u", $this->_db->prefix('xhelp_jstaffdept'), $deptid);
+
         return $this->_db->query($sql);
     }
-
 
     /**
      * Add a staff member to a department
      *
-     * @param mixed $staff uid or {@link xhelpStaff} object
-     * @param mixed $dept department id or {@link xhelpDepartment} object
-     * @return bool True if successful, False if not
+     * @param  mixed $staff uid or {@link xhelpStaff} object
+     * @param  mixed $dept  department id or {@link xhelpDepartment} object
+     * @return bool  True if successful, False if not
      * @access private
      */
     function _addMembership(&$staff, &$dept)
@@ -360,23 +366,24 @@ class xhelpMembershipHandler {
     /**
      * Add a record to the joiner database table
      *
-     * @param int $staffid user id
-     * @param int $deptid department id
+     * @param  int  $staffid user id
+     * @param  int  $deptid  department id
      * @return bool True if successful, False if not
      * @access private
      */
     function _addJoinerRecord($staffid, $deptid)
     {
         $sql = sprintf('INSERT INTO %s (uid, department) VALUES(%u, %u)', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
+
         return $this->_db->query($sql);
     }
 
     /**
      * Remove a staff member from a department
      *
-     * @param mixed $staff uid or {@link xhelpStaff} object
-     * @param mixed $dept department id or {@link xhelpDepartment} object
-     * @return bool True if successful, False if not
+     * @param  mixed $staff uid or {@link xhelpStaff} object
+     * @param  mixed $dept  department id or {@link xhelpDepartment} object
+     * @return bool  True if successful, False if not
      * @access private
      */
     function _removeMembership(&$staff, &$dept)
@@ -399,18 +406,18 @@ class xhelpMembershipHandler {
         return $this->_removeJoinerRecord($staffid, $deptid);
     }
 
-
     /**
      * Remove a record from the joiner db table
      *
-     * @param int $staffid user id
-     * @param int $deptid department id
+     * @param  int  $staffid user id
+     * @param  int  $deptid  department id
      * @return bool True if successful, False if not
      * @access private
      */
     function _removeJoinerRecord($staffid, $deptid)
     {
         $sql = sprintf('DELETE FROM %s WHERE uid=%u AND department=%u', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
+
         return $this->_db->queryF($sql);
     }
 
@@ -459,5 +466,4 @@ $dept = 5;
 $arr = array(5, 14, 18); //Array of uid's to add
 $hMembership &= xhelpGetHandler('membership');
 $bRet = $hMembership->addStaffToDept($arr, $dept);
-*/
-?>
+*/;

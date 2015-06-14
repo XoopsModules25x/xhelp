@@ -41,4 +41,3 @@ class xhelpMailBox {
     function disconnect(){
     }
 }
-?>

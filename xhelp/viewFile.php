@@ -2,7 +2,6 @@
 //include('header.php');
 require('../../mainfile.php');
 
-
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     include_once(XOOPS_ROOT_PATH.'/modules/xhelp/include/constants.php');
 }
@@ -79,7 +78,6 @@ if(isset($mimeType) && strstr($mimeType, "text/")) {
 // Write file to browser
 fpassthru($fp);
 
-
 function _userAllowed(&$ticket, &$user) {
     $emails =& $ticket->getEmails(true);
     foreach($emails as $email) {
@@ -87,6 +85,6 @@ function _userAllowed(&$ticket, &$user) {
             return true;
         }
     }
+
     return false;
 }
-?>

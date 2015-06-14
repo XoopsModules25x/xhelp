@@ -159,6 +159,7 @@ class StockPlot extends Plot {
                 $this->csimareas.= "  />\n";
             }
         }
+
         return true;
     }
 
@@ -194,5 +195,4 @@ class BoxPlot extends StockPlot {
     }
 }
 
-/* EOF */
-?>
+/* EOF */;

@@ -59,7 +59,6 @@ class xhelpHtmlReportRenderer extends xhelpReportRenderer {
         }
         $myReport .= "</tr>";
 
-
         foreach($dbFields as $dbField=>$field){
             ${$dbField} = '';
         }
@@ -82,7 +81,6 @@ class xhelpHtmlReportRenderer extends xhelpReportRenderer {
          }
          */
 
-
         foreach($aResults as $result){
             $myReport .= "<tr class='even'>";
             foreach($dbFields as $dbField=>$field){
@@ -96,4 +94,3 @@ class xhelpHtmlReportRenderer extends xhelpReportRenderer {
         return $myReport;
     }
 }
-?>

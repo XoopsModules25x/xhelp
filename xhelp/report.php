@@ -70,7 +70,7 @@ function displayReports()
     $xoopsTpl->assign('xhelp_reports', $aReports);
     $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
 
-    require(XOOPS_ROOT_PATH.'/footer.php');					// Include page footer
+    require(XOOPS_ROOT_PATH.'/footer.php');                    // Include page footer
 }
 
 function _getReportsMeta()
@@ -81,6 +81,7 @@ function _getReportsMeta()
     foreach($reports as $name=>$report){
         $aMeta[$name] = $report->meta;
     }
+
     return $aMeta;
 }
 
@@ -184,4 +185,3 @@ function generateHeader($report)
     echo "<h2>".$report->meta['name']."</h2>";
     echo "</div>";
 }
-?>

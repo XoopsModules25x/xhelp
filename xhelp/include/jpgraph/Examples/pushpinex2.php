@@ -57,7 +57,3 @@ $graph->Add($lp);
 
 // .. and output to browser
 $graph->Stroke();
-
-?>
-
-

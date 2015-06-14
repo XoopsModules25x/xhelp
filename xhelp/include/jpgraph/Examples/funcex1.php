@@ -48,11 +48,6 @@ list($xm,$ym)=$lp2->Max();
 $lp2->SetColor('red');
 $lp2->SetWeight(2);
 
-
 $graph->Add($lp1);
 $graph->Add($lp2);
 $graph->Stroke();
-
-?>
-
-

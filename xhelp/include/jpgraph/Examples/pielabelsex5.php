@@ -42,7 +42,3 @@ $p1->value->SetColor('darkgray');
 // Add and stroke
 $graph->Add($p1);
 $graph->Stroke();
-
-?>
-
-

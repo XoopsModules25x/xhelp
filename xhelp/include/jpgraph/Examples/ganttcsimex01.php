@@ -21,8 +21,3 @@ $graph->Add(array($bar1,$bar2));
 
 // And stroke
 $graph->StrokeCSIM();
-
-
-?>
-
-

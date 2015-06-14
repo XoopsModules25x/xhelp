@@ -51,5 +51,3 @@ $plot2->SetFillColor('red@0.9');
 $graph->Add($plot);
 $graph->Add($plot2);
 $graph->Stroke();
-?>
-

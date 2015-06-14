@@ -36,6 +36,4 @@ $graph->title->SetFont(FF_ARIAL,FS_BOLD,10);
 $graph->title->SetColor('darkred');
 $graph->title->Set('BAND_HVCROSS');
 
-
 $graph->Stroke();
-?>

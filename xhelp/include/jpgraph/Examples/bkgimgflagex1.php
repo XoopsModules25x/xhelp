@@ -75,5 +75,3 @@ $gbarplot->SetWidth(0.6);
 $graph->Add($gbarplot);
 
 $graph->Stroke();
-?>
-

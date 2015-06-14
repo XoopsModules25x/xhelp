@@ -18,7 +18,3 @@ $p1->SetLegends($gDateLocale->GetShortMonth());
 
 $graph->Add($p1);
 $graph->Stroke();
-
-?>
-
-

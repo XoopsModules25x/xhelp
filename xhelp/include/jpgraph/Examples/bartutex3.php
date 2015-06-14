@@ -38,7 +38,3 @@ $graph->Add($b1);
 
 // Finally output the  image
 $graph->Stroke();
-
-?>
-
-

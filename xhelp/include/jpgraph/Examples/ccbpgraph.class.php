@@ -26,8 +26,8 @@ class CCBPGraph {
     /**
      * Construct a new instance of CCBPGraph
      *
-     * @param int $aWidth
-     * @param int $aHeight
+     * @param  int       $aWidth
+     * @param  int       $aHeight
      * @return CCBPGraph
      */
     public function __construct($aWidth, $aHeight) {
@@ -76,10 +76,10 @@ class CCBPGraph {
      * Set the specification of the color backgrounds and also the
      * optional exact colors to be used
      *
-     * @param mixed $aSpec  An array of 3 1x2 arrays. Each array specify the
-     * color indication value at x=0 and x=max x in order to determine the slope
-     * @param mixed $aColors  An array with four elements specifying the colors
-     * of each color indicator
+     * @param mixed $aSpec   An array of 3 1x2 arrays. Each array specify the
+     *                       color indication value at x=0 and x=max x in order to determine the slope
+     * @param mixed $aColors An array with four elements specifying the colors
+     *                       of each color indicator
      */
     public function SetColorIndication(array $aSpec,array $aColors=null) {
         if( count($aSpec) !== 3 ) {
@@ -216,7 +216,6 @@ class CCBPGraph {
         }
         $colarea[3] = array( array($lowx,$highy), array($highx,$highy) );
 
-
         $cb = array();
         for( $i=0; $i < 4; ++$i ) {
             $cb[$i] = new LinePlot(array($colarea[$i][0][1],$colarea[$i][1][1]),
@@ -254,4 +253,3 @@ class CCBPGraph {
         $this->graph->Stroke($aFile);
     }
 }
-?>

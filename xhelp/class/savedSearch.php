@@ -51,7 +51,7 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpsavedsearch';
@@ -67,7 +67,7 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpSavedSearchHandler(&$db)
     {
@@ -107,6 +107,7 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
@@ -122,20 +123,22 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
         $crit->setOrder('ASC');
         $crit->setSort('name');
         $ret = $this->getObjects($crit);
+
         return $ret;
     }
 
     function createSQL($crit)
     {
         $sql = $this->_selectQuery($crit);
+
         return $sql;
     }
 
     /**
      * delete department matching a set of conditions
      *
-     * @param object $criteria {@link CriteriaElement}
-     * @return bool FALSE if deletion failed
+     * @param  object $criteria {@link CriteriaElement}
+     * @return bool   FALSE if deletion failed
      * @access	public
      */
     function deleteAll($criteria = null)
@@ -151,4 +154,3 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
         return true;
     }
 }
-?>

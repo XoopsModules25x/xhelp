@@ -35,12 +35,7 @@ $p1->ExplodeSlice(3);
 $p1->value->SetFont(FF_ARIAL,FS_BOLD,11);
 $p1->value->SetColor("navy");
 
-
 $p1->SetLegends(array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct"));
 
 $graph->Add($p1);
 $graph->Stroke();
-
-?>
-
-

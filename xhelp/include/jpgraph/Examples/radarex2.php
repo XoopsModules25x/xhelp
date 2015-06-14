@@ -18,4 +18,3 @@ $graph->SetPos(0.5,0.6);
 // Add the plot and display the graph
 $graph->Add($plot);
 $graph->Stroke();
-?>

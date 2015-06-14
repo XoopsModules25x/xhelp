@@ -94,6 +94,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
         }
     }
     $dir->close();
+
     return xhelpPrettyBytes($size);
 }
 
@@ -116,7 +117,6 @@ function &xhelpGetControl($control)
         return false;
     }
 }
-
 
 function &xhelpGetControlArray()
 {
@@ -183,6 +183,7 @@ function removeAccents($string) {
     $double_chars['in'] = array(chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254));
     $double_chars['out'] = array('OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th');
     $string = str_replace($double_chars['in'], $double_chars['out'], $string);
+
     return $string;
 }
 
@@ -200,6 +201,7 @@ function seemsUtf8($Str) { # by bmorel at ssi dot fr
             return false;
         }
     }
+
     return true;
 }
 
@@ -250,7 +252,6 @@ function xhelpCreateDepartmentVisibility()
 
         // Todo: Possibly add text saying, "Visibility for Department x set"
     }
+
     return true;
 }
-
-?>

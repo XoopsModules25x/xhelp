@@ -4,7 +4,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_bar.php');
 require_once ('jpgraph/jpgraph_line.php');
 
-
 $ydata = array(12,15,22,19,5);
 
 $graph = new Graph(400,200);
@@ -29,7 +28,3 @@ $graph->Add($line);
 
 // Output line
 $graph->Stroke();
-
-?>
-
-

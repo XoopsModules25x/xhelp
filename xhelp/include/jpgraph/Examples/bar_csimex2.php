@@ -43,9 +43,6 @@ $graph->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->yaxis->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->xaxis->title->SetFont(FF_FONT1,FS_BOLD);
 
-
 // Send back the HTML page which will call this script again
 // to retrieve the image.
 $graph->StrokeCSIM();
-
-?>

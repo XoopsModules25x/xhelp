@@ -37,6 +37,7 @@ class LogScale extends LinearScale {
                 JpGraphError::RaiseL(11001);
                 // ('Your data contains non-numeric values.');
             }
+
             return 1;
         }
         if( $a < 0 ) {
@@ -46,6 +47,7 @@ class LogScale extends LinearScale {
         }
         if( $a==0 ) $a=1;
         $a=log10($a);
+
         return ceil($this->off + ($a*1.0 - $this->scale[0]) * $this->scale_factor);
     }
 
@@ -57,12 +59,14 @@ class LogScale extends LinearScale {
                 JpGraphError::RaiseL(11001);
                 //('Your data contains non-numeric values.');
             }
+
             return 1;
         }
         if( $a==0 ) {
             $a=1;
         }
         $a=log10($a);
+
         return round(($a*1.0 - $this->scale[0]) * $this->scale_factor);
     }
 
@@ -168,7 +172,6 @@ class LogTicks extends Ticks{
         $limit = $scale->GetMaxVal();
         $nextMajor = 10*$start;
         $step = $nextMajor / 10.0;
-
 
         $img->SetLineWeight($this->weight);
 
@@ -298,8 +301,8 @@ class LogTicks extends Ticks{
                 }
             }
         }
+
         return true;
     }
 } // Class
-/* EOF */
-?>
+/* EOF */;

@@ -58,4 +58,3 @@ if(isset($_POST['search'])){
 $xoopsTpl->display('db:xhelp_lookup.html');
 
 exit();
-?>

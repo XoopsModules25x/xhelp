@@ -35,5 +35,3 @@ $graph->ygrid->show(false,false);
 
 // display graph
 $graph->Stroke();
-
-?>

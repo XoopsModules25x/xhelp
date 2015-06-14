@@ -17,7 +17,7 @@ class xhelpStaffService extends xhelpService
     /**
      * Instance of the xoopsStaffHandler
      *
-     * @var	object
+     * @var object
      * @access	private
      */
     var $_hStaff;
@@ -35,15 +35,14 @@ class xhelpStaffService extends xhelpService
 
     /**
      * Update staff response time if first staff response
-     * @param xhelpTicket $ticket Ticket for response
-     * @param xhelpResponses $response Response
-     * @return bool True on success, false on error
+     * @param  xhelpTicket    $ticket   Ticket for response
+     * @param  xhelpResponses $response Response
+     * @return bool           True on success, false on error
      * @access public
      */
     function new_response($ticket, $response)
     {
         global $xoopsUser;
-
 
         //if first response for ticket, update staff responsetime
         $hResponse   =& xhelpGetHandler('responses');
@@ -59,11 +58,11 @@ class xhelpStaffService extends xhelpService
 
     /**
      * Update staff response time if first staff response
-     * @param xhelpTicket $ticket Ticket for response
-     * @param xhelpResponses $response Response
-     * @param int $timespent Number of minutes spent on ticket
-     * @param bool $private Is the response private?
-     * @return bool True on success, false on error
+     * @param  xhelpTicket    $ticket    Ticket for response
+     * @param  xhelpResponses $response  Response
+     * @param  int            $timespent Number of minutes spent on ticket
+     * @param  bool           $private   Is the response private?
+     * @return bool           True on success, false on error
      * @access public
      */
     function batch_response($tickets, $response)
@@ -83,14 +82,13 @@ class xhelpStaffService extends xhelpService
             }
         }
 
-
     }
 
     /**
      * Handler for the 'batch_status' event
-     * @param array $tickets Array of xhelpTicket objects
-     * @param int $newstatus New Status of all tickets
-     * @return bool True on success, false on error
+     * @param  array $tickets   Array of xhelpTicket objects
+     * @param  int   $newstatus New Status of all tickets
+     * @return bool  True on success, false on error
      * @access public
      */
     function batch_status($tickets, $newstatus)
@@ -107,8 +105,8 @@ class xhelpStaffService extends xhelpService
 
     /**
      * Callback function for the 'close_ticket' event
-     * @param xhelpTicket $ticket Closed ticket
-     * @return bool True on success, false on error
+     * @param  xhelpTicket $ticket Closed ticket
+     * @return bool        True on success, false on error
      * @access public
      */
     function close_ticket($ticket)
@@ -119,13 +117,14 @@ class xhelpStaffService extends xhelpService
         if ($hMembership->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
             $this->_hStaff->increaseCallsClosed($ticket->getVar('closedBy'), 1);
         }
+
         return true;
     }
 
     /**
      * Callback function for the 'reopen_ticket' event
-     * @param array $args Array of arguments passed to EventService
-     * @return bool True on success, false on error
+     * @param  array $args Array of arguments passed to EventService
+     * @return bool  True on success, false on error
      * @access public
      */
     function reopen_ticket($ticket)
@@ -135,15 +134,16 @@ class xhelpStaffService extends xhelpService
         if ($hMembership->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
             $this->_hStaff->increaseCallsClosed($ticket->getVar('closedBy'), -1);
         }
+
         return true;
     }
 
     /**
      * Callback function for the 'new_response_rating' event
-     * @param xhelpRating $rating Rating
-     * @param xhelpTicket $ticket Ticket that was rated
-     * @param xhelpResponse $response Response that was rated
-     * @return bool True on success, false on error
+     * @param  xhelpRating   $rating   Rating
+     * @param  xhelpTicket   $ticket   Ticket that was rated
+     * @param  xhelpResponse $response Response that was rated
+     * @return bool          True on success, false on error
      * @access public
      */
     function new_response_rating($rating, $ticket, $response)
@@ -151,13 +151,14 @@ class xhelpStaffService extends xhelpService
         global $xoopsUser;
 
         $hStaff =& xhelpGetHandler('staff');
+
         return $hStaff->updateRating($rating->getVar('staffid'), $rating->getVar('rating'));
     }
 
     /**
      * Event Handler for 'view_ticket'
-     * @param xhelpTicket $ticket Ticket being viewd
-     * @return bool True on success, false on error
+     * @param  xhelpTicket $ticket Ticket being viewd
+     * @return bool        True on success, false on error
      * @access public
      */
     function view_ticket($ticket)
@@ -182,8 +183,8 @@ class xhelpStaffService extends xhelpService
 
     /**
      * Event Handler for 'delete_staff' event
-     * @param xhelpStaff $staff Staff member being deleted
-     * @return bool True on success, false on error
+     * @param  xhelpStaff $staff Staff member being deleted
+     * @return bool       True on success, false on error
      * @access public
      */
     function delete_staff($staff)
@@ -208,6 +209,7 @@ class xhelpStaffService extends xhelpService
             $c = __CLASS__;
             $instance = new $c;
         }
+
         return($instance);
     }
 
@@ -238,4 +240,3 @@ class xhelpStaffService extends xhelpService
         $this->_attachEvent('view_ticket', $this);
     }
 }
-?>

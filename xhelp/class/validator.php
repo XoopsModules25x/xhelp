@@ -439,7 +439,6 @@ class ValidateFileSize extends Validator
     var $file;
     var $maxsize;
 
-
     function ValidateFileSize($file, $maxsize)
     {
         $this->file = $file;
@@ -460,7 +459,6 @@ class ValidateImageSize extends Validator
     var $file;
     var $maxwidth;
     var $maxheight;
-
 
     function ValidateImageSize($file, $maxwidth, $maxheight)
     {
@@ -540,4 +538,3 @@ class ValidateRegEx extends Validator
         }
     }
 }
-?>

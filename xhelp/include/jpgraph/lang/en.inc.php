@@ -25,7 +25,6 @@ HTTP headers have already been sent.<br>Caused by output from file <b>%s</b> at 
 12 => array('No path specified for TTF_DIR and path can not be determined automatically. Please specify TTF_DIR manually (in jpg-config.inc).',0),
 13 => array('The installed PHP version (%s) is not compatible with this release of the library. The library requires at least PHP version %s',2),
 
-
 /*
  **  jpgraph_bar
  */
@@ -45,7 +44,6 @@ HTTP headers have already been sent.<br>Caused by output from file <b>%s</b> at 
 2013 => array('You have specified an empty array for shadow colors in the bar plot.',0),
 2014 => array('Number of datapoints for each data set in accbarplot must be the same',0),
 2015 => array('Individual bar plots in an AccBarPlot or GroupBarPlot can not have specified X-coordinates',0),
-
 
 /*
  **  jpgraph_date
@@ -67,7 +65,6 @@ HTTP headers have already been sent.<br>Caused by output from file <b>%s</b> at 
 5002 => array('Flag index %s does not exist.',1),
 5003 => array('Invalid ordinal number (%d) specified for flag index.',1),
 5004 => array('The (partial) country name %s does not have a corresponding flag image. The flag may still exist but under another name, e.g. instead of "usa" try "united states".',1),
-
 
 /*
  **  jpgraph_gantt
@@ -196,7 +193,6 @@ HTTP headers have already been sent.<br>Caused by output from file <b>%s</b> at 
 16002 => array('No positions specified for pattern.',0),
 16003 => array('Unknown pattern specification (%d)',0),
 16004 => array('Min value for plotband is larger than specified max value. Please correct.',0),
-
 
 /*
  **  jpgraph_polar
@@ -532,5 +528,3 @@ HTTP headers have already been sent.<br>Caused by output from file <b>%s</b> at 
 29210 => array('CSIM Target for matrix labels does not match the number of labels (csim=%d, labels=%d)',2),
 
 );
-
-?>

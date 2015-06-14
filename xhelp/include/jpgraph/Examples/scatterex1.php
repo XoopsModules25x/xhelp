@@ -18,5 +18,3 @@ $sp1 = new ScatterPlot($datay,$datax);
 
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>

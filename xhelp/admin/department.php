@@ -124,7 +124,6 @@ function addDepartmentServer()
         redirect_header(XHELP_ADMIN_URL."/department.php?op=manageDepartments", 3, _AM_XHELP_DEPARTMENT_NO_ID);
     }
 
-
     $hDeptServers =& xhelpGetHandler('departmentMailBox');
     $server = $hDeptServers->create();
     $server->setVar('departmentid',$deptID);
@@ -698,7 +697,6 @@ function manageDepartments()
     $hGroups =& xoops_gethandler('group');
     $hGroupPerm =& xoops_gethandler('groupperm');
 
-
     if(isset($_POST['addDept'])){
         $hasErrors = false;
         $errors = array();
@@ -985,4 +983,3 @@ function updateDefault()
     xhelpSetMeta("default_department", $id);
     header('Location: '. xhelpMakeURI(XHELP_ADMIN_URL.'/department.php', array('op'=>'manageDepartments'), false));
 }
-?>

@@ -16,10 +16,8 @@ $lineplot=new LinePlot($ydata);
 $lineplot->SetLegend("Test 1");
 $lineplot->SetColor("blue");
 
-
 // Add the plot to the graph
 $graph->Add($lineplot);
 
 // Display the graph
 $graph->Stroke();
-?>

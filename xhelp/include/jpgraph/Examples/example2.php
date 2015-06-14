@@ -21,7 +21,6 @@ $graph->subtitle->Set('(March 12, 2008)');
 $graph->xaxis->title->Set('Operator');
 $graph->yaxis->title->Set('# of calls');
 
-
 // Create the linear plot
 $lineplot=new LinePlot($ydata);
 
@@ -30,4 +29,3 @@ $graph->Add($lineplot);
 
 // Display the graph
 $graph->Stroke();
-?>

@@ -33,7 +33,7 @@ class xhelpUnresolvedTicketsByDeptReport extends xhelpReport {
         'dbFields' => array(
             'department' => _XHELP_UTBD_DB1,
             'id' => _XHELP_UTBD_DB2,
-            'subject' => _XHELP_UTBD_DB3, 
+            'subject' => _XHELP_UTBD_DB3,
             'status' => _XHELP_UTBD_DB4,
             'totalTimeSpent' => _XHELP_UTBD_DB5,
             'postTime' => _XHELP_UTBD_DB6)
@@ -165,4 +165,3 @@ class xhelpUnresolvedTicketsByDeptReport extends xhelpReport {
         return true;
     }
 }
-?>

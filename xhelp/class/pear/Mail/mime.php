@@ -97,7 +97,6 @@ class Mail_mime
      */
     var $_headers = array();
 
-
     /*
      * Constructor function
      *
@@ -155,6 +154,7 @@ class Mail_mime
                 $this->_txtbody .= $cont;
             }
         }
+
         return true;
     }
 
@@ -206,6 +206,7 @@ class Mail_mime
                                       'c_type' => $c_type,
                                       'cid'    => md5(uniqid(time()))
         );
+
         return true;
     }
 
@@ -242,6 +243,7 @@ class Mail_mime
                                 'c_type'   => $c_type,
                                 'encoding' => $encoding
         );
+
         return true;
     }
 
@@ -261,6 +263,7 @@ class Mail_mime
         }
         $cont = fread($fd, filesize($file_name));
         fclose($fd);
+
         return $cont;
     }
 
@@ -318,6 +321,7 @@ class Mail_mime
     function &_addMixedPart(){
 
         $params['content_type'] = 'multipart/mixed';
+
         return new Mail_mimePart('', $params);
     }
 
@@ -559,7 +563,7 @@ class Mail_mime
      * Get the text version of the headers
      * (usefull if you want to use the PHP mail() function)
      *
-     * @param  array $xtra_headers Assoc array with any extra headers. Optional.
+     * @param  array  $xtra_headers Assoc array with any extra headers. Optional.
      * @return string Plain text headers
      * @access public
      */
@@ -570,14 +574,15 @@ class Mail_mime
         foreach ($headers as $key => $val) {
             $ret .= "$key: $val" . MAIL_MIME_CRLF;
         }
+
         return $ret;
     }
 
     /**
      * Sets the Subject header
      *
-     * @param  string $subject String to set the subject to
-     * access  public
+     * @param string $subject String to set the subject to
+     *                        access  public
      */
     function setSubject($subject)
     {
@@ -630,8 +635,8 @@ class Mail_mime
     /**
      * Encodes a header as per RFC2047
      *
-     * @param  string  $input The header data to encode
-     * @return string         Encoded data
+     * @param  string $input The header data to encode
+     * @return string Encoded data
      * @access private
      */
     function _encodeHeaders($input)
@@ -649,4 +654,4 @@ class Mail_mime
     }
 
 } // End of class
-?>
+;

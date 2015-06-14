@@ -45,4 +45,3 @@ $graph->Add($milestone);
 
 // ... and display it
 $graph->Stroke();
-?>

@@ -33,7 +33,7 @@ class xhelpTicketsByUserReport extends xhelpReport {
         'description' => _XHELP_TBU_DESC,
         'version' => '1.0',
         'dbFields' => array(
-            'name' => _XHELP_TBU_DB1, 
+            'name' => _XHELP_TBU_DB1,
             'TicketCount' => _XHELP_TBU_DB2));
 
     var $parameters = array(
@@ -148,4 +148,3 @@ class xhelpTicketsByUserReport extends xhelpReport {
         return true;
     }
 }
-?>

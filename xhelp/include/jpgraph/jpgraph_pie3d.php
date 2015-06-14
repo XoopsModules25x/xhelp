@@ -110,7 +110,6 @@ class PiePlot3D extends PiePlot {
         $xp = floor($width*cos($ea)/2+$xc);
         $yp = floor($yc-$height*sin($ea)/2);
 
-
         if ($ea >= M_PI && $ea <= 2*M_PI*1.01) {
             $coords.= ", $xp, ".floor($yp+$thick);
         }
@@ -138,7 +137,6 @@ class PiePlot3D extends PiePlot {
         $this->ilabelposadj=$aLblPosAdj;
     }
 
-
     // Distance from the pie to the labels
     function SetLabelMargin($m) {
         $this->value->SetMargin($m);
@@ -158,7 +156,6 @@ class PiePlot3D extends PiePlot {
         $this->iThickness = $aHeight;
     }
 
-
     // Normalize Angle between 0-360
     function NormAngle($a) {
         // Normalize anle to 0 to 2M_PI
@@ -173,10 +170,9 @@ class PiePlot3D extends PiePlot {
         $a = 360 + $a;
 
         if( $a == 360 ) $a=0;
+
         return $a;
     }
-
-
 
     // Draw one 3D pie slice at position ($xc,$yc) with height $z
     function Pie3DSlice($img,$xc,$yc,$w,$h,$sa,$ea,$z,$fillcolor,$shadow=0.65) {
@@ -645,7 +641,6 @@ class PiePlot3D extends PiePlot {
         $this->Pie3DSlice($img,$last[0],$last[1],$d,$h,$angles[$last[2]][0],
         $angles[$last[2]][1],$z,$adjcolors[$last[2]],$shadow);
 
-
         if( $aaoption !== 1 ) {
             // Now print possible labels and add csim
             $this->value->ApplyFont($img);
@@ -794,7 +789,6 @@ class PiePlot3D extends PiePlot {
             $ca = $this->setslicecolors;
         }
 
-
         if( $this->posx <= 1 && $this->posx > 0 ) {
             $xc = round($this->posx*$img->width);
         }
@@ -929,5 +923,4 @@ class PiePlot3D extends PiePlot {
     }
 } // Class
 
-/* EOF */
-?>
+/* EOF */;

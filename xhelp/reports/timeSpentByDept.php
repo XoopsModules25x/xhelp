@@ -30,7 +30,7 @@ class xhelpTimeSpentByDeptReport extends xhelpReport {
         'description' => _XHELP_TSBD_DESC,
         'version' => '1.0',
         'dbFields' => array(
-            'department' => _XHELP_TSBD_DB1, 
+            'department' => _XHELP_TSBD_DB1,
             'TotalTime' => _XHELP_TSBD_DB2)
     );
 
@@ -150,5 +150,3 @@ class xhelpTimeSpentByDeptReport extends xhelpReport {
         return true;
     }
 }
-
-?>

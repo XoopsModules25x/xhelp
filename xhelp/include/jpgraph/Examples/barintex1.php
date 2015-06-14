@@ -45,4 +45,3 @@ $graph->Add($bplot);
 
 // Finally stroke the graph
 $graph->Stroke();
-?>

@@ -34,7 +34,6 @@ function formatCallback($aVal) {
     return '('.numberToRoman($aVal).')';
 }
 
-
 // Some (random) data
 $ydata = array(11,3,8,12,5,1,9,13,5,7);
 
@@ -78,4 +77,3 @@ $graph->Add($lineplot);
 
 // Display the graph
 $graph->Stroke();
-?>

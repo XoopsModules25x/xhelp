@@ -47,7 +47,6 @@ HTTP header wurden bereits gesendet.<br>Fehler in der Datei <b>%s</b> in der Zei
 2014 => array('Die Anzahl der Datenpunkte jeder Datenreihe in AccBarPlot muss gleich sein.',0),
 2015 => array('Individual bar plots in an AccBarPlot or GroupBarPlot can not have specified X-coordinates',0),
 
-
 /*
  **  jpgraph_date
  */
@@ -68,7 +67,6 @@ HTTP header wurden bereits gesendet.<br>Fehler in der Datei <b>%s</b> in der Zei
 5002 => array('Der Flaggen-Index %s existiert nicht.',1),
 5003 => array('Es wurde eine ungültige Ordnungszahl (%d) für den Flaggen-Index angegeben.',1),
 5004 => array('Der Landesname %s hat kein korrespondierendes Flaggenbild. Die Flagge mag existieren, abr eventuell unter einem anderen Namen, z.B. versuche "united states" statt "usa".',1),
-
 
 /*
  **  jpgraph_gantt
@@ -196,7 +194,6 @@ HTTP header wurden bereits gesendet.<br>Fehler in der Datei <b>%s</b> in der Zei
 16002 => array('Es wurde keine Position für das Pattern angegeben.',0),
 16003 => array('Unbekannte Pattern-Definition (%d)',0),
 16004 => array('Der Mindeswert für das PlotBand ist größer als der Maximalwert. Bitte korrigiere dies!',0),
-
 
 /*
  **  jpgraph_polar
@@ -412,7 +409,6 @@ HTTP header wurden bereits gesendet.<br>Fehler in der Datei <b>%s</b> in der Zei
 
 25500 => array('Multibyte strings must be enabled in the PHP installation in order to run the LED module so that the function mb_strlen() is available. See PHP documentation for more information.',0),
 
-
 /*
  **---------------------------------------------------------------------------------------------
  ** Pro-version strings
@@ -509,7 +505,6 @@ HTTP header wurden bereits gesendet.<br>Fehler in der Datei <b>%s</b> in der Zei
 26015 => array('PDF417: Interner Fehler. Ein Eintrag 0 in die Statusübertragungstabellen ist nicht NULL. Eintrag 1 = (%s)',1),
 26016 => array('PDF417: Interner Fehler: Nichtregistrierter Statusübertragungsmodus beim Dekodieren.',0),
 
-
 /*
  ** jpgraph_contour
  */
@@ -521,7 +516,6 @@ HTTP header wurden bereits gesendet.<br>Fehler in der Datei <b>%s</b> in der Zei
 28005 => array('ContourPlot Interner Fehler: isobarVCrossing: Reihe index ist zu hoch (%d)',1),
 28006 => array('ContourPlot Interner Fehler: isobarVCrossing: Spalten index ist zu hoch (%d)',1),
 28007 => array('ContourPlot. Interpolation faktor ist zu hoch (>5)',0),
-
 
 /*
  * jpgraph_matrix and colormap
@@ -538,5 +532,3 @@ HTTP header wurden bereits gesendet.<br>Fehler in der Datei <b>%s</b> in der Zei
 29210 => array('CSIM Target for matrix labels does not match the number of labels (csim=%d, labels=%d)',2),
 
 );
-
-?>

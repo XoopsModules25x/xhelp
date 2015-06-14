@@ -78,14 +78,14 @@ echo htmlentities($imgtag2);
 <table border=0>
 	<tr>
 		<td valign="bottom"><?php
-		echo $imgtag1;
-		?> <br>
+        echo $imgtag1;
+        ?> <br>
 		<b>Figure 1. </b>The included Bar CSIM graph.
 		</p>
 		</td>
 		<td valign="bottom"><?php
-		echo $imgtag2;
-		?> <br>
+        echo $imgtag2;
+        ?> <br>
 		<b>Figure 2. </b>The included Pie CSIM graph.
 		</p>
 		</td>

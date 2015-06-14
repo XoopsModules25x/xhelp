@@ -4,7 +4,7 @@ require_once ('jpgraph/jpgraph_bar.php');
 
 $datay=array(2,3,5,8,12,6,3);
 $datax=array("320x240","640x480","600x800","1024x768","1280x1024(16)","1280x1024(32)",
-	     "1600x1200(32)");
+         "1600x1200(32)");
 
 // Size of graph
 $width=300;
@@ -80,4 +80,3 @@ $graph->Add($txt);
 
 // .. and stroke the graph
 $graph->Stroke();
-?>

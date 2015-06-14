@@ -11,7 +11,6 @@ array(2,"  Label two", "2001-11-27","2001-11-27 10:00"),
 array(3,"  Label three", "2001-11-27","2001-11-27 08:00")
 );
 
-
 // Basic graph parameters
 $graph = new GanttGraph();
 $graph->SetMarginColor('darkgreen@0.8');
@@ -67,7 +66,6 @@ $graph->title->Set("Example of hours & mins scale");
 $graph->title->SetColor('darkgray');
 $graph->title->SetFont(FF_VERDANA,FS_BOLD,14);
 
-
 for($i=0; $i<count($data); ++$i) {
     $bar = new GanttBar($data[$i][0],$data[$i][1],$data[$i][2],$data[$i][3]);
     if( count($data[$i])>4 )
@@ -76,7 +74,6 @@ for($i=0; $i<count($data); ++$i) {
     $bar->SetFillColor("gray");
     $graph->Add($bar);
 }
-
 
 //$vline = new GanttVLine("2001-11-27");//d=1006858800,
 $vline = new GanttVLine("2001-11-27 9:00");//d=1006858800,
@@ -87,7 +84,3 @@ $vline->title->SetFont(FF_FONT1,FS_BOLD,10);
 $graph->Add($vline);
 
 $graph->Stroke();
-
-?>
-
-

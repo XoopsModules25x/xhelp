@@ -34,5 +34,3 @@ $p1->SetCenter();
 // Add the plot to the graph and send it back to the browser
 $graph->Add($p1);
 $graph->Stroke();
-
-?>

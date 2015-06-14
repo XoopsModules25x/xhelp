@@ -14,7 +14,6 @@ define('CORNER_TOPRIGHT',1);
 define('CORNER_BOTTOMRIGHT',2);
 define('CORNER_BOTTOMLEFT',3);
 
-
 //===================================================
 // CLASS CanvasScale
 // Description: Define a scale for canvas so we
@@ -50,21 +49,23 @@ class CanvasScale {
     function Translate($x,$y) {
         $xp = round(($x-$this->ixmin)/($this->ixmax - $this->ixmin) * $this->w);
         $yp = round(($y-$this->iymin)/($this->iymax - $this->iymin) * $this->h);
+
         return array($xp,$yp);
     }
 
     function TranslateX($x) {
         $xp = round(($x-$this->ixmin)/($this->ixmax - $this->ixmin) * $this->w);
+
         return $xp;
     }
 
     function TranslateY($y) {
         $yp = round(($y-$this->iymin)/($this->iymax - $this->iymin) * $this->h);
+
         return $yp;
     }
 
 }
-
 
 //===================================================
 // CLASS Shape
@@ -110,7 +111,6 @@ class Shape {
         }
         $this->img->FilledPolygon($p);
     }
-
 
     // Draw a bezier curve with defining points in the $aPnts array
     // using $aSteps steps.
@@ -374,7 +374,6 @@ class Shape {
     }
 }
 
-
 //===================================================
 // CLASS RectangleText
 // Description: Draws a text paragraph inside a
@@ -518,6 +517,3 @@ class CanvasRectangleText {
     }
 
 }
-
-
-?>

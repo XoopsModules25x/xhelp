@@ -15,7 +15,6 @@ array (1.0,1.5,3.0,5,6.0,2,1,1.2,2.7,4),
 array (0.8,2.0,3.0,3,5.5,6,3,2,1,1.4),
 array (1.0,1.5,3.0,4,6.0,5,2,1,0.5,0.2));
 
-
 // Setup a basic graph context with some generous margins to be able
 // to fit the legend
 $graph = new Graph(500,380);
@@ -31,7 +30,6 @@ $graph->SetAxisStyle(AXSTYLE_BOXOUT);
 $graph->xgrid->Show();
 $graph->ygrid->Show();
 
-
 // A simple contour plot with default arguments (e.g. 10 isobar lines)
 $cp = new ContourPlot($data);
 
@@ -44,5 +42,3 @@ $graph->Add($cp);
 
 // ... and send the graph back to the browser
 $graph->Stroke();
-
-?>

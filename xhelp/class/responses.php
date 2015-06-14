@@ -115,6 +115,7 @@ class xhelpResponses extends XoopsObject {
             $allowed_mimetypes = $hMime->checkMimeTypes($post_field);
             if(!$allowed_mimetypes){
                 $errors[] = _XHELP_MESSAGE_WRONG_MIMETYPE;
+
                 return false;
             }
         }
@@ -124,6 +125,7 @@ class xhelpResponses extends XoopsObject {
             return true;
         } else {
             $errors = array_merge($errors, $uploader->getErrors(false));
+
             return false;
         }
     }
@@ -136,6 +138,7 @@ class xhelpResponses extends XoopsObject {
     function &getTicket()
     {
         $hTicket = xhelpGetHandler('ticket');
+
         return $hTicket->get($this->getVar('ticketid'));
     }
 }
@@ -154,7 +157,7 @@ class xhelpResponsesHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpresponses';
@@ -170,7 +173,7 @@ class xhelpResponsesHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpResponsesHandler(&$db)
     {
@@ -210,15 +213,16 @@ class xhelpResponsesHandler extends xhelpBaseObjectHandler {
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
     /**
      * delete a response from the database
      *
-     * @param object $obj reference to the {@link xhelpResponse} obj to delete
-     * @param bool $force
-     * @return bool FALSE if failed.
+     * @param  object $obj   reference to the {@link xhelpResponse} obj to delete
+     * @param  bool   $force
+     * @return bool   FALSE if failed.
      * @access	public
      */
     function delete(&$obj, $force = false)
@@ -233,14 +237,14 @@ class xhelpResponsesHandler extends xhelpBaseObjectHandler {
         }
          
         $ret = parent::delete($obj, $force);
+
         return $ret;
     }
-
 
     /**
      * Get number of responses by staff members
      *
-     * @param int $ticketid ticket to get count
+     * @param  int $ticketid ticket to get count
      * @return int Number of staff responses
      * @access	public
      */
@@ -252,13 +256,14 @@ class xhelpResponsesHandler extends xhelpBaseObjectHandler {
         $ret = $this->_db->query($sql);
          
         list($count) = $this->_db->fetchRow($ret);
+
         return $count;
     }
 
     /**
      * Get number of responses by ticketid
      *
-     * @param array $tickets where ticketid is key
+     * @param  array $tickets where ticketid is key
      * @return array key = ticketid, value = response count
      * @access public
      */
@@ -284,4 +289,3 @@ class xhelpResponsesHandler extends xhelpBaseObjectHandler {
         return $tickets;
     }
 }
-?>

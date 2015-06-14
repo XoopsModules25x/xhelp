@@ -3,7 +3,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_log.php');
 require_once ('jpgraph/jpgraph_line.php');
 
-
 $ydata = array(11,3,8,12,5,1,9,13,5,7);
 $y2data = array(354,200,265,99,111,91,198,225,293,251);
 $datax = array("Jan","Feb","Mar","Apr","Maj","Jun","Jul","aug","Sep","Oct");
@@ -60,4 +59,3 @@ $graph->xaxis->SetTextTickInterval(2);
 
 // Display the graph
 $graph->Stroke();
-?>

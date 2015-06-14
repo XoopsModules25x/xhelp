@@ -41,4 +41,3 @@ $graph->Add($lineplot);
 
 // display graph
 $graph->Stroke();
-?>

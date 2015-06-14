@@ -77,7 +77,6 @@ function removeDepts()
 {
     global $xoopsDB;
 
-
     //Needs force on delete
     $hConfig =& xoops_gethandler('config');
 
@@ -105,6 +104,7 @@ function removeDepts()
     } else {    // If no config options were found
         return $xhelp_config;
     }
+
     return $xhelp_config;
 }
 
@@ -173,10 +173,9 @@ function removeTopics()
     if(!$ret = $xoopsDB->queryF($sql)){
         return false;
     }
+
     return $xhelp_config;
 }
-
-
 
 function xoops_module_install_xhelp(&$module)
 {
@@ -188,4 +187,3 @@ function xoops_module_install_xhelp(&$module)
 
     return true;
 }
-?>

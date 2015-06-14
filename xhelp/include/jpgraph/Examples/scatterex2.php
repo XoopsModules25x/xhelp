@@ -21,5 +21,3 @@ $sp1->mark->SetWidth(8);
 
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>

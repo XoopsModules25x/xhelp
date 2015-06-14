@@ -25,5 +25,3 @@ $sp1->SetWeight(3);
 
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>

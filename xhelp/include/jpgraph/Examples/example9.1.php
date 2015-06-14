@@ -3,7 +3,6 @@ require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_log.php');
 require_once ('jpgraph/jpgraph_line.php');
 
-
 $ydata = array(11,3,8,42,5,1,9,13,5,7);
 $datax = array("Jan","Feb","Mar","Apr","Maj","Jun","Jul","aug","Sep","Oct");
 
@@ -47,4 +46,3 @@ $graph->legend->Pos(0.05,0.5,"right","center");
 
 // Display the graph
 $graph->Stroke();
-?>

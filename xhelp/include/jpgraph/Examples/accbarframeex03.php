@@ -32,4 +32,3 @@ $accbplot->SetWeight(1);
 $graph->Add($accbplot);
 
 $graph->Stroke();
-?>

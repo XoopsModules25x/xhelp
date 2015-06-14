@@ -88,9 +88,9 @@ class xhelpNotificationService extends xhelpService
     /**
      * Retrieve the email_template object that is requested
      *
-     * @param int $category ID of item
-     * @param string $event name of event
-     * @param object $module $xoopsModule object
+     * @param int    $category ID of item
+     * @param string $event    name of event
+     * @param object $module   $xoopsModule object
      *
      * @access private
      */
@@ -101,9 +101,11 @@ class xhelpNotificationService extends xhelpService
         foreach($templates as $tpl_id=>$tpl){
             if($tpl['category'] == $category && $tpl['name'] == $event){
                 $template_id = $tpl_id;
+
                 return $tpl;
             }
         }
+
         return false;
     }
 
@@ -149,6 +151,7 @@ class xhelpNotificationService extends xhelpService
             }
         }
         unset($aMembers);
+
         return $enabled_staff;
     }
 
@@ -229,14 +232,15 @@ class xhelpNotificationService extends xhelpService
                 $aMembers[$member->getVar('uid')] = $member->getVar('uid');
             }
         }
+
         return $aMembers;
     }
 
     /**
      * Returns emails of staff belonging to an event
      *
-     * @param int $dept ID of department
-     * @param int $event_id bit_value of event
+     * @param int $dept        ID of department
+     * @param int $event_id    bit_value of event
      * @param int $submittedBy ID of user submitting event - should only be used when there is a response
      *
      * @access private
@@ -302,6 +306,7 @@ class xhelpNotificationService extends xhelpService
                 }
             }
         }
+
         return $arr;
     }
 
@@ -355,15 +360,16 @@ class xhelpNotificationService extends xhelpService
                 $arr['pm'][] = $xUser;
             }
         }
+
         return $arr;
     }
 
     /**
      * Checks to see if the staff member is subscribed to receive the notification for this event
      *
-     * @param int/object $user userid/staff object of staff member
-     * @param int $event_id value of the the event
-     * @return bool true is suscribed, false if not
+     * @param  int/object $user     userid/staff object of staff member
+     * @param  int        $event_id value of the the event
+     * @return bool       true is suscribed, false if not
      *
      * @access private
      */
@@ -385,7 +391,7 @@ class xhelpNotificationService extends xhelpService
     /**
      * Retrieve a user's email address
      *
-     * @param int $uid user's id
+     * @param  int    $uid user's id
      * @return string $member's email
      *
      * @access private
@@ -414,13 +420,14 @@ class xhelpNotificationService extends xhelpService
                 $arr['email'][] = '';
             }
         }
+
         return $arr;
     }
 
     /**
      * Retrieves a staff member's email address
      *
-     * @param int $uid user's id
+     * @param  int    $uid user's id
      * @return string $staff member's email
      *
      * @access private
@@ -460,16 +467,17 @@ class xhelpNotificationService extends xhelpService
         } else {
             $arr['email'][] = '';
         }
+
         return $arr;
     }
 
     /**
      * Send pm and email notifications to selected users
      *
-     * @param object $email_tpl object returned from _getEmailTpl() function
-     * @param array $sendTo emails and xoopsUser objects
-     * @param array $tags array of notification information
-     * @return bool TRUE if success, FALSE if no success
+     * @param  object $email_tpl object returned from _getEmailTpl() function
+     * @param  array  $sendTo    emails and xoopsUser objects
+     * @param  array  $tags      array of notification information
+     * @return bool   TRUE if success, FALSE if no success
      *
      * @access private
      */
@@ -483,16 +491,17 @@ class xhelpNotificationService extends xhelpService
         if(array_key_exists('email', $sendTo)){
             $ret = $ret && $this->_sendEventEmail($email_tpl, $sendTo, $tags, $fromEmail);
         }
+
         return $ret;
     }
 
     /**
      * Send the pm notification to selected users
      *
-     * @param object $email_tpl object returned from _getEmailTpl() function
-     * @param array $sendTo xoopsUser objects
-     * @param array $tags array of notification information
-     * @return bool TRUE if success, FALSE if no success
+     * @param  object $email_tpl object returned from _getEmailTpl() function
+     * @param  array  $sendTo    xoopsUser objects
+     * @param  array  $tags      array of notification information
+     * @return bool   TRUE if success, FALSE if no success
      *
      * @access private
      */
@@ -528,10 +537,10 @@ class xhelpNotificationService extends xhelpService
     /**
      * Send the mail notification to selected users
      *
-     * @param object $email_tpl object returned from _getEmailTpl() function
-     * @param array $sendTo emails returned from _getSubscribedStaff() function
-     * @param array $tags array of notification information
-     * @return bool TRUE if success, FALSE if no success
+     * @param  object $email_tpl object returned from _getEmailTpl() function
+     * @param  array  $sendTo    emails returned from _getSubscribedStaff() function
+     * @param  array  $tags      array of notification information
+     * @return bool   TRUE if success, FALSE if no success
      *
      * @access private
      */
@@ -585,7 +594,7 @@ class xhelpNotificationService extends xhelpService
     /**
      * Retrieve the directory where mail templates are stored
      *
-     * @param string $language language used for xoops
+     * @param  string $language language used for xoops
      * @return string $template_dir
      *
      * @access private
@@ -616,13 +625,14 @@ class xhelpNotificationService extends xhelpService
                 $num++;
             }
         }
+
         return ($num);
     }
 
     /**
      * Returns the email address of the person causing the fire of the event
      *
-     * @param int $uid uid of the user
+     * @param  int    $uid uid of the user
      * @return string email of user
      *
      * @access private
@@ -638,14 +648,13 @@ class xhelpNotificationService extends xhelpService
 
     /**
      * Confirm submission to user and notify staff members when new_ticket is triggered
-     * @param	xhelpTicket	$ticket Ticket that was added
-     * @return  bool True on success, false on error
+     * @param  xhelpTicket $ticket Ticket that was added
+     * @return bool        True on success, false on error
      * @access	public
      */
     function new_ticket(&$ticket)
     {
         global $xhelp_isStaff;
-
 
         global $xoopsUser, $xoopsModuleConfig;
 
@@ -700,8 +709,8 @@ class xhelpNotificationService extends xhelpService
     /**
      * Event: new_user_by_email
      * Triggered after new user account is created during ticket submission
-     * @param string $password Password for new account
-     * @param XoopsUser $user XOOPS user object for new account
+     * @param string    $password Password for new account
+     * @param XoopsUser $user     XOOPS user object for new account
      */
     function new_user_by_email($password, &$user)
     {
@@ -724,7 +733,7 @@ class xhelpNotificationService extends xhelpService
     /**
      * Event: new_user_by_email
      * Triggered after new user account is created during ticket submission
-     * @param string $password Password for new account
+     * @param string    $password  Password for new account
      * @param XoopsUser $xoopsUser XOOPS user object for new account
      */
     function new_user_activation0($password, $xoopsUser)
@@ -751,7 +760,7 @@ class xhelpNotificationService extends xhelpService
     /**
      * Event: new_user_by_email
      * Triggered after new user account is created during ticket submission
-     * @param string $password Password for new account
+     * @param string    $password  Password for new account
      * @param XoopsUser $xoopsUser XOOPS user object for new account
      */
     function new_user_activation1($password, $xoopsUser)
@@ -775,7 +784,6 @@ class xhelpNotificationService extends xhelpService
         $HTTP_POST_VARS['uname'] = $user->getVar('uname');
         $HTTP_POST_VARS['pass'] = $password;
 
-
         $filename = XOOPS_ROOT_PATH.'/kernel/authenticationservice.php';
         $foldername = XOOPS_ROOT_PATH.'/include/authenticationservices';
         if(file_exists($filename) && file_exists($foldername)){     // check for ldap authentication hack
@@ -792,7 +800,7 @@ class xhelpNotificationService extends xhelpService
     /**
      * Event: new_user_by_email
      * Triggered after new user account is created during ticket submission
-     * @param string $password Password for new account
+     * @param string    $password  Password for new account
      * @param XoopsUser $xoopsUser XOOPS user object for new account
      */
     function new_user_activation2($password, $xoopsUser)
@@ -817,7 +825,7 @@ class xhelpNotificationService extends xhelpService
     /**
      * Event: new_response
      * Triggered after a response has been added to a ticket
-     * @param xhelpTicket $ticket Ticket containing response
+     * @param xhelpTicket    $ticket   Ticket containing response
      * @param xhelpResponses $response Response that was added
      */
     function new_response($ticket, $response)
@@ -910,8 +918,8 @@ class xhelpNotificationService extends xhelpService
      * Event: update_priority
      * Triggered after a ticket priority is modified
      * Also See: batch_priority
-     * @param xhelpTicket $ticket Ticket that was modified
-     * @param int $oldpriority Previous ticket priority
+     * @param xhelpTicket $ticket      Ticket that was modified
+     * @param int         $oldpriority Previous ticket priority
      */
     function update_priority($ticket, $oldpriority)
     {
@@ -950,7 +958,7 @@ class xhelpNotificationService extends xhelpService
      * Event: update_status
      * Triggered after a ticket status change
      * Also See: batch_status, close_ticket, reopen_ticket
-     * @param xhelpTicket $ticket The ticket that was modified
+     * @param xhelpTicket $ticket    The ticket that was modified
      * @param xhelpStatus $oldstatus The previous ticket status
      * @param xhelpStatus $newstatus The new ticket status
      */
@@ -993,9 +1001,9 @@ class xhelpNotificationService extends xhelpService
      * Event: update_owner
      * Triggered after ticket ownership change (Individual)
      * Also See: batch_owner
-     * @param xhelpTicket $ticket Ticket that was changed
-     * @param int $oldOwner UID of previous owner
-     * @param int $newOwner UID of new owner
+     * @param xhelpTicket $ticket   Ticket that was changed
+     * @param int         $oldOwner UID of previous owner
+     * @param int         $newOwner UID of new owner
      */
     function update_owner($ticket, $oldOwner, $newOwner)
     {
@@ -1149,7 +1157,7 @@ class xhelpNotificationService extends xhelpService
     /**
      * Event: edit_ticket
      * Triggered after a ticket is modified
-     * @param xhelpTicket $oldTicket Ticket information before modifications
+     * @param xhelpTicket $oldTicket  Ticket information before modifications
      * @param xhelpTicket $ticketInfo Ticket information after modifications
      */
     function edit_ticket($oldTicket, $ticketInfo)
@@ -1203,9 +1211,9 @@ class xhelpNotificationService extends xhelpService
      * Event: edit_response
      * Triggered after a response has been modified
      * Also See: new_response
-     * @param xhelpTicket $nticket Ticket after modifications
-     * @param xhelpResponses $response Modified response
-     * @param xhelpTicket $oldticket Ticket before modifications
+     * @param xhelpTicket    $nticket     Ticket after modifications
+     * @param xhelpResponses $response    Modified response
+     * @param xhelpTicket    $oldticket   Ticket before modifications
      * @param xhelpResponses $oldresponse Response modifications
      */
     function edit_response($ticket, $response, $oldticket, $oldresponse)
@@ -1265,7 +1273,7 @@ class xhelpNotificationService extends xhelpService
      * Event: batch_dept
      * Triggered after a batch ticket department change
      * @param array $oldTickets The xhelpTicket objects that were modified
-     * @param int $dept The new department for the tickets
+     * @param int   $dept       The new department for the tickets
      */
     function batch_dept($oldTickets, $dept)
     {
@@ -1323,14 +1331,15 @@ class xhelpNotificationService extends xhelpService
             }
 
         }
+
         return true;
     }
 
     /**
      * Event: batch_priority
      * Triggered after a batch ticket priority change
-     * @param array $tickets The xhelpTicket objects that were modified
-     * @param int $priority The new ticket priority
+     * @param array $tickets  The xhelpTicket objects that were modified
+     * @param int   $priority The new ticket priority
      */
     function batch_priority($tickets, $priority)
     {
@@ -1388,7 +1397,7 @@ class xhelpNotificationService extends xhelpService
      * Event: batch_owner
      * Triggered after a batch ticket ownership change
      * @param array $tickets The xhelpTicket objects that were modified
-     * @param int $owner The XOOPS UID of the new owner
+     * @param int   $owner   The XOOPS UID of the new owner
      */
     function batch_owner($tickets, $owner)
     {
@@ -1454,13 +1463,14 @@ class xhelpNotificationService extends xhelpService
                 $success  = $this->_sendEvents($user_email_tpl, $sendTo, $tags);
             }
         }
+
         return true;
     }
 
     /**
      * Event: batch_status
      * Triggered after a batch ticket status change
-     * @param array $tickets The xhelpTicket objects that were modified
+     * @param array       $tickets   The xhelpTicket objects that were modified
      * @param xhelpStatus $newstatus The new ticket status
      */
     function batch_status($tickets, $newstatus)
@@ -1511,6 +1521,7 @@ class xhelpNotificationService extends xhelpService
                 $success = $this->_sendEvents($user_email_tpl, $sendTo, $tags);
             }
         }
+
         return true;
     }
 
@@ -1571,6 +1582,7 @@ class xhelpNotificationService extends xhelpService
                 }
             }
         }
+
         return true;
     }
 
@@ -1578,7 +1590,7 @@ class xhelpNotificationService extends xhelpService
      * Event: batch_response
      * Triggered after a batch response addition
      * Note: the $response->getVar('ticketid') field is empty for this function
-     * @param array $tickets The xhelpTicket objects that were modified
+     * @param array          $tickets  The xhelpTicket objects that were modified
      * @param xhelpResponses $response The response added to each ticket
      */
     function batch_response($tickets, $response)
@@ -1649,7 +1661,6 @@ class xhelpNotificationService extends xhelpService
                 $tags['TICKET_SUPPORT_KEY'] = '';
             }
 
-
             $sendTo = array();
             if($ticket->getVar('uid') <> $uid && $response->getVar('private') == 0){ // If response from staff member
                 if ($private == 0) {
@@ -1684,8 +1695,8 @@ class xhelpNotificationService extends xhelpService
     /**
      * Event: merge_tickets
      * Triggered after two tickets are merged
-     * @param int $ticket1 First ticketid being merged
-     * @param int $ticket2 Second ticketid being merged
+     * @param int $ticket1   First ticketid being merged
+     * @param int $ticket2   Second ticketid being merged
      * @param int $newTicket Resulting ticketid after merge
      */
     function merge_tickets($ticket1, $ticket2, $newTicket)
@@ -1724,7 +1735,7 @@ class xhelpNotificationService extends xhelpService
      * Event: new_faq
      * Triggered after FAQ addition
      * @param xhelpTicket $ticket Ticket used as base for FAQ
-     * @param xhelpFaq $faq FAQ that was added
+     * @param xhelpFaq    $faq    FAQ that was added
      */
     function new_faq($ticket, $faq)
     {
@@ -1747,6 +1758,7 @@ class xhelpNotificationService extends xhelpService
             $c = __CLASS__;
             $instance = new $c;
         }
+
         return($instance);
     }
 
@@ -1771,4 +1783,3 @@ class xhelpNotificationService extends xhelpService
     }
 
 }
-?>

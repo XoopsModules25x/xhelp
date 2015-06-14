@@ -28,4 +28,3 @@ $accbplot = new AccBarPlot(array($bplot,$bplot2));
 $graph->Add($accbplot);
 
 $graph->Stroke();
-?>

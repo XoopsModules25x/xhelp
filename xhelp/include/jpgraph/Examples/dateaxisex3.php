@@ -15,7 +15,6 @@ for( $i=0; $i < NDATAPOINTS; ++$i ) {
     $xdata[$i] = $start + $i * SAMPLERATE;
 }
 
-
 // Create the new graph
 $graph = new Graph(540,300);
 
@@ -45,4 +44,3 @@ $line->SetLegend('Year 2005');
 $line->SetFillColor('lightblue@0.5');
 $graph->Add($line);
 $graph->Stroke();
-?>

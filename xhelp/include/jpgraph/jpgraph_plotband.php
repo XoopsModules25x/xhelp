@@ -98,7 +98,6 @@ class RectPattern {
 
 }
 
-
 //=====================================================================
 // Class RectPatternSolid
 // Implements a solid band
@@ -162,7 +161,6 @@ class RectPatternVert extends RectPattern {
         }
     }
 }
-
 
 //=====================================================================
 // Class RectPatternRDiag
@@ -524,10 +522,10 @@ class RectPatternFactory {
                 JpGraphError::RaiseL(16003,$aPattern);
                 //(" Unknown pattern specification ($aPattern)");
         }
+
         return $obj;
     }
 }
-
 
 //=====================================================================
 // Class PlotBand
@@ -630,6 +628,3 @@ class PlotBand {
         }
     }
 }
-
-
-?>

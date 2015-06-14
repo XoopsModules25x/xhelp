@@ -60,7 +60,6 @@ class xhelpTicket extends XoopsObject {
         }
     }
 
-
     /**
      * retrieve the department object associated with this ticket
      *
@@ -71,13 +70,14 @@ class xhelpTicket extends XoopsObject {
     function getDepartment()
     {
         $hDept =& xhelpGetHandler('department');
+
         return $hDept->get($this->getVar('department'));
     }
 
     /**
      * create an md5 hash based on the ID and emailaddress. Use this as a lookup key when trying to find a ticket.
      *
-     * @param text $email
+     * @param  text $email
      * @return none
      * @access public
      */
@@ -137,7 +137,6 @@ class xhelpTicket extends XoopsObject {
         return $arr;
     }
 
-
     /**
      * retrieve all responses attached to this ticket object
      *
@@ -171,6 +170,7 @@ class xhelpTicket extends XoopsObject {
     {
         $hResponses =& xhelpGetHandler('responses');
         $crit = new Criteria('ticketid', $this->getVar('id'));
+
         return $hResponses->getCount($crit);
     }
 
@@ -193,6 +193,7 @@ class xhelpTicket extends XoopsObject {
         $crit->setStart($start);
          
         $arr =& $hStaffReview->getObjects($crit);
+
         return $arr;
     }
 
@@ -217,6 +218,7 @@ class xhelpTicket extends XoopsObject {
         $criteria->setStart($start);
          
         $arr    =& $hLogMessages->getObjects($criteria);
+
         return $arr;
     }
 
@@ -292,6 +294,7 @@ class xhelpTicket extends XoopsObject {
             $allowed_mimetypes = $hMime->checkMimeTypes($post_field);
             if(!$allowed_mimetypes){
                 $errors[] = _XHELP_MESSAGE_WRONG_MIMETYPE;
+
                 return false;
             }
         }
@@ -301,6 +304,7 @@ class xhelpTicket extends XoopsObject {
             return true;
         } else {
             $errors = array_merge($errors, $uploader->getErrors(false));
+
             return false;
         }
     }
@@ -308,7 +312,7 @@ class xhelpTicket extends XoopsObject {
     /**
      * determine last time the ticket was updated relative to the current user
      *
-     * @return 	int	Timestamp of last update
+     * @return int Timestamp of last update
      * @access	public
      */
     function lastUpdated($format="l")
@@ -330,12 +334,14 @@ class xhelpTicket extends XoopsObject {
     function elapsed()
     {
         $tmp = xhelpGetElapsedTime($this->getVar('elapsed'));
+
         return $this->_prettyElapsed($tmp);
     }
 
     function lastUpdate()
     {
         $tmp = xhelpGetElapsedTime($this->getVar('lastUpdate'));
+
         return $this->_prettyElapsed($tmp);
     }
 
@@ -371,6 +377,7 @@ class xhelpTicket extends XoopsObject {
                         $unit_dsc = $unit;
                         break;
                 }
+
                 return "$value $unit_dsc";
 
             }
@@ -399,6 +406,7 @@ class xhelpTicket extends XoopsObject {
                 }
             }
         }
+
         return false;
     }
 
@@ -419,6 +427,7 @@ class xhelpTicket extends XoopsObject {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -476,6 +485,7 @@ class xhelpTicket extends XoopsObject {
         if(!$hTicket->deleteAll($crit)){
             return false;
         }
+
         return $keep_id;
     }
 
@@ -534,8 +544,10 @@ class xhelpTicket extends XoopsObject {
             if($ret_obj){
                 return $newResponse;
             }
+
             return $newResponse->getVar('id');
         }
+
         return false;
     }
 
@@ -581,7 +593,6 @@ class xhelpTicket extends XoopsObject {
                     }
                 }
 
-
                 $hasValue = true;
             }
             $_arr['value'] = $value;
@@ -594,7 +605,6 @@ class xhelpTicket extends XoopsObject {
             }
         }
 
-
         return $aCustFields;
     }
 
@@ -604,7 +614,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpticket';
@@ -612,7 +622,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
     /**
      * DB Table Name
      *
-     * @var 		string
+     * @var string
      * @access 	private
      */
     var $_dbtable = 'xhelp_tickets';
@@ -620,7 +630,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpTicketHandler(&$db)
     {
@@ -629,7 +639,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
 
     /**
      * retrieve an object from the database, based on. use in child classes
-     * @param int $id ID
+     * @param  int   $id ID
      * @return mixed object if id exists, false if not
      * @access public
      */
@@ -644,16 +654,18 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
             $numrows = $this->_db->getRowsNum($result);
             if($numrows == 1) {
                 $obj = new $this->classname($this->_db->fetchArray($result));
+
                 return $obj;
             }
         }
+
         return false;
     }
 
     /**
      * find a ticket based on a hash
      *
-     * @param text $hash
+     * @param  text   $hash
      * @return ticket object
      * @access public
      */
@@ -665,13 +677,14 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         $numrows = $this->_db->getRowsNum($result);
         if($numrows == 1) {
             $obj = new $this->classname($this->_db->fetchArray($result));
+
             return $obj;
         }
     }
      
     /**
      * Retrieve the list of departments for the specified tickets
-     * @param mixed $tickets can be a single value or array consisting of either ticketids or ticket objects
+     * @param  mixed $tickets can be a single value or array consisting of either ticketids or ticket objects
      * @return array array of integers representing the ids of each department
      * @access public
      */
@@ -701,6 +714,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         while ($temp = $this->_db->fetchArray($ret)) {
             $a_depts[] = $temp['department'];
         }
+
         return $a_depts;
     }
 
@@ -724,6 +738,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
             }
             unset($tickets);
         }
+
         return $arr;
     }
 
@@ -784,6 +799,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
             }
             unset($tickets);
         }
+
         return $arr;
     }
 
@@ -803,19 +819,19 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
             return 0;
         }
         list($count) = $this->_db->fetchRow($result);
+
         return $count;
     }
 
-
     /**
      * Get all tickets a staff member is in dept
-     * @param int $uid staff user id
-     * @param int $mode One of the '_QRY_STAFF_{X}' constants
-     * @param int $start first record to return
-     * @param int $limit number of records to return
-     * @param string $sort Sort Field
-     * @param string $order Sort Order
-     * @return array array of {@link xhelpTicket}> objects
+     * @param  int    $uid   staff user id
+     * @param  int    $mode  One of the '_QRY_STAFF_{X}' constants
+     * @param  int    $start first record to return
+     * @param  int    $limit number of records to return
+     * @param  string $sort  Sort Field
+     * @param  string $order Sort Order
+     * @return array  array of {@link xhelpTicket}> objects
      * @access public
      * @todo Filter by Department, Status
      */
@@ -857,13 +873,14 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
                 return $arr;
                 break;
         }
+
         return $this->getObjectsByStaff($crit);
     }
 
     /**
      * Get number of tickets based on staff membership
-     * @param int $uid staff user id
-     * @param int $mode
+     * @param  int $uid  staff user id
+     * @param  int $mode
      * @return int Number of tickets
      * @access public
      * @todo Filter by Department, Status
@@ -940,13 +957,14 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
      
     /**
      * Create a "select" SQL query
-     * @param object $criteria {@link CriteriaElement} to match
-     * @return	string SQL query
+     * @param  object $criteria {@link CriteriaElement} to match
+     * @return string SQL query
      * @access	private
      */
     function _selectQuery($criteria = null, $join = false, $hasCustFields = false)
@@ -959,13 +977,13 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         } else {
             if(!$hasCustFields){
                 $sql = sprintf("SELECT t.*, (UNIX_TIMESTAMP() - t.posted) as elapsed, (UNIX_TIMESTAMP() - t.lastUpdated)
-    	                        as lastUpdate FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s 
-    	                        ON t.status = s.id", $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'), 
+    	                        as lastUpdate FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s
+    	                        ON t.status = s.id", $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'),
                 $this->_db->prefix('xhelp_status'));
             } else {
                 $sql = sprintf("SELECT t.*, (UNIX_TIMESTAMP() - t.posted) as elapsed, (UNIX_TIMESTAMP() - t.lastUpdated)
-    	                        as lastUpdate FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s 
-    	                        ON t.status = s.id INNER JOIN %s f ON t.id = f.ticketid", $this->_db->prefix('xhelp_tickets'), 
+    	                        as lastUpdate FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s
+    	                        ON t.status = s.id INNER JOIN %s f ON t.id = f.ticketid", $this->_db->prefix('xhelp_tickets'),
                 $this->_db->prefix('xhelp_jstaffdept'), $this->_db->prefix('xhelp_status'), $this->_db->prefix('xhelp_ticket_values'));
             }
         }
@@ -976,15 +994,16 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
             }
         }
         $sql = str_replace(XHELP_GLOBAL_UID, $xoopsUser->getVar('uid'), $sql);
+
         return $sql;
     }
 
     /**
      * delete a ticket from the database
      *
-     * @param object $obj reference to the {@link xhelpTicket} obj to delete
-     * @param bool $force
-     * @return bool FALSE if failed.
+     * @param  object $obj   reference to the {@link xhelpTicket} obj to delete
+     * @param  bool   $force
+     * @return bool   FALSE if failed.
      * @access	public
      */
     function delete(&$obj, $force = false)
@@ -1012,16 +1031,15 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         }
          
         $ret = parent::delete($obj, $force);
+
         return $ret;
     }
-
-
 
     /**
      * increment a value to 1 field for tickets matching a set of conditions
      *
-     * @param object $criteria {@link CriteriaElement}
-     * @return bool FALSE if deletion failed
+     * @param  object $criteria {@link CriteriaElement}
+     * @return bool   FALSE if deletion failed
      * @access	public
      */
     function incrementAll($fieldname, $fieldvalue, $criteria = null)
@@ -1034,7 +1052,8 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         if (!$result = $this->_db->query($sql)) {
             return false;
         }
+
         return true;
     }
 }   // end of handler class
-?>
+;

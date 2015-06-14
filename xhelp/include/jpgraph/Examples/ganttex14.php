@@ -14,7 +14,6 @@ $graph->subtitle->Set("(ganttex14.php)");
 // Show day, week and month scale
 $graph->ShowHeaders(GANTT_HDAY | GANTT_HWEEK | GANTT_HMONTH);
 
-
 // Use the short name of the month together with a 2 digit year
 // on the month scale
 $graph->scale->month->SetStyle(MONTHSTYLE_SHORTNAMEYEAR2);
@@ -52,7 +51,6 @@ $activity2->SetHeight(10);
 // Specify progress to 30%
 $activity2->progress->Set(0.3);
 
-
 // Finally add the bar to the graph
 $graph->Add($activity);
 $graph->Add($activity2);
@@ -64,4 +62,3 @@ $vline->SetDayOffset(0.5);
 
 // ... and display it
 $graph->Stroke();
-?>

@@ -32,6 +32,3 @@ $t->Stroke($g->img);
 
 // Stroke the graph
 $g->Stroke();
-
-?>
-

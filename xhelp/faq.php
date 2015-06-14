@@ -121,4 +121,3 @@ function addFaq_action()
         redirect_header(XHELP_BASE_URL."/ticket.php?id=$ticketid", 3, _XHELP_MESSAGE_ERR_ADD_FAQ);
     }
 }
-?>

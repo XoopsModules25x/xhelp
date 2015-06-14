@@ -51,7 +51,7 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpmimetype';
@@ -76,8 +76,8 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
 
     /**
      * retrieve a mimetype object from the database
-     * @param	int	$id	ID of mimetype
-     * @return	object	{@link xhelpMimetype}
+     * @param  int    $id ID of mimetype
+     * @return object {@link xhelpMimetype}
      * @access	public
      */
     function &get($id)
@@ -92,17 +92,19 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
             $numrows = $this->_db->getRowsNum($result);
             if ($numrows == 1) {
                 $obj = new $this->classname($this->_db->fetchArray($result));
+
                 return $obj;
             }
         }
+
         return $ret;
     }
 
     /**
      * retrieve objects from the database
      *
-     * @param object $criteria {@link CriteriaElement} conditions to be met
-     * @return array array of {@link xhelpMimetype} objects
+     * @param  object $criteria {@link CriteriaElement} conditions to be met
+     * @return array  array of {@link xhelpMimetype} objects
      * @access	public
      */
     function &getObjects($criteria = null)
@@ -127,6 +129,7 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
             $ret[] =& $obj;
             unset($obj);
         }
+
         return $ret;
     }
 
@@ -166,6 +169,7 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
                 $allowed_mimetypes[] = array('type'=>$row, 'ext'=>$mime->getVar('mime_ext'));
             }
         }
+
         return $allowed_mimetypes;
     }
     /**
@@ -194,13 +198,14 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
                 $allowed_mimetypes = false;
             }
         }
+
         return $allowed_mimetypes;
     }
 
     /**
      * Create a "select" SQL query
-     * @param object $criteria {@link CriteriaElement} to match
-     * @return	string SQL query
+     * @param  object $criteria {@link CriteriaElement} to match
+     * @return string SQL query
      * @access	private
      */
     function _selectQuery($criteria = null, $join = false)
@@ -216,6 +221,7 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
                 $sql .= ' ORDER BY '.$criteria->getSort().' '.$criteria->getOrder();
             }
         }
+
         return $sql;
     }
 
@@ -229,6 +235,7 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
         $sql = sprintf("INSERT INTO %s (mime_id, mime_ext, mime_types, mime_name, mime_admin, mime_user) VALUES
                (%u, %s, %s, %s, %u, %u)", $this->_db->prefix($this->_dbtable), $mime_id, $this->_db->quoteString($mime_ext),
         $this->_db->quoteString($mime_types), $this->_db->quoteString($mime_name), $mime_admin, $mime_user);
+
         return $sql;
     }
 
@@ -242,14 +249,15 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
         $sql = sprintf("UPDATE %s SET mime_ext = %s, mime_types = %s, mime_name = %s, mime_admin = %u, mime_user = %u WHERE
                mime_id = %u", $this->_db->prefix($this->_dbtable), $this->_db->quoteString($mime_ext),
         $this->_db->quoteString($mime_types), $this->_db->quoteString($mime_name), $mime_admin, $mime_user, $mime_id);
+
         return $sql;
     }
 
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE mime_id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('mime_id'));
+
         return $sql;
     }
 }   // end class
-
-?>
+;

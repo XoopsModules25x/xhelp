@@ -2,8 +2,6 @@
 
 Class xhelpBaseObject extends XoopsObject {
 
-
-
     /**
      * create a new  object
      * @return object {@link xhelpBaseObject}
@@ -15,7 +13,7 @@ Class xhelpBaseObject extends XoopsObject {
     }
     /**
      * retrieve an object from the database, based on. use in child classes
-     * @param int $id ID
+     * @param  int    $id ID
      * @return object {@link xhelpdepartmentemailserver}
      * @access public
      */
@@ -30,15 +28,17 @@ Class xhelpBaseObject extends XoopsObject {
             $numrows = $this->_db->getRowsNum($result);
             if($numrows == 1) {
                 $obj = new $this->classname($this->_db->fetchArray($result));
+
                 return $obj;
             }
         }
+
         return false;
     }
 
     /**
      * Create a "select" SQL query
-     * @param object $criteria {@link CriteriaElement} to match
+     * @param  object $criteria {@link CriteriaElement} to match
      * @return string SQL query
      * @access private
      */
@@ -52,13 +52,14 @@ Class xhelpBaseObject extends XoopsObject {
                    ' .$criteria->getOrder();
             }
         }
+
         return $sql;
     }
     /**
      * count objects matching a criteria
      *
-     * @param object $criteria {@link CriteriaElement} to match
-     * @return int count of objects
+     * @param  object $criteria {@link CriteriaElement} to match
+     * @return int    count of objects
      * @access public
      */
     function getCount($criteria = null)
@@ -71,14 +72,15 @@ Class xhelpBaseObject extends XoopsObject {
             return 0;
         }
         list($count) = $this->_db->fetchRow($result);
+
         return $count;
     }
 
     /**
      * delete object based on id
      *
-     * @param object $criteria {@link CriteriaElement} to match
-     * @return int count of objects
+     * @param  object $criteria {@link CriteriaElement} to match
+     * @return int    count of objects
      * @access public
      */
     function delete(&$obj, $force = false) {
@@ -95,10 +97,8 @@ Class xhelpBaseObject extends XoopsObject {
         if (!$result) {
             return false;
         }
+
         return true;
     }
 
-
 }
-
-?>

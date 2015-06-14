@@ -37,5 +37,3 @@ $graph->title->SetCSIMTarget(sprintf($fmtStr,-1),'Title for Bar');
 
 // Send back the HTML page which will call this script again to retrieve the image.
 $graph->StrokeCSIM();
-
-?>

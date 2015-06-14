@@ -26,7 +26,7 @@ class xhelpEventService
     /**
      * Array of all function callbacks
      *
-     * @var	array
+     * @var array
      * @access	private
      */
     var $_ctx = array();
@@ -43,10 +43,10 @@ class xhelpEventService
 
     /**
      * Add a new class function to be notified
-     * @param	string	$context Event used for callback
-     * @param	callback $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
-     * @param   int $priority Order that callback should be triggered
-     * @return  int Event cookie, used for unadvise
+     * @param  string   $context  Event used for callback
+     * @param  callback $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
+     * @param  int      $priority Order that callback should be triggered
+     * @return int      Event cookie, used for unadvise
      * @access	public
      */
     function advise($context, &$callback, $priority = 10)
@@ -63,11 +63,10 @@ class xhelpEventService
         return count($this->_ctx[$context]["$priority"]) - 1;
     }
 
-
     /**
      * Remove a class function from the notification list
-     * @param	string	$context Event used for callback
-     * @param	int	$cookie The Event ID returned by xhelp_eventService::advise()
+     * @param string $context Event used for callback
+     * @param int    $cookie  The Event ID returned by xhelp_eventService::advise()
      * @access	public
      */
     function unadvise($context, $cookie, $priority = 10)
@@ -89,13 +88,14 @@ class xhelpEventService
         if(!isset($instance)) {
             $instance = new xhelpEventService();
         }
+
         return($instance);
     }
 
     /**
      * Tell subscribed objects an event occurred in the system
-     * @param	string	$context Event raised by the system
-     * @param	array	$args Any arguments that need to be passed to the callback functions
+     * @param string $context Event raised by the system
+     * @param array  $args    Any arguments that need to be passed to the callback functions
      * @access	public
      */
     function trigger($context, $args)
@@ -113,4 +113,3 @@ class xhelpEventService
         }
     }
 }
-?>

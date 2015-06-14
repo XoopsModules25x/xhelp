@@ -29,6 +29,3 @@ $lp1->SetColor("blue");
 
 $graph->Add($lp1);
 $graph->Stroke();
-?>
-
-

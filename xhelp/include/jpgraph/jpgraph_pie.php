@@ -9,7 +9,6 @@
  //========================================================================
  */
 
-
 // Defines for PiePlot::SetLabelType()
 define("PIE_VALUE_ABS",1);
 define("PIE_VALUE_PER",0);
@@ -149,7 +148,6 @@ class PiePlot {
             $a -= 2*M_PI;
         }
 
-
         while ($a < $sa) {
             $xp = floor($radius*cos($a)+$xc);
             $yp = floor($yc-$radius*sin($a));
@@ -174,7 +172,6 @@ class PiePlot {
             $this->csimareas .= " />\n";
         }
     }
-
 
     function SetTheme($aTheme) {
         if( in_array($aTheme,array_keys($this->themearr)) )
@@ -364,6 +361,7 @@ class PiePlot {
                     $result[$i] /= $tmp ;
                 }
             }
+
             return $result;
         }
         arsort($tmp,SORT_NUMERIC);
@@ -379,9 +377,9 @@ class PiePlot {
                 $result[$i] /= $tmp ;
             }
         }
+
         return $result;
     }
-
 
     function Stroke($img,$aaoption=0) {
         // aaoption is used to handle antialias
@@ -647,6 +645,7 @@ class PiePlot {
     function NormAngle($a) {
         while( $a < 0 ) $a += 2*M_PI;
         while( $a > 2*M_PI ) $a -= 2*M_PI;
+
         return $a;
     }
 
@@ -1147,7 +1146,6 @@ class PiePlotC extends PiePlot {
         }
     }
 
-
     function Stroke($img,$aaoption=0) {
 
         // Stroke the pie but don't stroke values
@@ -1160,7 +1158,6 @@ class PiePlotC extends PiePlot {
         $yc = round($this->posy*$img->height);
 
         $radius = floor($this->radius * min($img->width,$img->height)) ;
-
 
         if( $this->imidsize > 0 && $aaoption !== 2 ) {
 
@@ -1216,7 +1213,6 @@ class PiePlotC extends PiePlot {
 
 }
 
-
 //===================================================
 // CLASS PieGraph
 // Description:
@@ -1268,7 +1264,6 @@ class PieGraph extends Graph {
     function SetColor($c) {
         $this->SetMarginColor($c);
     }
-
 
     function DisplayCSIMAreas() {
         $csim="";
@@ -1337,7 +1332,6 @@ class PieGraph extends Graph {
                     $this->StrokeBackgroundGrad();
                 }
             }
-
 
             $w = $this->img->width;
             $h = $this->img->height;
@@ -1442,7 +1436,6 @@ class PieGraph extends Graph {
                 $this->iImgTransBorder);
             }
 
-
             // If the filename is given as the special "__handle"
             // then the image handler is returned and the image is NOT
             // streamed back
@@ -1458,5 +1451,4 @@ class PieGraph extends Graph {
     }
 } // Class
 
-/* EOF */
-?>
+/* EOF */;

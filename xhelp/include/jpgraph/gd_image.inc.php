@@ -119,6 +119,7 @@ class Image {
         $oldimage = $this->img;
         $this->CreateRawCanvas($this->width,$this->height);
         imagecopy($this->img,$oldimage,0,0,0,0,$this->width,$this->height);
+
         return $oldimage;
     }
 
@@ -132,13 +133,13 @@ class Image {
         $this->width=$aWidth;
         $this->height=$aHeight;
 
-
         if( $aWidth==0 || $aHeight==0 ) {
             // We will set the final size later.
             // Note: The size must be specified before any other
             // img routines that stroke anything are called.
             $this->img = null;
             $this->rgb = null;
+
             return $old;
         }
 
@@ -196,6 +197,7 @@ class Image {
         if( $aImg === null ) {
             $aImg = $this->img;
         }
+
         return imagesx($aImg);
     }
 
@@ -203,6 +205,7 @@ class Image {
         if( $aImg === null ) {
             $aImg = $this->img;
         }
+
         return imagesy($aImg);
     }
 
@@ -212,6 +215,7 @@ class Image {
             JpGraphError::RaiseL(25085);
             //('An image can not be created from the supplied string. It is either in a format not supported or the string is representing an corrupt image.');
         }
+
         return $img;
     }
 
@@ -287,6 +291,7 @@ class Image {
         }
         else {
             $bbox = $this->GetTTFBBox($txt,$angle);
+
             return $bbox[1]-$bbox[5]+1;
         }
     }
@@ -294,12 +299,14 @@ class Image {
     // Estimate font height
     function GetFontHeight($angle=0) {
         $txt = "XOMg";
+
         return $this->GetTextHeight($txt,$angle);
     }
 
     // Approximate font width with width of letter "O"
     function GetFontWidth($angle=0) {
         $txt = 'O';
+
         return $this->GetTextWidth($txt,$angle);
     }
 
@@ -325,6 +332,7 @@ class Image {
                 if( $w === false ) {
                     JpGraphError::RaiseL(25088);//('You have a misconfigured GD font support. The call to imagefontwidth() fails.');
                 }
+
                 return $m*$w;
             }
             else {
@@ -333,6 +341,7 @@ class Image {
                 if( $h === false ) {
                     JpGraphError::RaiseL(25089);//('You have a misconfigured GD font support. The call to imagefontheight() fails.');
                 }
+
                 return $n*$h;
             }
         }
@@ -347,10 +356,10 @@ class Image {
                 if( $mm > $m )
                 $m = $mm;
             }
+
             return $m;
         }
     }
-
 
     // Draw text with a box around it
     function StrokeBoxedText($x,$y,$txt,$dir=0,$fcolor="white",$bcolor="black",
@@ -674,6 +683,7 @@ class Image {
         for($i=0; $i<$n; ++$i) {
             $e[$i]=str_replace("\r","",$e[$i]);
         }
+
         return implode("\n\r",$e);
     }
 
@@ -686,11 +696,11 @@ class Image {
         $a += 360;
         if( $a < 0 )
         $a = 360 + $a;
+
         return $a;
     }
 
     function imagettfbbox_fixed($size, $angle, $fontfile, $text) {
-
 
         if( ! USE_LIBRARY_IMAGETTFBBOX ) {
 
@@ -700,6 +710,7 @@ class Image {
                 //("There is either a configuration problem with TrueType or a problem reading font file (".$this->font_file."). Make sure file exists and is in a readable place for the HTTP process. (If 'basedir' restriction is enabled in PHP then the font file must be located in the document root.). It might also be a wrongly installed FreeType library. Try uppgrading to at least FreeType 2.1.13 and recompile GD with the correct setup so it can find the new FT library.");
             }
             $this->bbox_cache = $bbox;
+
             return $bbox;
         }
 
@@ -771,10 +782,12 @@ class Image {
                 $ret[$i+1] = round($bbox[$i+1] * $ca - $bbox[$i] * $sa);
             }
             $this->bbox_cache = $ret;
+
             return $ret;
         }
         else {
             $this->bbox_cache = $bbox;
+
             return $bbox;
         }
     }
@@ -782,6 +795,7 @@ class Image {
     // Deprecated
     function GetTTFBBox($aTxt,$aAngle=0) {
         $bbox = $this->imagettfbbox_fixed($this->font_size,$aAngle,$this->font_file,$aTxt);
+
         return $bbox;
     }
 
@@ -835,19 +849,21 @@ class Image {
                 $bbox[4],$bbox[7],$bbox[0],$bbox[7]);
             }
         }
+
         return $bbox;
     }
 
     function GetBBoxHeight($aTxt,$aAngle=0) {
         $box = $this->GetBBoxTTF($aTxt,$aAngle);
+
         return abs($box[7]-$box[1]);
     }
 
     function GetBBoxWidth($aTxt,$aAngle=0) {
         $box = $this->GetBBoxTTF($aTxt,$aAngle);
+
         return $box[2]-$box[0]+1;
     }
-
 
     function _StrokeTTF($x,$y,$txt,$dir,$paragraph_align,&$aBoundingBox,$debug=false) {
 
@@ -1071,6 +1087,7 @@ class Image {
         else {
             JpGraphError::RaiseL(25095);//(" Unknown font font family specification. ");
         }
+
         return $boundingbox;
     }
 
@@ -1101,6 +1118,7 @@ class Image {
             JpGraphError::RaiseL(25096);
             //("Can't allocate any more colors. Image has already allocated maximum of <b>$tc colors</b>. This might happen if you have anti-aliasing turned on together with a background image or perhaps gradient fill since this requires many, many colors. Try to turn off anti-aliasing. If there is still a problem try downgrading the quality of the background image to use a smaller pallete to leave some entries for your graphs. You should try to limit the number of colors in your background image to 64. If there is still problem set the constant DEFINE(\"USE_APPROX_COLORS\",true); in jpgraph.php This will use approximative colors when the palette is full. Unfortunately there is not much JpGraph can do about this since the palette size is a limitation of current graphic format and what the underlying GD library suppports.");
         }
+
         return $this->current_color;
     }
 
@@ -1124,11 +1142,11 @@ class Image {
         $this->current_color_name=$this->colorstack[--$this->colorstackidx];
     }
 
-
     function SetLineWeight($weight) {
         $old = $this->line_weight;
         imagesetthickness($this->img,$weight);
         $this->line_weight = $weight;
+
         return $old;
     }
 
@@ -1212,6 +1230,7 @@ class Image {
         $r = $f[0] + ($t[0]-$f[0])*$p;
         $g = $f[1] + ($t[1]-$f[1])*$p;
         $b = $f[2] + ($t[2]-$f[2])*$p;
+
         return array($r,$g,$b);
     }
 
@@ -1236,6 +1255,7 @@ class Image {
         }
         $old = $this->line_style;
         $this->line_style=$s;
+
         return $old;
     }
 
@@ -1293,7 +1313,6 @@ class Image {
         if( $this->use_anti_aliasing ) {
             JpGraphError::RaiseL(25129); // Anti-alias can not be used with dashed lines. Please disable anti-alias or use solid lines.
         }
-
 
         $x1 = round($x1);
         $x2 = round($x2);
@@ -1440,6 +1459,7 @@ class Image {
     function FilledRoundedRectangle($xt,$yt,$xr,$yl,$r=5) {
         if( $r==0 ) {
             $this->FilledRectangle($xt,$yt,$xr,$yl);
+
             return;
         }
 
@@ -1472,6 +1492,7 @@ class Image {
 
         if( $r==0 ) {
             $this->Rectangle($xt,$yt,$xr,$yl);
+
             return;
         }
 
@@ -1623,6 +1644,7 @@ class Image {
             else {
                 JpGraphError::RaiseL(25109);//("Your PHP (and GD-lib) installation does not appear to support any known graphic formats. You need to first make sure GD is compiled as a module to PHP. If you also want to use JPEG images you must get the JPEG library. Please see the PHP docs for details.");
             }
+
             return true;
         }
         else {
@@ -1634,6 +1656,7 @@ class Image {
                 elseif( $aFormat=="xpm" && !($supported & IMG_XPM) )    $tst=false;
                 else {
                     $this->img_format=$aFormat;
+
                     return true;
                 }
             }
@@ -1670,6 +1693,7 @@ class RotImage extends Image {
         $this->dx=$dx;
         $this->dy=$dy;
         $this->SetAngle($this->a);
+
         return array($old_dx,$old_dy);
     }
 
@@ -1677,6 +1701,7 @@ class RotImage extends Image {
         $old = array($this->transx,$this->transy);
         $this->transx = $dx;
         $this->transy = $dy;
+
         return $old;
     }
 
@@ -1697,6 +1722,7 @@ class RotImage extends Image {
         $tmp = $this->a;
         $this->a = $a;
         $this->UpdateRotMatrice();
+
         return $tmp;
     }
 
@@ -1709,7 +1735,6 @@ class RotImage extends Image {
         list($xc,$yc) = $this->Rotate($xc,$yc);
         parent::FilledCircle($xc,$yc,$r);
     }
-
 
     function Arc($xc,$yc,$w,$h,$s,$e) {
         list($xc,$yc) = $this->Rotate($xc,$yc);
@@ -1740,6 +1765,7 @@ class RotImage extends Image {
         else {
             $x1=round($this->m[0][0]*$x + $this->m[0][1]*$y,1) + $this->m[0][2] + $this->transx;
             $y1=round($this->m[1][0]*$x + $this->m[1][1]*$y,1) + $this->m[1][2] + $this->transy;
+
             return array($x1,$y1);
         }
     }
@@ -1756,6 +1782,7 @@ class RotImage extends Image {
             list ($x,$y) = $this->Rotate($pnts[$i],$pnts[$i+1]);
             $pnts[$i] = $x; $pnts[$i+1] = $y;
         }
+
         return $pnts;
     }
 
@@ -1805,6 +1832,7 @@ class RotImage extends Image {
 
     function StrokeText($x,$y,$txt,$dir=0,$paragraph_align="left",$debug=false) {
         list($xp,$yp) = $this->Rotate($x,$y);
+
         return parent::StrokeText($xp,$yp,$txt,$dir,$paragraph_align,$debug);
     }
 }
@@ -1929,6 +1957,7 @@ class ImgStreamCache {
                 if ($fh = @fopen($aCacheFileName, "rb") ) {
                     $aImage->Headers();
                     fpassthru($fh);
+
                     return;
                 }
                 else {
@@ -1939,6 +1968,7 @@ class ImgStreamCache {
         elseif( $aInline ) {
             $aImage->Headers();
             $aImage->Stream();
+
             return;
         }
     }
@@ -1967,6 +1997,7 @@ class ImgStreamCache {
             fpassthru($fh);
             $lock = flock($fh, LOCK_UN);
             fclose($fh);
+
             return true;
         }
         else {
@@ -2014,8 +2045,8 @@ class ImgStreamCache {
                 }
             }
         }
+
         return true;
     }
 } // CLASS Cache
-
-?>
+;

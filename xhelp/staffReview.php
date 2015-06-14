@@ -64,4 +64,3 @@ if($xoopsUser){
 } else {    // If not a user
     redirect_header(XOOPS_URL .'/user.php', 3);
 }
-?>

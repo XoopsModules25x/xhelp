@@ -12,4 +12,3 @@ echo "<tr><th>"._AM_XHELP_UPDATE_DB."</th></tr>";
 echo "<tr><td><img src='".XHELP_IMAGE_URL."/progress.gif' /></td></tr>";
 echo "</table>";
 echo "</html>";
-?>

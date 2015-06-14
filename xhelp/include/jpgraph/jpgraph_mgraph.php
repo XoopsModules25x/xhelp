@@ -33,7 +33,6 @@ class MGraph {
     private $doshadow=false, $shadow_width=4, $shadow_color='gray@0.5';
     public $footer;
 
-
     // Create a new instane of the combined graph
     function __construct($aWidth=NULL,$aHeight=NULL,$aCachedName='',$aTimeOut=0,$aInline=true) {
         $this->iWidth = $aWidth;
@@ -322,7 +321,6 @@ class MGraph {
             -1,-1, /* Full from width and height */
             $this->iGraphs[$i][7]);
 
-
         }
 
         $this->StrokeTitle($image,$w,$h);
@@ -341,5 +339,4 @@ class MGraph {
 }
 
 // EOF
-
-?>
+;

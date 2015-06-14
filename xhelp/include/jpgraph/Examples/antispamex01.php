@@ -13,6 +13,3 @@ $chars = $spam->Rand(5);
 if( $spam->Stroke() === false ) {
     die('Illegal or no data to plot');
 }
-
-?>
-

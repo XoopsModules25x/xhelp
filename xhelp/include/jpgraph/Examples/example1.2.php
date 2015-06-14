@@ -20,10 +20,8 @@ $lineplot->SetColor("blue");
 // SetStyle("solid"|"dotted"|"dashed"|"lobgdashed")
 $lineplot->SetStyle("dashed");
 
-
 // Add the plot to the graph
 $graph->Add($lineplot);
 
 // Display the graph
 $graph->Stroke();
-?>

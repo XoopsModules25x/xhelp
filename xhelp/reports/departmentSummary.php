@@ -241,5 +241,3 @@ class xhelpDepartmentSummaryReport extends xhelpReport {
                 return $aResults;
             }
 }
-
-?>

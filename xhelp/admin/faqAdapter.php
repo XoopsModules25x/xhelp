@@ -36,7 +36,6 @@ function manage()
     $indexAdmin = new ModuleAdmin();
     echo $indexAdmin->addNavigation('faqAdapter.php');
 
-
     echo "<form method='post' action='".XHELP_ADMIN_URL."/faqAdapter.php?op=updateActive'>";
     echo "<table width='100%' cellspacing='1' class='outer'>";
 
@@ -107,4 +106,3 @@ function updateActive()
         redirect_header(XHELP_ADMIN_URL."/faqAdapter.php", 3, _AM_XHELP_MSG_INSTALL_MODULE);
     }
 }
-?>

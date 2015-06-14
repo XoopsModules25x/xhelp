@@ -13,7 +13,6 @@ $graph->title->SetFont(FF_VERDANA,FS_NORMAL,12);
 $graph->subtitle->Set("(according to direction)");
 $graph->subtitle->SetFont(FF_VERDANA,FS_ITALIC,10);
 
-
 $graph->SetTitles($titles);
 $graph->SetCenter(0.5,0.55);
 $graph->HideTickMarks();
@@ -30,4 +29,3 @@ $plot->SetLineWeight(1);
 $plot->SetFillColor('red@0.7');
 $graph->Add($plot);
 $graph->Stroke();
-?>

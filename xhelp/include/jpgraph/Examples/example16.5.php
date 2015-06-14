@@ -40,7 +40,6 @@ $l2plot->SetLegend("Result");
 $graph->Add($l1plot);
 $graph->Add($l2plot);
 
-
 $graph->title->Set("Example 16.3");
 $graph->xaxis->title->Set("Month");
 $graph->yaxis->title->Set("x10,000 US$");
@@ -54,4 +53,3 @@ $graph->xaxis->SetTickLabels($datax);
 
 // Display the graph
 $graph->Stroke();
-?>

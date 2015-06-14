@@ -101,5 +101,3 @@ class MeshInterpolate {
         return $this->data;
     }
 }
-
-?>

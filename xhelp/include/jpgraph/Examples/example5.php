@@ -41,4 +41,3 @@ $graph->yaxis->SetColor("blue");
 
 // Display the graph
 $graph->Stroke();
-?>

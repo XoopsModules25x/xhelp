@@ -44,7 +44,6 @@ $graph->axis->SetLabelMargin(6);
 $graph->axis->SetFont(FF_ARIAL,FS_NORMAL,8);
 $graph->axis->SetAngleFont(FF_ARIAL,FS_NORMAL,8);
 
-
 // Setup graph title
 $graph->title->Set('Polar plot #10');
 $graph->title->SetFont(FF_ARIAL,FS_BOLD,16);
@@ -54,7 +53,6 @@ $graph->title->SetColor('navy');
 $graph->tabtitle->Set('Microphone #1');
 $graph->tabtitle->SetColor('brown:0.5','lightyellow');
 
-
 $p = new PolarPlot($data);
 $p->SetFillColor('lightblue@0.5');
 $p->mark->SetType(MARK_SQUARE);
@@ -62,5 +60,3 @@ $p->mark->SetType(MARK_SQUARE);
 $graph->Add($p);
 
 $graph->Stroke();
-
-?>

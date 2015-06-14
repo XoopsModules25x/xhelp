@@ -42,7 +42,6 @@ if ( !defined('E_STRICT') ) {
     define('E_STRICT',2048);
 }
 
-
 //-----------------------------------------------------------------------------
 
 /**
@@ -154,5 +153,3 @@ if ( version_compare(phpversion(), '5', '>=') ) {
     // Spot the seg fault...
     set_exception_handler('JPSpan_ExceptionHandler');
 }
-
-

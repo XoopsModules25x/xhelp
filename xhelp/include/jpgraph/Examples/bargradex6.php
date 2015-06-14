@@ -32,7 +32,7 @@ $graph->xaxis->SetTickLabels($datax);
 $graph->xaxis->SetLabelAngle(50);
 
 // Set X-axis at the minimum value of Y-axis (default will be at 0)
-$graph->xaxis->SetPos("min");	// "min" will position the x-axis at the minimum value of the Y-axis
+$graph->xaxis->SetPos("min");    // "min" will position the x-axis at the minimum value of the Y-axis
 
 // Create the bar pot
 $bplot = new BarPlot($datay);
@@ -48,4 +48,3 @@ $graph->Add($bplot);
 
 // Finally send the graph to the browser
 $graph->Stroke();
-?>

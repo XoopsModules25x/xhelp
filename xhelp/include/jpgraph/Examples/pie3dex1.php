@@ -26,7 +26,3 @@ $p1->SetLegends(array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct
 
 $graph->Add($p1);
 $graph->Stroke();
-
-?>
-
-

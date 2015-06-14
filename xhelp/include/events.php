@@ -25,5 +25,3 @@ unset($var);
 
 // @todo - update every reference to $_eventsrv to use the new $xhelpEventSrv object
 $_eventsrv =& $xhelpEventSrv;
-
-?>

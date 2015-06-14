@@ -173,6 +173,7 @@ class Text {
     function GetWidth($aImg) {
         $aImg->SetFont($this->font_family,$this->font_style,$this->font_size);
         $w = $aImg->GetTextWidth($this->t,$this->dir);
+
         return $w;
     }
 
@@ -180,6 +181,7 @@ class Text {
     function GetFontHeight($aImg) {
         $aImg->SetFont($this->font_family,$this->font_style,$this->font_size);
         $h = $aImg->GetFontHeight();
+
         return $h;
 
     }
@@ -187,6 +189,7 @@ class Text {
     function GetTextHeight($aImg) {
         $aImg->SetFont($this->font_family,$this->font_style,$this->font_size);
         $h = $aImg->GetTextHeight($this->t,$this->dir);
+
         return $h;
     }
 
@@ -194,6 +197,7 @@ class Text {
         // Synonym for GetTextHeight()
         $aImg->SetFont($this->font_family,$this->font_style,$this->font_size);
         $h = $aImg->GetTextHeight($this->t,$this->dir);
+
         return $h;
     }
 
@@ -297,6 +301,4 @@ class Text {
         $aImg->PopColor($this->color);
     }
 } // Class
-
-
-?>
+;

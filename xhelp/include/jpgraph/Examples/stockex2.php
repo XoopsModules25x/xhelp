@@ -3,7 +3,6 @@
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_stock.php');
 
-
 $datay = array(
 34,42,27,45,
 55,25,12,59,
@@ -36,4 +35,3 @@ $p1->SetCenter();
 // Add and stroke
 $graph->Add($p1);
 $graph->Stroke();
-?>

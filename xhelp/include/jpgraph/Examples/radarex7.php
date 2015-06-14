@@ -44,5 +44,3 @@ $graph->Add($plot);
 
 // And output the graph
 $graph->Stroke();
-
-?>

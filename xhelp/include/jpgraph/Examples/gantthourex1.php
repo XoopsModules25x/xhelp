@@ -32,7 +32,6 @@ array(1,"  Label 2", "2001-01-26 10:00","2001-01-26 18:00"),
 array(2,"  Label 3", "2001-01-26","2001-01-27 10:00")
 );
 
-
 for($i=0; $i<count($data); ++$i) {
     $bar = new GanttBar($data[$i][0],$data[$i][1],$data[$i][2],$data[$i][3],"[5%]",10);
     if( count($data[$i])>4 )
@@ -43,9 +42,3 @@ for($i=0; $i<count($data); ++$i) {
 }
 
 $graph->Stroke();
-
-
-
-?>
-
-

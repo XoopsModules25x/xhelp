@@ -12,7 +12,6 @@ $graph->yaxis->SetTitleMargin(30);
 $graph->yaxis->scale->SetGrace(30);
 $graph->SetShadow();
 
-
 // Create a bar pot
 $bplot = new BarPlot($datay);
 
@@ -58,5 +57,3 @@ $graph->xaxis->title->SetCSIMTarget('#55','X-axis title');
 // Send back the HTML page which will call this script again
 // to retrieve the image.
 $graph->StrokeCSIM();
-
-?>

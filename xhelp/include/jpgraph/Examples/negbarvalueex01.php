@@ -34,6 +34,4 @@ $graph->title->Set("Example of bar plot with absolute labels");
 
 $graph->yaxis->title->SetFont(FF_ARIAL,FS_NORMAL,16);
 
-
 $graph->Stroke();
-?>

@@ -25,12 +25,11 @@ class xhelpTicketFieldDepartmentHandler
         $this->_hDept  =& xhelpGetHandler('department');
     }
 
-
     /**
      * Get every department a field is "in"
      *
-     * @param int $field Field ID
-     * @param bool $id_as_key Should object ID be used as array key?
+     * @param  int   $field     Field ID
+     * @param  bool  $id_as_key Should object ID be used as array key?
      * @return array array of {@Link xhelpDepartment} objects
      * @access public
      */
@@ -59,12 +58,11 @@ class xhelpTicketFieldDepartmentHandler
         return $arr;
     }
 
-
     /**
      * Get every field in a department
      *
-     * @param int $dept Department ID
-     * @param bool $id_as_key Should object ID be used as array key?
+     * @param  int   $dept      Department ID
+     * @param  bool  $id_as_key Should object ID be used as array key?
      * @return array array of {@Link xhelpTicketField} objects
      * @access public
      */
@@ -89,16 +87,16 @@ class xhelpTicketFieldDepartmentHandler
 
             }
         }
+
         return $arr;
     }
-
 
     /**
      * Add the given field to the given department
      *
-     * @param mixed $staff single or array of uids or {@link xhelpTicketField} objects
-     * @param int $deptid Department ID
-     * @return bool True if successful, False if not
+     * @param  mixed $staff  single or array of uids or {@link xhelpTicketField} objects
+     * @param  int   $deptid Department ID
+     * @return bool  True if successful, False if not
      * @access public
      */
     function addFieldToDepartment(&$field, $deptid)
@@ -113,14 +111,15 @@ class xhelpTicketFieldDepartmentHandler
                 }
             }
         }
+
         return $ret;
     }
 
     /**
      * Add the given department(s) to the given field
      *
-     * @param mixed $dept single or array of department id's or {@Link xhelpDepartment} objects
-     * @param int $field Field ID
+     * @param mixed $dept  single or array of department id's or {@Link xhelpDepartment} objects
+     * @param int   $field Field ID
      * @retnr bool True if successful, False if not
      * @access public
      */
@@ -136,15 +135,16 @@ class xhelpTicketFieldDepartmentHandler
                 }
             }
         }
+
         return $ret;
     }
 
     /**
      * Remove the given field(s) from the given department
      *
-     * @param mixed $field single or array of field ids or {@link xhelpTicketField} objects
-     * @param int $deptid Department ID
-     * @return bool True if successful, False if not
+     * @param  mixed $field  single or array of field ids or {@link xhelpTicketField} objects
+     * @param  int   $deptid Department ID
+     * @return bool  True if successful, False if not
      * @access public
      */
     function removeFieldFromDept(&$field, $deptid)
@@ -159,15 +159,16 @@ class xhelpTicketFieldDepartmentHandler
                 }
             }
         }
+
         return $ret;
     }
 
     /**
      * Remove the given department(s) from the given field
      *
-     * @param mixed $dept single or array of department id's or {@link xhelpDepartment} objects
-     * @param int $field Field ID
-     * @return bool True if successful, False if not
+     * @param  mixed $dept  single or array of department id's or {@link xhelpDepartment} objects
+     * @param  int   $field Field ID
+     * @return bool  True if successful, False if not
      * @access public
      */
     function removeDeptFromField(&$dept, $field)
@@ -182,12 +183,13 @@ class xhelpTicketFieldDepartmentHandler
                 }
             }
         }
+
         return $ret;
     }
 
     /**
      * Remove All Departments from a particular field
-     * @param int $field Field ID
+     * @param  int  $field Field ID
      * @return bool True if successful, False if not
      * @access public
      */
@@ -196,12 +198,13 @@ class xhelpTicketFieldDepartmentHandler
         $field = intval($field);
         $crit = new Criteria('fieldid', $field);
         $ret = $this->deleteAll($crit);
+
         return $ret;
     }
 
     /**
      * Remove All Departments from a particular field
-     * @param int $field Field ID
+     * @param  int  $field Field ID
      * @return bool True if successful, False if not
      * @access public
      */
@@ -211,9 +214,9 @@ class xhelpTicketFieldDepartmentHandler
         $dept = intval($dept);
         $crit = new Criteria('deptid', $dept);
         $ret = $this->deleteAll($crit);
+
         return $ret;
     }
-
 
     function deleteAll($criteria=null, $force=false)
     {
@@ -230,15 +233,16 @@ class xhelpTicketFieldDepartmentHandler
         if (!$result) {
             return false;
         }
+
         return true;
     }
 
     /**
      * Add a field to a department
      *
-     * @param mixed $field fieldid or {@Link xhelpTicketField} object
-     * @param mixed $dept deptid or {@Link xhelpDepartment} object
-     * @return bool True if Successful, False if not
+     * @param  mixed $field fieldid or {@Link xhelpTicketField} object
+     * @param  mixed $dept  deptid or {@Link xhelpDepartment} object
+     * @return bool  True if Successful, False if not
      * @access private
      */
     function _addMembership(&$field, &$dept)
@@ -258,6 +262,7 @@ class xhelpTicketFieldDepartmentHandler
         }
 
         $ret = $this->_addJoinerRecord($fieldid, $deptid);
+
         return $ret;
     }
 
@@ -266,6 +271,7 @@ class xhelpTicketFieldDepartmentHandler
         $sql = sprintf('INSERT INTO %s (fieldid, deptid) VALUES (%u, %u)',
         $this->_db->prefix('xhelp_ticket_field_departments'), $fieldid, $deptid);
         $ret = $this->_db->query($sql);
+
         return $ret;
     }
 
@@ -285,6 +291,7 @@ class xhelpTicketFieldDepartmentHandler
         }
 
         $ret = $this->_removeJoinerRecord($fieldid, $deptid);
+
         return $ret;
     }
 
@@ -293,11 +300,8 @@ class xhelpTicketFieldDepartmentHandler
         $sql = sprintf('DELETE FROM %s WHERE fieldid = %u AND deptid = %u',
         $this->_db->prefix('xhelp_ticket_field_departments'), $fieldid, $deptid);
         $ret = $this->_db->query($sql);
+
         return $ret;
     }
 
-
 }
-
-
-?>

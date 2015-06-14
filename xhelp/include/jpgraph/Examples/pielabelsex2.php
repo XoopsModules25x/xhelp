@@ -13,7 +13,6 @@ $graph->title->SetFont(FF_VERDANA,FS_BOLD,12);
 $graph->title->SetColor("darkblue");
 $graph->legend->Pos(0.1,0.2);
 
-
 // Create pie plot
 $p1 = new PiePlot($data);
 $p1->SetCenter(0.5,0.55);
@@ -32,7 +31,3 @@ $p1->value->SetFormat('%2.1f%%');
 // Add and stroke
 $graph->Add($p1);
 $graph->Stroke();
-
-?>
-
-

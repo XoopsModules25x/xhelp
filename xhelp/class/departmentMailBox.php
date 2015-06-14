@@ -29,7 +29,7 @@ class xhelpDepartmentMailBox extends XoopsObject
     /**
      * Class Constructor
      *
-     * @param mixed $id ID of Mailbox or array containing mailbox info
+     * @param  mixed $id ID of Mailbox or array containing mailbox info
      * @access public
      * @return void
      */
@@ -69,16 +69,19 @@ class xhelpDepartmentMailBox extends XoopsObject
         if (!isset($this->_mBox)) {
             if(!$this->_mBox = $this->_getMailBox($this->getVar('mboxtype'))) {
                 $this->setErrors(_XHELP_MBOX_INV_BOXTYPE);
+
                 return false;
             }
         }
         if (!$this->_mBox->connect($this->getVar('server'), $this->getVar('serverport'))) {
             $this->setErrors(_XHELP_MAILEVENT_DESC0);
+
             return false;
         }
 
         if (!$this->_mBox->login($this->getVar('username'), $this->getVar('password'))) {
             $this->setErrors(_XHELP_MBOX_ERR_LOGIN);
+
             return false;
         }
         //Reset Message Pointer/Message Count
@@ -119,9 +122,9 @@ class xhelpDepartmentMailBox extends XoopsObject
         if (! isset($this->_msgCount) ) {
             $this->_msgCount = $this->_mBox->messageCount();
         }
+
         return $this->_msgCount;
     }
-
 
     function _getMailBox($mboxType)
     {
@@ -186,7 +189,7 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
     /**
      * Constructor
      *
-     * @param object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpDepartmentMailBoxHandler(&$db)
     {
@@ -195,7 +198,7 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
 
     /**
      * retrieve server list by department
-     * @param int $depid department id
+     * @param  int   $depid department id
      * @return array array of {@link xhelpDepartmentMailBox}
      * @access public
      */
@@ -210,9 +213,11 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
             //
             if ($total>0) {
                 $ret =& $this->getObjects($crit);
+
                 return $ret;
             }
         }
+
         return $ret;
     }
 
@@ -220,6 +225,7 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
     {
         $crit = new Criteria('active', 1);
         $ret =& $this->getObjects($crit);
+
         return $ret;
     }
 
@@ -232,15 +238,16 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
     {
         $server =& $this->create();
         $server->setVar('departmentid', $depid);
+
         return $this->insert($server);
     }
 
     /**
      * remove an email server
      *
-     * @param object $obj {@link xhelpDepartmentMailbox} Mailbox to delete
-     * @param bool $force Should bypass XOOPS delete restrictions
-     * @return bool True on Successful delete
+     * @param  object $obj   {@link xhelpDepartmentMailbox} Mailbox to delete
+     * @param  bool   $force Should bypass XOOPS delete restrictions
+     * @return bool   True on Successful delete
      * @access public
      */
     function delete(&$obj, $force = false)
@@ -251,6 +258,7 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
         $hMailEvent->deleteAll($crit);
 
         $ret = parent::delete($obj, $force);
+
         return $ret;
 
     }
@@ -284,8 +292,8 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
 }
-?>

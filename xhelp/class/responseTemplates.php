@@ -49,7 +49,7 @@ class xhelpResponseTemplatesHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpresponsetemplates';
@@ -65,7 +65,7 @@ class xhelpResponseTemplatesHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpResponseTemplatesHandler(&$db)
     {
@@ -104,8 +104,8 @@ class xhelpResponseTemplatesHandler extends xhelpBaseObjectHandler {
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
 }
-?>

@@ -36,10 +36,5 @@ $sp1->link->Show();
 $sp1->link->SetWeight(2);
 $sp1->link->SetColor('red@0.7');
 
-
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>
-
-

@@ -37,6 +37,3 @@ $lp1->SetWeight(3);
 $graph->Add($lp1);
 
 $graph->Stroke();
-?>
-
-

@@ -71,7 +71,6 @@ class xhelpWebLib {
         $mc =& xhelpGetModuleConfig();
         $field = $mc['xhelp_displayName']== 1 ? 'uname':'name';
 
-
         $deptid = intval($deptid);
         $hMembership =& xhelpGetHandler('membership');
         $staff =& $hMembership->xoopsUsersByDept($deptid);
@@ -87,4 +86,3 @@ class xhelpWebLib {
         return $aStaff;
     }
 }
-?>

@@ -46,7 +46,7 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpticketemails';
@@ -62,7 +62,7 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpTicketEmailsHandler(&$db)
     {
@@ -86,6 +86,7 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
     function _deleteQuery($criteria = null)
     {
         $sql = sprintf("DELETE FROM %s WHERE ticketid = %u", $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
+
         return $sql;
     }
 
@@ -98,15 +99,16 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
 
         $sql = sprintf("UPDATE %s SET suppress = %u WHERE ticketid = %u AND uid = %u AND email = %s", $this->_db->prefix($this->_dbtable),
         $suppress, $ticketid, $uid, $this->_db->quotestring($email));
+
         return $sql;
     }
 
     /**
      * retrieve objects from the database
      *
-     * @param object $criteria {@link CriteriaElement} conditions to be met
-     * @param bool $id_as_key Should the department ID be used as array key
-     * @return array array of {@link xhelpDepartment} objects
+     * @param  object $criteria  {@link CriteriaElement} conditions to be met
+     * @param  bool   $id_as_key Should the department ID be used as array key
+     * @return array  array of {@link xhelpDepartment} objects
      * @access	public
      */
     function &getObjects($criteria = null)
@@ -131,15 +133,16 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
             $ret[$obj->getVar('email')] =& $obj;
             unset($obj);
         }
+
         return $ret;
     }
 
     /**
      * retrieve objects from the database
      *
-     * @param object $criteria {@link CriteriaElement} conditions to be met
-     * @param bool $id_as_key Should the department ID be used as array key
-     * @return array array of {@link xhelpDepartment} objects
+     * @param  object $criteria  {@link CriteriaElement} conditions to be met
+     * @param  bool   $id_as_key Should the department ID be used as array key
+     * @return array  array of {@link xhelpDepartment} objects
      * @access	public
      */
     function &getObjectsSortedByTicket($criteria = null)
@@ -164,7 +167,7 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
             $ret[$obj->getVar('ticketid')] =& $obj;
             unset($obj);
         }
+
         return $ret;
     }
 }
-?>

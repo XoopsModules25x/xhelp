@@ -1521,6 +1521,7 @@ class GB2312toUTF8 {
                 $utf8 .= $this->u2utf8($t);
             }
         }
+
         return $utf8;
     }
 
@@ -1544,9 +1545,9 @@ class GB2312toUTF8 {
             $str.=chr(0x80 | $c>>6 & 0x3F);
             $str.=chr(0x80 | $c & 0x3F);
         }
+
         return $str;
     }
 
 } // END Class
-
-?>
+;

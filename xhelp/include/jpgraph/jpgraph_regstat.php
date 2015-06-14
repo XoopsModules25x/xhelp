@@ -71,6 +71,7 @@ class Spline {
             $xnew[$j] = $xnew[0]+$j*$step;
             $ynew[$j] = $this->Interpolate($xnew[$j]);
         }
+
         return array($xnew,$ynew);
     }
 
@@ -97,9 +98,9 @@ class Spline {
             //('Invalid input data for spline. Two or more consecutive input X-values are equal. Each input X-value must differ since from a mathematical point of view it must be a one-to-one mapping, i.e. each X-value must correspond to exactly one Y-value.');
         }
 
-
         $a = ($this->xdata[$max]-$xpoint)/$h;
         $b = ($xpoint-$this->xdata[$min])/$h;
+
         return $a*$this->ydata[$min]+$b*$this->ydata[$max]+
         (($a*$a*$a-$a)*$this->y2[$min]+($b*$b*$b-$b)*$this->y2[$max])*($h*$h)/6.0;
     }
@@ -212,4 +213,4 @@ class Bezier {
 }
 
 // EOF
-?>
+;

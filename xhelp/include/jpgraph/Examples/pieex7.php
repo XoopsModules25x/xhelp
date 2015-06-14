@@ -18,7 +18,6 @@ $graph->title->SetFont(FF_FONT1,FS_BOLD);
 // The pie plot
 $p1 = new PiePlot($data);
 
-
 // Move center of pie to the left to make better room
 // for the legend
 $p1->SetCenter(0.35,0.5);
@@ -47,6 +46,3 @@ $graph->legend->Pos(0.05,0.2);
 
 $graph->Add($p1);
 $graph->Stroke();
-?>
-
-

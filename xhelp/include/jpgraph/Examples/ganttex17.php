@@ -75,4 +75,3 @@ $vline->SetDayOffset(0.5);
 
 // ... and display it
 $graph->Stroke();
-?>

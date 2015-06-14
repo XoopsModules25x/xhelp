@@ -49,6 +49,3 @@ $lplot->SetColor('navy');
 $g->Add($lplot);
 $g->Add($bplot);
 $g->Stroke();
-
-?>
-

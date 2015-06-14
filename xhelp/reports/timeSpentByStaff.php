@@ -30,7 +30,7 @@ class xhelpTimeSpentByStaffReport extends xhelpReport {
         'description' => _XHELP_TSBS_DESC,
         'version' => '1.0',
         'dbFields' => array(
-            'name' => _XHELP_TSBS_DB1, 
+            'name' => _XHELP_TSBS_DB1,
             'TotalTime' => _XHELP_TSBS_DB2));
 
     var $parameters = array(
@@ -148,4 +148,3 @@ class xhelpTimeSpentByStaffReport extends xhelpReport {
         return true;
     }
 }
-?>

@@ -62,5 +62,3 @@ class JPSpan_CodeWriter {
         return $this->code;
     }
 }
-
-

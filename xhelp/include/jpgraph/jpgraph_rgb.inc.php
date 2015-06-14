@@ -468,7 +468,6 @@ class RGB {
             'lightgreen'=>array(144,238,144));
     }
 
-
     //----------------
     // PUBLIC METHODS
     // Colors can be specified as either
@@ -509,8 +508,8 @@ class RGB {
                 $g = $this->rgb_table[$matches[5]][1];
                 $b = $this->rgb_table[$matches[5]][2];
             }
-            $alpha	= isset($matches[7]) ? str_replace(',','.',$matches[7]) : 0;
-            $adj	= isset($matches[9]) ? str_replace(',','.',$matches[9]) : 1.0;
+            $alpha    = isset($matches[7]) ? str_replace(',','.',$matches[7]) : 0;
+            $adj    = isset($matches[9]) ? str_replace(',','.',$matches[9]) : 1.0;
 
             if( $adj < 0 ) {
                 JpGraphError::RaiseL(25077);//('Adjustment factor for color must be > 0');
@@ -524,14 +523,17 @@ class RGB {
             }
             elseif( $adj > 1 ) {
                 $m = ($adj-1.0)*(255-min(255,min($r,min($g,$b))));
+
                 return array(min(255,$r+$m), min(255,$g+$m), min(255,$b+$m),$alpha);
             }
             elseif( $adj < 1 ) {
                 $m = ($adj-1.0)*max(255,max($r,max($g,$b)));
+
                 return array(max(0,$r+$m), max(0,$g+$m), max(0,$b+$m),$alpha);
             }
         } elseif( is_array($aColor) ) {
             if(!isset($aColor[3])) $aColor[3] = 0;
+
             return $aColor;
         }
         else {
@@ -544,6 +546,7 @@ class RGB {
     function Equal($aCol1,$aCol2) {
         $c1 = $this->Color($aCol1);
         $c2 = $this->Color($aCol2);
+
         return $c1[0]==$c2[0] && $c1[1]==$c2[1] && $c1[2]==$c2[2] ;
     }
 
@@ -559,6 +562,7 @@ class RGB {
         if( $aAlpha < 0 || $aAlpha > 1 ) {
             JpGraphError::RaiseL(25080);//('Alpha parameter for color must be between 0.0 and 1.0');
         }
+
         return imagecolorresolvealpha($this->img, $r, $g, $b, round($aAlpha * 127));
     }
 
@@ -579,6 +583,7 @@ class RGB {
                 }
             }
         }
+
         return $aColor;
     }
 
@@ -611,5 +616,4 @@ class RGB {
     }
 
 } // Class
-
-?>
+;

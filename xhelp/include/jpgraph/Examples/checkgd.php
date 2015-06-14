@@ -8,4 +8,3 @@ imagerectangle($im,0,0,199,99,$border_color);
 imagestring ($im, 5, 10, 40, "a simple text string", $text_color );
 header ("content-type: image/png");
 imagepng ($im);
-?>

@@ -25,7 +25,6 @@ $graph->scale->month->grid->Show(true);
 $graph->scale->year->grid->SetColor('gray');
 $graph->scale->year->grid->Show(true);
 
-
 //Setup spanning title
 $graph->scale->tableTitle->Set( 'Phase 1' );
 $graph->scale->tableTitle->SetFont( FF_ARIAL , FS_NORMAL , 16 );
@@ -46,9 +45,9 @@ $data = array(
 array(0,array("Pre-study","102 days","23 Nov '01","1 Mar '02")
 , "2001-11-23","2002-03-1",FF_ARIAL,FS_NORMAL,8),
 array(1,array("Prototype","21 days","26 Oct '01","16 Nov '01"),
-	      "2001-10-26","2001-11-16",FF_ARIAL,FS_NORMAL,8),
+          "2001-10-26","2001-11-16",FF_ARIAL,FS_NORMAL,8),
 array(2,array("Report","12 days","1 Mar '02","13 Mar '02"),
-	      "2002-03-01","2002-03-13",FF_ARIAL,FS_NORMAL,8)
+          "2002-03-01","2002-03-13",FF_ARIAL,FS_NORMAL,8)
 );
 
 // Create the bars and add them to the gantt chart
@@ -65,7 +64,3 @@ for($i=0; $i<count($data); ++$i) {
 
 // Output the chart
 $graph->Stroke();
-
-?>
-
-

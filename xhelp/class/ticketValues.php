@@ -28,7 +28,7 @@ class xhelpTicketValues extends XoopsObject
     /**
      * Class Constructor
      *
-     * @param mixed $ticketid null for a new object, hash table for an existing object
+     * @param  mixed $ticketid null for a new object, hash table for an existing object
      * @return none
      * @access public
      */
@@ -52,7 +52,6 @@ class xhelpTicketValues extends XoopsObject
             $this->_fields[$key] = (($field->getVar('datatype') == _XHELP_DATATYPE_TEXT) ? "%s" : "%d");
         }
         $this->_fields['ticketid'] = "%u";
-
 
         if (isset($id)) {
             if (is_array($id)) {
@@ -158,7 +157,7 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpTicketValues';
@@ -166,7 +165,7 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
     /**
      * DB Table Name
      *
-     * @var 		string
+     * @var string
      * @access 	private
      */
     var $_dbtable = 'xhelp_ticket_values';
@@ -176,7 +175,7 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpTicketValuesHandler(&$db)
     {
@@ -197,14 +196,14 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
         $sqlVars = "";
         foreach($myFields as $myField=>$datatype){      // Create sql name and value pairs
             if(isset(${$myField}) && ${$myField} != null){
-                if($count > 1){								// If we have been through the loop already
+                if($count > 1){                                // If we have been through the loop already
                     $sqlVars .= ", ";
                     $sqlFields .= ", ";
                 }
                 $sqlFields .= $myField;
-                if($datatype == "%s"){              		// If this field is a string
+                if($datatype == "%s"){                      // If this field is a string
                     $sqlVars .= $this->_db->quoteString(${$myField});     // Add text to sqlVars string
-                } else {                                	// If this field is a number
+                } else {                                    // If this field is a number
                     $sqlVars .= ${$myField};      // Add text to sqlVars string
                 }
                 $count++;
@@ -228,12 +227,12 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
         $sqlVars = "";
         foreach($myFields as $myField=>$datatype){      // Used to create sql field and value substrings
             if(isset(${$myField}) && ${$myField} !== null){
-                if($count > 1){								// If we have been through the loop already
+                if($count > 1){                                // If we have been through the loop already
                     $sqlVars .= ", ";
                 }
-                if($datatype == "%s"){              		// If this field is a string
+                if($datatype == "%s"){                      // If this field is a string
                     $sqlVars .= $myField ." = ". $this->_db->quoteString(${$myField});     // Add text to sqlVars string
-                } else {                                	// If this field is a number
+                } else {                                    // If this field is a number
                     $sqlVars .= $myField ." = ". ${$myField};      // Add text to sqlVars string
                 }
                 $count++;
@@ -242,14 +241,14 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
 
         // Create update statement
         $sql = "UPDATE ". $this->_db->Prefix($this->_dbtable)." SET ". $sqlVars ." WHERE ticketid = ". $obj->getVar('ticketid');
+
         return $sql;
     }
-
 
     function _deleteQuery(&$obj)
     {
         $sql = sprintf("DELETE FROM %s WHERE ticketid = %u", $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
+
         return $sql;
     }
 }
-?>

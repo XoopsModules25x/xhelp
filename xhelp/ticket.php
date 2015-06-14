@@ -132,7 +132,6 @@ if($xhelp_isStaff) {
     $has_responses = count($responses) > 0;
     unset($responses);
 
-
     if($owner =& $member_handler->getUser($ticketInfo->getVar('ownership'))){
         $giveOwnership = true;
     }
@@ -144,7 +143,6 @@ if($xhelp_isStaff) {
     $patterns[] = '/pri:([1-5])/';
     $replacements = array();
     $replacements = '<img src="images/priority$1.png" alt="Priority: $1" />';
-
 
     foreach($logMessage as $msg){
         $aMessages[] = array('id'=>$msg->getVar('id'),
@@ -194,11 +192,11 @@ if($xhelp_isStaff) {
             $hasUrl = false;
         }
         $aLastTickets[] = array('id'=>$ticket->getVar('id'),
-	                            'subject'=>$ticket->getVar('subject'),
-	                            'status'=>xhelpGetStatus($ticket->getVar('status')),
-	                            'department'=>$dept,
-	                            'dept_url'=>($hasUrl ? XOOPS_URL . '/modules/xhelp/index.php?op=staffViewAll&amp;dept=' . $ticket->getVar('department') : ''),
-	                            'url'=>XOOPS_URL . '/modules/xhelp/ticket.php?id=' . $ticket->getVar('id'));
+                                'subject'=>$ticket->getVar('subject'),
+                                'status'=>xhelpGetStatus($ticket->getVar('status')),
+                                'department'=>$dept,
+                                'dept_url'=>($hasUrl ? XOOPS_URL . '/modules/xhelp/index.php?op=staffViewAll&amp;dept=' . $ticket->getVar('department') : ''),
+                                'url'=>XOOPS_URL . '/modules/xhelp/ticket.php?id=' . $ticket->getVar('id'));
     }
     $has_lastTickets = count($lastTickets);
     unset($lastTickets);
@@ -664,7 +662,6 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
             unset($_users);
 
-
             $myTs =& MyTextSanitizer::getInstance();
             //Update arrays with user information
             if(count($aResponses) > 0){
@@ -768,7 +765,6 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             //5. Save Ticket
             $ticketError = !$hTickets->insert($ticketInfo);
 
-
             //6. Fire Necessary Events, set response messages
             if ($addResponse == true && $responseError == false) {
                 $_eventsrv->trigger('new_response', array(&$ticketInfo, &$newResponse));
@@ -790,7 +786,6 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             } elseif ($changeStatus == true && $ticketError == true) {
                 $message .= _XHELP_MESSAGE_UPDATE_STATUS_ERROR .". ";
             }
-
 
         } else {
             //No Changes Made
@@ -1310,6 +1305,6 @@ function &_getTicketFields(&$ticket)
         $_arr['filename'] = $values[$fieldname]['filename'];
         $ret[] = $_arr;
     }
+
     return $ret;
 }
-?>

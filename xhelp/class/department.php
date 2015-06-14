@@ -11,7 +11,6 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
 
-
 /**
  * xhelpDepartment class
  *
@@ -49,7 +48,7 @@ class xhelpDepartmentHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpdepartment';
@@ -65,7 +64,7 @@ class xhelpDepartmentHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpDepartmentHandler(&$db)
     {
@@ -105,13 +104,14 @@ class xhelpDepartmentHandler extends xhelpBaseObjectHandler {
 
         $sql = sprintf("UPDATE %s SET department = %s WHERE id = %u",
         $this->_db->prefix($this->_dbtable), $this->_db->quoteString($department), $id);
+
         return $sql;
     }
 
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 }
-?>

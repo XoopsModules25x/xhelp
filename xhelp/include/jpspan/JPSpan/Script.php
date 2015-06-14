@@ -77,7 +77,6 @@ class JPSpan_Script {
                         $clean .= $c;
                     }
 
-
                     //already in a string so find end quote
                 } else {
                     if($c == $quoteChar && !$escaped && !$inComment) {

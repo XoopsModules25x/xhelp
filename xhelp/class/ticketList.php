@@ -49,7 +49,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
     /**
      * Name of child class
      *
-     * @var	string
+     * @var string
      * @access	private
      */
     var $classname = 'xhelpticketlist';
@@ -65,7 +65,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
     /**
      * Constructor
      *
-     * @param	object   $db    reference to a xoopsDB object
+     * @param object $db reference to a xoopsDB object
      */
     function xhelpTicketListHandler(&$db)
     {
@@ -81,6 +81,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
 
         $sql = sprintf("INSERT INTO %s (id, uid, searchid, weight) VALUES (%u, %d, %u, %u)",
         $this->_db->prefix($this->_dbtable), $id, $uid, $searchid, $weight);
+
         return $sql;
 
     }
@@ -94,12 +95,14 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
 
         $sql = sprintf("UPDATE %s SET uid = %d, searchid = %u, weight = %u WHERE id = %u",
         $this->_db->prefix($this->_dbtable), $uid, $searchid, $weight, $id);
+
         return $sql;
     }
 
     function _deleteQuery(&$obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+
         return $sql;
     }
 
@@ -115,6 +118,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
         $crit->setLimit(1);
         $ticketList =& $this->getObjects($crit);
         $weight = ((is_object($ticketList[0])) ? $ticketList[0]->getVar('weight') : 0);
+
         return $weight + 1;
     }
 
@@ -161,6 +165,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
         $numrows = $this->_db->getRowsNum($result);
         if($numrows == 1) {
             $obj = new $this->classname($this->_db->fetchArray($result));
+
             return $obj;
         } else {
             return false;
@@ -174,6 +179,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
         $crit->add(new Criteria('uid', XHELP_GLOBAL_UID), 'OR');
         $crit->setSort('weight');
         $ret =& $this->getObjects($crit);
+
         return $ret;
     }
 
@@ -195,9 +201,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
             $ret = $this->insert($list, true);
             $i++;
         }
+
         return $ret;
     }
 }
-
-
-?>

@@ -26,4 +26,3 @@ $graph->Add($bplot);
 $graph->Add($lplot);
 
 $graph->Stroke();
-?>

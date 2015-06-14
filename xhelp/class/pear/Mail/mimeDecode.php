@@ -73,44 +73,44 @@ class Mail_mimeDecode extends PEAR
 
     /**
      * The raw email to decode
-     * @var    string
+     * @var string
      */
     var $_input;
 
     /**
      * The header part of the input
-     * @var    string
+     * @var string
      */
     var $_header;
 
     /**
      * The body part of the input
-     * @var    string
+     * @var string
      */
     var $_body;
 
     /**
      * If an error occurs, this is used to store the message
-     * @var    string
+     * @var string
      */
     var $_error;
 
     /**
      * Flag to determine whether to include bodies in the
      * returned object.
-     * @var    boolean
+     * @var boolean
      */
     var $_include_bodies;
 
     /**
      * Flag to determine whether to decode bodies
-     * @var    boolean
+     * @var boolean
      */
     var $_decode_bodies;
 
     /**
      * Flag to determine whether to decode headers
-     * @var    boolean
+     * @var boolean
      */
     var $_decode_headers;
 
@@ -274,6 +274,7 @@ class Mail_mimeDecode extends PEAR
                 case 'multipart/mixed':
                     if(!isset($content_type['other']['boundary'])){
                         $this->_error = 'No boundary found for ' . $content_type['value'] . ' part';
+
                         return false;
                     }
 
@@ -318,7 +319,7 @@ class Mail_mimeDecode extends PEAR
      *
      * @param  object $structure   The structure to go through
      * @param  string $mime_number Internal use only.
-     * @return array               Mime numbers
+     * @return array  Mime numbers
      */
     function &getMimeNumbers(&$structure, $no_refs = false, $mime_number = '', $prepend = '')
     {
@@ -329,7 +330,6 @@ class Mail_mimeDecode extends PEAR
                 $return[$prepend . $mime_number] = &$structure;
             }
             for ($i = 0; $i < count($structure->parts); $i++) {
-
 
                 if (!empty($structure->headers['content-type']) AND substr(strtolower($structure->headers['content-type']), 0, 8) == 'message/') {
                     $prepend      = $prepend . $mime_number . '.';
@@ -369,6 +369,7 @@ class Mail_mimeDecode extends PEAR
             return array($match[1], $match[2]);
         }
         $this->_error = 'Could not split header and body';
+
         return false;
     }
 
@@ -570,7 +571,7 @@ class Mail_mimeDecode extends PEAR
      * pass it.
      *
      * @param  string Input body to look for attahcments in
-     * @return array  Decoded bodies, filenames and permissions
+     * @return array Decoded bodies, filenames and permissions
      * @access public
      * @author Unknown
      */
@@ -649,7 +650,7 @@ class Mail_mimeDecode extends PEAR
      * } else {
      *     echo $parts->message;
      * }
-     * @return mixed   array of recipeint, headers,body or Pear_Error
+     * @return mixed array of recipeint, headers,body or Pear_Error
      * @access public
      * @author Alan Knowles <alan@akbkhome.com>
      */
@@ -677,16 +678,9 @@ class Mail_mimeDecode extends PEAR
             return $this->raiseError("Message did not contain any recipents");
         }
         $to = substr($to,1);
+
         return array($to,$header,$this->_body);
     }
-
-
-
-
-
-
-
-
 
     /**
      * Returns a xml copy of the output of
@@ -724,7 +718,7 @@ class Mail_mimeDecode extends PEAR
      * @param  object  Input to convert to xml. This is a mimepart object.
      *                 It may or may not contain subparts.
      * @param  integer Number of tabs to indent
-     * @return string  XML version of input
+     * @return string XML version of input
      * @access private
      */
     function _getXML($input, $indent = 1)
@@ -768,7 +762,7 @@ class Mail_mimeDecode extends PEAR
      * @param  string  Name of header
      * @param  string  Value of header
      * @param  integer Number of tabs to indent
-     * @return string  XML version of input
+     * @return string XML version of input
      * @access private
      */
     function _getXML_helper($hdr_name, $hdr_value, $indent)
@@ -804,4 +798,4 @@ class Mail_mimeDecode extends PEAR
     }
 
 } // End of class
-?>
+;

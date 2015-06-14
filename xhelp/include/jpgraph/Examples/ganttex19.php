@@ -27,9 +27,7 @@ $graph->scale->divider->SetStyle('solid');
 $graph->scale->divider->SetWeight(2);
 $graph->scale->divider->SetColor('black');
 
-
 $graph->SetBox(true,'navy',2);
-
 
 // Use the short name of the month together with a 2 digit year
 // on the month scale
@@ -81,4 +79,3 @@ $vline->SetDayOffset(0.5);
 
 // ... and display it
 $graph->Stroke();
-?>
