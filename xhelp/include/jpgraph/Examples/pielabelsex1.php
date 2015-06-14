@@ -31,5 +31,3 @@ $p1->value->SetFormat('%2.1f%%');
 // Add and stroke
 $graph->Add($p1);
 $graph->Stroke();
-
-?>

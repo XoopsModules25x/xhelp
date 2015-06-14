@@ -85,5 +85,3 @@ $graph->Add($fp);
 
 // .. and output
 $graph->Stroke();
-
-?>

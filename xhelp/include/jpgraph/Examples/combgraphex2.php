@@ -84,5 +84,3 @@ $mgraph->SetBackgroundImage('tiger1.jpg');
 $mgraph->AddMix($graph,0,0,85);
 $mgraph->AddMix($graph2,0,250,85);
 $mgraph->Stroke();
-
-?>

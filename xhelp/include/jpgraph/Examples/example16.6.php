@@ -53,5 +53,3 @@ $graph->Add($lplot);
 
 // ... and stroke
 $graph->Stroke();
-
-?>

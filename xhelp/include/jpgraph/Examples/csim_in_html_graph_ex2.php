@@ -69,5 +69,3 @@ $piegraph->Add($p1);
 
 // Send back the image when we are called from within the <img> tag
 $piegraph->StrokeCSIMImage();
-
-?>

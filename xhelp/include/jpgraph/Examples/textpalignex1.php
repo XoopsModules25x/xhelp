@@ -39,5 +39,3 @@ for( $i=0; $i < $n; ++$i ) {
 
 // .. and send back to browser
 $g->Stroke();
-
-?>

@@ -83,5 +83,3 @@ $mgraph->SetFrame(true,'darkgray',2);
 $mgraph->Add($graph);
 $mgraph->Add($graph2,0,240);
 $mgraph->Stroke();
-
-?>

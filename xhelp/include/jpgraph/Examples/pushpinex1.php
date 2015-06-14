@@ -56,5 +56,3 @@ $graph->Add($sp);
 
 // .. and output to browser
 $graph->Stroke();
-
-?>

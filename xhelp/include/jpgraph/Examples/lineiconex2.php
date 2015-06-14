@@ -26,5 +26,3 @@ $graph->Add($icon);
 
 // Output line
 $graph->Stroke();
-
-?>

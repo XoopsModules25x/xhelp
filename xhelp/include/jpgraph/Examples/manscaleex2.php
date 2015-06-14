@@ -15,5 +15,3 @@ $graph->Add($line);
 
 // Output graph
 $graph->Stroke();
-
-?>

@@ -68,5 +68,3 @@ $ms->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->Add($ms);
 
 $graph->Stroke();
-
-?>

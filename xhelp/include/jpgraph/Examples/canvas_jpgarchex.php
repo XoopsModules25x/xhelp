@@ -134,5 +134,3 @@ $tt->Stroke($g->img,$scale);
 
 // .. and stream it all back
 $g->Stroke();
-
-?>

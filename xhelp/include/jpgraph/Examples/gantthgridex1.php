@@ -55,5 +55,3 @@ $graph->Add($icon);
 
 // .. and finally send it back to the browser
 $graph->Stroke();
-
-?>

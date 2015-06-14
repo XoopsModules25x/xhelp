@@ -37,5 +37,3 @@ $shape->IndentedRectangle(20,20,15,15,8,8,CORNER_BOTTOMRIGHT,'khaki');
 
 // Stroke the graph
 $g->Stroke();
-
-?>

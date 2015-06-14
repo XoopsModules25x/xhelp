@@ -59,5 +59,3 @@ for($i=0; $i<count($data); ++$i) {
 
 // Output the chart
 $graph->Stroke();
-
-?>

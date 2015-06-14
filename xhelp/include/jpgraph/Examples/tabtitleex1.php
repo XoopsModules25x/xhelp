@@ -44,5 +44,3 @@ $graph->legend->SetShadow('gray@0.4',5);
 $graph->legend->SetPos(0.1,0.1,'right','top');
 // Output line
 $graph->Stroke();
-
-?>

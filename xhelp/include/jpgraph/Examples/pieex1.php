@@ -25,5 +25,3 @@ $p1->Explode(array(0,15,15,25,15));
 
 $graph->Add($p1);
 $graph->Stroke();
-
-?>

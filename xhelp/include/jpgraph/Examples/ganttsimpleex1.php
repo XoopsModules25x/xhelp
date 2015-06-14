@@ -25,5 +25,3 @@ $graph->CreateSimple($data);
 
 // .. and stroke the graph
 $graph->Stroke();
-
-?>

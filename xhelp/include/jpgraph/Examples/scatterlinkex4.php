@@ -38,5 +38,3 @@ $sp1->link->SetColor('red@0.7');
 
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>

@@ -35,5 +35,3 @@ $sp1->SetLinkPoints();
 $graph->Add($sp1);
 
 $graph->Stroke();
-
-?>

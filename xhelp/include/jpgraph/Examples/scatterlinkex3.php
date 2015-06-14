@@ -37,5 +37,3 @@ $sp1->link->SetStyle('dotted');
 
 $graph->Add($sp1);
 $graph->Stroke();
-
-?>

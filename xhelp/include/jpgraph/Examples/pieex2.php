@@ -18,5 +18,3 @@ $p1 = new PiePlot($data);
 $p1->SetLegends(array("Jan","Feb","Mar","Apr","May","Jun","Jul"));
 $graph->Add($p1);
 $graph->Stroke();
-
-?>

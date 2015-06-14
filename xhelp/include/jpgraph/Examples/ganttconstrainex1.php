@@ -34,5 +34,3 @@ $graph->CreateSimple($data,$constrains,$progress);
 
 // .. and stroke the graph
 $graph->Stroke();
-
-?>

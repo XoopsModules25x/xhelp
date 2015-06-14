@@ -84,5 +84,3 @@ $vline->title->SetFont(FF_FONT1,FS_BOLD,10);
 $graph->Add($vline);
 
 $graph->Stroke();
-
-?>

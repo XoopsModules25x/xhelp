@@ -64,4 +64,3 @@ $lp2->SetWeight(2);
 $graph->AddY2($lp2);
 
 $graph->Stroke();
-?>

@@ -25,5 +25,3 @@ $p1->ExplodeSlice(3);
 $graph->Add($p1);
 
 $graph->Stroke();
-
-?>

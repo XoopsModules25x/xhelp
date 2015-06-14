@@ -63,4 +63,3 @@ for($i=0; $i < $n; ++$i) {
 
 // Send back the graph to the client
 $graph->Stroke();
-?>

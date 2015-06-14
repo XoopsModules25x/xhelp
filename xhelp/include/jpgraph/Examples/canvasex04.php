@@ -51,5 +51,3 @@ $shape->RoundedRectangle(2,3,8,6);
 
 // Stroke the graph
 $g->Stroke();
-
-?>

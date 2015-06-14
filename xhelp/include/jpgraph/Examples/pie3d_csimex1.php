@@ -36,5 +36,3 @@ $graph->Add($p1);
 // Send back the HTML page which will call this script again
 // to retrieve the image.
 $graph->StrokeCSIM();
-
-?>

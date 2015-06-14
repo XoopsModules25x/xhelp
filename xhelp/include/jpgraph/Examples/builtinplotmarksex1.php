@@ -60,5 +60,3 @@ $graph->Add($l1);
 
 // Output the graph
 $graph->Stroke();
-
-?>
