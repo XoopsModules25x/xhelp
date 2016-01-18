@@ -1,0 +1,39 @@
+<{if $xhelp_errors neq null}>
+    <div id="readOnly" class="errorMsg" style="border:1px solid #D24D00; background:#FEFECC no-repeat 7px 50%;color:#333;padding-left:45px;">
+        <img src="<{$xhelp_imagePath}>important.png" />
+        <{$smarty.const._XHELP_MESSAGE_VALIDATE_ERROR}><br />
+        <{foreach from=$xhelp_errors item=error key=key}>
+            <li><a href="#<{$key}>" onclick="document.addTicket.<{$key}>.focus();"><{$key}><{$error}></a></li>
+        <{/foreach}>
+    </div>
+    <br />
+<{/if}>
+
+<div id="xhelp_setdept">
+<form method="post" name="frmSetdept">
+<table style="width:100%;" border="1" cellpadding="0" cellspacing="2" class="outer">
+<tr>
+    <th colspan="2"><{$smarty.const._XHELP_TEXT_SETDEPT}></th>
+</tr>
+<tr>
+    <td class="head" width="20%"><label for="department"><{$smarty.const._XHELP_TEXT_DEPARTMENT}></label></td>
+    <td class="odd">
+        <select id="department" name="department">
+            <{html_options options=$xhelp_department_options}>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td class="head"></td>
+    <td class="even">
+        <input type="submit" name="setdept" value="<{$smarty.const._XHELP_BUTTON_SET}>" />
+        <input type="hidden" name="tickets" value="<{$xhelp_tickets}>" />
+        <input type="hidden" name="op" value="setdept" />
+    </td>
+</tr>
+</table>
+
+<{include file='db:xhelp_batchTickets.html'}>
+
+</form>
+</div>

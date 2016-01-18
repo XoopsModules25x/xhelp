@@ -1,0 +1,124 @@
+Propósito de módulo  
+-----------------------------------------------------------------------  
+xhelp é projetado como uma aplicação de helpdesk para usuário amigável para o XOOPS  
+
+Exigências de instalação  
+-----------------------------------------------------------------------  
+XOOPS 2.0.6+  
+  
+Habilitando Apoio de E-mail Requer são necessarias estas exigências:  
+Conta POP3 E-mail
+Habilidade para criar um trabalho de cron ou tarefa marcada  
+  
+Instruções de instalação  
+-----------------------------------------------------------------------  
+Abra arquivo para 'o diretório de modules.   
+Instale aplicação que usado XOOPS módulo administração painel.   
+Ajuste preferências de módulo como necessário.  
+Some departamentos de tickets (categorias).  
+Organização XOOPS contas de usuarios que representam helpdesk.  
+Siga passos em "Bloco Estilos" seção deste documento  
+Tudo Fixaram!!!  
+  
+Atualize Instruções  
+-----------------------------------------------------------------------  
+Abra arquivo para 'o diretório de modules.  
+Atualize módulo por XOOPS módulo administração painel.  
+Clique em 'Atualizar versão do xhelp no Menu Principal do modulo.  
+Ajuste preferências de módulo como necessário.  
+Siga passos em "Bloco Estilos" seção deste documento  
+Tudo Fixaram!!!  
+  
+Bloco Estilos  
+-----------------------------------------------------------------------  
+xHelp 0.7 soma a habilidade para sinalizar um ticket como vencido e resolvido. Ver isto   
+bandeira no xhelp bloqueia (Meus Tickets, Tickets Recentemente Vistos) você vai  
+precise acrescentar o estilo seguinte ao stylesheet de seu tema de xoops:  
+  
+#xhelp_dept_recent li.overdue {background-color:red;}
+#xhelp_bOpenTickets li.overdue {background-color:red;}  
+  
+Além disso nós recomendamos acrescentar estes estilos ao stylesheet de seu tema  
+  
+#xhelp_dept_recent li {list-style:none;}
+#xhelp_bOpenTickets li {list-style:none;}
+
+#xhelp_dept_recent ul, #xhelp_dept_recent li {margin:0; padding:0;}
+#xhelp_bOpenTickets ul, #xhelp_bOpenTickets li {margin:0; padding:0;}
+
+#xhelp_dept_recent li {margin:0;padding-left:18px; background:url('../../modules/xhelp/images/ticket-small.png') no-repeat 0 50%; line-height:16px;padding-bottom:2px;}
+#xhelp_bOpenTickets li {margin:0;padding-left:18px; background:url('../../modules/xhelp/images/ticket-small.png') no-repeat 0 50%; line-height:16px;padding-bottom:2px;}
+  
+  
+  
+Submissão de Ticket de e-mail  
+-----------------------------------------------------------------------  
+Configurar submissão de ticket de e-mail alguns passos adicionais são   
+necessário. Primeiro você precisa criar uma POP3 e-mail conta para cada  
+departamento que receberá e-mail. Logo, vá "Administrar Departamentos" dentro  
+o xhelp Painel de Admin. Logo, edite o departamento você deseja segurar o recentemente  
+tickets criados. Logo, Some uma caixa postal nova para monitorar:  
+  
+Tipo de caixa postal - atualmente a única opção é POP3.  
+Servidor - DNS nomeiam de servidor de correio (obtenha de seu provedor)  
+Porta - Correio Serviço Porta Número.  Para POP3 estes é normalmente 110.  
+Usuario - Usuario para acessar caixa postal (obtenha de seu provedor)  
+Senha - Senha para acessar caixa postal (também obtenha de seu provedor)  
+Prioridade padrão de Ticket - Ajuste prioridade padrão para novos tickets.  
+Resposta-para Endereço de E-mail - o endereço de e-mail para esta conta. Usado para   
+    respostas controlando (respostas) para tickets.  
+  
+Repita este processo para cada caixa postal que você deseja monitorar.  
+  
+Uma vez todas as caixas postal foram somadas, você precisa a organização uma tarefa marcada  
+ou um trabalho de cron para inspecionar estas caixas postal uma base regular.  
+  
+Para máquinas *nix linha de crontab seguinte deveria fazer o truque:  
+  
+* /2 * * * * /usr/bin/wget -q <XOOPS_URL>/modules/xhelp/checkemail.php  
+  
+A anterior linha conferirá todas as caixas postal configuradas, cada dois minutos.  
+  
+Para servidores de janelas você pode tentar usando Tarefa Scheduler ou runat com  
+esta variante:  
+C:\php\php.exe "<XOOPS_ROOT_PATH>\modules\xhelp\checkemail.php"  
+  
+Se PHP fosse instalado em um diretório diferente da falta você  
+precisará ajustar o caminho adequadamente a php.exe.  
+  
+Além disso, há uma versão de wget para janelas:  
+  
+ftp://ftp.sunsite.dk/projects/wget/windows/wget-1.9.1b-complete.zip  
+  
+Infelizmente nós não o podemos apoiar na configuração disto   
+tarefa programada. Por favor contate seu provedor.  
+  
+Licença  
+-----------------------------------------------------------------------  
+GPL vêem LICENSE.txt  
+  
+Atualizações, Bugs ou Avaliação  
+-----------------------------------------------------------------------  
+Para versões em dia desta aplicação ou dar avaliação para o  
+aplicação vai para o local de desenvolvimento de xhelp:  
+  
+http://dev.xoops.org/modules/xfmod/project /? xhelp  
+  
+Traduções  
+-----------------------------------------------------------------------  
+xHelp não disponível em seu idioma? Queira ajudar traduzindo xhelp  
+em sua língua nativa? Por favor venha para o foro de tradutores o   
+local de desenvolvimento de xhelp (url listaram acima) para mais detalhes.  
+  
+Créditos e Agradecimentos  
+-----------------------------------------------------------------------  
+Ackbarr (Brian Wahoff)       - Líder de Time  
+ejuden (Eric Juden)          - Fomentador  
+ajuden (Alan Juden)          - Analista  
+Outch (Eric Wegrzynowski)    - Tradução francesa  
+CeRbErO                      - Tradução espanhola  
+silviotech (Silvio Palmieri) - Tradução de Portugues do brasil 
+alexcami                     - Tradução italiana  
+Briese                       - Tradução alemã  
+irmtfan                      - Tradução Persa  
+valentin                     - Tradução japonesa
