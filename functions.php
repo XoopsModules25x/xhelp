@@ -1041,7 +1041,7 @@ function xhelpCreateNotifications()
     $hNotification =& xhelpGetHandler('notification');
 
     // Get list of all roles
-    $roles =& $hRole->getObjects();
+    $roles = $hRole->getObjects();
 
     $allRoles = array();
     foreach($roles as $role){
@@ -1088,7 +1088,7 @@ function xhelpCreateNotifications()
 function &xhelpGetUsers($criteria = null, $displayName = XHELP_DISPLAYNAME_UNAME)
 {
     $hUser =& xoops_gethandler('user');
-    $users =& $hUser->getObjects($criteria, true);
+    $users = $hUser->getObjects($criteria, true);
     $ret = array();
     foreach ($users as $i => $user) {
         $ret[$i] = xhelpGetDisplayName($displayName, $user->getVar('name'), $user->getVar('uname'));
@@ -1278,7 +1278,7 @@ function xhelpCreateDefaultTicketLists()
         $newSearch->setVar('hasCustFields', 0);
         $ret = $hSavedSearch->insert($newSearch, true);
 
-        $staff =& $hStaff->getObjects(null, true);
+        $staff = $hStaff->getObjects(null, true);
         foreach($staff as $stf){
             $list =& $hTicketList->create();
             $list->setVar('uid', $stf->getVar('uid'));

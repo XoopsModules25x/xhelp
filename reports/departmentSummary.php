@@ -15,7 +15,7 @@ $hDepartments =& xhelpGetHandler('department');
 $crit = new Criteria('', '');
 $crit->setSort('department');
 $crit->setOrder('ASC');
-$departments =& $hDepartments->getObjects($crit, true);
+$departments = $hDepartments->getObjects($crit, true);
 
 $i = 0;
 $aDepts = array();

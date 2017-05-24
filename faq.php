@@ -53,7 +53,7 @@ function addFaq_display()
     require(XOOPS_ROOT_PATH.'/header.php');
 
     $crit = new Criteria('ticketid', $ticketid);
-    $responses =& $hResponses->getObjects($crit, true);
+    $responses = $hResponses->getObjects($crit, true);
     $responseText = '';
 
     $allUsers = array();

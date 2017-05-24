@@ -182,7 +182,7 @@ return $sql;
      */
     function deleteAll($criteria = null)
     {
-        $files =& $this->getObjects($criteria);
+        $files = $this->getObjects($criteria);
         foreach($files as $file){
             $this->unlinkFile($file->getFilePath());
         }

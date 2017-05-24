@@ -42,7 +42,7 @@ if(isset($_POST['search'])){
     $user_handler =& xoops_gethandler('user');
     $crit = new Criteria($subject, "%". $text ."%", 'LIKE');
     $crit->setSort($subject);
-    $users =& $user_handler->getObjects($crit);
+    $users = $user_handler->getObjects($crit);
     foreach($users as $user){
         $aUsers[] = array('uid'=>$user->getVar('uid'),
                           'uname'=>$user->getVar('uname'),

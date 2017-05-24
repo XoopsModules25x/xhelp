@@ -106,7 +106,7 @@ class xhelpStaffReviewHandler extends xhelpBaseObjectHandler {
         $crit->add(new Criteria('submittedBy', $submittedBy));
         $crit->add(new Criteria('responseid', $responseid));
         $review = array();
-        if(!$review =& $this->getObjects($crit)){
+        if(!$review = $this->getObjects($crit)){
             return false;
         } else {
             return $review;

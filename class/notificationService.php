@@ -76,7 +76,7 @@ class xhelpNotificationService extends xhelpService
     function xhelpNotificationService()
     {
         global $xoopsConfig, $xoopsModule;
-        $this->_ts     =& MyTextSanitizer::getInstance();
+        $this->_ts     = MyTextSanitizer::getInstance();
         $this->_template_dir = $this->_getTemplateDir($xoopsConfig['language']);
         $this->_module =& xhelpGetModule();
         $this->_hStaff =& xhelpGetHandler('staff');
@@ -124,7 +124,7 @@ class xhelpNotificationService extends xhelpService
         // Retrieve roles of all members
         $crit = new CriteriaCompo(new Criteria('uid', "(".implode($aMembers, ',').")", "IN"));
         $crit->add(new Criteria('deptid', $dept));
-        $staffRoles =& $hStaffRole->getObjects($crit, false);    // array of staff role objects
+        $staffRoles = $hStaffRole->getObjects($crit, false);    // array of staff role objects
 
         return $staffRoles;
     }
@@ -330,7 +330,7 @@ class xhelpNotificationService extends xhelpService
         $crit->add(new Criteria('suppress', 0));
         $crit->add(new Criteria('email', $xoopsUser->email(), '<>'));
 
-        $users =& $hTicketEmails->getObjects($crit);    // xhelp_ticketEmail objects
+        $users = $hTicketEmails->getObjects($crit);    // xhelp_ticketEmail objects
 
 
         $aUsers = array();
@@ -1604,7 +1604,7 @@ class xhelpNotificationService extends xhelpService
         $updated  = formatTimestamp(time(), 'm');
         $private = $response->getVar('private');
         $hMBoxes =& xhelpGetHandler('departmentMailBox');
-        $mBoxes =& $hMBoxes->getObjects(null, true);
+        $mBoxes = $hMBoxes->getObjects(null, true);
         $hDepartments =& xhelpGetHandler('department');
 
         $settings =& $this->_hNotification->get(XHELP_NOTIF_NEWRESPONSE);

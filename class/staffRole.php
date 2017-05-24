@@ -73,7 +73,7 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
         $crit->add(new Criteria('roleid', $roleid));
         $crit->add(new Criteria('deptid', $deptid));
 
-        if(!$role =& $this->getObjects($crit)){
+        if(!$role = $this->getObjects($crit)){
             return false;
         }
 
@@ -99,7 +99,7 @@ class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
         $crit = new CriteriaCompo('uid', $uid);
         $crit->add(new Criteria('roleid', $roleid));
 
-        if(!$role =& $this->getObjects($crit)){
+        if(!$role = $this->getObjects($crit)){
             return false;
         }
 

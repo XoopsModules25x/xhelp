@@ -62,7 +62,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
         $hTicket =& xhelpGetHandler('ticket');
         $hFile =& xhelpGetHandler('file');
 
-        $tickets =& $hTicket->getObjectsByState(1);
+        $tickets = $hTicket->getObjectsByState(1);
 
         $aTickets = array();
         foreach($tickets as $ticket){
@@ -228,10 +228,10 @@ function xhelpCreateDepartmentVisibility()
     $module_id = $xoopsModule->getVar('mid');
 
     // Get array of all departments
-    $departments =& $hDepartments->getObjects(null, true);
+    $departments = $hDepartments->getObjects(null, true);
 
     // Get array of groups
-    $groups =& $hGroups->getObjects(null, true);
+    $groups = $hGroups->getObjects(null, true);
     $aGroups = array();
     foreach($groups as $group_id=>$group){
         $aGroups[$group_id] = $group->getVar('name');

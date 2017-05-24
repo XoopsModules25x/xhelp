@@ -407,7 +407,7 @@ function setstatus_display()
     $crit = new Criteria('', '');
     $crit->setOrder('ASC');
     $crit->setSort('description');
-    $statuses =& $hStatus->getObjects($crit);
+    $statuses = $hStatus->getObjects($crit);
 
     //Make sure that some tickets were selected
     if (!isset($_POST['tickets'])) {
@@ -641,7 +641,7 @@ function addresponse_display()
     //Get all staff defined templates
     $crit = new Criteria('uid', $uid);
     $crit->setSort('name');
-    $responseTpl =& $hResponseTpl->getObjects($crit, true);
+    $responseTpl = $hResponseTpl->getObjects($crit, true);
 
     //Fill Response Template Array
     $tpls = array();
@@ -889,7 +889,7 @@ function staffmain_display()
         $limit = 0;
     }
     $uid = $xoopsUser->getVar('uid');
-    $depts       =& $hDepartments->getObjects(null, true);
+    $depts       = $hDepartments->getObjects(null, true);
     $priority    =& $hTickets->getStaffTickets($uid, XHELP_QRY_STAFF_HIGHPRIORITY, $start, $limit);
     $ticketLists =& $hTicketList->getListsByUser($uid);
     $all_users   = array();
@@ -1227,7 +1227,7 @@ window.setTimeout('window_onload()', 1500);
     $crit = new Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
-    $statuses =& $hStatus->getObjects($crit);
+    $statuses = $hStatus->getObjects($crit);
 
     $xoopsTpl->append('xhelp_status_options', _XHELP_TEXT_SELECT_ALL);
     $xoopsTpl->append('xhelp_status_values', -1);
@@ -1255,7 +1255,7 @@ function usermain_display()
     $xhelpConfig = xhelpGetModuleConfig();
     $hStaff =& xhelpGetHandler('staff');
 
-    $staffCount =& $hStaff->getObjects();
+    $staffCount = $hStaff->getObjects();
     if (count($staffCount) == 0) {
         $xoopsTpl->assign('xhelp_noStaff', true);
     }
@@ -1316,7 +1316,7 @@ function userviewall_display()
     $dept     = intval(isset($_REQUEST['dept']) ? $_REQUEST['dept'] : 0);
     $status   = intval(isset($_REQUEST['status']) ? $_REQUEST['status'] : -1);
     $state    = intval(isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
-    $depts    =& $hDepartments->getObjects(null, true);
+    $depts    = $hDepartments->getObjects(null, true);
 
     if ($limit == 0) {
         $limit = 10;
@@ -1368,12 +1368,12 @@ function userviewall_display()
     }
 
     $xoopsTpl->assign('xhelp_cols', $tpl_cols);
-    $staffCount =& $hStaff->getObjects();
+    $staffCount = $hStaff->getObjects();
     if(count($staffCount) == 0){
         $xoopsTpl->assign('xhelp_noStaff', true);
     }
 
-    $userTickets =& $hTickets->getObjects($crit);
+    $userTickets = $hTickets->getObjects($crit);
     foreach($userTickets as $ticket){
         $aUserTickets[] = array('id'=>$ticket->getVar('id'),
                         'uid'=>$ticket->getVar('uid'),
@@ -1451,7 +1451,7 @@ window.setTimeout('window_onload()', 1500);
     $crit = new Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
-    $statuses =& $hStatus->getObjects($crit);
+    $statuses = $hStatus->getObjects($crit);
 
     $xoopsTpl->append('xhelp_status_options', _XHELP_TEXT_SELECT_ALL);
     $xoopsTpl->append('xhelp_status_values', -1);

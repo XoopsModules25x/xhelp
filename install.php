@@ -47,7 +47,7 @@ function updateDepts()
 
     //Retrieve list of departments
     $hDept =& xhelpGetHandler('department');
-    $depts =& $hDept->getObjects();
+    $depts = $hDept->getObjects();
 
     $class = 'odd';
     foreach($depts as $dept){
@@ -93,7 +93,7 @@ function removeDepts()
     // Remove the config options
     $hConfigOption =& xhelpGetHandler('configoption');
     $crit = new Criteria('conf_id', $xhelp_config);
-    $configOptions =& $hConfigOption->getObjects($crit);
+    $configOptions = $hConfigOption->getObjects($crit);
 
     if(count($configOptions) > 0){
         foreach($configOptions as $option){

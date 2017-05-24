@@ -32,7 +32,7 @@ if($xoopsUser){
     $hResponseTpl =& xhelpGetHandler('responseTemplates');
     $crit = new Criteria('uid', $uid);
     $crit->setSort('name');
-    $responseTpl =& $hResponseTpl->getObjects($crit);
+    $responseTpl = $hResponseTpl->getObjects($crit);
 
     foreach($responseTpl as $response){
         $aResponseTpl[] = array('id'=>$response->getVar('id'),
@@ -194,7 +194,7 @@ if($xoopsUser){
 
             $myRoles =& $hStaff->getRoles($xoopsUser->getVar('uid'), true);
             $hNotification =& xhelpGetHandler('notification');
-            $settings =& $hNotification->getObjects(null, true);
+            $settings = $hNotification->getObjects(null, true);
 
             $templates =& $xoopsModule->getInfo('_email_tpl');
             $has_notifications = count($templates);
@@ -245,7 +245,7 @@ if($xoopsUser){
             $crit->setOrder('DESC');
             $crit->setLimit(5);
 
-            $reviews =& $hReview->getObjects($crit);
+            $reviews = $hReview->getObjects($crit);
 
             $displayName =& $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 

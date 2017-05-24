@@ -156,7 +156,7 @@ class xhelpMimetypeHandler extends xhelpBaseObjectHandler {
         if($mime_ext){
             $crit->add(new Criteria('mime_ext', $mime_ext));
         }
-        $result =& $this->getObjects($crit);
+        $result = $this->getObjects($crit);
 
         // If no records from db, return empty array
         if (!$result) {

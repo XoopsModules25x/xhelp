@@ -56,7 +56,7 @@ if($xoopsUser){
         $hDepartments  =& xhelpGetHandler('department');    // Department handler
         $crit = new Criteria('','');
         $crit->setSort('department');
-        $departments =& $hDepartments->getObjects($crit);
+        $departments = $hDepartments->getObjects($crit);
         if(count($departments) == 0){
             $message = _XHELP_MESSAGE_NO_DEPTS;
             redirect_header(XHELP_BASE_URL."/index.php", 3, $message);
@@ -127,7 +127,7 @@ if($xoopsUser){
             } else {
                 $crit = new Criteria('mime_admin', 1);
             }
-            $mimetypes =& $hMime->getObjects($crit);
+            $mimetypes = $hMime->getObjects($crit);
             $mimes = '';
             foreach($mimetypes as $mime){
                 if($mimes == ''){
@@ -275,7 +275,7 @@ window.setTimeout('window_onload()', 1500);
                 $crit = new Criteria('', '');
                 $crit->setSort('description');
                 $crit->setOrder('ASC');
-                $statuses =& $hStatus->getObjects($crit);
+                $statuses = $hStatus->getObjects($crit);
                 $aStatuses = array();
                 foreach($statuses as $status){
                     $aStatuses[$status->getVar('id')] = array('id' => $status->getVar('id'),

@@ -61,7 +61,7 @@ switch ($op) {
             $hTicketEmails =& xhelpGetHandler('ticketEmails');
             $crit = new CriteriaCompo(new Criteria('ticketid', $ticketid));
             $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
-            $ticketEmails =& $hTicketEmails->getObjects($crit);
+            $ticketEmails = $hTicketEmails->getObjects($crit);
             if(count($ticketEmails > 0) || $xhelp_staff->checkRoleRights(XHELP_SEC_RESPONSE_ADD, $ticketInfo->getVar('department'))){
                 //1. Verify Response fields are filled properly
                 require_once(XHELP_CLASS_PATH.'/validator.php');
@@ -205,7 +205,7 @@ switch ($op) {
         $hTicketEmails =& xhelpGetHandler('ticketEmails');
         $crit = new CriteriaCompo(new Criteria('ticketid', $ticketid));
         $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
-        $ticketEmails =& $hTicketEmails->getObjects($crit);
+        $ticketEmails = $hTicketEmails->getObjects($crit);
         if(count($ticketEmails) > 0){
             $isSubmitter = true;
         }
@@ -214,7 +214,7 @@ switch ($op) {
             $crit = new Criteria('', '');
             $crit->setSort('description');
             $crit->setOrder('ASC');
-            $statuses =& $hStatus->getObjects($crit);
+            $statuses = $hStatus->getObjects($crit);
             $aStatuses = array();
             foreach($statuses as $status){
                 $aStatuses[$status->getVar('id')] = array('id' => $status->getVar('id'),
@@ -269,7 +269,7 @@ switch ($op) {
             //Get all staff defined templates
             $crit = new Criteria('uid', $uid);
             $crit->setSort('name');
-            $responseTpl =& $hResponseTpl->getObjects($crit, true);
+            $responseTpl = $hResponseTpl->getObjects($crit, true);
 
             $xoopsTpl->append('xhelp_responseTpl_values', '------------------');
             $xoopsTpl->append('xhelp_responseTpl_ids', 0);
@@ -334,7 +334,7 @@ switch ($op) {
         $crit = new Criteria('', '');
         $crit->setSort('description');
         $crit->setOrder('ASC');
-        $statuses =& $hStatus->getObjects($crit);
+        $statuses = $hStatus->getObjects($crit);
         $aStatuses = array();
         foreach($statuses as $status){
             $aStatuses[$status->getVar('id')] = array('id' => $status->getVar('id'),
@@ -386,7 +386,7 @@ switch ($op) {
         $hResponseTpl =& xhelpGetHandler('responseTemplates');          // Used to display responseTemplates
         $crit = new Criteria('uid', $uid);
         $crit->setSort('name');
-        $responseTpl =& $hResponseTpl->getObjects($crit);
+        $responseTpl = $hResponseTpl->getObjects($crit);
 
         $aResponseTpl = array();
         foreach($responseTpl as $response){

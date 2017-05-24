@@ -98,7 +98,7 @@ class xhelpStaff extends XoopsObject {
         $perms = array();
         $hStaff =& xhelpGetHandler('staff');
         $hRole  =& xhelpGetHandler('role');
-        $roles  =& $hRole->getObjects(null, true);
+        $roles  = $hRole->getObjects(null, true);
         $staffRoles =& $hStaff->getRoles($this->getVar('uid'));
         foreach($staffRoles as $role) {
             $deptid = $role->getVar('deptid');
@@ -225,7 +225,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         $uid = intval($uid);
         $hStaffRole =& xhelpGetHandler('staffRole');
 
-        if(!$roles =& $hStaffRole->getObjectsByStaff($uid, $id_as_key)){
+        if(!$roles = $hStaffRole->getObjectsByStaff($uid, $id_as_key)){
             return false;
         }
 
@@ -261,7 +261,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         $crit = new CriteriaCompo(new Criteria('uid', $uid));
         $crit->add(new Criteria('deptid', $deptid));
 
-        if(!$roles =& $hStaffRole->getObjects($crit, $id_as_key)){
+        if(!$roles = $hStaffRole->getObjects($crit, $id_as_key)){
             return false;
         }
 
@@ -317,9 +317,9 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         if(!$uid == 0){
             $uid = intval($uid);
             $crit = new Criteria('uid', $uid);
-            $responses =& $hResponses->getObjects($crit);
+            $responses = $hResponses->getObjects($crit);
         } else {
-            $responses =& $hResponses->getObjects();
+            $responses = $hResponses->getObjects();
         }
         $timeSpent = 0;
         foreach($responses as $response){
@@ -547,7 +547,7 @@ class xhelpStaffHandler extends xhelpBaseObjectHandler {
         $crit->add(new Criteria('roleid', "(". implode(array_keys($aRoles), ',') .")", 'IN'));
         unset($aRoles);
 
-        $staffRoles =& $hStaffRole->getObjects($crit);
+        $staffRoles = $hStaffRole->getObjects($crit);
         $aStaffID = array();
         foreach($staffRoles as $sRole)
         {

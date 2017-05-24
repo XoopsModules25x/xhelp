@@ -78,7 +78,7 @@ function manageFields()
         $crit->setOrder('ASC');
 
         $count = $hFields->getCount($crit);
-        $fields =& $hFields->getObjects($crit);
+        $fields = $hFields->getObjects($crit);
 
         //Display List of Current Fields, form for new field
         xoops_cp_header();
@@ -144,7 +144,7 @@ function manageFields()
         $field_errors = $session->get('xhelp_addFieldErrors');
 
         $hDepts =& xhelpGetHandler('department');
-        $depts =& $hDepts->getObjects();
+        $depts = $hDepts->getObjects();
         $deptarr = array();
 
         foreach($depts as $obj) {
@@ -537,7 +537,7 @@ function editField()
         $datatype_select->addOptionArray($datatypes);
 
         $hDepts =& xhelpGetHandler('department');
-        $depts =& $hDepts->getObjects();
+        $depts = $hDepts->getObjects();
         $dept_select = new XoopsFormSelect(_AM_XHELP_TEXT_DEPARTMENTS, 'fld_departments', $fld_departments, 5, true);
         $dept_select->setDescription(_AM_XHELP_TEXT_DEPT_DESC);
         foreach($depts as $obj) {
