@@ -195,7 +195,7 @@ function manageStatus()
     $crit->setSort($sort);
     $crit->setLimit($limit);
     $crit->setStart($start);
-    $statuses =& $hStatus->getObjects($crit);
+    $statuses = $hStatus->getObjects($crit);
     $total = $hStatus->getCount($crit);
 
     $aStatuses = array();

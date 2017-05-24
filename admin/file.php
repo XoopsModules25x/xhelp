@@ -96,7 +96,7 @@ function deleteResolved()
         $hTicket =& xhelpGetHandler('ticket');
         $hFile =& xhelpGetHandler('file');
 
-        $tickets =& $hTicket->getObjectsByState(1);     // Memory saver - unresolved should be less tickets
+        $tickets = $hTicket->getObjectsByState(1);     // Memory saver - unresolved should be less tickets
 
         $aTickets = array();
         foreach($tickets as $ticket){
@@ -171,7 +171,7 @@ function manageFiles()
     $crit->setSort($sort);
     $crit->setLimit($limit);
     $crit->setStart($start);
-    $files =& $hFile->getObjects($crit);
+    $files = $hFile->getObjects($crit);
     $total = $hFile->getCount($crit);
 
     $nav = new XoopsPageNav($total, $limit, $start, 'start', "op=manageFiles&amp;limit=$limit");

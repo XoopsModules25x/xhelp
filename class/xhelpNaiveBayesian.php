@@ -278,7 +278,7 @@ class xhelpNaiveBayesianStorage
     function xhelpNaiveBayesianStorage()
     {
         $this->con =& XoopsDatabaseFactory::getDatabaseConnection();
-        $this->myts =& MyTextSanitizer::getInstance();
+        $this->myts = MyTextSanitizer::getInstance();
 
         return true;
 

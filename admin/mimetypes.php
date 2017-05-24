@@ -405,7 +405,7 @@ function manage()
     $crit->setStart($start);
     $crit->setLimit($limit);
     $crit->setSort($sort);
-    $mimetypes =& $hMime->getObjects($crit);    // Retrieve a list of all mimetypes
+    $mimetypes = $hMime->getObjects($crit);    // Retrieve a list of all mimetypes
     $mime_count =& $hMime->getCount();
     $nav = new XoopsPageNav($mime_count, $limit, $start, 'start', "op=manage&amp;limit=$limit");
      
@@ -570,7 +570,7 @@ function search()
         $crit->setLimit($limit);
         $crit->setStart($start);
         $mime_count =& $hMime->getCount($crit);
-        $mimetypes =& $hMime->getObjects($crit);
+        $mimetypes = $hMime->getObjects($crit);
         $nav = new XoopsPageNav($mime_count, $limit, $start, 'start', "op=search&amp;limit=$limit&amp;order=$order&amp;sort=$sort&amp;mime_search=1&amp;search_by=$search_field&amp;search_text=$search_text");
         // Display results
         echo '<script type="text/javascript" src="'.XHELP_BASE_URL.'/include/functions.js"></script>';

@@ -276,7 +276,7 @@ function editDepartment()
             if(isset($_POST['defaultDept']) && ($_POST['defaultDept'] == 1)){
                 xhelpSetMeta("default_department", $dept->getVar('id'));
             } else {
-                $depts =& $hDepartments->getObjects();
+                $depts = $hDepartments->getObjects();
                 $aDepts = array();
                 foreach($depts as $dpt){
                     $aDepts[] = $dpt->getVar('id');
@@ -288,7 +288,7 @@ function editDepartment()
             $hConfigOption =& xoops_gethandler('configoption');
             $crit = new CriteriaCompo(new Criteria('confop_name', $oldDept->getVar('department')));
             $crit->add(new Criteria('confop_value', $oldDept->getVar('id')));
-            $confOption =& $hConfigOption->getObjects($crit);
+            $confOption = $hConfigOption->getObjects($crit);
 
             if(count($confOption) > 0){
                 $confOption[0]->setVar('confop_name', $dept->getVar('department'));
@@ -326,7 +326,7 @@ function editDepartment()
         $crit = new CriteriaCompo(new Criteria('gperm_modid', $module_id));
         $crit->add(new Criteria('gperm_itemid', $deptID));
         $crit->add(new Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $group_perms =& $hGroupPerm->getObjects($crit);
+        $group_perms = $hGroupPerm->getObjects($crit);
 
         $aPerms = array();      // Put group_perms in usable format
         foreach($group_perms as $perm){
@@ -345,7 +345,7 @@ function editDepartment()
         $crit = new Criteria('', '');
         $crit->setSort('name');
         $crit->setOrder('ASC');
-        $groups =& $hGroups->getObjects($crit, true);
+        $groups = $hGroups->getObjects($crit, true);
 
         $aGroups = array();
         foreach($groups as $group_id=>$group){
@@ -379,7 +379,7 @@ function editDepartment()
         $staff = $hMembership->membershipByDept($deptID, $limit, $start);
         $crit = new Criteria('j.department', $deptID);
         $staffCount =& $hMembership->getCount($crit);
-        $roles =& $hRole->getObjects(null, true);
+        $roles = $hRole->getObjects(null, true);
 
         echo "<form action='".XHELP_ADMIN_URL."/department.php?op=deleteStaffDept&amp;deptid=".$deptID."' method='post'>";
         echo "<table width='100%' cellspacing='1' class='outer'>
@@ -399,7 +399,7 @@ function editDepartment()
             // Get staff roles
             $crit = new CriteriaCompo(new Criteria('uid', "(". implode($aStaff, ',') .")", "IN"));
             $crit->add(new Criteria('deptid', $deptID));
-            $staffRoles =& $hStaffRole->getObjects($crit);
+            $staffRoles = $hStaffRole->getObjects($crit);
             unset($aStaff);
 
             $staffInfo = array();
@@ -801,7 +801,7 @@ function manageDepartments()
         $crit->setLimit($limit);
         $crit->setStart($start);
         $total = $hDepartments->getCount($crit);
-        $departmentInfo =& $hDepartments->getObjects($crit);
+        $departmentInfo = $hDepartments->getObjects($crit);
 
         $nav = new XoopsPageNav($total, $limit, $start, 'start', "op=manageDepartments&amp;limit=$limit");
 
@@ -809,7 +809,7 @@ function manageDepartments()
         $crit = new Criteria('', '');
         $crit->setSort('name');
         $crit->setOrder('ASC');
-        $groups =& $hGroups->getObjects($crit, true);
+        $groups = $hGroups->getObjects($crit, true);
 
         $aGroups = array();
         foreach($groups as $group_id=>$group){

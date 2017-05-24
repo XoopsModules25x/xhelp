@@ -128,7 +128,7 @@ class xhelpTicketSolutionHandler extends xhelpBaseObjectHandler{
 
         //2. Get solutions to those tickets
         $crit = new Criteria('ticketid', "(". implode(array_keys($cats), ',') .")", 'IN');
-        $solutions =& $this->getObjects($crit);
+        $solutions = $this->getObjects($crit);
 
         //3. Sort solutions based on likeness probability
         foreach ($solutions as $solution) {

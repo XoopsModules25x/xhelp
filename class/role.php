@@ -128,7 +128,7 @@ class xhelpRoleHandler extends xhelpBaseObjectHandler{
         $task = intval($task);
          
         // Get all roles
-        $roles =& $this->getObjects();
+        $roles = $this->getObjects();
          
         $aRoles = array();
         foreach($roles as $role){

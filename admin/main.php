@@ -92,13 +92,13 @@ function mailEvents()
     // Will display the last 50 mail events
     $hMailEvent =& xhelpGetHandler('mailEvent');
     $hDeptMbox =& xhelpGetHandler('departmentMailBox');
-    $mailboxes =& $hDeptMbox->getObjects(null, true);
+    $mailboxes = $hDeptMbox->getObjects(null, true);
 
     $crit = new Criteria('', '');
     $crit->setLimit(50);
     $crit->setOrder('DESC');
     $crit->setSort('posted');
-    $mailEvents =& $hMailEvent->getObjects($crit);
+    $mailEvents = $hMailEvent->getObjects($crit);
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('mailEvents');
@@ -150,7 +150,7 @@ function searchMailEvents()
     } else {
         $hMailEvent =& xhelpGetHandler('mailEvent');
         $hDeptMbox =& xhelpGetHandler('departmentMailBox');
-        $mailboxes =& $hDeptMbox->getObjects(null, true);
+        $mailboxes = $hDeptMbox->getObjects(null, true);
 
         $begin_date = explode( '-', $_POST['begin_date']);
         $end_date = explode('-', $_POST['end_date']);
@@ -174,9 +174,9 @@ function searchMailEvents()
         $crit->setOrder('DESC');
         $crit->setSort('posted');
         if(isset($email)){
-            $mailEvents =& $hMailEvent->getObjectsJoin($crit);
+            $mailEvents = $hMailEvent->getObjectsJoin($crit);
         } else {
-            $mailEvents =& $hMailEvent->getObjects($crit);
+            $mailEvents = $hMailEvent->getObjects($crit);
         }
 
         displayEvents($mailEvents, $mailboxes);
@@ -269,7 +269,7 @@ function xhelp_default()
     $crit = new Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
-    $statuses =& $hStatus->getObjects($crit);
+    $statuses = $hStatus->getObjects($crit);
     $table_class = array('odd', 'even');
     echo "<table border='0' width='100%'>";
     echo "<tr><td width='50%' valign='top'>";
@@ -350,7 +350,7 @@ function xhelp_default()
     $crit->setSort('priority');
     $crit->setOrder('ASC');
     $crit->setLimit(10);
-    $highPriority =& $hTickets->getObjects($crit);
+    $highPriority = $hTickets->getObjects($crit);
     $has_highPriority = (count($highPriority) > 0);
     if($has_highPriority){
         echo "<div id='highPriority'>";

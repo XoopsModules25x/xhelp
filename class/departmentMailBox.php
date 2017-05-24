@@ -212,7 +212,7 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
             $total = $this->getCount($crit);
             //
             if ($total>0) {
-                $ret =& $this->getObjects($crit);
+                $ret = $this->getObjects($crit);
 
                 return $ret;
             }
@@ -224,7 +224,7 @@ class xhelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
     function &getActiveMailboxes()
     {
         $crit = new Criteria('active', 1);
-        $ret =& $this->getObjects($crit);
+        $ret = $this->getObjects($crit);
 
         return $ret;
     }

@@ -118,7 +118,7 @@ function _isDepartmentEmail($email)
 
     if (!isset($email_arr)) {
         global $hDeptBoxes;
-        $deptmboxes =& $hDeptBoxes->getObjects();
+        $deptmboxes = $hDeptBoxes->getObjects();
         $email_arr = array();
         foreach($deptmboxes as $obj) {
             $email_arr[] = $obj->getVar('emailaddress');

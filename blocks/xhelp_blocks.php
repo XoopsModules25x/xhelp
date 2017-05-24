@@ -29,7 +29,7 @@ function b_xhelp_open_show($options)
             $crit->setOrder('DESC');
             $crit->setSort('priority, posted');
             $crit->setLimit(5);
-            $tickets =& $hTickets->getObjects($crit);
+            $tickets = $hTickets->getObjects($crit);
 
             foreach($tickets as $ticket){
                 $overdue = false;
@@ -66,7 +66,7 @@ function b_xhelp_open_show($options)
             $crit->setOrder('DESC');
             $crit->setSort('priority, posted');
             $crit->setLimit(5);
-            $tickets =& $hTickets->getObjects($crit);
+            $tickets = $hTickets->getObjects($crit);
             $hDepartments =& xhelpGetHandler('department');
 
             foreach($tickets as $ticket){
@@ -351,7 +351,7 @@ function b_xhelp_actions_show()
     $hTicketEmails =& xhelpGetHandler('ticketEmails');
     $crit = new CriteriaCompo(new Criteria('ticketid', $ticketInfo->getVar('id')));
     $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
-    $ticketEmails =& $hTicketEmails->getObjects($crit);
+    $ticketEmails = $hTicketEmails->getObjects($crit);
 
     //Retrieve all departments
     $crit = new Criteria('','');
@@ -389,7 +389,7 @@ function b_xhelp_actions_show()
     $crit = new Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
-    $statuses =& $hStatus->getObjects($crit);
+    $statuses = $hStatus->getObjects($crit);
     $aStatuses = array();
     foreach($statuses as $status){
         $aStatuses[$status->getVar('id')] = array('id' => $status->getVar('id'),

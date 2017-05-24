@@ -37,7 +37,7 @@ class xhelpWebLib {
         $hStatus =& xhelpGetHandler('status');
 
         if($state == -1){   // If select all is chosen
-            $statuses =& $hStatus->getObjects(null, true);
+            $statuses = $hStatus->getObjects(null, true);
         } else {
             $statuses =& $hStatus->getStatusesByState($state);
         }

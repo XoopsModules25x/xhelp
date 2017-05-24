@@ -35,7 +35,7 @@ if(!$ticketInfo     =& $hTickets->get($xhelp_id)){
 $displayName =& $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 
 $hDepartments   =& xhelpGetHandler('department');
-$departments    =& $hDepartments->getObjects(null, true);
+$departments    = $hDepartments->getObjects(null, true);
 $user           =& $member_handler->getUser($ticketInfo->getVar('uid'));
 $hStaffReview   =& xhelpGetHandler('staffReview');
 $hResponses     =& xhelpGetHandler('responses');
@@ -180,7 +180,7 @@ if($xhelp_isStaff) {
     $crit->setSort('posted');
     $crit->setOrder('DESC');
     $crit->setLimit(10);
-    $lastTickets =& $hTickets->getObjects($crit);
+    $lastTickets = $hTickets->getObjects($crit);
     foreach($lastTickets as $ticket){
 
         $dept = $ticket->getVar('department');
@@ -227,7 +227,7 @@ switch($op)
         $hTicketEmails =& xhelpGetHandler('ticketEmails');
         $crit = new CriteriaCompo(new Criteria('ticketid', $xhelp_id));
         $crit->add(new Criteria('email', $_POST['newEmail']));
-        $existingUsers =& $hTicketEmails->getObjects($crit);
+        $existingUsers = $hTicketEmails->getObjects($crit);
         if(count($existingUsers) > 0){
             $message = _XHELP_MESSAGE_EMAIL_USED;
             redirect_header(XHELP_BASE_URL."/ticket.php?id=$xhelp_id", 3, $message);
@@ -257,7 +257,7 @@ switch($op)
         $hTicketEmails =& xhelpGetHandler('ticketEmails');
         $crit = new CriteriaCompo(new Criteria('ticketid', $_GET['id']));
         $crit->add(new Criteria('email', $_GET['email']));
-        $suppressUser =& $hTicketEmails->getObjects($crit);
+        $suppressUser = $hTicketEmails->getObjects($crit);
 
         foreach($suppressUser as $sUser){
             if($sUser->getVar('suppress') == 0){
@@ -304,7 +304,7 @@ switch($op)
 
             $crit = new Criteria('','');
             $crit->setSort('department');
-            $departments =& $hDepartments->getObjects($crit);
+            $departments = $hDepartments->getObjects($crit);
             $hStaff =& xhelpGetHandler('staff');
 
             foreach($departments as $dept){
@@ -662,7 +662,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
             unset($_users);
 
-            $myTs =& MyTextSanitizer::getInstance();
+            $myTs = MyTextSanitizer::getInstance();
             //Update arrays with user information
             if(count($aResponses) > 0){
                 for($i=0;$i<count($aResponses);$i++) {
@@ -833,7 +833,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         unset($_staff);
         $staffReviews =& $ticketInfo->getReviews();
 
-        $myTs =& MyTextSanitizer::getInstance();
+        $myTs = MyTextSanitizer::getInstance();
         //Update arrays with user information
         if(count($aResponses) > 0){
             for($i=0;$i<count($aResponses);$i++) {
@@ -882,7 +882,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $crit = new Criteria('ticketid', $xhelp_id);
         $crit->setOrder('ASC');
         $crit->setSort('email');
-        $notifiedUsers =& $hTicketEmails->getObjects($crit);
+        $notifiedUsers = $hTicketEmails->getObjects($crit);
         $aNotified = array();
         foreach($notifiedUsers as $nUser){
             $aNotified[] = array('email' => $nUser->getVar('email'),
@@ -994,7 +994,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $hTicketEmails =& xhelpGetHandler('ticketEmails');
         $crit = new CriteriaCompo(new Criteria('ticketid', $xhelp_id));
         $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
-        $ticketEmails =& $hTicketEmails->getObjects($crit);
+        $ticketEmails = $hTicketEmails->getObjects($crit);
 
         foreach ($checkRights as $right=>$desc) {
             if(($right == XHELP_SEC_RESPONSE_ADD) && (count($ticketEmails) > 0)){
@@ -1024,7 +1024,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $crit = new Criteria('', '');
         $crit->setSort('description');
         $crit->setOrder('ASC');
-        $statuses =& $hStatus->getObjects($crit);
+        $statuses = $hStatus->getObjects($crit);
         $aStatuses = array();
         foreach($statuses as $status){
             $aStatuses[$status->getVar('id')] = array('id' => $status->getVar('id'),
@@ -1049,7 +1049,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $hTicketEmails =& xhelpGetHandler('ticketEmails');
         $crit = new CriteriaCompo(new Criteria('ticketid', $xhelp_id));
         $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
-        $ticketEmails =& $hTicketEmails->getObjects($crit);
+        $ticketEmails = $hTicketEmails->getObjects($crit);
         if(count($ticketEmails) == 0){
             redirect_header(XHELP_BASE_URL."/index.php", 3, _XHELP_ERROR_INV_USER);
         }
@@ -1183,7 +1183,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             // Check if user has permission to view ticket
             $hTicketEmails =& xhelpGetHandler('ticketEmails');
             $crit = new Criteria('ticketid', $xhelp_id);
-            $ticketEmails =& $hTicketEmails->getObjects($crit);
+            $ticketEmails = $hTicketEmails->getObjects($crit);
             $canChange = false;
             foreach($ticketEmails as $ticketEmail){
                 if($xoopsUser->getVar('uid') == $ticketEmail->getVar('uid')){

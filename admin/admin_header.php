@@ -98,7 +98,7 @@ if($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']){
     // Change overdueTime in all of tickets (OPEN & HOLD)
     $hTickets =& xhelpGetHandler('ticket');
     $crit = new Criteria('status', 2, '<>');
-    $tickets =& $hTickets->getObjects($crit);
+    $tickets = $hTickets->getObjects($crit);
     $updatedTickets = array();
     foreach($tickets as $ticket){
         $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] *60*60));

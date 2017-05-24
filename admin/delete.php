@@ -38,7 +38,7 @@ if(isset($_REQUEST['deleteDept'])){
             $hConfigOption =& xoops_gethandler('configoption');
             $crit = new CriteriaCompo(new Criteria('confop_name', $deptCopy->getVar('department')));
             $crit->add(new Criteria('confop_value', $deptCopy->getVar('id')));
-            $configOption =& $hConfigOption->getObjects($crit);
+            $configOption = $hConfigOption->getObjects($crit);
 
             if(count($configOption) > 0){
                 if(!$hConfigOption->delete($configOption[0])){
@@ -48,7 +48,7 @@ if(isset($_REQUEST['deleteDept'])){
             }
 
             // Change default department
-            $depts =& $hDepartments->getObjects();
+            $depts = $hDepartments->getObjects();
             $aDepts = array();
             foreach($depts as $dpt){
                 $aDepts[] = $dpt->getVar('id');

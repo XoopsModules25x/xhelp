@@ -37,7 +37,7 @@ class xhelpTicketValues extends XoopsObject
         $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
 
         $hFields =& xhelpGetHandler('ticketField');
-        $fields =& $hFields->getObjects(null, true);
+        $fields = $hFields->getObjects(null, true);
 
         foreach($fields as $field){
             $key = $field->getVar('fieldname');

@@ -121,7 +121,7 @@ function edit()
     } else {
         $selectedRoles = array();
     }
-    $roles =& $hRoles->getObjects();
+    $roles = $hRoles->getObjects();
 
     echo "<form method='post' action='".XHELP_ADMIN_URL."/notifications.php?op=edit&amp;id=".$id."'>";
     echo "<table width='100%' cellspacing='1' class='outer'>";
@@ -204,7 +204,7 @@ function manage()
     $indexAdmin = new ModuleAdmin();
     echo $indexAdmin->addNavigation('notifications.php');
 
-    $settings =& $hNotification->getObjects(null, true);
+    $settings = $hNotification->getObjects(null, true);
 
     echo "<table width='100%' cellspacing='1' class='outer'>";
     echo "<tr><th colspan='3'>"._AM_XHELP_TEXT_MANAGE_NOTIFICATIONS."</th></tr>";

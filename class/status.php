@@ -111,7 +111,7 @@ class xhelpStatusHandler extends xhelpBaseObjectHandler {
         $aStatuses = array();
         $state = intval($state);
         $crit = new Criteria('state', $state);
-        $aStatuses =& $this->getObjects($crit, true);
+        $aStatuses = $this->getObjects($crit, true);
 
         return $aStatuses;
     }

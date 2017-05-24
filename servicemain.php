@@ -27,7 +27,7 @@ require_once XOOPS_ROOT_PATH . '/class/xoopskernel.php';
 $xoops = new xos_kernel_Xoops2();
 $xoops->pathTranslation();
 
-$xoopsLogger =& XoopsLogger::getInstance();
+$xoopsLogger = XoopsLogger::getInstance();
 $xoopsLogger->startTime();
 
 define('XOOPS_DB_PROXY', 1);

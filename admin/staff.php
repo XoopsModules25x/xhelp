@@ -136,7 +136,7 @@ function clearOrphanedStaff()
     $hMember =& xoops_gethandler('member');
     $hStaff =& xhelpGetHandler('staff');
     $users =& $hMember->getUserList();
-    $staff =& $hStaff->getObjects();
+    $staff = $hStaff->getObjects();
 
     $aUsers = array();
     foreach($staff as $stf){
@@ -162,7 +162,7 @@ function clearRoles()
     $_xhelpSession = new Session();
 
     $hDept =& xhelpGetHandler('department');
-    $depts =& $hDept->getObjects();
+    $depts = $hDept->getObjects();
 
     foreach($depts as $dept){
         $deptid = $dept->getVar('id');
@@ -240,7 +240,7 @@ function customDept()
         $crit = new Criteria('', '');
         $crit->setOrder('ASC');
         $crit->setSort('name');
-        $roles =& $hRole->getObjects($crit);
+        $roles = $hRole->getObjects($crit);
 
         $lastPage = $_xhelpSession->get("xhelp_return_op");
         xoops_cp_header();
@@ -530,14 +530,14 @@ function editStaff()
         $crit = new Criteria('', '');
         $crit->setOrder('ASC');
         $crit->setSort('name');
-        $roles =& $hRoles->getObjects($crit, true);
+        $roles = $hRoles->getObjects($crit, true);
 
         $hDepartments  =& xhelpGetHandler('department');    // Get department handler
         $crit = new Criteria('','');
         $crit->setSort('department');
         $crit->setOrder('ASC');
         $total = $hDepartments->getCount($crit);
-        $departmentInfo =& $hDepartments->getObjects($crit);
+        $departmentInfo = $hDepartments->getObjects($crit);
 
         $hStaff =& xhelpGetHandler('staff');       // Get staff handler
         $staff =& $hStaff->getByUid($uid);
@@ -794,7 +794,7 @@ function manageStaff()
         $crit->setOrder('ASC');
 
         $dept_count = $hDepartments->getCount($crit);
-        $dept_obj   =& $hDepartments->getObjects($crit);
+        $dept_obj   = $hDepartments->getObjects($crit);
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
         $indexAdmin = new ModuleAdmin();
@@ -816,7 +816,7 @@ function manageStaff()
             $crit->setStart($start);
             $crit->setLimit($limit);
 
-            $staff_obj   =& $hStaff->getObjects($crit);
+            $staff_obj   = $hStaff->getObjects($crit);
             $staff_count = $hStaff->getCount($crit);
             $user_count = $member_handler->getUserCount();
 
@@ -826,7 +826,7 @@ function manageStaff()
             $crit = new Criteria('', '');
             $crit->setOrder('ASC');
             $crit->setSort('name');
-            $roles =& $hRoles->getObjects($crit);
+            $roles = $hRoles->getObjects($crit);
 
             echo '<script type="text/javascript" src="'.XOOPS_URL.'/modules/xhelp/include/functions.js"></script>';
             echo "<form method='post' id='manageStaff' name='manageStaff' action='staff.php?op=manageStaff'>";

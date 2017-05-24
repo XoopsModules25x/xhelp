@@ -279,7 +279,7 @@ function upgradeDB()
             }
 
             // Set all staff members to have admin permission role
-            if($staff =& $hStaff->getObjects()){
+            if($staff = $hStaff->getObjects()){
                 foreach($staff as $stf){
                     $uid = $stf->getVar('uid');
                     $depts = $hMember->membershipByStaff($uid, true);
@@ -400,7 +400,7 @@ function upgradeDB()
             while ($i <= $count) {
                 set_time_limit(60);
                 $crit->setStart($i);
-                $tickets =& $hTicket->getObjects($crit);
+                $tickets = $hTicket->getObjects($crit);
 
                 $all_users = array();
                 foreach($tickets as $ticket){
@@ -431,7 +431,7 @@ function upgradeDB()
             set_time_limit(60);
             // Update xhelp_roles Admin record with new value (2047)
             $crit = new Criteria('tasks', 511);
-            $admin_roles =& $hRole->getObjects($crit);
+            $admin_roles = $hRole->getObjects($crit);
 
             foreach($admin_roles as $role){
                 $role->setVar('tasks', 2047);
@@ -518,7 +518,7 @@ function upgradeDB()
                 $ret = xhelpSetMeta('default_department', $xoopsModuleConfig['xhelp_defaultDept']);
             } else {
                 $hDepartments =& xhelpGetHandler('department');
-                $depts =& $hDepartments->getObjects();
+                $depts = $hDepartments->getObjects();
                 $aDepts = array();
                 foreach($depts as $dpt){
                     $aDepts[] = $dpt->getVar('id');
@@ -545,7 +545,7 @@ function upgradeDB()
 
             // Take existing saved searches and add 'query' field
             $hSavedSearch =& xhelpGetHandler('savedSearch');
-            $savedSearches =& $hSavedSearch->getObjects();
+            $savedSearches = $hSavedSearch->getObjects();
 
             foreach($savedSearches as $savedSearch)
             {
@@ -581,7 +581,7 @@ function upgradeDB()
             set_time_limit(60);
             // Update xhelp_roles Admin record with new value (4095)
             $crit = new Criteria('tasks', 2047);
-            $admin_roles =& $hRole->getObjects($crit);
+            $admin_roles = $hRole->getObjects($crit);
 
             foreach($admin_roles as $role){
                 $role->setVar('tasks', 4095);

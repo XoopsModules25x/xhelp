@@ -96,7 +96,7 @@ if($xoopsUser){
                 $ownership = '';
                 $closedBy = '';
 
-                $fields =& $hFields->getObjects();
+                $fields = $hFields->getObjects();
                 $aFields = array();
                 $aFieldnames = array();
                 foreach($fields as $field){
@@ -206,7 +206,7 @@ if($xoopsUser){
                 $crit_stat = new Criteria('', '');
                 $crit_stat->setSort('description');
                 $crit_stat->setOrder('ASC');
-                $statuses =& $hStatus->getObjects($crit_stat);
+                $statuses = $hStatus->getObjects($crit_stat);
                 $aStatuses = array();
                 foreach($statuses as $status){
                     $aStatuses[$status->getVar('id')] = $status->getVar('description');
@@ -463,7 +463,7 @@ if($xoopsUser){
                 }
                 $viewResults = true;
 
-                $tickets =& $hTickets->getObjectsByStaff($crit, false, $hasCustFields);
+                $tickets = $hTickets->getObjectsByStaff($crit, false, $hasCustFields);
 
                 $total = $hTickets->getCountByStaff($crit, $hasCustFields);
                 //$pageNav = new  XoopsPageNav($total, $limit, $start, "start", "limit=$limit&department=$search_department&description=$search_description&subject=$search_subject&priority=$search_priority&status=$search_status&submittedBy=$search_submittedBy&ownership=$search_ownership&closedBy=$search_closedBy");   // New PageNav object
@@ -568,7 +568,7 @@ if($xoopsUser){
             $crit_stat = new Criteria('', '');
             $crit_stat->setSort('description');
             $crit_stat->setOrder('ASC');
-            $statuses =& $hStatus->getObjects($crit_stat);
+            $statuses = $hStatus->getObjects($crit_stat);
             $aStatuses = array();
             foreach($statuses as $status){
                 $aStatuses[$status->getVar('id')] = array('id' => $status->getVar('id'),
@@ -578,7 +578,7 @@ if($xoopsUser){
             unset($statuses);
             $xoopsTpl->assign('xhelp_statuses', $aStatuses);
 
-            $fields =& $hFields->getObjects();
+            $fields = $hFields->getObjects();
             $aFields = array();
             foreach($fields as $field){
                 $values = $field->getVar('fieldvalues');

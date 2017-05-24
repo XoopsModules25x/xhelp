@@ -110,7 +110,7 @@ class xhelpTicket extends XoopsObject {
         if ($activeOnly) {
             $crit->add(new Criteria('suppress', 0));
         }
-        $arr =& $hEmails->getObjects($crit);
+        $arr = $hEmails->getObjects($crit);
 
         return $arr;
     }
@@ -132,7 +132,7 @@ class xhelpTicket extends XoopsObject {
         $hFiles =& xhelpGetHandler('file');
         $crit   = new CriteriaCompo(new Criteria('ticketid', $id));
         $crit->setSort('responseid');
-        $arr =& $hFiles->getObjects($crit);
+        $arr = $hFiles->getObjects($crit);
 
         return $arr;
     }
@@ -157,7 +157,7 @@ class xhelpTicket extends XoopsObject {
         $criteria->setLimit($limit);
         $criteria->setStart($start);
 
-        $arr =& $hResponses->getObjects($criteria);
+        $arr = $hResponses->getObjects($criteria);
 
         return $arr;
     }
@@ -192,7 +192,7 @@ class xhelpTicket extends XoopsObject {
         $crit->setLimit($limit);
         $crit->setStart($start);
          
-        $arr =& $hStaffReview->getObjects($crit);
+        $arr = $hStaffReview->getObjects($crit);
 
         return $arr;
     }
@@ -217,7 +217,7 @@ class xhelpTicket extends XoopsObject {
         $criteria->setLimit($limit);
         $criteria->setStart($start);
          
-        $arr    =& $hLogMessages->getObjects($criteria);
+        $arr    = $hLogMessages->getObjects($criteria);
 
         return $arr;
     }
@@ -459,7 +459,7 @@ class xhelpTicket extends XoopsObject {
         // Copy 2nd ticket file attachments to $this ticket
         $hFiles =& xhelpGetHandler('file');
         $crit = new Criteria('ticketid', $lose_id);
-        $files =& $hFiles->getObjects($crit);
+        $files = $hFiles->getObjects($crit);
         foreach($files as $file){
             $file->rename($keep_id, $responseid);
         }
@@ -556,7 +556,7 @@ class xhelpTicket extends XoopsObject {
         $ticketid = $this->getVar('id');
 
         $hFields = xhelpGetHandler('ticketField');
-        $fields =& $hFields->getObjects(null);                  // Retrieve custom fields
+        $fields = $hFields->getObjects(null);                  // Retrieve custom fields
 
         $hFieldValues = xhelpGetHandler('ticketValues');
         $values =& $hFieldValues->get($ticketid);               // Retrieve custom field values
@@ -749,7 +749,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         // Get all ticketEmail objects where $uid is found
         $hTicketEmails =& xhelpGetHandler('ticketEmails');
         $crit = new Criteria('uid', $uid);
-        $ticketEmails =& $hTicketEmails->getObjectsSortedByTicket($crit);
+        $ticketEmails = $hTicketEmails->getObjectsSortedByTicket($crit);
 
         // Get friendly array of all ticketids needed
         $aTicketEmails = array();
@@ -761,7 +761,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         // Get unresolved statuses and filter out the resolved statuses
         $hStatus =& xhelpGetHandler('status');
         $crit = new Criteria('state', 1);
-        $statuses =& $hStatus->getObjects($crit, true);
+        $statuses = $hStatus->getObjects($crit, true);
         $aStatuses = array();
         foreach($statuses as $status){
             $aStatuses[$status->getVar('id')] = $status->getVar('id');
@@ -772,7 +772,7 @@ class xhelpTicketHandler extends xhelpBaseObjectHandler{
         // Only want tickets that are unresolved.
         $crit  = new CriteriaCompo(new Criteria('t.id', "(". implode(array_keys($aTicketEmails), ',') .")", 'IN'));
         $crit->add(new Criteria('t.status', "(". implode(array_keys($aStatuses), ',') .")", 'IN'));
-        $tickets =& $this->getObjects($crit, $id_as_key);
+        $tickets = $this->getObjects($crit, $id_as_key);
 
         // Return all tickets
         return $tickets;

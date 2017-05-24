@@ -43,7 +43,7 @@ if(!isset($_POST['addTicket'])){
     $hDepartments  =& xhelpGetHandler('department');    // Department handler
     $crit = new Criteria('','');
     $crit->setSort('department');
-    $departments =& $hDepartments->getObjects($crit);
+    $departments = $hDepartments->getObjects($crit);
     if(count($departments) == 0){
         $message = _XHELP_MESSAGE_NO_DEPTS;
         redirect_header(XHELP_BASE_URL.'/index.php', 3, $message);
@@ -61,7 +61,7 @@ if(!isset($_POST['addTicket'])){
         // Get available mimetypes for file uploading
         $hMime =& xhelpGetHandler('mimetype');
         $crit = new Criteria('mime_user', 1);
-        $mimetypes =& $hMime->getObjects($crit);
+        $mimetypes = $hMime->getObjects($crit);
         $mimes = '';
         foreach($mimetypes as $mime){
             if($mimes == ''){
