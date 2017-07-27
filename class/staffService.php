@@ -1,5 +1,5 @@
 <?php
-//$Id: staffService.php,v 1.13 2005/12/01 22:36:21 ackbarr Exp $
+//
 
 /**
  * xhelp_staffService class
@@ -7,29 +7,28 @@
  * Part of the Messaging Subsystem.  Updates staff member information.
  *
  *
- * @author Brian Wahoff <ackbarr@xoops.org>
- * @access public
+ * @author  Brian Wahoff <ackbarr@xoops.org>
+ * @access  public
  * @package xhelp
  */
-
-class xhelpStaffService extends xhelpService
+class XHelpStaffService extends xhelpService
 {
     /**
      * Instance of the xoopsStaffHandler
      *
      * @var object
-     * @access	private
+     * @access  private
      */
-    var $_hStaff;
+    public $_hStaff;
 
     /**
      * Class Constructor
      *
-     * @access	public
+     * @access  public
      */
-    function xhelpStaffService()
+    public function __construct()
     {
-        $this->_hStaff =& xhelpGetHandler('staff');
+        $this->_hStaff = xhelpGetHandler('staff');
         $this->init();
     }
 
@@ -40,48 +39,47 @@ class xhelpStaffService extends xhelpService
      * @return bool           True on success, false on error
      * @access public
      */
-    function new_response($ticket, $response)
+    public function new_response($ticket, $response)
     {
         global $xoopsUser;
 
         //if first response for ticket, update staff responsetime
-        $hResponse   =& xhelpGetHandler('responses');
-        $hMembership =& xhelpGetHandler('membership');
+        $hResponse   = xhelpGetHandler('responses');
+        $hMembership = xhelpGetHandler('membership');
         if ($hResponse->getStaffResponseCount($ticket->getVar('id')) == 1) {
             if ($hMembership->isStaffMember($response->getVar('uid'), $ticket->getVar('department'))) {
                 $responseTime = abs($response->getVar('updateTime') - $ticket->getVar('posted'));
                 $this->_hStaff->updateResponseTime($response->getVar('uid'), $responseTime);
             }
         }
-
     }
 
     /**
      * Update staff response time if first staff response
-     * @param  xhelpTicket    $ticket    Ticket for response
-     * @param  xhelpResponses $response  Response
-     * @param  int            $timespent Number of minutes spent on ticket
-     * @param  bool           $private   Is the response private?
-     * @return bool           True on success, false on error
-     * @access public
+     * @param                 $tickets
+     * @param  xhelpResponses $response Response
+     * @return bool True on success, false on error
+     * @internal param xhelpTicket $ticket Ticket for response
+     * @internal param int $timespent Number of minutes spent on ticket
+     * @internal param bool $private Is the response private?
+     * @access   public
      */
-    function batch_response($tickets, $response)
+    public function batch_response($tickets, $response)
     {
         global $xoopsUser;
 
         $update    = time();
         $uid       = $xoopsUser->getVar('uid');
-        $hResponse =& xhelpGetHandler('responses');
+        $hResponse = xhelpGetHandler('responses');
         foreach ($tickets as $ticket) {
             //if first response for ticket, update staff responsetime
 
-            $hMembership =& xhelpGetHandler('membership');
+            $hMembership = xhelpGetHandler('membership');
             if ($hResponse->getStaffResponseCount($ticket->getVar('id')) == 1) {
                 $responseTime = abs($update - $ticket->getVar('posted'));
                 $this->_hStaff->updateResponseTime($uid, $responseTime);
             }
         }
-
     }
 
     /**
@@ -91,7 +89,7 @@ class xhelpStaffService extends xhelpService
      * @return bool  True on success, false on error
      * @access public
      */
-    function batch_status($tickets, $newstatus)
+    public function batch_status($tickets, $newstatus)
     {
         global $xoopsUser;
 
@@ -100,7 +98,6 @@ class xhelpStaffService extends xhelpService
         if ($newstatus->getVar('state') == XHELP_STATE_RESOLVED) {
             $this->_hStaff->increaseCallsClosed($uid, count($tickets));
         }
-
     }
 
     /**
@@ -109,11 +106,11 @@ class xhelpStaffService extends xhelpService
      * @return bool        True on success, false on error
      * @access public
      */
-    function close_ticket($ticket)
+    public function close_ticket($ticket)
     {
         global $xoopsUser;
 
-        $hMembership =& xhelpGetHandler('membership');
+        $hMembership = xhelpGetHandler('membership');
         if ($hMembership->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
             $this->_hStaff->increaseCallsClosed($ticket->getVar('closedBy'), 1);
         }
@@ -123,14 +120,14 @@ class xhelpStaffService extends xhelpService
 
     /**
      * Callback function for the 'reopen_ticket' event
-     * @param  array $args Array of arguments passed to EventService
-     * @return bool  True on success, false on error
-     * @access public
+     * @param $ticket
+     * @return bool True on success, false on error
+     * @internal param array $args Array of arguments passed to EventService
+     * @access   public
      */
-    function reopen_ticket($ticket)
+    public function reopen_ticket($ticket)
     {
-         
-        $hMembership =& xhelpGetHandler('membership');
+        $hMembership = xhelpGetHandler('membership');
         if ($hMembership->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
             $this->_hStaff->increaseCallsClosed($ticket->getVar('closedBy'), -1);
         }
@@ -146,11 +143,11 @@ class xhelpStaffService extends xhelpService
      * @return bool          True on success, false on error
      * @access public
      */
-    function new_response_rating($rating, $ticket, $response)
+    public function new_response_rating($rating, $ticket, $response)
     {
         global $xoopsUser;
 
-        $hStaff =& xhelpGetHandler('staff');
+        $hStaff = xhelpGetHandler('staff');
 
         return $hStaff->updateRating($rating->getVar('staffid'), $rating->getVar('rating'));
     }
@@ -161,19 +158,19 @@ class xhelpStaffService extends xhelpService
      * @return bool        True on success, false on error
      * @access public
      */
-    function view_ticket($ticket)
+    public function view_ticket($ticket)
     {
-        $value = array();
+        $value = [];
 
         //Store a list of recent tickets in the xhelp_recent_tickets cookie
         if (isset($_COOKIE['xhelp_recent_tickets'])) {
             $oldvalue = explode(',', $_COOKIE['xhelp_recent_tickets']);
         } else {
-            $oldvalue = array();
+            $oldvalue = [];
         }
 
         $value[] = $ticket->getVar('id');
-         
+
         $value = array_merge($value, $oldvalue);
         $value = $this->_array_unique($value);
         $value = array_slice($value, 0, 5);
@@ -187,9 +184,9 @@ class xhelpStaffService extends xhelpService
      * @return bool       True on success, false on error
      * @access public
      */
-    function delete_staff($staff)
+    public function delete_staff($staff)
     {
-        $hTicket =& xhelpGetHandler('ticket');
+        $hTicket = xhelpGetHandler('ticket');
 
         return $hTicket->updateAll('ownership', 0, new Criteria('ownership', $staff->getVar('uid')));
     }
@@ -197,28 +194,28 @@ class xhelpStaffService extends xhelpService
     /**
      * Only have 1 instance of class used
      * @return object {@link xhelp_staffService}
-     * @access	public
+     * @access  public
      */
-    function &singleton()
+    public static function getInstance()
     {
-        // Declare a static variable to hold the object instance
         static $instance;
-
-        // If the instance is not there, create one
-        if(!isset($instance)) {
-            $c = __CLASS__;
-            $instance = new $c;
+        if (null === $instance) {
+            $instance = new static();
         }
 
-        return($instance);
+        return $instance;
     }
 
-    function _array_unique($array)
+    /**
+     * @param $array
+     * @return array
+     */
+    public function _array_unique($array)
     {
-        $out = array();
+        $out = [];
 
         //    loop through the inbound
-        foreach ($array as $key=>$value) {
+        foreach ($array as $key => $value) {
             //    if the item isn't in the array
             if (!in_array($value, $out)) { //    add it to the array
                 $out[$key] = $value;
@@ -228,7 +225,7 @@ class xhelpStaffService extends xhelpService
         return $out;
     }
 
-    function _attachEvents()
+    public function _attachEvents()
     {
         $this->_attachEvent('batch_response', $this);
         $this->_attachEvent('batch_status', $this);

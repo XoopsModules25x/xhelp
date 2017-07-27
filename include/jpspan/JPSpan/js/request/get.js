@@ -1,22 +1,21 @@
 /**@
-* include 'request.js';
-*/
-// @version $Id: get.js,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
+ * include 'request.js';
+ */
 
 // For building HTTP GET requests
 function JPSpan_Request_Get(encoder) {
 
     var oParent = new JPSpan_Request(encoder);
-    
+
     // Builds the URL encoded request string: called from this.prepare()
     // @todo should be more careful when in respect to the existing server URL
     // @protected
     // @throws Error code 1006
-    oParent.build = function() {
+    oParent.build = function () {
         var uri = '';
         var sep = '';
-    
-        for ( var argName in this.args ) {
+
+        for (var argName in this.args) {
             try {
                 uri += sep + argName + '=';
                 uri += encodeURIComponent(this.encoder.encode(this.args[argName]));
@@ -24,62 +23,68 @@ function JPSpan_Request_Get(encoder) {
                 throw JPSpan_Client_Error(e, 1006);
             }
             sep = '&';
-        };
-        
+        }
+        ;
+
         this.requesturl = this.serverurl;
-        
-        if ( uri.length != '' ) {
-        
+
+        if (uri.length != '') {
+
             // Need to analyse url more carefully...
-            if ( this.serverurl.lastIndexOf('?') == -1 ) {
-                this.requesturl += '?'+uri;
+            if (this.serverurl.lastIndexOf('?') == -1) {
+                this.requesturl += '?' + uri;
             } else {
-                this.requesturl += '&'+uri;
-            };
-    
-        };
+                this.requesturl += '&' + uri;
+            }
+            ;
+
+        }
+        ;
     };
-    
+
     // Called from XmlHttpClient to prepare the XmlHttpRequest object
     // @param XmlHttpRequest
     // @protected
-    // @throws Error codes 1005 and 1007 
+    // @throws Error codes 1005 and 1007
     oParent.prepare = function (http) {
 
         this.http = http;
-        
+
         this.build();
-    
-        switch ( this.type ) {
+
+        switch (this.type) {
             case 'async':
                 try {
-                    this.http.open('GET',this.requesturl,true);
+                    this.http.open('GET', this.requesturl, true);
                 } catch (e) {
-                    throw JPSpan_Client_Error(new Error(e),1007);
-                };
-            break;
+                    throw JPSpan_Client_Error(new Error(e), 1007);
+                }
+                ;
+                break;
             case 'sync':
                 try {
-                    this.http.open('GET',this.requesturl,false);
+                    this.http.open('GET', this.requesturl, false);
                 } catch (e) {
-                    throw JPSpan_Client_Error(new Error(e),1007);
-                };
-            break;
+                    throw JPSpan_Client_Error(new Error(e), 1007);
+                }
+                ;
+                break;
             default:
                 throw JPSpan_Client_Error(
-                        new Error('Call type invalid '+this.type),
-                        1005
-                    );
-            break;
-        };
+                    new Error('Call type invalid ' + this.type),
+                    1005
+                );
+                break;
+        }
+        ;
     };
-    
+
     // Send the request
     // @protected
-    oParent.send = function() {
+    oParent.send = function () {
         this.http.send(null);
     };
-    
+
     return oParent;
 };
 

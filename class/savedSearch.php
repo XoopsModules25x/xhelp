@@ -1,24 +1,41 @@
 <?php
-//$Id: savedSearch.php,v 1.6 2005/10/10 21:24:56 eric_juden Exp $
-//  ------------------------------------------------------------------------ //
-//                XOOPS - PHP Content Management System                      //
-//                    Copyright (c) 2000 XOOPS.org                           //
-//                       <http://www.xoops.org/>                             //
-//  ------------------------------------------------------------------------ //
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
-require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
+require_once XHELP_CLASS_PATH . '/xhelpBaseObjectHandler.php';
 
 /**
  * xhelpSavedSearch class
  *
- * @author Eric Juden <ericj@epcusa.com>
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com>
+ * @access  public
  * @package xhelp
  */
-class xhelpSavedSearch extends XoopsObject {
-    function xhelpSavedSearch($id = null)
+class XHelpSavedSearch extends XoopsObject
+{
+    /**
+     * XHelpSavedSearch constructor.
+     * @param null $id
+     */
+    public function __construct($id = null)
     {
         $this->initVar('id', XOBJ_DTYPE_INT, null, false);
         $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
@@ -42,19 +59,19 @@ class xhelpSavedSearch extends XoopsObject {
  *
  * SavedSearch Handler for xhelpSavedSearch class
  *
- * @author Eric Juden <ericj@epcusa.com> &
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com> &
+ * @access  public
  * @package xhelp
  */
-
-class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
+class XHelpSavedSearchHandler extends xhelpBaseObjectHandler
+{
     /**
      * Name of child class
      *
      * @var string
-     * @access	private
+     * @access  private
      */
-    var $classname = 'xhelpsavedsearch';
+    public $classname = 'xhelpsavedsearch';
 
     /**
      * DB table name
@@ -62,59 +79,70 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
      * @var string
      * @access private
      */
-    var $_dbtable = 'xhelp_saved_searches';
+    public $_dbtable = 'xhelp_saved_searches';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function xhelpSavedSearchHandler(&$db)
+    public function __construct(XoopsDatabase $db)
     {
         parent::init($db);
     }
 
-    function _insertQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("INSERT INTO %s (id, uid, name, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)",
-        $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name),
-        $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields);
+        $sql = sprintf('INSERT INTO %s (id, uid, NAME, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields);
 
         return $sql;
-
     }
 
-    function _updateQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("UPDATE %s SET uid = %d, name = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u",
-        $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name),
-        $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields,
-        $id);
+        $sql = sprintf('UPDATE %s SET uid = %d, NAME = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields, $id);
 
         return $sql;
     }
 
-    function _deleteQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _deleteQuery($obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
 
-    function getByUid($uid, $has_global = false)
+    /**
+     * @param      $uid
+     * @param bool $has_global
+     * @return array
+     */
+    public function getByUid($uid, $has_global = false)
     {
-        $uid = intval($uid);
-        if($has_global){
+        $uid = (int)$uid;
+        if ($has_global) {
             $crit = new CriteriaCompo(new Criteria('uid', $uid), 'OR');
             $crit->add(new Criteria('uid', XHELP_GLOBAL_UID), 'OR');
         } else {
@@ -127,7 +155,11 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
         return $ret;
     }
 
-    function createSQL($crit)
+    /**
+     * @param $crit
+     * @return string
+     */
+    public function createSQL($crit)
     {
         $sql = $this->_selectQuery($crit);
 
@@ -139,13 +171,13 @@ class xhelpSavedSearchHandler extends xhelpBaseObjectHandler {
      *
      * @param  object $criteria {@link CriteriaElement}
      * @return bool   FALSE if deletion failed
-     * @access	public
+     * @access  public
      */
-    function deleteAll($criteria = null)
+    public function deleteAll($criteria = null)
     {
-        $sql = 'DELETE FROM '.$this->_db->prefix($this->_dbtable);
+        $sql = 'DELETE FROM ' . $this->_db->prefix($this->_dbtable);
         if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
-            $sql .= ' '.$criteria->renderWhere();
+            $sql .= ' ' . $criteria->renderWhere();
         }
         if (!$result = $this->_db->query($sql)) {
             return false;

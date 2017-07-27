@@ -1,21 +1,21 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_bar.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_bar.php';
 
 // Some data
-$months=$gDateLocale->GetShortMonth();
-srand ((double) microtime() * 1000000);
-for( $i=0; $i<25; ++$i) {
-    $databary[]=rand(1,50);
-    $databarx[]=$months[$i%12];
+$months = $gDateLocale->GetShortMonth();
+srand((double)microtime() * 1000000);
+for ($i = 0; $i < 25; ++$i) {
+    $databary[] = rand(1, 50);
+    $databarx[] = $months[$i % 12];
 }
 
 // New graph with a drop shadow
-$graph = new Graph(300,200,'auto');
+$graph = new Graph(300, 200, 'auto');
 $graph->SetShadow();
 
 // Use a "text" X-scale
-$graph->SetScale("textlin");
+$graph->SetScale('textlin');
 
 // Specify X-labels
 $graph->xaxis->SetTickLabels($databarx);
@@ -25,14 +25,14 @@ $graph->xaxis->SetTextLabelInterval(3);
 $graph->xaxis->HideTicks();
 
 // Set title and subtitle
-$graph->title->Set("Bar tutorial example 6");
+$graph->title->Set('Bar tutorial example 6');
 
 // Use built in font
-$graph->title->SetFont(FF_FONT1,FS_BOLD);
+$graph->title->SetFont(FF_FONT1, FS_BOLD);
 
 // Create the bar plot
 $b1 = new BarPlot($databary);
-$b1->SetLegend("Temperature");
+$b1->SetLegend('Temperature');
 $b1->SetWidth(0.4);
 
 // The order the plots are added determines who's ontop

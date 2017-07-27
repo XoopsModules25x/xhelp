@@ -1,28 +1,44 @@
 <?php
-//$Id: staffRole.php,v 1.6 2005/02/15 16:58:03 ackbarr Exp $
-//  ------------------------------------------------------------------------ //
-//                XOOPS - PHP Content Management System                      //
-//                    Copyright (c) 2000 XOOPS.org                           //
-//                       <http://www.xoops.org/>                             //
-//  ------------------------------------------------------------------------ //
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
-require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
+require_once XHELP_CLASS_PATH . '/xhelpBaseObjectHandler.php';
 
 /**
  * xhelpStaffRole class
  *
  * Information about an individual staffrole
  *
- * @author Eric Juden <ericj@epcusa.com>
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com>
+ * @access  public
  * @package xhelp
  */
-
-class xhelpStaffRole extends XoopsObject {
-    function xhelpStaffRole($id = null)
+class XHelpStaffRole extends XoopsObject
+{
+    /**
+     * XHelpStaffRole constructor.
+     * @param null $id
+     */
+    public function __construct($id = null)
     {
         $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
         $this->initVar('roleid', XOBJ_DTYPE_INT, null, false);
@@ -38,94 +54,118 @@ class xhelpStaffRole extends XoopsObject {
     }
 }   // end of class
 
-class xhelpStaffRoleHandler extends xhelpBaseObjectHandler{
-    var $_idfield = 'roleid';
+/**
+ * Class XHelpStaffRoleHandler
+ */
+class XHelpStaffRoleHandler extends xhelpBaseObjectHandler
+{
+    public $_idfield = 'roleid';
 
     /**
      * Name of child class
      *
      * @var string
-     * @access	private
+     * @access  private
      */
-    var $classname = 'xhelpstaffrole';
+    public $classname = 'xhelpstaffrole';
 
     /**
      * DB Table Name
      *
      * @var string
-     * @access 	private
+     * @access  private
      */
-    var $_dbtable = 'xhelp_staffroles';
+    public $_dbtable = 'xhelp_staffroles';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function xhelpStaffRoleHandler(&$db)
+    public function __construct(XoopsDatabase $db)
     {
         parent::init($db);
     }
 
-    function &get($uid, $roleid, $deptid)
+    /**
+     * @param int  $uid
+     * @param null $roleid
+     * @param null $deptid
+     * @return array|bool
+     */
+    public function get($uid, $roleid = null, $deptid = null)
     {
         $crit = new CriteriaCompo('uid', $uid);
         $crit->add(new Criteria('roleid', $roleid));
         $crit->add(new Criteria('deptid', $deptid));
 
-        if(!$role = $this->getObjects($crit)){
+        if (!$role = $this->getObjects($crit)) {
             return false;
         }
 
         return $role;
     }
-     
-    function &getObjectsByStaff($uid, $id_as_key = false)
+
+    /**
+     * @param      $uid
+     * @param bool $id_as_key
+     * @return array|bool
+     */
+    public function &getObjectsByStaff($uid, $id_as_key = false)
     {
-        $uid = intval($uid);
+        $uid  = (int)$uid;
         $crit = new Criteria('uid', $uid);
 
         $arr = $this->getObjects($crit, $id_as_key);
 
-        if(count($arr) == 0){
+        if (count($arr) == 0) {
             $arr = false;
         }
 
         return $arr;
     }
 
-    function staffInRole($uid, $roleid)
+    /**
+     * @param $uid
+     * @param $roleid
+     * @return bool
+     */
+    public function staffInRole($uid, $roleid)
     {
         $crit = new CriteriaCompo('uid', $uid);
         $crit->add(new Criteria('roleid', $roleid));
 
-        if(!$role = $this->getObjects($crit)){
+        if (!$role = $this->getObjects($crit)) {
             return false;
         }
 
         return true;
     }
 
-    function _insertQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("INSERT INTO %s (uid, roleid, deptid) VALUES (%u, %u, %u)",
-        $this->_db->prefix($this->_dbtable), $uid, $roleid, $deptid);
+        $sql = sprintf('INSERT INTO %s (uid, roleid, deptid) VALUES (%u, %u, %u)', $this->_db->prefix($this->_dbtable), $uid, $roleid, $deptid);
 
         return $sql;
-
     }
 
-    function _deleteQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _deleteQuery($obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE uid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('uid'));
 
         return $sql;
     }
-
 }   // end of handler class
-;

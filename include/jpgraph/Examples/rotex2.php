@@ -1,12 +1,12 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_line.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_line.php';
 
-$ydata = array(12,17,22,19,5,15);
+$ydata = array(12, 17, 22, 19, 5, 15);
 
-$graph = new Graph(270,170);
-$graph->SetMargin(30,90,30,30);
-$graph->SetScale("textlin");
+$graph = new Graph(270, 170);
+$graph->SetMargin(30, 90, 30, 30);
+$graph->SetScale('textlin');
 
 $graph->img->SetAngle(90);
 

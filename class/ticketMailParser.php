@@ -5,24 +5,24 @@
  *
  * Part of the email submission subsystem. Converts a parsed email into a ticket
  *
- * @author Nazar Aziz <nazar@panthersoftware.com>
- * @access public
+ * @author  Nazar Aziz <nazar@panthersoftware.com>
+ * @access  public
  * @depreciated
  * @package xhelp
  */
-class xhelpTicketMailParser
+class XHelpTicketMailParser
 {
     /**
      * Instance of Ticket Object
      * @access private
      */
-    var $_ticket;
+    public $_ticket;
 
     /**
      * Class Constructor
      * @access public
      */
-    function xhelpTicketMailParser()
+    public function __construct()
     {
         //any inits?
     }
@@ -36,23 +36,23 @@ class xhelpTicketMailParser
      * @return bool
      * @access public
      */
-    function createTicket(&$mailParser, &$xoopsUser, &$department, &$server)
+    public function createTicket(&$mailParser, &$xoopsUser, &$department, &$server)
     {
         //get ticket handler
-        $hTicket =& xhelpGetHandler('ticket');
-        $ticket  =& $hTicket->create();
+        $hTicket = xhelpGetHandler('ticket');
+        $ticket  = $hTicket->create();
         //
-        $ticket->setVar('uid',         $xoopsUser->uid());
-        $ticket->setVar('subject',     $mailParser->getSubject());
-        $ticket->setVar('department',  $department->getVar('id'));
+        $ticket->setVar('uid', $xoopsUser->uid());
+        $ticket->setVar('subject', $mailParser->getSubject());
+        $ticket->setVar('department', $department->getVar('id'));
         $ticket->setVar('description', $mailParser->getBody());
-        $ticket->setVar('priority',    3);
-        $ticket->setVar('posted',      time());
-        $ticket->setVar('userIP',      _XHELP_EMAIL_SCANNER_IP_COLUMN);
-        $ticket->setVar('serverid',    $server->getVar('id'));
+        $ticket->setVar('priority', 3);
+        $ticket->setVar('posted', time());
+        $ticket->setVar('userIP', _XHELP_EMAIL_SCANNER_IP_COLUMN);
+        $ticket->setVar('serverid', $server->getVar('id'));
         $ticket->createEmailHash($mailParser->getEmail());
         //
-        if ($hTicket->insert($ticket)){
+        if ($hTicket->insert($ticket)) {
             $this->_ticket = $ticket;
 
             return true;
@@ -65,9 +65,8 @@ class xhelpTicketMailParser
      * Returns the ticket object for this email
      * @return object {@link xhelpTicket} Ticket Object
      */
-    function &getTicket()
+    public function &getTicket()
     {
         return $this->_ticket;
     }
-
 }

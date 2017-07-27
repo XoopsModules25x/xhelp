@@ -1,49 +1,49 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Generator
- * @version $Id: Generator.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //--------------------------------------------------------------------------------
 /**
  * Define
  */
-if ( !defined('JPSPAN') ) {
-    define('JPSPAN',dirname(__FILE__).'/');
+if (!defined('JPSPAN')) {
+    define('JPSPAN', __DIR__ . '/');
 }
 
 /**
  * Generaters client-side Javascript primed to access a server
  * Works with JPSpan_HandleDescription to generate
  * client primed for a server
- * @todo Review this - may be worth eliminating - not serving much useful purpose
- * @see JPSpan_Server::getGenerator()
- * @package JPSpan
+ * @todo       Review this - may be worth eliminating - not serving much useful purpose
+ * @see        JPSpan_Server::getGenerator()
+ * @package    JPSpan
  * @subpackage Generator
- * @access public
+ * @access     public
  */
-class JPSpan_Generator {
-
+class JPSpan_Generator
+{
     /**
      * Object responsible for generating client
      * @var object
      * @access private
      */
-    var $ClientGenerator;
+    public $ClientGenerator;
 
     /**
      * Initialize the generator
      * @param Object responsible for generating client
-     * @param array of JPSpan_HandleDescription objects
+     * @param array  of JPSpan_HandleDescription objects
      * @param string URL of the server
      * @param string encoding to use when making requests (e.g. xml or php)
      * @access public
-     * @todo This method needs to die - just setup the ClientGenerator object
+     * @todo   This method needs to die - just setup the ClientGenerator object
      */
-    function init(& $ClientGenerator, & $descriptions, $serverUrl, $encoding) {
-        $this->ClientGenerator = & $ClientGenerator;
-        $this->ClientGenerator->descriptions = & $descriptions;
-        $this->ClientGenerator->serverUrl = $serverUrl;
+    public function init(& $ClientGenerator, & $descriptions, $serverUrl, $encoding)
+    {
+        $this->ClientGenerator                  =& $ClientGenerator;
+        $this->ClientGenerator->descriptions    =& $descriptions;
+        $this->ClientGenerator->serverUrl       = $serverUrl;
         $this->ClientGenerator->RequestEncoding = $encoding;
     }
 
@@ -52,35 +52,40 @@ class JPSpan_Generator {
      * @return string Javascript
      * @access public
      */
-    function getClient() {
+    public function getClient()
+    {
         require_once JPSPAN . 'CodeWriter.php';
-        $Code = & new JPSpan_CodeWriter();
+        $Code = new JPSpan_CodeWriter();
         $this->ClientGenerator->generate($Code);
 
         return $Code->toString();
     }
-
 }
 
 //--------------------------------------------------------------------------------
+
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Generator
- * @access public
+ * @access     public
  */
-class JPSpan_Generator_AdHoc {
+class JPSpan_Generator_AdHoc
+{
+    public $descriptions = [];
 
-    var $descriptions = array();
+    public $RequestEncoding = 'xml';
 
-    var $RequestEncoding = 'xml';
+    public $RequestMethod = 'rawpost';
 
-    var $RequestMethod = 'rawpost';
+    public $jsRequestClass = 'JPSpan_Request_RawPost';
 
-    var $jsRequestClass = 'JPSpan_Request_RawPost';
+    public $jsEncodingClass = 'JPSpan_Encode_Xml';
 
-    var $jsEncodingClass = 'JPSpan_Encode_Xml';
-
-    function addDescription($description) {
+    /**
+     * @param $description
+     */
+    public function addDescription($description)
+    {
         $this->descriptions[$description->jsClass] = $description;
     }
 
@@ -90,9 +95,9 @@ class JPSpan_Generator_AdHoc {
      * @return void
      * @access public
      */
-    function generate(& $Code) {
-
-        switch ( $this->RequestMethod ) {
+    public function generate(& $Code)
+    {
+        switch ($this->RequestMethod) {
             case 'rawpost':
                 $this->jsRequestClass = 'JPSpan_Request_RawPost';
                 break;
@@ -103,14 +108,14 @@ class JPSpan_Generator_AdHoc {
                 // The JPSpan JS GetRequest object has bugs plus
                 // changing state via GET is bad idea
                 // http://www.intertwingly.net/blog/2005/03/16/AJAX-Considered-Harmful
-                trigger_error('Sending data via GET vars not supported',E_USER_ERROR);
+                trigger_error('Sending data via GET vars not supported', E_USER_ERROR);
                 break;
             default:
-                trigger_error('Request method unknown: '.$this->RequestMethod,E_USER_ERROR);
+                trigger_error('Request method unknown: ' . $this->RequestMethod, E_USER_ERROR);
                 break;
         }
 
-        if ( $this->RequestEncoding == 'xml' ) {
+        if ($this->RequestEncoding === 'xml') {
             $this->jsEncodingClass = 'JPSpan_Encode_Xml';
         } else {
             $this->jsEncodingClass = 'JPSpan_Encode_PHP';
@@ -118,7 +123,7 @@ class JPSpan_Generator_AdHoc {
 
         $this->generateScriptHeader($Code);
 
-        foreach ( array_keys($this->descriptions) as $key ) {
+        foreach (array_keys($this->descriptions) as $key) {
             $this->generateJsClass($Code, $this->descriptions[$key]);
         }
     }
@@ -129,36 +134,35 @@ class JPSpan_Generator_AdHoc {
      * @return void
      * @access private
      */
-    function generateScriptHeader(& $Code) {
-        ob_start();
-        ?>
-/**@ * include 'remoteobject.js';
+    public function generateScriptHeader(& $Code)
+    {
+        ob_start(); ?>
+        /**@ * include __DIR__ . '/remoteobject.js';
         <?php
-        switch ( $this->RequestMethod ) {
+        switch ($this->RequestMethod) {
             case 'rawpost':
                 ?>
-* include 'request/rawpost.js';
+                * include __DIR__ . '/request/rawpost.js';
                 <?php
                 break;
-case 'post':
-    ?>
-* include 'request/rawpost.js';
-    <?php
-    break;
+            case 'post':
+                ?>
+                * include __DIR__ . '/request/rawpost.js';
+                <?php
+                break;
         }
 
-        if ( $this->RequestEncoding == 'xml' ) {
+        if ($this->RequestEncoding === 'xml') {
             ?>
 
-* include 'encode/xml.js';
+            * include __DIR__ . '/encode/xml.js';
             <?php
         } else {
             ?>
-* include 'encode/php.js';
+            * include __DIR__ . '/encode/php.js';
             <?php
-        }
-        ?>
-*/
+        } ?>
+        */
         <?php
         $Code->append(ob_get_contents());
         ob_end_clean();
@@ -171,72 +175,74 @@ case 'post':
      * @return void
      * @access private
      */
-    function generateJsClass(& $Code, & $Description) {
-        ob_start();
-        ?>
+    public function generateJsClass(& $Code, & $Description)
+    {
+        ob_start(); ?>
 
-function
+        function
         <?php echo $Description->Class; ?>
-() { var oParent = new JPSpan_RemoteObject(); if ( arguments[0] ) {
-oParent.Async(arguments[0]); } oParent.__remoteClass = '
+        () { var oParent = new JPSpan_RemoteObject(); if (arguments[0]) {
+        oParent.Async(arguments[0]); } oParent.__remoteClass = '
         <?php echo $Description->Class; ?>
-'; oParent.__request = new
-        <?php echo $this->jsRequestClass;
-        ?>
-(new
+        '; oParent.__request = new
+        <?php echo $this->jsRequestClass; ?>
+        (new
         <?php echo $this->jsEncodingClass; ?>
-());
+        ());
         <?php
-        foreach ( $Description->methods as $method => $url ) {
+        foreach ($Description->methods as $method => $url) {
             ?>
 
-// @access public oParent.
+            // @access public oParent.
             <?php echo $method; ?>
-= function() { return this.__call('
+            = function() { return this.__call('
             <?php echo $url; ?>
-',arguments,'
+            ',arguments,'
             <?php echo $method; ?>
-'); };
+            '); };
             <?php
-        }
-        ?>
+        } ?>
 
-return oParent; }
+        return oParent; }
 
         <?php
         $Code->append(ob_get_contents());
         ob_end_clean();
     }
 
-    function getClient() {
+    /**
+     * @return string
+     */
+    public function getClient()
+    {
         require_once JPSPAN . 'CodeWriter.php';
-        $Code = & new JPSpan_CodeWriter();
+        $Code = new JPSpan_CodeWriter();
         $this->generate($Code);
         $client = $Code->toString();
 
         require_once JPSPAN . 'Include.php';
-        $I = & JPSpan_Include::instance();
+        $I = &JPSpan_Include::instance();
 
         // HACK - this needs to change
-        $I->loadString(__FILE__,$client);
+        $I->loadString(__FILE__, $client);
 
         return $I->getCode();
     }
 }
 
 //--------------------------------------------------------------------------------
-/**
- * @package JPSpan
- * @subpackage Generator
- * @access public
- */
-class JPSpan_Generator_AdHoc_Description {
 
-    var $Class;
+/**
+ * @package    JPSpan
+ * @subpackage Generator
+ * @access     public
+ */
+class JPSpan_Generator_AdHoc_Description
+{
+    public $Class;
 
     /**
      * Map of method name to URL endpoint for method
      */
-    var $methods = array();
-
+    public $methods = [];
 }

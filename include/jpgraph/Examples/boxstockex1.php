@@ -1,18 +1,39 @@
 <?php // content="text/plain; charset=utf-8"
 // Example of a stock chart
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_stock.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_stock.php';
 
 // Data must be in the format : open,close,min,max,median
 $datay = array(
-34,42,27,45,36,
-55,25,14,59,40,
-15,40,12,47,23,
-62,38,25,65,57,
-38,49,32,64,45);
+    34,
+    42,
+    27,
+    45,
+    36,
+    55,
+    25,
+    14,
+    59,
+    40,
+    15,
+    40,
+    12,
+    47,
+    23,
+    62,
+    38,
+    25,
+    65,
+    57,
+    38,
+    49,
+    32,
+    64,
+    45
+);
 
 // Setup a simple graph
-$graph = new Graph(300,200);
+$graph = new Graph(300, 200);
 $graph->SetScale('textlin');
 $graph->SetMarginColor('lightblue');
 $graph->title->Set('Box Stock chart example');

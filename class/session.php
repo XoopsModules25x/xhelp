@@ -1,20 +1,20 @@
 <?php
+
 /**
  * A wrapper around PHP's session functions
  * @package xhelp
- * @author Harry Fuecks (PHP Anthology Volume II)
+ * @author  Harry Fuecks (PHP Anthology Volume II)
  */
-
-class Session {
-
+class session
+{
     /**
-     * Session constructor<br />
+     * Session constructor<br>
      * Starts the session with session_start()
      * <b>Note:</b> that if the session has already started,
      * session_start() does nothing
      * @access public
      */
-    function Session()
+    public function __construct()
     {
         @session_start();
     }
@@ -22,11 +22,11 @@ class Session {
     /**
      * Sets a session variable
      * @param string name of variable
-     * @param mixed value of variable
+     * @param mixed  value of variable
      * @return void
      * @access public
      */
-    function set($name, $value)
+    public function set($name, $value)
     {
         $_SESSION[$name] = $value;
     }
@@ -37,7 +37,7 @@ class Session {
      * @return mixed value of session variable
      * @access public
      */
-    function get($name)
+    public function get($name)
     {
         if (isset($_SESSION[$name])) {
             return $_SESSION[$name];
@@ -52,7 +52,7 @@ class Session {
      * @return void
      * @access public
      */
-    function del($name)
+    public function del($name)
     {
         unset($_SESSION[$name]);
     }
@@ -62,20 +62,22 @@ class Session {
      * @return void
      * @access public
      */
-    function destroy()
+    public function destroy()
     {
-        $_SESSION = array();
+        $_SESSION = [];
         session_destroy();
     }
 
-    function singleton()
+    /**
+     * @return static
+     */
+    public static function getInstance()
     {
-        static $_sess;
-
-        if (!isset($_sess)) {
-            $_sess = new Session();
+        static $instance;
+        if (null === $instance) {
+            $instance = new static();
         }
 
-        return $_sess;
+        return $instance;
     }
 }

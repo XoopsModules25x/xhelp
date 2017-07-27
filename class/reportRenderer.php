@@ -1,13 +1,22 @@
 <?php
-// $Id: reportRenderer.php,v 1.1 2006/02/06 19:37:59 eric_juden Exp $
+//
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
-class xhelpReportRenderer {
-    var $report;
-    function xhelpReportRenderer($report)
+/**
+ * Class XHelpReportRenderer
+ */
+class XHelpReportRenderer
+{
+    public $report;
+
+    /**
+     * XHelpReportRenderer constructor.
+     * @param $report
+     */
+    public function __construct($report)
     {
         $this->report = $report;
     }
@@ -19,11 +28,10 @@ class xhelpReportRenderer {
      {
      $this->data = $data;
 
-
      }
      */
 
-    function render()
+    public function render()
     {
         // this section should not run
     }

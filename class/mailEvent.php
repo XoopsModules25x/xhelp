@@ -1,25 +1,42 @@
 <?php
-//$Id: mailEvent.php,v 1.5 2005/02/15 16:58:03 ackbarr Exp $
-//  ------------------------------------------------------------------------ //
-//                XOOPS - PHP Content Management System                      //
-//                    Copyright (c) 2000 XOOPS.org                           //
-//                       <http://www.xoops.org/>                             //
-//  ------------------------------------------------------------------------ //
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
-require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
+require_once XHELP_CLASS_PATH . '/xhelpBaseObjectHandler.php';
 
 /**
  * xhelpDepartment class
  *
- * @author Eric Juden <ericj@epcusa.com>
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com>
+ * @access  public
  * @package xhelp
  */
-class xhelpMailEvent extends XoopsObject {
-    function xhelpMailEvent($id = null)
+class XHelpMailEvent extends XoopsObject
+{
+    /**
+     * XHelpMailEvent constructor.
+     * @param null $id
+     */
+    public function __construct($id = null)
     {
         $this->initVar('id', XOBJ_DTYPE_INT, null, false);
         $this->initVar('mbox_id', XOBJ_DTYPE_INT, null, false);
@@ -36,7 +53,11 @@ class xhelpMailEvent extends XoopsObject {
         }
     }
 
-    function posted($format="l")
+    /**
+     * @param string $format
+     * @return string
+     */
+    public function posted($format = 'l')
     {
         return formatTimestamp($this->getVar('posted'), $format);
     }
@@ -47,19 +68,19 @@ class xhelpMailEvent extends XoopsObject {
  *
  * MailEvent Handler for xhelpMailEvent class
  *
- * @author Eric Juden <ericj@epcusa.com> &
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com> &
+ * @access  public
  * @package xhelp
  */
-
-class xhelpMailEventHandler extends xhelpBaseObjectHandler {
+class XHelpMailEventHandler extends xhelpBaseObjectHandler
+{
     /**
      * Name of child class
      *
      * @var string
-     * @access	private
+     * @access  private
      */
-    var $classname = 'xhelpmailEvent';
+    public $classname = 'xhelpmailEvent';
 
     /**
      * DB table name
@@ -67,38 +88,38 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
      * @var string
      * @access private
      */
-    var $_dbtable = 'xhelp_mailevent';
+    public $_dbtable = 'xhelp_mailevent';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function xhelpMailEventHandler(&$db)
+    public function __construct(XoopsDatabase $db)
     {
         parent::init($db);
     }
 
-     
     /**
      * Create a "select" SQL query
      * @param  object $criteria {@link CriteriaElement} to match
+     * @param bool    $join
      * @return string SQL query
-     * @access	private
+     * @access  private
      */
-    function _selectQuery($criteria = null, $join = false)
+    public function _selectQuery($criteria = null, $join = false)
     {
-        if(!$join){
+        if (!$join) {
             $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
         } else {
-            $sql = sprintf("SELECT e.* FROM %s e INNER JOIN %s d ON d.id = e.mbox_id", $this->_db->prefix('xhelp_mailevent'), $this->_db->prefix('xhelp_department_mailbox'));
+            $sql = sprintf('SELECT e.* FROM %s e INNER JOIN %s d ON d.id = e.mbox_id', $this->_db->prefix('xhelp_mailevent'), $this->_db->prefix('xhelp_department_mailbox'));
         }
 
-        if(isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
-            $sql .= ' ' .$criteria->renderWhere();
-            if($criteria->getSort() != '') {
+        if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
+            $sql .= ' ' . $criteria->renderWhere();
+            if ($criteria->getSort() != '') {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . '
-                    ' .$criteria->getOrder();
+                    ' . $criteria->getOrder();
             }
         }
 
@@ -111,13 +132,13 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
      * @param  object $criteria  {@link CriteriaElement} conditions to be met
      * @param  bool   $id_as_key Should the MailEvent ID be used as array key
      * @return array  array of {@link xhelpMailEvent} objects
-     * @access	public
+     * @access  public
      */
-    function &getObjectsJoin($criteria = null, $id_as_key = false)
+    public function &getObjectsJoin($criteria = null, $id_as_key = false)
     {
-        $ret    = array();
-        $limit  = $start = 0;
-        $sql    = $this->_selectQuery($criteria, true);
+        $ret   = [];
+        $limit = $start = 0;
+        $sql   = $this->_selectQuery($criteria, true);
         if (isset($criteria)) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
@@ -133,9 +154,9 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
         while ($myrow = $this->_db->fetchArray($result)) {
             $obj = new $this->classname($myrow);
             if (!$id_as_key) {
-                $ret[] =& $obj;
+                $ret[] = $obj;
             } else {
-                $ret[$obj->getVar('id')] =& $obj;
+                $ret[$obj->getVar('id')] = $obj;
             }
             unset($obj);
         }
@@ -143,55 +164,67 @@ class xhelpMailEventHandler extends xhelpBaseObjectHandler {
         return $ret;
     }
 
-    function newEvent($mbox_id, $desc, $class)
+    /**
+     * @param $mbox_id
+     * @param $desc
+     * @param $class
+     * @return bool
+     */
+    public function newEvent($mbox_id, $desc, $class)
     {
-        $event =& $this->create();
+        $event = $this->create();
         $event->setVar('mbox_id', $mbox_id);
         $event->setVar('event_desc', $desc);
         $event->setVar('event_class', $class);
         $event->setVar('posted', time());
 
-        if(!$this->insert($event, true)){
+        if (!$this->insert($event, true)) {
             return false;
         }
 
         return true;
     }
 
-    function _insertQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("INSERT INTO %s (id, mbox_id, event_desc, event_class, posted) VALUES (%u, %u, %s, %u, %u)",
-        $this->_db->prefix($this->_dbtable), $id, $mbox_id, $this->_db->quoteString($event_desc),
-        $event_class, $posted);
+        $sql = sprintf('INSERT INTO %s (id, mbox_id, event_desc, event_class, posted) VALUES (%u, %u, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $mbox_id, $this->_db->quoteString($event_desc), $event_class, $posted);
 
         return $sql;
-
     }
 
-    function _updateQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("UPDATE %s SET mbox_id = %u, event_desc = %s, event_class = %u, posted = %u WHERE id = %u",
-        $this->_db->prefix($this->_dbtable), $mbox_id, $this->_db->quoteString($event_desc), $event_class,
-        $posted, $id);
+        $sql = sprintf('UPDATE %s SET mbox_id = %u, event_desc = %s, event_class = %u, posted = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $mbox_id, $this->_db->quoteString($event_desc), $event_class, $posted, $id);
 
         return $sql;
     }
 
-    function _deleteQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _deleteQuery($obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
-
 }

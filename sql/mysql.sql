@@ -2,7 +2,7 @@
 # version 2.5.6-rc1
 # http://www.phpmyadmin.net
 #
-# $Id: mysql.sql,v 1.62 2005/11/23 20:01:51 ackbarr Exp $
+# 
 
 # --------------------------------------------------------
 
@@ -11,34 +11,36 @@
 #
 
 CREATE TABLE xhelp_departments (
-    id int(11) NOT NULL auto_increment,
-    department varchar(35) NOT NULL default '',
-    PRIMARY KEY (id),
-    KEY department (department)
-) ENGINE=MyISAM;
+  id         INT(11)     NOT NULL AUTO_INCREMENT,
+  department VARCHAR(35) NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  KEY department (department)
+)
+  ENGINE = MyISAM;
 
 #
 # Structure for the `xhelp_department_mailbox` table :
 #
 
 CREATE TABLE xhelp_department_mailbox (
-  id int(11) NOT NULL auto_increment,
-  departmentid int(11) default NULL,
-  emailaddress varchar(255) default NULL,
-  server varchar(50) default NULL,
-  serverport int(11) default NULL,
-  username varchar(50) default NULL,
-  password varchar(50) default NULL,
-  priority tinyint(4) default NULL,
-  mboxtype int(11) NOT NULL default 1,
-  active int(11) NOT NULL default 1,
-  PRIMARY KEY  (`id`),
+  id           INT(11) NOT NULL AUTO_INCREMENT,
+  departmentid INT(11)          DEFAULT NULL,
+  emailaddress VARCHAR(255)     DEFAULT NULL,
+  server       VARCHAR(50)      DEFAULT NULL,
+  serverport   INT(11)          DEFAULT NULL,
+  username     VARCHAR(50)      DEFAULT NULL,
+  password     VARCHAR(50)      DEFAULT NULL,
+  priority     TINYINT(4)       DEFAULT NULL,
+  mboxtype     INT(11) NOT NULL DEFAULT 1,
+  active       INT(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `departmentid` (`departmentid`),
   KEY `emailaddress` (`emailaddress`),
   KEY `mboxtype` (`mboxtype`),
   KEY `active` (`active`)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -47,13 +49,14 @@ CREATE TABLE xhelp_department_mailbox (
 #
 
 CREATE TABLE xhelp_files (
-    id int(11) NOT NULL auto_increment,
-    filename varchar(255) NOT NULL default '',
-    ticketid int(11) NOT NULL default '0',
-    responseid int(11) NOT NULL default '0',
-    mimetype varchar(255) NOT NULL default '',
-    PRIMARY KEY (id)
-) ENGINE=MyISAM;
+  id         INT(11)      NOT NULL AUTO_INCREMENT,
+  filename   VARCHAR(255) NOT NULL DEFAULT '',
+  ticketid   INT(11)      NOT NULL DEFAULT '0',
+  responseid INT(11)      NOT NULL DEFAULT '0',
+  mimetype   VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -62,13 +65,14 @@ CREATE TABLE xhelp_files (
 #
 
 CREATE TABLE xhelp_logmessages (
-    id int(11) NOT NULL auto_increment,
-    uid int(11) NOT NULL default '0',
-    ticketid int(11) NOT NULL default '0',
-    lastUpdated int(11) NOT NULL default '0',
-    action varchar(255) NOT NULL default '',
-    PRIMARY KEY (id)
-) ENGINE=MyISAM;
+  id          INT(11)      NOT NULL AUTO_INCREMENT,
+  uid         INT(11)      NOT NULL DEFAULT '0',
+  ticketid    INT(11)      NOT NULL DEFAULT '0',
+  lastUpdated INT(11)      NOT NULL DEFAULT '0',
+  action      VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -77,13 +81,14 @@ CREATE TABLE xhelp_logmessages (
 #
 
 CREATE TABLE xhelp_mailevent (
-  id int(11) NOT NULL auto_increment,
-  mbox_id int(11) NOT NULL default '0',
-  event_desc text,
-  event_class int(11) NOT NULL default '0',
-  posted int(11) NOT NULL default '0',
-  PRIMARY KEY(id)
-) ENGINE=MyISAM;
+  id          INT(11) NOT NULL AUTO_INCREMENT,
+  mbox_id     INT(11) NOT NULL DEFAULT '0',
+  event_desc  TEXT,
+  event_class INT(11) NOT NULL DEFAULT '0',
+  posted      INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -92,14 +97,15 @@ CREATE TABLE xhelp_mailevent (
 #
 
 CREATE TABLE xhelp_mimetypes (
-  mime_id int(11) NOT NULL auto_increment,
-  mime_ext varchar(60) NOT NULL default '',
-  mime_types text NOT NULL,
-  mime_name varchar(255) NOT NULL default '',
-  mime_admin int(1) NOT NULL default '1',
-  mime_user int(1) NOT NULL default '0',
+  mime_id    INT(11)      NOT NULL AUTO_INCREMENT,
+  mime_ext   VARCHAR(60)  NOT NULL DEFAULT '',
+  mime_types TEXT         NOT NULL,
+  mime_name  VARCHAR(255) NOT NULL DEFAULT '',
+  mime_admin INT(1)       NOT NULL DEFAULT '1',
+  mime_user  INT(1)       NOT NULL DEFAULT '0',
   KEY mime_id (mime_id)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -115,7 +121,8 @@ INSERT INTO xhelp_mimetypes VALUES (5, 'dll', 'application/octet-stream', 'Dynam
 INSERT INTO xhelp_mimetypes VALUES (6, 'hqx', 'application/binhex application/mac-binhex application/mac-binhex40', 'Macintosh BinHex 4 Compressed Archive', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (7, 'cpt', 'application/mac-compactpro application/compact_pro', 'Compact Pro Archive', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (8, 'lha', 'application/lha application/x-lha application/octet-stream application/x-compress application/x-compressed application/maclha', 'Compressed Archive File', 0, 0);
-INSERT INTO xhelp_mimetypes VALUES (9, 'lzh', 'application/lzh application/x-lzh application/x-lha application/x-compress application/x-compressed application/x-lzh-archive zz-application/zz-winassoc-lzh application/maclha application/octet-stream', 'Compressed Archive File', 0, 0);
+INSERT INTO xhelp_mimetypes VALUES
+  (9, 'lzh', 'application/lzh application/x-lzh application/x-lha application/x-compress application/x-compressed application/x-lzh-archive zz-application/zz-winassoc-lzh application/maclha application/octet-stream', 'Compressed Archive File', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (10, 'sh', 'application/x-shar', 'UNIX shar Archive File', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (11, 'shar', 'application/x-shar', 'UNIX shar Archive File', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (12, 'tar', 'application/tar application/x-tar applicaton/x-gtar multipart/x-tar application/x-compress application/x-compressed', 'Tape Archive File', 0, 0);
@@ -182,7 +189,9 @@ INSERT INTO xhelp_mimetypes VALUES (72, 'ra', 'audio/vnd.rn-realaudio audio/x-pn
 INSERT INTO xhelp_mimetypes VALUES (73, 'wav', 'audio/wav audio/x-wav audio/wave audio/x-pn-wav', 'Waveform Audio', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (74, 'wax', ' audio/x-ms-wax', 'Windows Media Audio Redirector', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (75, 'wma', 'audio/x-ms-wma video/x-ms-asf', 'Windows Media Audio File', 0, 0);
-INSERT INTO xhelp_mimetypes VALUES (76, 'bmp', 'image/bmp image/x-bmp image/x-bitmap image/x-xbitmap image/x-win-bitmap image/x-windows-bmp image/ms-bmp image/x-ms-bmp application/bmp application/x-bmp application/x-win-bitmap application/preview', 'Windows OS/2 Bitmap Graphics', 1, 1);
+INSERT INTO xhelp_mimetypes VALUES
+  (76, 'bmp', 'image/bmp image/x-bmp image/x-bitmap image/x-xbitmap image/x-win-bitmap image/x-windows-bmp image/ms-bmp image/x-ms-bmp application/bmp application/x-bmp application/x-win-bitmap application/preview', 'Windows OS/2 Bitmap Graphics', 1,
+   1);
 INSERT INTO xhelp_mimetypes VALUES (77, 'gif', 'image/gif image/x-xbitmap image/gi_', 'Graphic Interchange Format', 1, 1);
 INSERT INTO xhelp_mimetypes VALUES (78, 'ief', 'image/ief', 'Image File - Bitmap graphics', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (79, 'jpeg', 'image/jpeg image/jpg image/jpe_ image/pjpeg image/vnd.swiftview-jpeg', 'JPEG/JIFF Image', 1, 1);
@@ -223,7 +232,8 @@ INSERT INTO xhelp_mimetypes VALUES (113, 'mov', 'video/quicktime video/x-quickti
 INSERT INTO xhelp_mimetypes VALUES (114, 'avi', 'video/avi video/msvideo video/x-msvideo image/avi video/xmpg2 application/x-troff-msvideo audio/aiff audio/avi', 'Audio Video Interleave File', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (115, 'movie', 'video/sgi-movie video/x-sgi-movie', 'QuickTime Movie', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (116, 'asf', 'audio/asf application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx', 'Advanced Streaming Format', 0, 0);
-INSERT INTO xhelp_mimetypes VALUES (117, 'asx', 'video/asx application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx video/x-la-asf', 'Advanced Stream Redirector File', 0, 0);
+INSERT INTO xhelp_mimetypes
+VALUES (117, 'asx', 'video/asx application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx video/x-la-asf', 'Advanced Stream Redirector File', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (118, 'wmv', 'video/x-ms-wmv', 'Windows Media File', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (119, 'wvx', 'video/x-ms-wvx', 'Windows Media Redirector', 0, 0);
 INSERT INTO xhelp_mimetypes VALUES (120, 'wm', 'video/x-ms-wm', 'Windows Media A/V File', 0, 0);
@@ -238,18 +248,19 @@ INSERT INTO xhelp_mimetypes VALUES (123, 'rar', 'application/octet-stream', 'Win
 #
 
 CREATE TABLE xhelp_responses (
-  id int(11) NOT NULL auto_increment,
-  uid int(11) NOT NULL default '0',
-  ticketid int(11) NOT NULL default '0',
-  message mediumtext NOT NULL,
-  timeSpent int(11) NOT NULL default '0',
-  updateTime int(11) NOT NULL default '0',
-  userIP varchar(255) NOT NULL default '',
-  private int(11) NOT NULL default '0',
-  PRIMARY KEY  (id),
-  KEY ticketid (ticketid,uid),
+  id         INT(11)      NOT NULL AUTO_INCREMENT,
+  uid        INT(11)      NOT NULL DEFAULT '0',
+  ticketid   INT(11)      NOT NULL DEFAULT '0',
+  message    MEDIUMTEXT   NOT NULL,
+  timeSpent  INT(11)      NOT NULL DEFAULT '0',
+  updateTime INT(11)      NOT NULL DEFAULT '0',
+  userIP     VARCHAR(255) NOT NULL DEFAULT '',
+  private    INT(11)      NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  KEY ticketid (ticketid, uid),
   KEY updateTime (updateTime)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -258,12 +269,13 @@ CREATE TABLE xhelp_responses (
 #
 
 CREATE TABLE xhelp_responsetemplates (
-    id int(11) NOT NULL auto_increment,
-    uid int(11) NOT NULL default '0',
-    name varchar(255) NOT NULL default '',
-    response mediumtext NOT NULL,
-    PRIMARY KEY (id)
-) ENGINE=MyISAM;
+  id       INT(11)      NOT NULL AUTO_INCREMENT,
+  uid      INT(11)      NOT NULL DEFAULT '0',
+  name     VARCHAR(255) NOT NULL DEFAULT '',
+  response MEDIUMTEXT   NOT NULL,
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -272,21 +284,22 @@ CREATE TABLE xhelp_responsetemplates (
 #
 
 CREATE TABLE xhelp_staff (
-    id int(11) NOT NULL auto_increment,
-    uid int(11) NOT NULL default '0',
-    email varchar(255) NOT NULL default '',
-    responseTime int(11) NOT NULL default '0',
-    numReviews int(11) NOT NULL default '0',
-    callsClosed int(11) NOT NULL default '0',
-    attachSig int(11) NOT NULL default '0',
-    rating int(11) NOT NULL default '0',
-    allDepartments int(11) NOT NULL default '0',
-    ticketsResponded int(11) NOT NULL default '0',
-    notify int(11) NOT NULL default '0',
-    permTimestamp int(11) NOT NULL default '0',
-    PRIMARY KEY (id),
-    KEY uid (uid)
-) ENGINE=MyISAM;
+  id               INT(11)      NOT NULL AUTO_INCREMENT,
+  uid              INT(11)      NOT NULL DEFAULT '0',
+  email            VARCHAR(255) NOT NULL DEFAULT '',
+  responseTime     INT(11)      NOT NULL DEFAULT '0',
+  numReviews       INT(11)      NOT NULL DEFAULT '0',
+  callsClosed      INT(11)      NOT NULL DEFAULT '0',
+  attachSig        INT(11)      NOT NULL DEFAULT '0',
+  rating           INT(11)      NOT NULL DEFAULT '0',
+  allDepartments   INT(11)      NOT NULL DEFAULT '0',
+  ticketsResponded INT(11)      NOT NULL DEFAULT '0',
+  notify           INT(11)      NOT NULL DEFAULT '0',
+  permTimestamp    INT(11)      NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  KEY uid (uid)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -295,12 +308,13 @@ CREATE TABLE xhelp_staff (
 #
 
 CREATE TABLE xhelp_jstaffdept (
-    id int(11) NOT NULL auto_increment,
-    uid int(11) NOT NULL default '0',
-    department int(11) NOT NULL default '0',
-    PRIMARY KEY (id),
-    KEY uid (uid, department)
-) ENGINE=MyISAM;
+  id         INT(11) NOT NULL AUTO_INCREMENT,
+  uid        INT(11) NOT NULL DEFAULT '0',
+  department INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  KEY uid (uid, department)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -309,16 +323,17 @@ CREATE TABLE xhelp_jstaffdept (
 #
 
 CREATE TABLE xhelp_staffreview (
-    id int(11) NOT NULL auto_increment,
-    staffid int(11) NOT NULL default '0',
-    rating int(11) NOT NULL default '0',
-    ticketid int(11) NOT NULL default '0',
-    responseid int(11) NOT NULL default '0',
-    comments mediumtext,
-    submittedBy int(11) NOT NULL default '0',
-    userIP varchar(255) NOT NULL default '',
-    PRIMARY KEY (id)
-) ENGINE=MyISAM;
+  id          INT(11)      NOT NULL AUTO_INCREMENT,
+  staffid     INT(11)      NOT NULL DEFAULT '0',
+  rating      INT(11)      NOT NULL DEFAULT '0',
+  ticketid    INT(11)      NOT NULL DEFAULT '0',
+  responseid  INT(11)      NOT NULL DEFAULT '0',
+  comments    MEDIUMTEXT,
+  submittedBy INT(11)      NOT NULL DEFAULT '0',
+  userIP      VARCHAR(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -327,28 +342,29 @@ CREATE TABLE xhelp_staffreview (
 #
 
 CREATE TABLE xhelp_tickets (
-  id int(11) NOT NULL auto_increment,
-  uid int(11) NOT NULL default '0',
-  subject varchar(255) NOT NULL default '',
-  description mediumtext,
-  department int(11) NOT NULL default '0',
-  priority int(11) NOT NULL default '0',
-  status int(11) NOT NULL default '1',
-  posted int(11) NOT NULL default '0',
-  lastUpdated int(11) NOT NULL default '0',
-  ownership int(11) NOT NULL default '0',
-  closedBy int(11) NOT NULL default '0',
-  totalTimeSpent int(11) NOT NULL default '0',
-  userIP varchar(25) NOT NULL default '',
-  serverid int(11) default NULL,
-  emailHash varchar(100) default NULL,
-  email varchar(100) default NULL,
-  overdueTime int(11) NOT NULL default '0',
-  PRIMARY KEY  (id),
+  id             INT(11)      NOT NULL AUTO_INCREMENT,
+  uid            INT(11)      NOT NULL DEFAULT '0',
+  subject        VARCHAR(255) NOT NULL DEFAULT '',
+  description    MEDIUMTEXT,
+  department     INT(11)      NOT NULL DEFAULT '0',
+  priority       INT(11)      NOT NULL DEFAULT '0',
+  status         INT(11)      NOT NULL DEFAULT '1',
+  posted         INT(11)      NOT NULL DEFAULT '0',
+  lastUpdated    INT(11)      NOT NULL DEFAULT '0',
+  ownership      INT(11)      NOT NULL DEFAULT '0',
+  closedBy       INT(11)      NOT NULL DEFAULT '0',
+  totalTimeSpent INT(11)      NOT NULL DEFAULT '0',
+  userIP         VARCHAR(25)  NOT NULL DEFAULT '',
+  serverid       INT(11)               DEFAULT NULL,
+  emailHash      VARCHAR(100)          DEFAULT NULL,
+  email          VARCHAR(100)          DEFAULT NULL,
+  overdueTime    INT(11)      NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
   KEY subject (subject),
   KEY emailHash (emailHash),
   KEY status(status)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -357,10 +373,11 @@ CREATE TABLE xhelp_tickets (
 #
 
 CREATE TABLE xhelp_meta (
-  metakey varchar(50) NOT NULL default '',
-  metavalue varchar(255) NOT NULL default '',
+  metakey   VARCHAR(50)  NOT NULL DEFAULT '',
+  metavalue VARCHAR(255) NOT NULL DEFAULT '',
   PRIMARY KEY (metakey)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 INSERT INTO xhelp_meta VALUES ('version', '0.78');
 
@@ -371,12 +388,13 @@ INSERT INTO xhelp_meta VALUES ('version', '0.78');
 #
 
 CREATE TABLE xhelp_roles (
-  id int(11) NOT NULL auto_increment,
-  name varchar(35) NOT NULL default '',
-  description mediumtext,
-  tasks int(11) NOT NULL default '0',
-  PRIMARY KEY(id)
-) ENGINE=MyISAM;
+  id          INT(11)     NOT NULL AUTO_INCREMENT,
+  name        VARCHAR(35) NOT NULL DEFAULT '',
+  description MEDIUMTEXT,
+  tasks       INT(11)     NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -385,11 +403,12 @@ CREATE TABLE xhelp_roles (
 #
 
 CREATE TABLE xhelp_staffroles (
-  uid int(11) NOT NULL default '0',
-  roleid int(11) NOT NULL default '0',
-  deptid int(11) NOT NULL default '0',
-  PRIMARY KEY(uid, roleid, deptid)
-) ENGINE=MyISAM;
+  uid    INT(11) NOT NULL DEFAULT '0',
+  roleid INT(11) NOT NULL DEFAULT '0',
+  deptid INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (uid, roleid, deptid)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -398,12 +417,13 @@ CREATE TABLE xhelp_staffroles (
 #
 
 CREATE TABLE xhelp_ticket_submit_emails (
-  ticketid int(11) NOT NULL default '0',
-  uid int(11) NOT NULL default '0',
-  email varchar(100) NOT NULL default '',
-  suppress int(11) NOT NULL default '0',
-  PRIMARY KEY(ticketid, email)
-) ENGINE=MyISAM;
+  ticketid INT(11)      NOT NULL DEFAULT '0',
+  uid      INT(11)      NOT NULL DEFAULT '0',
+  email    VARCHAR(100) NOT NULL DEFAULT '',
+  suppress INT(11)      NOT NULL DEFAULT '0',
+  PRIMARY KEY (ticketid, email)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -412,14 +432,15 @@ CREATE TABLE xhelp_ticket_submit_emails (
 #
 
 CREATE TABLE xhelp_saved_searches (
-  id int(11) NOT NULL auto_increment,
-  uid int(11) NOT NULL default '0',
-  name varchar(50) NOT NULL default '',
-  search mediumtext NOT NULL,
-  pagenav_vars mediumtext NOT NULL,
-  hasCustFields int(11) NOT NULL default '0',
-  PRIMARY KEY(id)
-) ENGINE=MyISAM;
+  id            INT(11)     NOT NULL AUTO_INCREMENT,
+  uid           INT(11)     NOT NULL DEFAULT '0',
+  name          VARCHAR(50) NOT NULL DEFAULT '',
+  search        MEDIUMTEXT  NOT NULL,
+  pagenav_vars  MEDIUMTEXT  NOT NULL,
+  hasCustFields INT(11)     NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -428,12 +449,13 @@ CREATE TABLE xhelp_saved_searches (
 #
 
 CREATE TABLE xhelp_status (
-  id int(11) NOT NULL auto_increment,
-  state int(11) NOT NULL default '0',
-  description varchar(50) NOT NULL default '',
-  PRIMARY KEY(id),
+  id          INT(11)     NOT NULL AUTO_INCREMENT,
+  state       INT(11)     NOT NULL DEFAULT '0',
+  description VARCHAR(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
   KEY state (state)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -442,10 +464,11 @@ CREATE TABLE xhelp_status (
 #
 
 CREATE TABLE xhelp_ticket_field_departments (
-  fieldid int(11) NOT NULL default '0',
-  deptid int(11) NOT NULL default '0',
-  PRIMARY KEY  (fieldid,deptid)
-) ENGINE=MyISAM;
+  fieldid INT(11) NOT NULL DEFAULT '0',
+  deptid  INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (fieldid, deptid)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -454,21 +477,22 @@ CREATE TABLE xhelp_ticket_field_departments (
 #
 
 CREATE TABLE xhelp_ticket_fields (
-  id int(11) NOT NULL auto_increment,
-  name varchar(64) NOT NULL default '',
-  description tinytext NOT NULL,
-  fieldname varchar(64) NOT NULL default '',
-  controltype int(11) NOT NULL default '0',
-  datatype varchar(64) NOT NULL default '',
-  required tinyint(1) NOT NULL default '0',
-  fieldlength int(11) NOT NULL default '0',
-  weight int(11) NOT NULL default '0',
-  fieldvalues mediumtext NOT NULL,
-  defaultvalue varchar(100) NOT NULL default '',
-  validation mediumtext NOT NULL,
-  PRIMARY KEY  (id),
+  id           INT(11)      NOT NULL AUTO_INCREMENT,
+  name         VARCHAR(64)  NOT NULL DEFAULT '',
+  description  TINYTEXT     NOT NULL,
+  fieldname    VARCHAR(64)  NOT NULL DEFAULT '',
+  controltype  INT(11)      NOT NULL DEFAULT '0',
+  datatype     VARCHAR(64)  NOT NULL DEFAULT '',
+  required     TINYINT(1)   NOT NULL DEFAULT '0',
+  fieldlength  INT(11)      NOT NULL DEFAULT '0',
+  weight       INT(11)      NOT NULL DEFAULT '0',
+  fieldvalues  MEDIUMTEXT   NOT NULL,
+  defaultvalue VARCHAR(100) NOT NULL DEFAULT '',
+  validation   MEDIUMTEXT   NOT NULL,
+  PRIMARY KEY (id),
   KEY weight (weight)
-) ENGINE=MyISAM; 
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -477,9 +501,10 @@ CREATE TABLE xhelp_ticket_fields (
 #
 
 CREATE TABLE xhelp_ticket_values (
-  ticketid int(11) NOT NULL default '0',
-  PRIMARY KEY  (ticketid)
-) ENGINE=MyISAM; 
+  ticketid INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (ticketid)
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -488,12 +513,13 @@ CREATE TABLE xhelp_ticket_values (
 #
 
 CREATE TABLE xhelp_notifications (
-  notif_id int(11) NOT NULL default '0',
-  staff_setting int(11) NOT NULL default '0',
-  user_setting int(11) NOT NULL default '0',
-  staff_options mediumtext NOT NULL,
+  notif_id      INT(11)    NOT NULL DEFAULT '0',
+  staff_setting INT(11)    NOT NULL DEFAULT '0',
+  user_setting  INT(11)    NOT NULL DEFAULT '0',
+  staff_options MEDIUMTEXT NOT NULL,
   PRIMARY KEY (notif_id)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -502,13 +528,14 @@ CREATE TABLE xhelp_notifications (
 #
 
 CREATE TABLE xhelp_ticket_lists (
-  id int(11) NOT NULL auto_increment,
-  uid int(11) NOT NULL default '0',
-  searchid int(11) NOT NULL default '0',
-  weight int(11) NOT NULL default '0',
+  id       INT(11) NOT NULL AUTO_INCREMENT,
+  uid      INT(11) NOT NULL DEFAULT '0',
+  searchid INT(11) NOT NULL DEFAULT '0',
+  weight   INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   KEY ticketList (uid, searchid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 # --------------------------------------------------------
 
 #
@@ -516,11 +543,12 @@ CREATE TABLE xhelp_ticket_lists (
 #
 
 CREATE TABLE xhelp_bayes_categories (
-  category_id varchar(250) NOT NULL default '',
-  probability double NOT NULL default '0',
-  word_count bigint(20) NOT NULL default '0',
-  PRIMARY KEY  (category_id)
-) ENGINE=MyISAM;
+  category_id VARCHAR(250) NOT NULL DEFAULT '',
+  probability DOUBLE       NOT NULL DEFAULT '0',
+  word_count  BIGINT(20)   NOT NULL DEFAULT '0',
+  PRIMARY KEY (category_id)
+)
+  ENGINE = MyISAM;
 # --------------------------------------------------------
 
 
@@ -529,11 +557,12 @@ CREATE TABLE xhelp_bayes_categories (
 #
 
 CREATE TABLE xhelp_bayes_wordfreqs (
-  word varchar(50) NOT NULL default '',
-  category_id varchar(250) NOT NULL default '',
-  count bigint(20) NOT NULL default '0',
-  PRIMARY KEY  (word,category_id)
-) ENGINE=MyISAM;
+  word        VARCHAR(50)  NOT NULL DEFAULT '',
+  category_id VARCHAR(250) NOT NULL DEFAULT '',
+  count       BIGINT(20)   NOT NULL DEFAULT '0',
+  PRIMARY KEY (word, category_id)
+)
+  ENGINE = MyISAM;
 # --------------------------------------------------------
 
 #
@@ -541,14 +570,15 @@ CREATE TABLE xhelp_bayes_wordfreqs (
 #
 
 CREATE TABLE xhelp_ticket_solutions (
-    id int(11) NOT NULL auto_increment,
-    ticketid int(11) NOT NULL,
-    url TEXT,
-    title varchar(255) NOT NULL,
-    description TEXT,
-    uid int(11) NOT NULL,
-    posted int(11) NOT NULL,
-    PRIMARY KEY (id),
-    KEY ticketid (ticketid),
-    KEY uid (uid)
-) ENGINE=MyISAM;
+  id          INT(11)      NOT NULL AUTO_INCREMENT,
+  ticketid    INT(11)      NOT NULL,
+  url         TEXT,
+  title       VARCHAR(255) NOT NULL,
+  description TEXT,
+  uid         INT(11)      NOT NULL,
+  posted      INT(11)      NOT NULL,
+  PRIMARY KEY (id),
+  KEY ticketid (ticketid),
+  KEY uid (uid)
+)
+  ENGINE = MyISAM;

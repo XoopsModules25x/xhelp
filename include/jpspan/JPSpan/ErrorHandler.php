@@ -2,9 +2,8 @@
 /**
  * Include this file to have PHP errors displayed as Javascript exceptions
  * the client can interpret
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage ErrorHandler
- * @version $Id: ErrorHandler.php,v 1.2 2005/10/11 18:42:57 ackbarr Exp $
  */
 //-----------------------------------------------------------------------------
 
@@ -15,8 +14,8 @@
  * "Server unable to respond" message. Applies to both
  * errors and un-caught exceptions
  */
-if ( !defined('JPSPAN_ERROR_MESSAGES') ) {
-    define('JPSPAN_ERROR_MESSAGES',TRUE);
+if (!defined('JPSPAN_ERROR_MESSAGES')) {
+    define('JPSPAN_ERROR_MESSAGES', true);
 }
 
 /**
@@ -24,22 +23,22 @@ if ( !defined('JPSPAN_ERROR_MESSAGES') ) {
  * the PHP filename and line number where the error / exception occurred
  * By default this is switched off as it represents a potential security leak
  */
-if ( !defined('JPSPAN_ERROR_DEBUG') ) {
-    define('JPSPAN_ERROR_DEBUG',FALSE);
+if (!defined('JPSPAN_ERROR_DEBUG')) {
+    define('JPSPAN_ERROR_DEBUG', false);
 }
 
 /**
  * Ignore PHP5 strict error messages
  */
-if ( !defined('JPSPAN_IGNORE_STRICT') ) {
-    define('JPSPAN_IGNORE_STRICT',TRUE);
+if (!defined('JPSPAN_IGNORE_STRICT')) {
+    define('JPSPAN_IGNORE_STRICT', true);
 }
 
 /**
  * Define E_STICT if it's PHP4
  */
-if ( !defined('E_STRICT') ) {
-    define('E_STRICT',2048);
+if (!defined('E_STRICT')) {
+    define('E_STRICT', 2048);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,20 +47,25 @@ if ( !defined('E_STRICT') ) {
  * Custom PHP error handler which generates Javascript exceptions
  * Called automatically by PHP on all errors except fatal errors
  * @see http://www.webkreator.com/php/configuration/handling-fatal-and-parse-errors.html
+ * @param $level
+ * @param $message
+ * @param $file
+ * @param $line
  */
-function JPSpan_ErrorHandler($level, $message, $file, $line) {
-    $name = 'Server_Error';
+function JPSpan_ErrorHandler($level, $message, $file, $line)
+{
+    $name    = 'Server_Error';
     $message = strip_tags($message);
     $message = wordwrap($message, 60, '\n', 1);
-    $file = addcslashes($file,"\000\042\047\134");
+    $file    = addcslashes($file, "\000\042\047\134");
 
     $replevel = error_reporting();
-    if( ( $level & $replevel ) != $level ) {
+    if (($level & $replevel) != $level) {
         // ignore error
         return;
     }
 
-    switch ( $level ) {
+    switch ($level) {
         case E_USER_NOTICE:
             $code = 2001;
             break;
@@ -72,12 +76,12 @@ function JPSpan_ErrorHandler($level, $message, $file, $line) {
             $code = 2003;
             break;
         case E_STRICT:
-            if ( JPSPAN_IGNORE_STRICT ) {
+            if (JPSPAN_IGNORE_STRICT) {
                 return;
             }
             $code = 2004;
         default:
-            if ( !JPSPAN_ERROR_MESSAGES ) {
+            if (!JPSPAN_ERROR_MESSAGES) {
                 $message = 'Server unable to respond';
             }
             $code = 2000;
@@ -85,23 +89,22 @@ function JPSpan_ErrorHandler($level, $message, $file, $line) {
     }
 
     $error = "var e = new Error('$message');e.name = '$name';e.code = '$code';";
-    if ( JPSPAN_ERROR_DEBUG ) {
+    if (JPSPAN_ERROR_DEBUG) {
         $error .= "e.file = '$file';e.line = '$line';";
     }
-    $error .= "throw e;";
-    echo 'new Function("'.addcslashes($error,"\000\042\047\134").'");';
+    $error .= 'throw e;';
+    echo 'new Function("' . addcslashes($error, "\000\042\047\134") . '");';
 
-    if ( !defined('JPSPAN') ) {
-        define('JPSPAN',dirname(__FILE__).'/');
+    if (!defined('JPSPAN')) {
+        define('JPSPAN', __DIR__ . '/');
     }
     require_once JPSPAN . 'Monitor.php';
-    $M = & JPSpan_Monitor::instance();
+    $M = &JPSpan_Monitor::instance();
     $M->announceError($name, $code, $message, $file, $line);
 
     // Must exit on any error in case of multiple errors
     // causing Javascript syntax errors
     exit();
-
 }
 
 /**
@@ -113,13 +116,14 @@ set_error_handler('JPSpan_ErrorHandler');
 /**
  * Custom PHP exception handler which generates Javascript exceptions
  * @todo i18n error messages
+ * @param $exception
  */
-function JPSpan_ExceptionHandler($exception) {
-
+function JPSpan_ExceptionHandler($exception)
+{
     $name = 'Server_Error';
-    $file = addcslashes($exception->getFile(),"\000\042\047\134");
+    $file = addcslashes($exception->getFile(), "\000\042\047\134");
 
-    if ( !JPSPAN_ERROR_MESSAGES ) {
+    if (!JPSPAN_ERROR_MESSAGES) {
         $message = 'Server unable to respond';
     } else {
         $message = strip_tags($exception->getMessage());
@@ -129,27 +133,26 @@ function JPSpan_ExceptionHandler($exception) {
     $code = 2005;
 
     $error = "var e = new Error('$message');e.name = '$name';e.code = '$code';";
-    if ( JPSPAN_ERROR_DEBUG ) {
-        $error .= "e.file = '$file';e.line = '".$exception->getLine()."';";
+    if (JPSPAN_ERROR_DEBUG) {
+        $error .= "e.file = '$file';e.line = '" . $exception->getLine() . "';";
     }
-    $error .= "throw e;";
-    echo 'new Function("'.addcslashes($error,"\000\042\047\134").'");';
+    $error .= 'throw e;';
+    echo 'new Function("' . addcslashes($error, "\000\042\047\134") . '");';
 
-    if ( !defined('JPSPAN') ) {
-        define('JPSPAN',dirname(__FILE__).'/');
+    if (!defined('JPSPAN')) {
+        define('JPSPAN', __DIR__ . '/');
     }
     require_once JPSPAN . 'Monitor.php';
-    $M = & JPSpan_Monitor::instance();
+    $M = &JPSpan_Monitor::instance();
     $M->announceError($name, $code, $message, $file, $exception->getLine());
 
     exit();
-
 }
 
 /**
  * Switch the exception handler on for PHP5
  */
-if ( version_compare(phpversion(), '5', '>=') ) {
+if (version_compare(PHP_VERSION, '5', '>=')) {
     // Spot the seg fault...
     set_exception_handler('JPSpan_ExceptionHandler');
 }

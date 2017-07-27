@@ -1,243 +1,262 @@
 <?php
-// $Id: departmentSummary.php,v 1.2 2006/02/06 19:58:21 eric_juden Exp $
+//
 
-include_once(XHELP_JPGRAPH_PATH .'/jpgraph.php');
-include_once(XHELP_JPGRAPH_PATH .'/jpgraph_bar.php');// añado para ver si funciona <====================18/03/2010
-include_once(XHELP_CLASS_PATH .'/report.php');
+require_once XHELP_JPGRAPH_PATH . '/jpgraph.php';
+require_once XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';// aÃ±ado para ver si funciona <====================18/03/2010
+require_once XHELP_CLASS_PATH . '/report.php';
 xhelpIncludeReportLangFile('departmentSummary');
 
 global $xoopsDB, $paramVals;
 
-$startDate = date('m/d/y h:i:s A', mktime(0, 0, 0, date("m")-1, date("d"), date("Y")));
-$endDate = date('m/d/y') ." 12:00:00 AM";
+$startDate = date('m/d/y h:i:s A', mktime(0, 0, 0, date('m') - 1, date('d'), date('Y')));
+$endDate   = date('m/d/y') . ' 12:00:00 AM';
 
-$hDepartments =& xhelpGetHandler('department');
-$crit = new Criteria('', '');
+$hDepartments = xhelpGetHandler('department');
+$crit         = new Criteria('', '');
 $crit->setSort('department');
 $crit->setOrder('ASC');
 $departments = $hDepartments->getObjects($crit, true);
 
-$i = 0;
-$aDepts = array();
+$i            = 0;
+$aDepts       = [];
 $aDepts[-999] = 'All';
-foreach($departments as $id=>$dept){
-    if($i == 0){
+foreach ($departments as $id => $dept) {
+    if ($i == 0) {
         $deptid = $id;
     }
     $aDepts[$id] = $dept->getVar('department');
-    $i++;
+    ++$i;
 }
 
 // Cannot fill date values in class...have to fill these values later
-$paramVals = array('startDate' => ((isset($_REQUEST['startDate']) && $_REQUEST['startDate'] != '') ? $_REQUEST['startDate'] : $startDate),
-                   'endDate' => ((isset($_REQUEST['endDate']) && $_REQUEST['endDate'] != '') ? $_REQUEST['endDate'] : $endDate),
-                   'department' => array($aDepts, (isset($_REQUEST['department'])) ? $_REQUEST['department'] : ''));
+$paramVals = [
+    'startDate'  => (isset($_REQUEST['startDate'])
+                     && $_REQUEST['startDate'] != '') ? $_REQUEST['startDate'] : $startDate,
+    'endDate'    => (isset($_REQUEST['endDate']) && $_REQUEST['endDate'] != '') ? $_REQUEST['endDate'] : $endDate,
+    'department' => [$aDepts, isset($_REQUEST['department']) ? $_REQUEST['department'] : '']
+];
 
-class xhelpDepartmentSummaryReport extends xhelpReport {
-    function xhelpDepartmentSummaryReport()
+/**
+ * Class XHelpDepartmentSummaryReport
+ */
+class XHelpDepartmentSummaryReport extends xhelpReport
+{
+    /**
+     * XHelpDepartmentSummaryReport constructor.
+     */
+    public function __construct()
     {
         $this->initVar('results', XOBJ_DTYPE_ARRAY, null, false);
         $this->initVar('hasResults', XOBJ_DTYPE_INT, 0, false);
         $this->initVar('hasGraph', XOBJ_DTYPE_INT, 1, false);
     }
 
-    var $name = 'departmentSummary';
-    var $meta = array(
-        'name' => _XHELP_DS_NAME,
-        'author' => 'Eric Juden',
+    public $name = 'departmentSummary';
+    public $meta = [
+        'name'        => _XHELP_DS_NAME,
+        'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
         'description' => _XHELP_DS_DESC,
-        'version' => '1.0',
-        'dbFields' => array(
-            'department' => _XHELP_DS_DB1,
-            'totalTimeSpent' => _XHELP_DS_DB2,
-            'resolvedTickets' => _XHELP_DS_DB3,
+        'version'     => '1.0',
+        'dbFields'    => [
+            'department'        => _XHELP_DS_DB1,
+            'totalTimeSpent'    => _XHELP_DS_DB2,
+            'resolvedTickets'   => _XHELP_DS_DB3,
             'unresolvedTickets' => _XHELP_DS_DB4,
-    )
-    );
+        ]
+    ];
 
-    var $parameters = array(
-    _XHELP_DS_PARAM1 => array(
+    public $parameters = [
+        _XHELP_DS_PARAM1 => [
             'controltype' => XHELP_CONTROL_DATETIME,
-            'fieldname' => 'startDate',
-            'value' => '',      // last month
-            'values' => '',
+            'fieldname'   => 'startDate',
+            'value'       => '',      // last month
+            'values'      => '',
             'fieldlength' => 25,
-            'dbfield' => 't.posted',
-            'dbaction' => '>'
-            ),
-            _XHELP_DS_PARAM2 => array (
+            'dbfield'     => 't.posted',
+            'dbaction'    => '>'
+        ],
+        _XHELP_DS_PARAM2 => [
             'controltype' => XHELP_CONTROL_DATETIME,
-            'fieldname' => 'endDate',
-            'value' => '',      // today
-            'values' => '',
+            'fieldname'   => 'endDate',
+            'value'       => '',      // today
+            'values'      => '',
             'fieldlength' => 25,
-            'dbfield' => 't.posted',
-            'dbaction' => '<='
-            ),
-            _XHELP_DS_PARAM3 => array (
+            'dbfield'     => 't.posted',
+            'dbaction'    => '<='
+        ],
+        _XHELP_DS_PARAM3 => [
             'controltype' => XHELP_CONTROL_SELECT,
-            'fieldname' => 'department',
-            'value' => '',
-            'values' => array(),
+            'fieldname'   => 'department',
+            'value'       => '',
+            'values'      => [],
             'fieldlength' => 25,
-            'dbfield' => 'd.id',
-            'dbaction' => 'IN'
-            )
-            );
+            'dbfield'     => 'd.id',
+            'dbaction'    => 'IN'
+        ]
+    ];
 
-            /*
-             function generateReport()
-             {
-             global $paramVals;
+    /*
+     function generateReport()
+     {
+     global $paramVals;
 
-             if($this->getVar('hasResults') == 0){
-             $this->_setResults();
-             }
-             $aResults = $this->getVar('results');
+     if ($this->getVar('hasResults') == 0) {
+     $this->_setResults();
+     }
+     $aResults = $this->getVar('results');
 
-             if(empty($aResults)){       // If no records found
-             $myReport = $this->generateReportNoData();
-             return $myReport;
-             }
+     if (empty($aResults)) {       // If no records found
+     $myReport = $this->generateReportNoData();
 
-             $params = '';
-             foreach($paramVals as $key=>$value){
-             if($key == 'department'){
-             if(isset($_REQUEST['department'])){
-             $params .= "&$key=".$_REQUEST['department'];
-             }
-             } else {
-             $params .= "&$key=$value";
-             }
-             }
+     return $myReport;
+     }
 
-             // Print graph
-             $myReport = '';
-             $myReport .= "<div id='xhelp_graph'>";
-             $myReport .= "<img src='".XHELP_BASE_URL."/report.php?op=graph&name=departmentSummary".$params."' align='center' width='500' height='300' />";
-             $myReport .= "</div>";
+     $params = '';
+     foreach ($paramVals as $key=>$value) {
+     if ($key == 'department') {
+     if (isset($_REQUEST['department'])) {
+     $params .= "&$key=".$_REQUEST['department'];
+     }
+     } else {
+     $params .= "&$key=$value";
+     }
+     }
 
-             // Display report
-             $myReport .= "<br />";
-             $myReport .= "<div id='xhelp_report'>";
-             $myReport .= "<table>";
-             $myReport .= "<tr>";
-             $dbFields = $this->meta['dbFields'];
+     // Print graph
+     $myReport = '';
+     $myReport .= "<div id='xhelp_graph'>";
+     $myReport .= "<img src='".XHELP_BASE_URL."/report.php?op=graph&name=departmentSummary".$params."' align='center' width='500' height='300'>";
+     $myReport .= "</div>";
 
-             foreach($dbFields as $dbField=>$field){
-             $myReport .= "<th>".$field."</th>";
-             }
-             $myReport .= "</tr>";
+     // Display report
+     $myReport .= "<br>";
+     $myReport .= "<div id='xhelp_report'>";
+     $myReport .= "<table>";
+     $myReport .= "<tr>";
+     $dbFields = $this->meta['dbFields'];
 
-             $totalTimeSpent = 0;
-             $totalResolved = 0;
-             $totalUnresolved = 0;
-             foreach($aResults as $result){
-             $myReport .= "<tr class='even'>";
+     foreach ($dbFields as $dbField=>$field) {
+     $myReport .= "<th>".$field."</th>";
+     }
+     $myReport .= "</tr>";
 
-             foreach($dbFields as $dbField=>$field){
-             $myReport .= "<td>". $result[$dbField] ."</td>";
-             if($dbField == 'totalTimeSpent'){
-             $totalTimeSpent += $result[$dbField];
-             } elseif ($dbField == 'resolvedTickets'){
-             $totalResolved += $result[$dbField];
-             } elseif ($dbField == 'unresolvedTickets'){
-             $totalUnresolved += $result[$dbField];
-             }
-             }
-             $myReport .= "</tr>";
-             }
+     $totalTimeSpent = 0;
+     $totalResolved = 0;
+     $totalUnresolved = 0;
+     foreach ($aResults as $result) {
+     $myReport .= "<tr class='even'>";
 
-             // Display total time
-             $myReport .= "<tr class='foot'>
-             <td>"._XHELP_TEXT_TOTAL."</td>
-             <td>". $totalTimeSpent ."</td>
-             <td>". $totalResolved ."</td>
-             <td>". $totalUnresolved ."</td>
-             </tr>";
+     foreach ($dbFields as $dbField=>$field) {
+     $myReport .= "<td>". $result[$dbField] ."</td>";
+     if ($dbField == 'totalTimeSpent') {
+     $totalTimeSpent += $result[$dbField];
+     } elseif ($dbField == 'resolvedTickets') {
+     $totalResolved += $result[$dbField];
+     } elseif ($dbField == 'unresolvedTickets') {
+     $totalUnresolved += $result[$dbField];
+     }
+     }
+     $myReport .= "</tr>";
+     }
 
-             $myReport .= "</table>";
-             $myReport .= "</div>";
+     // Display total time
+     $myReport .= "<tr class='foot'>
+     <td>"._XHELP_TEXT_TOTAL."</td>
+     <td>". $totalTimeSpent ."</td>
+     <td>". $totalResolved ."</td>
+     <td>". $totalUnresolved ."</td>
+     </tr>";
 
-             return $myReport;
-             }
-             */
+     $myReport .= "</table>";
+     $myReport .= "</div>";
 
-            function generateGraph()
-            {
-                if($this->getVar('hasGraph') == 0){
-                    return false;
-                }
+     return $myReport;
+     }
+     */
 
-                if($this->getVar('hasResults') == 0){
-                    $this->_setResults();
-                }
-                $aResults = $this->getVar('results');
+    /**
+     * @return bool
+     */
 
-                $data = array();
-                foreach($aResults as $result){
-                    $data[0][] = $result['department'];
-                    $data[1][] = $result['resolvedTickets'];
-                    $data[2][] = $result['unresolvedTickets'];
-                }
+    public function generateGraph()
+    {
+        if ($this->getVar('hasGraph') == 0) {
+            return false;
+        }
 
-                $this->generateStackedBarGraph($data, 0, XHELP_IMAGE_PATH .'/graph_bg.jpg', array('red', 'green', 'orange'));
+        if ($this->getVar('hasResults') == 0) {
+            $this->_setResults();
+        }
+        $aResults = $this->getVar('results');
 
-            }
+        $data = [];
+        foreach ($aResults as $result) {
+            $data[0][] = $result['department'];
+            $data[1][] = $result['resolvedTickets'];
+            $data[2][] = $result['unresolvedTickets'];
+        }
 
-            function _setResults()
-            {
-                global $xoopsDB;
+        $this->generateStackedBarGraph($data, 0, XHELP_IMAGE_PATH . '/graph_bg.jpg', ['red', 'green', 'orange']);
+    }
 
-                $sSQL = sprintf("SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, COUNT(*) AS resolvedTickets, 0 AS unresolvedTickets, 0 as avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 2 AND (t.department = d.id) %s GROUP BY d.department",
-                $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'),
-                $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
+    /**
+     * @return bool
+     */
+    public function _setResults()
+    {
+        global $xoopsDB;
 
-                $sSQL2 = sprintf("SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, 0 AS resolvedTickets, COUNT(*) AS unresolvedTickets, 0 as avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 1 AND (t.department = d.id) %s GROUP BY d.department",
-                $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'),
-                $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
+        $sSQL = sprintf('SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, COUNT(*) AS resolvedTickets, 0 AS unresolvedTickets, 0 AS avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 2 AND (t.department = d.id) %s GROUP BY d.department',
+                        $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
 
-                $result = $xoopsDB->queryF($sSQL);
-                $result2 = $xoopsDB->queryF($sSQL2);
+        $sSQL2 = sprintf('SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, 0 AS resolvedTickets, COUNT(*) AS unresolvedTickets, 0 AS avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 1 AND (t.department = d.id) %s GROUP BY d.department',
+                         $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
 
-                $aResults = $this->_arrayFromData(array($result, $result2));
+        $result  = $xoopsDB->queryF($sSQL);
+        $result2 = $xoopsDB->queryF($sSQL2);
 
-                $this->setVar('results', serialize($aResults));
-                $this->setVar('hasResults', 1);
+        $aResults = $this->_arrayFromData([$result, $result2]);
 
-                return true;
-            }
+        $this->setVar('results', serialize($aResults));
+        $this->setVar('hasResults', 1);
 
-            function _arrayFromData($dResult)
-            {
-                global $xoopsDB;
+        return true;
+    }
 
-                $aResults = array();
+    /**
+     * @param $dResult
+     * @return array
+     */
+    public function _arrayFromData($dResult)
+    {
+        global $xoopsDB;
 
-                foreach($dResult as $dRes){
-                    if(count($xoopsDB->getRowsNum($dRes) > 0)){      // Has data?
-                        $i = 0;
-                        $dbFields = $this->meta['dbFields'];
-                        while($myrow = $xoopsDB->fetchArray($dRes)){    // Loop through each db record
-                            foreach($dbFields as $key=>$fieldname){     // Loop through each dbfield for report
-                                if(!isset($myrow[$key]) || is_null($myrow[$key])){
-                                    $aResults[$myrow['department']][$key] = 0;
-                                } elseif(is_numeric($myrow[$key])){
-                                    if(isset($aResults[$myrow['department']][$key])){
-                                        $aResults[$myrow['department']][$key] += $myrow[$key];
-                                    } else {
-                                        $aResults[$myrow['department']][$key] = $myrow[$key];
-                                    }
-                                } else {
-                                    $aResults[$myrow['department']][$key] = $myrow[$key];
-                                }
+        $aResults = [];
+
+        foreach ($dResult as $dRes) {
+            if (count($xoopsDB->getRowsNum($dRes) > 0)) {      // Has data?
+                $i        = 0;
+                $dbFields = $this->meta['dbFields'];
+                while ($myrow = $xoopsDB->fetchArray($dRes)) {    // Loop through each db record
+                    foreach ($dbFields as $key => $fieldname) {     // Loop through each dbfield for report
+                        if (!isset($myrow[$key]) || null === $myrow[$key]) {
+                            $aResults[$myrow['department']][$key] = 0;
+                        } elseif (is_numeric($myrow[$key])) {
+                            if (isset($aResults[$myrow['department']][$key])) {
+                                $aResults[$myrow['department']][$key] += $myrow[$key];
+                            } else {
+                                $aResults[$myrow['department']][$key] = $myrow[$key];
                             }
-                            $i++;
+                        } else {
+                            $aResults[$myrow['department']][$key] = $myrow[$key];
                         }
                     }
+                    ++$i;
                 }
-
-                return $aResults;
             }
+        }
+
+        return $aResults;
+    }
 }

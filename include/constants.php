@@ -1,18 +1,18 @@
 <?php
-//$Id: constants.php,v 1.24 2006/02/06 19:58:20 eric_juden Exp $
+//
 
 /**
  *Global Application Constants
  *
- *@author Brian Wahoff
- *@access Public
+ * @author Brian Wahoff
+ * @access Public
  */
 
-define('XHELP_DIR_NAME', 'xhelp');
+//define('XHELP_DIR_NAME', 'xhelp');
+define('XHELP_DIR_NAME', basename(dirname(__DIR__)));
 
 //Uncomment for XOOPS 2.2 support
 //define('XOOPS_2.2', '');
-
 
 // XOOPS ROOT URL path
 if (defined('XOOPS_2.2')) {
@@ -45,48 +45,52 @@ define('XHELP_SEC_TICKET_TAKE_OWNERSHIP', 12); //Take ownership of ticket
 // @todo - I'm not happy with pow(2, ...) to work with each security bit, should we store each bit as its mask?
 //Ticket Manager Role - Can do everything
 define('XHELP_ROLE_PERM_1',
-pow(2, XHELP_SEC_TICKET_ADD) | pow(2, XHELP_SEC_TICKET_EDIT) | pow(2, XHELP_SEC_TICKET_DELETE) |
-pow(2, XHELP_SEC_TICKET_OWNERSHIP) | pow(2, XHELP_SEC_TICKET_STATUS) | pow(2, XHELP_SEC_TICKET_PRIORITY) |
-pow(2, XHELP_SEC_TICKET_LOGUSER) |  pow(2, XHELP_SEC_RESPONSE_ADD) | pow(2, XHELP_SEC_RESPONSE_EDIT) |
-pow(2, XHELP_SEC_TICKET_MERGE) | pow(2,XHELP_SEC_FILE_DELETE) | pow(2, XHELP_SEC_FAQ_ADD) |
-pow(2, XHELP_SEC_TICKET_TAKE_OWNERSHIP));
+       pow(2, XHELP_SEC_TICKET_ADD)
+       | pow(2, XHELP_SEC_TICKET_EDIT)
+       | pow(2, XHELP_SEC_TICKET_DELETE)
+       | pow(2, XHELP_SEC_TICKET_OWNERSHIP)
+       | pow(2, XHELP_SEC_TICKET_STATUS)
+       | pow(2, XHELP_SEC_TICKET_PRIORITY)
+       | pow(2, XHELP_SEC_TICKET_LOGUSER)
+       | pow(2, XHELP_SEC_RESPONSE_ADD)
+       | pow(2, XHELP_SEC_RESPONSE_EDIT)
+       | pow(2, XHELP_SEC_TICKET_MERGE)
+       | pow(2, XHELP_SEC_FILE_DELETE)
+       | pow(2, XHELP_SEC_FAQ_ADD)
+       | pow(2, XHELP_SEC_TICKET_TAKE_OWNERSHIP));
 
 //Support Role - Log Tickets and Responses, Change Status/Priority, Log tickets as user
-define('XHELP_ROLE_PERM_2',
-pow(2, XHELP_SEC_TICKET_ADD) | pow(2, XHELP_SEC_TICKET_STATUS) | pow(2, XHELP_SEC_TICKET_PRIORITY) |
-pow(2, XHELP_SEC_TICKET_LOGUSER) | pow(2, XHELP_SEC_RESPONSE_ADD)| pow(2, XHELP_SEC_FAQ_ADD) |
-pow(2, XHELP_SEC_TICKET_TAKE_OWNERSHIP));
+define('XHELP_ROLE_PERM_2', pow(2, XHELP_SEC_TICKET_ADD) | pow(2, XHELP_SEC_TICKET_STATUS) | pow(2, XHELP_SEC_TICKET_PRIORITY) | pow(2, XHELP_SEC_TICKET_LOGUSER) | pow(2, XHELP_SEC_RESPONSE_ADD) | pow(2, XHELP_SEC_FAQ_ADD) | pow(2, XHELP_SEC_TICKET_TAKE_OWNERSHIP));
 
 //Browser Role - Read-Only
-define('XHELP_ROLE_PERM_3',
-0);
+define('XHELP_ROLE_PERM_3', 0);
 
 //Application Folders
 
-define('XHELP_BASE_PATH', XOOPS_ROOT_PATH.'/modules/'. XHELP_DIR_NAME);
-define('XHELP_CLASS_PATH', XHELP_BASE_PATH.'/class');
-define('XHELP_BASE_URL', XHELP_SITE_URL .'/modules/'. XHELP_DIR_NAME);
-define('XHELP_UPLOAD_PATH', XOOPS_ROOT_PATH."/uploads/".XHELP_DIR_NAME);
-define('XHELP_INCLUDE_PATH', XHELP_BASE_PATH.'/include');
-define('XHELP_INCLUDE_URL', XHELP_BASE_URL.'/include');
-define('XHELP_IMAGE_PATH', XHELP_BASE_PATH.'/images');
-define('XHELP_IMAGE_URL', XHELP_BASE_URL.'/images');
-define('XHELP_ADMIN_URL', XHELP_BASE_URL.'/admin');
-define('XHELP_ADMIN_PATH', XHELP_BASE_PATH.'/admin');
-define('XHELP_PEAR_PATH', XHELP_CLASS_PATH.'/pear');
-define('XHELP_CACHE_PATH', XOOPS_ROOT_PATH.'/cache');
-define('XHELP_CACHE_URL', XHELP_SITE_URL .'/cache');
-define('XHELP_SCRIPT_URL', XHELP_BASE_URL.'/scripts');
-define('XHELP_JPSPAN_PATH', XHELP_INCLUDE_PATH.'/jpspan');
-define('XHELP_FAQ_ADAPTER_PATH', XHELP_CLASS_PATH.'/faq');
-define('XHELP_REPORT_PATH', XHELP_BASE_PATH .'/reports');
-define('XHELP_REPORT_URL', XHELP_BASE_URL .'/reports');
-define('XHELP_JPGRAPH_PATH', XHELP_INCLUDE_PATH .'/jpgraph');
-define('XHELP_JPGRAPH_URL', XHELP_INCLUDE_URL .'/jpgraph');
-define('XHELP_RPT_RENDERER_PATH', XHELP_CLASS_PATH .'/reportRenderer');
+define('XHELP_BASE_PATH', XOOPS_ROOT_PATH . '/modules/' . XHELP_DIR_NAME);
+define('XHELP_CLASS_PATH', XHELP_BASE_PATH . '/class');
+define('XHELP_BASE_URL', XHELP_SITE_URL . '/modules/' . XHELP_DIR_NAME);
+define('XHELP_UPLOAD_PATH', XOOPS_ROOT_PATH . '/uploads/' . XHELP_DIR_NAME);
+define('XHELP_INCLUDE_PATH', XHELP_BASE_PATH . '/include');
+define('XHELP_INCLUDE_URL', XHELP_BASE_URL . '/include');
+define('XHELP_IMAGE_PATH', XHELP_BASE_PATH . '/assets/images');
+define('XHELP_IMAGE_URL', XHELP_BASE_URL . '/assets/images');
+define('XHELP_ADMIN_URL', XHELP_BASE_URL . '/admin');
+define('XHELP_ADMIN_PATH', XHELP_BASE_PATH . '/admin');
+define('XHELP_PEAR_PATH', XHELP_CLASS_PATH . '/pear');
+define('XHELP_CACHE_PATH', XOOPS_ROOT_PATH . '/cache');
+define('XHELP_CACHE_URL', XHELP_SITE_URL . '/cache');
+define('XHELP_SCRIPT_URL', XHELP_BASE_URL . '/scripts');
+define('XHELP_JPSPAN_PATH', XHELP_INCLUDE_PATH . '/jpspan');
+define('XHELP_FAQ_ADAPTER_PATH', XHELP_CLASS_PATH . '/faq');
+define('XHELP_REPORT_PATH', XHELP_BASE_PATH . '/reports');
+define('XHELP_REPORT_URL', XHELP_BASE_URL . '/reports');
+define('XHELP_JPGRAPH_PATH', XHELP_INCLUDE_PATH . '/jpgraph');
+define('XHELP_JPGRAPH_URL', XHELP_INCLUDE_URL . '/jpgraph');
+define('XHELP_RPT_RENDERER_PATH', XHELP_CLASS_PATH . '/reportRenderer');
 
 //Control Types
-define('XHELP_CONTROL_TXTBOX',0);
+define('XHELP_CONTROL_TXTBOX', 0);
 define('XHELP_CONTROL_TXTAREA', 1);
 define('XHELP_CONTROL_SELECT', 2);
 define('XHELP_CONTROL_MULTISELECT', 3);

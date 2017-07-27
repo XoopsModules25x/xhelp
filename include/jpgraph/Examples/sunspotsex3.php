@@ -1,29 +1,31 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_line.php');
-require_once ('jpgraph/jpgraph_bar.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_line.php';
+require_once __DIR__ . '/jpgraph/jpgraph_bar.php';
 
-function readsunspotdata($aFile, &$aYears, &$aSunspots) {
-    $lines = @file($aFile,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
-    if( $lines === false ) {
+function readsunspotdata($aFile, &$aYears, &$aSunspots)
+{
+    $lines = @file($aFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines === false) {
         throw new JpGraphException('Can not read sunspot data file.');
     }
-    foreach( $lines as $line => $datarow ) {
-        $split = preg_split('/[\s]+/',$datarow);
-        $aYears[] = substr(trim($split[0]),0,4);
+    foreach ($lines as $line => $datarow) {
+        $split       = preg_split('/[\s]+/', $datarow);
+        $aYears[]    = substr(trim($split[0]), 0, 4);
         $aSunspots[] = trim($split[1]);
     }
 }
 
-$year = array();
+$year  = array();
 $ydata = array();
-readsunspotdata('yearssn.txt',$year,$ydata);
+readsunspotdata('yearssn.txt', $year, $ydata);
 
 // Width and height of the graph
-$width = 600; $height = 200;
+$width  = 600;
+$height = 200;
 
 // Create a graph instance
-$graph = new Graph($width,$height);
+$graph = new Graph($width, $height);
 
 // Specify what scale we want to use,
 // int = integer scale for the X-axis
@@ -41,7 +43,7 @@ $graph->xaxis->SetTickLabels($year);
 $graph->yaxis->title->Set('(# sunspots)');
 
 // Create the linear plot
-$lineplot=new LinePlot($ydata);
+$lineplot = new LinePlot($ydata);
 $lineplot->SetFillColor('orange@0.5');
 
 // Add the plot to the graph

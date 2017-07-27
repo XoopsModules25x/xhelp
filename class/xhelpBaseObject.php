@@ -1,32 +1,36 @@
 <?php
 
-Class xhelpBaseObject extends XoopsObject {
-
+/**
+ * Class XHelpBaseObject
+ */
+class XHelpBaseObject extends XoopsObject
+{
     /**
      * create a new  object
      * @return object {@link xhelpBaseObject}
      * @access public
      */
-    function &create()
+    public function &create()
     {
         return new $this->classname();
     }
+
     /**
      * retrieve an object from the database, based on. use in child classes
-     * @param  int    $id ID
+     * @param  int $id ID
      * @return object {@link xhelpdepartmentemailserver}
      * @access public
      */
-    function &get($id)
+    public function &get($id)
     {
-        $id = intval($id);
-        if($id > 0) {
+        $id = (int)$id;
+        if ($id > 0) {
             $sql = $this->_selectQuery(new Criteria('id', $id));
-            if(!$result = $this->_db->query($sql)) {
+            if (!$result = $this->_db->query($sql)) {
                 return false;
             }
             $numrows = $this->_db->getRowsNum($result);
-            if($numrows == 1) {
+            if ($numrows == 1) {
                 $obj = new $this->classname($this->_db->fetchArray($result));
 
                 return $obj;
@@ -42,19 +46,20 @@ Class xhelpBaseObject extends XoopsObject {
      * @return string SQL query
      * @access private
      */
-    function _selectQuery($criteria = null)
+    public function _selectQuery($criteria = null)
     {
         $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
-        if(isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
-            $sql .= ' ' .$criteria->renderWhere();
-            if($criteria->getSort() != '') {
+        if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
+            $sql .= ' ' . $criteria->renderWhere();
+            if ($criteria->getSort() != '') {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . '
-                   ' .$criteria->getOrder();
+                   ' . $criteria->getOrder();
             }
         }
 
         return $sql;
     }
+
     /**
      * count objects matching a criteria
      *
@@ -62,13 +67,13 @@ Class xhelpBaseObject extends XoopsObject {
      * @return int    count of objects
      * @access public
      */
-    function getCount($criteria = null)
+    public function getCount($criteria = null)
     {
-        $sql = 'SELECT COUNT(*) FROM '.$this->_db->prefix($this->_dbtable);
+        $sql = 'SELECT COUNT(*) FROM ' . $this->_db->prefix($this->_dbtable);
         if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
-            $sql .= ' '.$criteria->renderWhere();
+            $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result =& $this->_db->query($sql)) {
+        if (!$result = $this->_db->query($sql)) {
             return 0;
         }
         list($count) = $this->_db->fetchRow($result);
@@ -79,16 +84,19 @@ Class xhelpBaseObject extends XoopsObject {
     /**
      * delete object based on id
      *
-     * @param  object $criteria {@link CriteriaElement} to match
-     * @return int    count of objects
-     * @access public
+     * @param XoopsObject $obj
+     * @param bool        $force
+     * @return int count of objects
+     * @internal param object $criteria <a href='psi_element://CriteriaElement'>CriteriaElement</a> to match to match
+     * @access   public
      */
-    function delete(&$obj, $force = false) {
+    public function delete(XoopsObject $obj, $force = false)
+    {
         if (strcasecmp($this->classname, get_class($obj)) != 0) {
             return false;
         }
 
-        $sql = sprintf("DELETE FROM %s WHERE id = %u", $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
         if (false != $force) {
             $result = $this->_db->queryF($sql);
         } else {
@@ -100,5 +108,4 @@ Class xhelpBaseObject extends XoopsObject {
 
         return true;
     }
-
 }

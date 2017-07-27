@@ -1,49 +1,60 @@
 <?php
-//$Id: msgStore.php,v 1.13 2005/07/05 20:09:35 eric_juden Exp $
 
+//
 
-class xhelpEmailStore
+/**
+ * Class XHelpEmailStore
+ */
+class XHelpEmailStore
 {
-    var $_hResponse;
-    var $_hTicket;
-    var $_hMailEvent;
-    var $_errors;
+    public $_hResponse;
+    public $_hTicket;
+    public $_hMailEvent;
+    public $_errors;
 
-    function xhelpEmailStore()
+    /**
+     * XHelpEmailStore constructor.
+     */
+    public function __construct()
     {
-        $this->_hResponse  =& xhelpGetHandler('responses');
-        $this->_hTicket    =& xhelpGetHandler('ticket');
-        $this->_hMailEvent =& xhelpGetHandler('mailEvent');
-        $this->_errors     = array();
+        $this->_hResponse  = xhelpGetHandler('responses');
+        $this->_hTicket    = xhelpGetHandler('ticket');
+        $this->_hMailEvent = xhelpGetHandler('mailEvent');
+        $this->_errors     = [];
     }
 
-    function _setError($desc)
+    /**
+     * @param $desc
+     */
+    public function _setError($desc)
     {
-        if(is_array($desc)){
-            foreach($desc as $d) {
+        if (is_array($desc)) {
+            foreach ($desc as $d) {
                 $this->_errors[] = $d;
             }
         }
         $this->_errors[] = $desc;
     }
 
-    function _getErrors()
+    /**
+     * @return array|int
+     */
+    public function _getErrors()
     {
-        if(count($this->_errors) > 0){
+        if (count($this->_errors) > 0) {
             return $this->_errors;
         } else {
             return 0;
         }
     }
 
-    function clearErrors()
+    public function clearErrors()
     {
-        $this->_errors = array();
+        $this->_errors = [];
     }
 
-    function renderErrors()
+    public function renderErrors()
     {
-
     }
 
     /**
@@ -52,17 +63,18 @@ class xhelpEmailStore
      * @param  object $msg  {@link xhelpParsedMsg} object Message to add
      * @param  object $user {@link xoopsUser} object User that submitted message
      * @param  object $mbox {@link xhelpDepartmentMailBox} object. Originating Mailbox for message
-     * @return mixed  Returns {@link xhelpTicket} object if new ticket, {@link xhelpResponses} object if a response, and false if unable to save.
+     * @param         $errors
+     * @return mixed Returns <a href='psi_element://xhelpTicket'>xhelpTicket</a> object if new ticket, <a href='psi_element://xhelpResponses'>xhelpResponses</a> object if a response, and false if unable to save.
      */
-    function &storeMsg(&$msg, &$user, &$mbox, &$errors)
+    public function &storeMsg(&$msg, &$user, &$mbox, &$errors)
     {
         //Remove any previous error messages
         $this->clearErrors();
 
         $type = $msg->getMsgType();
-        switch($type) {
+        switch ($type) {
             case _XHELP_MSGTYPE_TICKET:
-                $obj =& $this->_hTicket->create();
+                $obj = $this->_hTicket->create();
                 $obj->setVar('uid', $user->getVar('uid'));
                 $obj->setVar('subject', $msg->getSubject());
                 $obj->setVar('description', $msg->getMsg());
@@ -72,8 +84,8 @@ class xhelpEmailStore
                 $obj->setVar('serverid', $mbox->getVar('id'));
                 $obj->setVar('userIP', 'via Email');
                 $obj->setVar('email', $user->getVar('email'));
-                if(!$status = xhelpGetMeta("default_status")){
-                    xhelpSetMeta("default_status", "1");
+                if (!$status = xhelpGetMeta('default_status')) {
+                    xhelpSetMeta('default_status', '1');
                     $status = 1;
                 }
                 $obj->setVar('status', $status);
@@ -84,7 +96,7 @@ class xhelpEmailStore
 
                     $errors = $this->_getErrors();
 
-                    return array($obj);
+                    return [$obj];
                 }
                 break;
 
@@ -109,14 +121,13 @@ class xhelpEmailStore
                 $obj->setVar('userIP', 'via Email');
 
                 if ($this->_hResponse->insert($obj)) {
-
                     $this->_saveAttachments($msg, $ticket->getVar('id'), $obj->getVar('id'));
                     $ticket->setVar('lastUpdated', time());
                     $this->_hTicket->insert($ticket);
 
                     $errors = $this->_getErrors();
 
-                    return array($ticket, $obj);
+                    return [$ticket, $obj];
                 }
                 break;
 
@@ -128,44 +139,49 @@ class xhelpEmailStore
         return false;
     }
 
-    function _saveAttachments($msg, $ticketid, $responseid = 0)
+    /**
+     * @param     $msg
+     * @param     $ticketid
+     * @param int $responseid
+     */
+    public function _saveAttachments($msg, $ticketid, $responseid = 0)
     {
         global $xoopsModuleConfig;
-        $attachments = $msg->getAttachments();
-        $dir         = XOOPS_UPLOAD_PATH .'/xhelp';
-        $prefix      = ($responseid != 0? $ticketid.'_'.$responseid.'_' : $ticketid.'_');
-        $hMime       =& xhelpGetHandler('mimetype');
+        $attachments       = $msg->getAttachments();
+        $dir               = XOOPS_UPLOAD_PATH . '/xhelp';
+        $prefix            = ($responseid != 0 ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
+        $hMime             = xhelpGetHandler('mimetype');
         $allowed_mimetypes = $hMime->getArray();
 
-        if(!is_dir($dir)){
+        if (!is_dir($dir)) {
             mkdir($dir, 0757);
         }
 
         $dir .= '/';
 
-        if($xoopsModuleConfig['xhelp_allowUpload']){
-            $hFile =& xhelpGetHandler('file');
+        if ($xoopsModuleConfig['xhelp_allowUpload']) {
+            $hFile = xhelpGetHandler('file');
             foreach ($attachments as $attach) {
-                $validators = array();
+                $validators = [];
 
                 //Create Temporary File
-                $fname = $prefix.$attach['filename'];
-                $fp = fopen($dir.$fname, 'w');
+                $fname = $prefix . $attach['filename'];
+                $fp    = fopen($dir . $fname, 'wb');
                 fwrite($fp, $attach['content']);
                 fclose($fp);
 
-                $validators[] = new ValidateMimeType($dir.$fname, $attach['content-type'], $allowed_mimetypes);
-                $validators[] = new ValidateFileSize($dir.$fname, $xoopsModuleConfig['xhelp_uploadSize']);
-                $validators[] = new ValidateImageSize($dir.$fname, $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
+                $validators[] = new ValidateMimeType($dir . $fname, $attach['content-type'], $allowed_mimetypes);
+                $validators[] = new ValidateFileSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadSize']);
+                $validators[] = new ValidateImageSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
 
                 if (!xhelpCheckRules($validators, $errors)) {
                     //Remove the file
                     $this->_addAttachmentError($errors, $msg, $fname);
-                    unlink($dir.$fname);
+                    unlink($dir . $fname);
                 } else {
                     //Add attachment to ticket
 
-                    $file =& $hFile->create();
+                    $file = $hFile->create();
                     $file->setVar('filename', $fname);
                     $file->setVar('ticketid', $ticketid);
                     $file->setVar('mimetype', $attach['content-type']);
@@ -178,12 +194,17 @@ class xhelpEmailStore
         }
     }
 
-    function _addAttachmentError($errors, $msg, $fname)
+    /**
+     * @param $errors
+     * @param $msg
+     * @param $fname
+     */
+    public function _addAttachmentError($errors, $msg, $fname)
     {
-        if($errors <> 0){
-            $aErrors = array();
-            foreach($errors as $err){
-                if(in_array($err, $aErrors)){
+        if ($errors <> 0) {
+            $aErrors = [];
+            foreach ($errors as $err) {
+                if (in_array($err, $aErrors)) {
                     continue;
                 } else {
                     $aErrors[] = $err;

@@ -1,5 +1,5 @@
 <?php
-// $Id: smartsection.php,v 1.3 2005/12/30 15:09:53 ackbarr Exp $
+//
 
 //Sanity Check: make sure that file is not being accessed directly
 if (!defined('XHELP_CLASS_PATH')) {
@@ -7,8 +7,8 @@ if (!defined('XHELP_CLASS_PATH')) {
 }
 
 // ** Define any site specific variables here **
-define('XHELP_SSECTION_PATH', XOOPS_ROOT_PATH .'/modules/smartsection');
-define('XHELP_SSECTION_URL', XHELP_SITE_URL .'/modules/smartsection');
+define('XHELP_SSECTION_PATH', XOOPS_ROOT_PATH . '/modules/smartsection');
+define('XHELP_SSECTION_URL', XHELP_SITE_URL . '/modules/smartsection');
 // ** End site specific variables **
 
 // What features should be enabled for new smartsection items
@@ -20,17 +20,19 @@ define('XHELP_SSECTION_DOBR', 1);
 define('XHELP_SSECTION_NOTIFYPUB', 1);
 define('XHELP_SSECTION_FORCEAPPROVAL', 0); //Should articles be reviewed prior to submission (0 = Always No, 1 = Always Yes, 2 = Follow Module Config
 
-
 // @todo - can this declaration be moved into the initialization sequence so
 // that each class does not need to include its interface?
 //Include the base faqAdapter interface (required)
-require_once(XHELP_CLASS_PATH .'/faqAdapter.php');
+require_once XHELP_CLASS_PATH . '/faqAdapter.php';
 
 //These functions are required to work with the smartsection application directly
-@include(XHELP_SSECTION_PATH .'/include/functions.php');
+@include XHELP_SSECTION_PATH . '/include/functions.php';
 
-class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
-
+/**
+ * Class XHelpSmartsectionAdapter
+ */
+class XHelpSmartsectionAdapter extends xhelpFaqAdapter
+{
     /**
      * Does application support categories?
      * Possible Values:
@@ -39,7 +41,7 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
      * XHELP_FAQ_CATEGORY_NONE - No category support
      * @access public
      */
-    var $categoryType = XHELP_FAQ_CATEGORY_SING;
+    public $categoryType = XHELP_FAQ_CATEGORY_SING;
 
     /**
      * Adapter Details
@@ -53,52 +55,51 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
      * module_dir - module directory name (not needed if class overloads the isActive() function from xhelpFAQAdapter)
      * @access public
      */
-    var $meta = array(
-        'name' => 'SmartSection',
-        'author' => 'Brian Wahoff',
-        'author_email' => 'ackbarr@xoops.org',
-        'description' => 'Create SmartSection pages from xHelp helpdesk tickets',
-        'version' => '1.0',
+    public $meta = [
+        'name'            => 'SmartSection',
+        'author'          => 'Brian Wahoff',
+        'author_email'    => 'ackbarr@xoops.org',
+        'description'     => 'Create SmartSection pages from xHelp helpdesk tickets',
+        'version'         => '1.0',
         'tested_versions' => '1.05 Beta 1',
-        'url' => 'http://www.smartfactory.ca/',
-        'module_dir' => 'smartsection');
+        'url'             => 'http://www.smartfactory.ca/',
+        'module_dir'      => 'smartsection'
+    ];
 
     /**
      * Class Constructor (Required)
-     * @return NULL
      */
-    function xhelpSmartsectionAdapter()
+    public function __construct()
     {
         // Every class should call parent::init() to ensure that all class level
         // variables are initialized properly.
         parent::init();
     }
-     
+
     /**
      * getCategories: retrieve the categories for the module
      * @return ARRAY Array of xhelpFaqCategory
      */
-    function &getCategories()
+    public function &getCategories()
     {
-        $ret = array();
+        $ret = [];
         // Create an instance of the xhelpFaqCategoryHandler
-        $hFaqCategory =& xhelpGetHandler('faqCategory');
+        $hFaqCategory = xhelpGetHandler('faqCategory');
 
         // Get all the categories for the application
-        $hSmartCategory =& smartsection_gethandler('category');
-        $categories =& $hSmartCategory->getCategories(0,0,-1);
+        $hSmartCategory = smartsection_gethandler('category');
+        $categories     = $hSmartCategory->getCategories(0, 0, -1);
 
         //Convert the module specific category to the
         //xhelpFaqCategory object for standarization
-        foreach ($categories as $category)
-        {
+        foreach ($categories as $category) {
             $faqcat = $hFaqCategory->create();
             $faqcat->setVar('id', $category->getVar('categoryid'));
             $faqcat->setVar('parent', $category->getVar('parentid'));
             $faqcat->setVar('name', $category->getVar('name'));
             $ret[] = $faqcat;
         }
-        unset ($categories);
+        unset($categories);
         ksort($ret);
 
         return $ret;
@@ -110,33 +111,33 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
      * @return bool     true (success) / false (failure)
      * @access public
      */
-    function storeFaq(&$faq)
+    public function storeFaq($faq = null)
     {
-        global $xoopsUser, $smartsection_item_handler;
+        global $xoopsUser, $smartsection_itemHandler;
 
         $uid = $xoopsUser->getVar('uid');
 
         //fix for smartsectionItem::store assuming that smartsection handlers are globalized
-        $GLOBALS['smartsection_item_handler'] =& smartsection_gethandler('item');
-        $GLOBALS['smartsection_category_handler'] =& smartsection_gethandler('category');
+        $GLOBALS['smartsection_itemHandler']     = smartsection_gethandler('item');
+        $GLOBALS['smartsection_categoryHandler'] = smartsection_gethandler('category');
 
-        $ssConfig =& smartsection_getModuleConfig();
+        $ssConfig = smartsection_getModuleConfig();
 
         // Create page in smartsection from xhelpFAQ object
-        $hSSItem =& smartsection_gethandler('item');
-        $itemObj =& $hSSItem->create();
+        $hSSItem = smartsection_gethandler('item');
+        $itemObj = $hSSItem->create();
 
         //$faq->getVar('categories') is an array. If your application
         //only supports single categories use the first element
         //in the array
         $categories = $faq->getVar('categories');
-        $categories = intval($categories[0]);       // Change array of categories to 1 category
+        $categories = (int)$categories[0];       // Change array of categories to 1 category
 
         // Putting the values about the ITEM in the ITEM object
         $itemObj->setVar('categoryid', $categories);
         $itemObj->setVar('title', $faq->getVar('subject', 'e'));
-        $itemObj->setVar('summary', '[b]'. ucfirst(_XHELP_TEXT_PROBLEM) ."[/b]\r\n". $faq->getVar('problem', 'e'));
-        $itemObj->setVar('body', '[b]'. ucfirst(_XHELP_TEXT_SOLUTION) . "[/b]\r\n". $faq->getVar('solution', 'e'));
+        $itemObj->setVar('summary', '[b]' . ucfirst(_XHELP_TEXT_PROBLEM) . "[/b]\r\n" . $faq->getVar('problem', 'e'));
+        $itemObj->setVar('body', '[b]' . ucfirst(_XHELP_TEXT_SOLUTION) . "[/b]\r\n" . $faq->getVar('solution', 'e'));
 
         $itemObj->setVar('dohtml', XHELP_SSECTION_DOHTML);
         $itemObj->setVar('dosmiley', XHELP_SSECTION_DOSMILEY);
@@ -152,25 +153,24 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
             $itemObj->setVar('status', _SSECTION_STATUS_SUBMITTED);
         } else {
             $itemObj->setVar('status', _SSECTION_STATUS_PUBLISHED);
-
         }
 
         // Storing the item object in the database
-        if ( $ret = $itemObj->store() ) {
+        if ($ret = $itemObj->store()) {
             $faq->setVar('id', $itemObj->getVar('itemid'));
             $faq->setVar('url', $this->makeFaqUrl($faq));
-             
-            if (! $this->_articleNeedsApproval()) {
+
+            if (!$this->_articleNeedsApproval()) {
                 // Send notifications
-                $itemObj->sendNotifications(array(_SSECTION_NOT_ITEM_PUBLISHED));
+                $itemObj->sendNotifications([_SSECTION_NOT_ITEM_PUBLISHED]);
             } else {
                 if (XHELP_SSECTION_NOTIFYPUB) {
-                    include_once XOOPS_ROOT_PATH . '/include/notification_constants.php';
-                    $notification_handler = &xoops_gethandler('notification');
-                    $notification_handler->subscribe('item', $itemObj->itemid(), 'approved', XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
+                    require_once XOOPS_ROOT_PATH . '/include/notification_constants.php';
+                    $notificationHandler = xoops_getHandler('notification');
+                    $notificationHandler->subscribe('item', $itemObj->itemid(), 'approved', XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
                 }
                 // Send notifications
-                $itemObj->sendNotifications(array(_SSECTION_NOT_ITEM_SUBMITTED));
+                $itemObj->sendNotifications([_SSECTION_NOT_ITEM_SUBMITTED]);
             }
         }
 
@@ -184,13 +184,17 @@ class xhelpSmartsectionAdapter extends xhelpFaqAdapter {
      * @return string
      * @access private
      */
-    function makeFaqUrl(&$faq)
+    public function makeFaqUrl(&$faq)
     {
-        return XHELP_SSECTION_URL ."/item.php?itemid=".$faq->getVar('id');
+        return XHELP_SSECTION_URL . '/item.php?itemid=' . $faq->getVar('id');
     }
 
-    function _articleNeedsApproval()
+    /**
+     * @return bool
+     */
+    public function _articleNeedsApproval()
     {
-        return (XHELP_SSECTION_FORCEAPPROVAL == 2 && $ssConfig['autoapprove_submitted'] ==  0) || XHELP_SSECTION_FORCEAPPROVAL == 1;
+        return (XHELP_SSECTION_FORCEAPPROVAL == 2 && $ssConfig['autoapprove_submitted'] == 0)
+               || XHELP_SSECTION_FORCEAPPROVAL == 1;
     }
 }

@@ -1,25 +1,24 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage CodeWriter
- * @version $Id: CodeWriter.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //-----------------------------------------------------------------------------
 
 /**
  * Javascript is written via an instance of this class
- * @access public
- * @package JPSpan
+ * @access     public
+ * @package    JPSpan
  * @subpackage CodeWriter
  */
-class JPSpan_CodeWriter {
-
+class JPSpan_CodeWriter
+{
     /**
      * Serialized Javascript
      * @var string
      * @access private
      */
-    var $code = '';
+    public $code = '';
 
     /**
      * Disables further writing of code
@@ -27,7 +26,7 @@ class JPSpan_CodeWriter {
      * @var boolean
      * @access public
      */
-    var $enabled = TRUE;
+    public $enabled = true;
 
     /**
      * Write some code - overwrites the existing code
@@ -35,8 +34,9 @@ class JPSpan_CodeWriter {
      * @return void
      * @access public
      */
-    function write($code) {
-        if ( $this->enabled ) {
+    public function write($code)
+    {
+        if ($this->enabled) {
             $this->code = $code;
         }
     }
@@ -47,8 +47,9 @@ class JPSpan_CodeWriter {
      * @return void
      * @access public
      */
-    function append($code) {
-        if ( $this->enabled ) {
+    public function append($code)
+    {
+        if ($this->enabled) {
             $this->code .= $code;
         }
     }
@@ -58,7 +59,8 @@ class JPSpan_CodeWriter {
      * @return string Javascript
      * @access public
      */
-    function toString() {
+    public function toString()
+    {
         return $this->code;
     }
 }

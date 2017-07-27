@@ -1,7 +1,7 @@
 /**@
-* include 'serialize.js';
-*/
-// $Id: php.js,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
+ * include 'serialize.js';
+ */
+//
 // Notes:
 // - strings will only have ASCII characters encoded. Anything else
 //   will be thrown out
@@ -14,90 +14,96 @@ JPSpan_Encode_PHP.prototype = {
 
     // Used by rawpost request objects
     contentType: 'text/plain; charset=US-ASCII',
-    
-    encode: function(data) {
+
+    encode: function (data) {
         return this.Serialize.serialize(data);
     },
-    
-    encodeInteger: function(v) {
-        return 'i:'+v+';';
+
+    encodeInteger: function (v) {
+        return 'i:' + v + ';';
     },
-    
-    encodeDouble: function(v) {
-        return 'd:'+v+';';
+
+    encodeDouble: function (v) {
+        return 'd:' + v + ';';
     },
-    
-    encodeString: function(v) {
+
+    encodeString: function (v) {
         var s = ''
-        for(var n=0; n<v.length; n++) {
-            var c=v.charCodeAt(n);
+        for (var n = 0; n < v.length; n++) {
+            var c = v.charCodeAt(n);
             // Ignore everything but ASCII
-            if (c<128) {
+            if (c < 128) {
                 s += String.fromCharCode(c);
             }
         }
-        return 's:'+s.length+':"'+s+'";';
+        return 's:' + s.length + ':"' + s + '";';
     },
-    
-    encodeNull: function() {
+
+    encodeNull: function () {
         return 'N;';
     },
-    
-    encodeTrue: function() {
+
+    encodeTrue: function () {
         return 'b:1;';
     },
-    
-    encodeFalse: function() {
+
+    encodeFalse: function () {
         return 'b:0;';
     },
-    
-    encodeArray: function(v, Serializer) {
+
+    encodeArray: function (v, Serializer) {
         var indexed = new Array();
         var count = v.length;
         var s = '';
-        for (var i=0; i<v.length; i++) {
+        for (var i = 0; i < v.length; i++) {
             indexed[i] = true;
-            s += 'i:'+i+';'+Serializer.serialize(v[i]);
-        };
+            s += 'i:' + i + ';' + Serializer.serialize(v[i]);
+        }
+        ;
 
-        for ( var prop in v ) {
-            if ( indexed[prop] ) {
+        for (var prop in v) {
+            if (indexed[prop]) {
                 continue;
-            };
-            s += Serializer.serialize(prop)+Serializer.serialize(v[prop]);
+            }
+            ;
+            s += Serializer.serialize(prop) + Serializer.serialize(v[prop]);
             count++;
-        };
-        
-        s = 'a:'+count+':{'+s;
+        }
+        ;
+
+        s = 'a:' + count + ':{' + s;
         s += '}';
         return s;
     },
-    
-    encodeObject: function(v, Serializer, cname) {
-        var s='';
-        var count=0;
+
+    encodeObject: function (v, Serializer, cname) {
+        var s = '';
+        var count = 0;
         for (var prop in v) {
-            s += 's:'+prop.length+':"'+prop+'";';
-            if (v[prop]!=null) {
+            s += 's:' + prop.length + ':"' + prop + '";';
+            if (v[prop] != null) {
                 s += Serializer.serialize(v[prop]);
             } else {
-                s +='N;';
-            };
+                s += 'N;';
+            }
+            ;
             count++;
-        };
-        s = 'O:'+cname.length+':"'+cname.toLowerCase()+'":'+count+':{'+s+'}';   
+        }
+        ;
+        s = 'O:' + cname.length + ':"' + cname.toLowerCase() + '":' + count + ':{' + s + '}';
         return s;
     },
-    
-    encodeError: function(v, Serializer, cname) {
+
+    encodeError: function (v, Serializer, cname) {
         var e = new Object();
-        if ( !v.name ) {
+        if (!v.name) {
             e.name = cname;
             e.message = v.description;
         } else {
             e.name = v.name;
             e.message = v.message;
-        };
-        return this.encodeObject(e,Serializer,cname);
+        }
+        ;
+        return this.encodeObject(e, Serializer, cname);
     }
 }

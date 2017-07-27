@@ -1,26 +1,26 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_line.php');
-require_once ('jpgraph/jpgraph_scatter.php');
-require_once ('jpgraph/jpgraph_regstat.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_line.php';
+require_once __DIR__ . '/jpgraph/jpgraph_scatter.php';
+require_once __DIR__ . '/jpgraph/jpgraph_regstat.php';
 
 // Original data points
-$xdata = array(1,3,12,15);
-$ydata = array(5,15,2,19);
+$xdata = array(1, 3, 12, 15);
+$ydata = array(5, 15, 2, 19);
 
 // Get the interpolated values by creating
 // a new Spline object.
-$bez = new Bezier($xdata,$ydata);
+$bez = new Bezier($xdata, $ydata);
 
 // For the new data set we want 40 points to
 // get a smooth curve.
-list($newx,$newy) = $bez->Get(50);
+list($newx, $newy) = $bez->Get(50);
 
 // Create the graph
-$g = new Graph(300,200);
-$g->SetMargin(30,20,40,30);
-$g->title->Set("Bezier interpolation");
-$g->title->SetFont(FF_ARIAL,FS_NORMAL,12);
+$g = new Graph(300, 200);
+$g->SetMargin(30, 20, 40, 30);
+$g->title->Set('Bezier interpolation');
+$g->title->SetFont(FF_ARIAL, FS_NORMAL, 12);
 $g->subtitle->Set('(Control points shown in red)');
 $g->subtitle->SetColor('darkred');
 $g->SetMarginColor('lightblue');
@@ -36,13 +36,13 @@ $g->xaxis->SetLabelFormat('%1.1f');
 
 // We use a scatterplot to illustrate the original
 // contro points.
-$bplot = new ScatterPlot($ydata,$xdata);
+$bplot = new ScatterPlot($ydata, $xdata);
 $bplot->mark->SetFillColor('red@0.3');
 $bplot->mark->SetColor('red@0.5');
 
 // And a line plot to stroke the smooth curve we got
 // from the original control points
-$lplot = new LinePlot($newy,$newx);
+$lplot = new LinePlot($newy, $newx);
 $lplot->SetColor('navy');
 
 // Add the plots to the graph and stroke

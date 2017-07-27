@@ -1,4 +1,4 @@
-// $Id: serialize.js,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
+//
 // Notes:
 // - Watch out for recursive references - call inside a try/catch block if uncertain
 // - Objects are serialized to PHP class name JPSpan_Object by default
@@ -14,54 +14,54 @@ function JPSpan_Serialize(Encoder) {
 JPSpan_Serialize.prototype = {
 
     typeMap: null,
-    
-    addType: function(cname, callback) {
+
+    addType: function (cname, callback) {
         this.typeMap[cname] = callback;
     },
-    
-    serialize: function(v) {
-    
-        switch(typeof v) {
+
+    serialize: function (v) {
+
+        switch (typeof v) {
             //-------------------------------------------------------------------
             case 'object':
-            
+
                 // It's a null value
-                if ( v === null ) {
+                if (v === null) {
                     return this.Encoder.encodeNull();
                 }
-                
+
                 // Get the constructor
                 var c = v.constructor;
-                
-                if (c != null ) {
-                
-                    // It's an array
-                    if ( c == Array ) {
-                        return this.Encoder.encodeArray(v,this);
-                    } else {
-                    
-                        // Get the class name
-                        var match = c.toString().match( /\s*function (.*)\(/ );
 
-                        if ( match == null ) {
-                            return this.Encoder.encodeObject(v,this,'JPSpan_Object');
+                if (c != null) {
+
+                    // It's an array
+                    if (c == Array) {
+                        return this.Encoder.encodeArray(v, this);
+                    } else {
+
+                        // Get the class name
+                        var match = c.toString().match(/\s*function (.*)\(/);
+
+                        if (match == null) {
+                            return this.Encoder.encodeObject(v, this, 'JPSpan_Object');
                         }
-                        
+
                         // Strip space for IE
-                        var cname = match[1].replace(/\s/,'');
-                        
+                        var cname = match[1].replace(/\s/, '');
+
                         // Has the user registers a callback for serializing this class?
-                        if ( this.typeMap[cname] ) {
+                        if (this.typeMap[cname]) {
                             return this.typeMap[cname](v, this, cname);
-                            
+
                         } else {
                             // Check for error objects
                             var match = cname.match(/Error/);
-                        
-                            if ( match == null ) {
-                                return this.Encoder.encodeObject(v,this,'JPSpan_Object');
+
+                            if (match == null) {
+                                return this.Encoder.encodeObject(v, this, 'JPSpan_Object');
                             } else {
-                                return this.Encoder.encodeError(v,this,'JPSpan_Error');
+                                return this.Encoder.encodeError(v, this, 'JPSpan_Error');
                             }
 
                         }
@@ -70,35 +70,37 @@ JPSpan_Serialize.prototype = {
                     // Return null if constructor is null
                     return this.Encoder.encodeNull();
                 }
-            break;
-            
+                break;
+
             //-------------------------------------------------------------------
             case 'string':
                 return this.Encoder.encodeString(v);
-            break;
-            
+                break;
+
             //-------------------------------------------------------------------
             case 'number':
                 if (Math.round(v) == v) {
                     return this.Encoder.encodeInteger(v);
                 } else {
                     return this.Encoder.encodeDouble(v);
-                };
-            break;
-            
+                }
+                ;
+                break;
+
             //-------------------------------------------------------------------
             case 'boolean':
                 if (v == true) {
                     return this.Encoder.encodeTrue();
                 } else {
                     return this.Encoder.encodeFalse();
-                };
-            break;
-            
+                }
+                ;
+                break;
+
             //-------------------------------------------------------------------
             default:
                 return this.Encoder.encodeNull();
-            break;
+                break;
         }
     }
 }

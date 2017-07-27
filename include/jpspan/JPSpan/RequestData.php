@@ -1,8 +1,7 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage RequestData
- * @version $Id: RequestData.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //--------------------------------------------------------------------------------
 
@@ -10,8 +9,8 @@
  * Controls stripping of magic_quotes_gpc. Set to false if you're already
  * taking care of them
  */
-if ( !defined('JPSPAN_LISTENER_STRIPQUOTES') ) {
-    define('JPSPAN_LISTENER_STRIPQUOTES',TRUE);
+if (!defined('JPSPAN_LISTENER_STRIPQUOTES')) {
+    define('JPSPAN_LISTENER_STRIPQUOTES', true);
 }
 
 /**
@@ -22,54 +21,61 @@ require_once JPSPAN . 'Unserializer.php';
 
 /**
  * Fetches data from HTTP_RAW_POST_DATA
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage RequestData
  * @public
  */
-class JPSpan_RequestData_RawPost {
+class JPSpan_RequestData_RawPost
+{
     /**
      * Returns the data, making sure they are unserialized
      * @access public
+     * @param $encoding
      * @return mixed
      * @static
      */
-    function fetch($encoding) {
-        global $HTTP_RAW_POST_DATA;
+    public function fetch($encoding)
+    {
+        $http_raw_post_data = file_get_contents('php://input');
 
-        return JPSpan_Unserializer::unserialize($HTTP_RAW_POST_DATA, $encoding);
+        return JPSpan_Unserializer::unserialize($http_raw_post_data, $encoding);
     }
 }
+
 //--------------------------------------------------------------------------------
 
 /**
  * Fetches data from HTTP POSTs (Content-Type: application/x-www-form-urlencoded)
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage RequestData
  * @public
  */
-class JPSpan_RequestData_Post {
+class JPSpan_RequestData_Post
+{
     /**
      * Returns the data, making sure they are unserialized and removing magic
      * quotes if enabled
      * @access public
+     * @param $encoding
      * @return mixed
      * @static
      */
-    function fetch($encoding) {
-        $return = array();
-        if ( JPSPAN_LISTENER_STRIPQUOTES ) {
+    public function fetch($encoding)
+    {
+        $return = [];
+        if (JPSPAN_LISTENER_STRIPQUOTES) {
             $strip = get_magic_quotes_gpc();
         } else {
-            $strip = FALSE;
+            $strip = false;
         }
-        foreach($_POST as $name => $value) {
+        foreach ($_POST as $name => $value) {
             if (is_array($value)) {
-                foreach($value as $key => $data) {
-                    $value[$key] = ($strip) ? stripslashes($data) : $data;
+                foreach ($value as $key => $data) {
+                    $value[$key] = $strip ? stripslashes($data) : $data;
                     $value[$key] = JPSpan_Unserializer::unserialize($value[$key], $encoding);
                 }
             } else {
-                $value = ($strip) ? stripslashes($value) : $value;
+                $value = $strip ? stripslashes($value) : $value;
                 $value = JPSpan_Unserializer::unserialize($value, $encoding);
             }
             $return[$name] = $value;
@@ -78,37 +84,41 @@ class JPSpan_RequestData_Post {
         return $return;
     }
 }
+
 //--------------------------------------------------------------------------------
 
 /**
  * Fetches data from HTTP GETs
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage RequestData
  * @public
  */
-class JPSpan_RequestData_Get {
+class JPSpan_RequestData_Get
+{
     /**
      * Returns the data, making sure they are unserialized and removing magic
      * quotes if enabled
      * @access public
+     * @param $encoding
      * @return mixed
      * @static
      */
-    function fetch($encoding) {
-        $return = array();
-        if ( JPSPAN_LISTENER_STRIPQUOTES ) {
+    public function fetch($encoding)
+    {
+        $return = [];
+        if (JPSPAN_LISTENER_STRIPQUOTES) {
             $strip = get_magic_quotes_gpc();
         } else {
-            $strip = FALSE;
+            $strip = false;
         }
-        foreach($_GET as $name => $value) {
+        foreach ($_GET as $name => $value) {
             if (is_array($value)) {
-                foreach($value as $key => $data) {
-                    $value[$key] = ($strip) ? stripslashes($data) : $data;
+                foreach ($value as $key => $data) {
+                    $value[$key] = $strip ? stripslashes($data) : $data;
                     $value[$key] = JPSpan_Unserializer::unserialize($value[$key], $encoding);
                 }
             } else {
-                $value = ($strip) ? stripslashes($value) : $value;
+                $value = $strip ? stripslashes($value) : $value;
                 $value = JPSpan_Unserializer::unserialize($value, $encoding);
             }
             $return[$name] = $value;

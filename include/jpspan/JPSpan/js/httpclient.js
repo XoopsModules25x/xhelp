@@ -1,6 +1,5 @@
 //---------------------------------------------------------------------------------
 // Based loosely on nsXmlRpcClient: http://mozblog.mozdev.org/nsXmlRpcClient.js
-// @version $Id: httpclient.js,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
 //---------------------------------------------------------------------------------
 
 // Decorates a normal JS exception for client side errors
@@ -14,14 +13,15 @@ function JPSpan_Client_Error(e, code) {
 
 //---------------------------------------------------------------------------------
 
-function JPSpan_HttpClient() {};
+function JPSpan_HttpClient() {
+};
 JPSpan_HttpClient.prototype = {
     xmlhttp: null,
     userhandler: null,
     timeout_id: null,
-    
+
     // @throws Error code 1000
-    init: function() {
+    init: function () {
         try {
             // Mozilla / Safari
             this.xmlhttp = new XMLHttpRequest();
@@ -35,52 +35,54 @@ JPSpan_HttpClient.prototype = {
                 'Microsoft.XMLHTTP'
             );
             var success = false;
-            for (var i=0;i < MSXML_XMLHTTP_PROGIDS.length && !success; i++) {
+            for (var i = 0; i < MSXML_XMLHTTP_PROGIDS.length && !success; i++) {
                 try {
                     this.xmlhttp = new ActiveXObject(MSXML_XMLHTTP_PROGIDS[i]);
                     success = true;
-                } catch (e) {}
+                } catch (e) {
+                }
             }
-            if ( !success ) {
+            if (!success) {
                 throw JPSpan_Client_Error(
-                        new Error('Unable to create XMLHttpRequest.'),
-                        1000
-                    );
+                    new Error('Unable to create XMLHttpRequest.'),
+                    1000
+                );
             }
         }
     },
-    
+
     // Place an synchronous call (results returned directly)
     // @param object request object for params and HTTP method
     // @return string response text
     // @throws Error codes 1001 and 1002
     call: function (request) {
 
-        if ( !this.xmlhttp ) {
+        if (!this.xmlhttp) {
             this.init();
         }
 
         if (this.callInProgress()) {
             throw JPSpan_Client_Error(
-                    new Error('Call in progress'),
-                    1001
-                );
-        };
-        
+                new Error('Call in progress'),
+                1001
+            );
+        }
+        ;
+
 
         request.type = 'sync';
         request.prepare(this.xmlhttp);
-        this.xmlhttp.setRequestHeader('Accept-Charset','UTF-8');
+        this.xmlhttp.setRequestHeader('Accept-Charset', 'UTF-8');
         request.send();
-        
-        if ( this.xmlhttp.status == 200 ) {
+
+        if (this.xmlhttp.status == 200) {
             return this.xmlhttp.responseText;
         } else {
-            var errorMsg = '['+this.xmlhttp.status
-                            +'] '+this.xmlhttp.statusText;
+            var errorMsg = '[' + this.xmlhttp.status
+                + '] ' + this.xmlhttp.statusText;
             var err = new Error(errorMsg);
             err.headers = this.xmlhttp.getAllResponseHeaders();
-            throw JPSpan_Client_Error(err,1002);
+            throw JPSpan_Client_Error(err, 1002);
         }
     },
 
@@ -88,84 +90,85 @@ JPSpan_HttpClient.prototype = {
     // @param object request object for params and HTTP method
     // @param object handler: user defined object to be called
     // @throws Error code 1001
-    asyncCall: function (request,handler) {
-    
+    asyncCall: function (request, handler) {
+
         var callName = null;
-        if ( arguments[2] ) {
+        if (arguments[2]) {
             callName = arguments[2];
         }
-        
-        if ( !this.xmlhttp ) {
+
+        if (!this.xmlhttp) {
             this.init();
         }
 
         if (this.callInProgress()) {
             throw JPSpan_Client_Error(
-                    new Error('Call in progress'),
-                    1001
-                );
-        };
+                new Error('Call in progress'),
+                1001
+            );
+        }
+        ;
 
         this.userhandler = handler;
-        
-        if ( this.userhandler.onInit ) {
+
+        if (this.userhandler.onInit) {
             try {
                 this.userhandler.onInit(callName);
-            } catch(e) {
+            } catch (e) {
                 this.displayHandlerError(e);
             }
         }
-        
+
         request.type = 'async';
         request.prepare(this.xmlhttp);
-        this.xmlhttp.setRequestHeader('Accept-Charset','UTF-8');
+        this.xmlhttp.setRequestHeader('Accept-Charset', 'UTF-8');
 
         var self = this;
 
-        this.timeout_id = window.setTimeout(function() {
+        this.timeout_id = window.setTimeout(function () {
             self.abort(self, callName);
-        },request.timeout);
+        }, request.timeout);
 
-        
-        this.xmlhttp.onreadystatechange = function() {
+
+        this.xmlhttp.onreadystatechange = function () {
             self.stateChangeCallback(self, callName);
         }
 
         request.send();
     },
 
-    
+
     // Checks to see if XmlHttpRequest is busy
     // @return boolean TRUE if busy
-    callInProgress: function() {
+    callInProgress: function () {
 
-        switch ( this.xmlhttp.readyState ) {
+        switch (this.xmlhttp.readyState) {
             case 1:
             case 2:
             case 3:
                 return true;
-            break;
+                break;
             default:
                 return false;
-            break;
+                break;
         }
 
     },
-    
+
     // Callback for timeouts: aborts the request
     // @access private
     abort: function (client, callName) {
 
-        if ( client.callInProgress() ) {
-        
+        if (client.callInProgress()) {
+
             client.xmlhttp.abort();
             var errorMsg = 'Operation timed out';
 
-            if ( callName ) {
-                errorMsg += ': '+callName;
+            if (callName) {
+                errorMsg += ': ' + callName;
             }
-            
-            if ( client.userhandler.onError ) {
+
+            if (client.userhandler.onError) {
                 var ex = JPSpan_Client_Error(new Error(errorMsg), 1003);
                 try {
                     client.userhandler.onError(ex, callName);
@@ -173,80 +176,84 @@ JPSpan_HttpClient.prototype = {
                     client.displayHandlerError(e);
                 }
             }
-            
+
         }
     },
-    
+
     // Called from stateChangeCallback if an error occurs in
     // in handler object
     // @access private
-    displayHandlerError: function(e) {
+    displayHandlerError: function (e) {
         var errorMsg = "Error in Handler\n";
-        if ( e.name ) {
-            errorMsg += 'Name: '+e.name+"\n";
-        };
-        if ( e.message ) {
-            errorMsg += 'Message: '+e.message+"\n";
-        } else if ( e.description ) {
-            errorMsg += 'Description: '+e.description+"\n";
-        };
-        if ( e.fileName ) {
-            errorMsg += 'File: '+e.fileName+"\n";
-        };
-        if ( e.lineNumber ) {
-            errorMsg += 'Line: '+e.lineNumber+"\n";
-        };
+        if (e.name) {
+            errorMsg += 'Name: ' + e.name + "\n";
+        }
+        ;
+        if (e.message) {
+            errorMsg += 'Message: ' + e.message + "\n";
+        } else if (e.description) {
+            errorMsg += 'Description: ' + e.description + "\n";
+        }
+        ;
+        if (e.fileName) {
+            errorMsg += 'File: ' + e.fileName + "\n";
+        }
+        ;
+        if (e.lineNumber) {
+            errorMsg += 'Line: ' + e.lineNumber + "\n";
+        }
+        ;
         alert(errorMsg);
     },
 
     // Callback for asyncCalls
     // @access private
-    stateChangeCallback: function(client, callName) {
+    stateChangeCallback: function (client, callName) {
 
         switch (client.xmlhttp.readyState) {
 
             // XMLHTTPRequest.open() has just been called
             case 1:
-                if ( client.userhandler.onOpen ) {
+                if (client.userhandler.onOpen) {
                     try {
                         client.userhandler.onOpen(callName);
-                    } catch(e) {
+                    } catch (e) {
                         client.displayHandlerError(e);
                     }
                 }
-            break;
+                break;
 
             // XMLHTTPRequest.send() has just been called
             case 2:
-                if ( client.userhandler.onSend ) {
+                if (client.userhandler.onSend) {
                     try {
                         client.userhandler.onSend(callName);
-                    } catch(e) {
+                    } catch (e) {
                         client.displayHandlerError(e);
                     }
                 }
-            break;
-            
+                break;
+
             // Fetching response from server in progress
             case 3:
-                if ( client.userhandler.onProgress ) {
+                if (client.userhandler.onProgress) {
                     try {
                         client.userhandler.onProgress(callName);
-                    } catch(e) {
+                    } catch (e) {
                         client.displayHandlerError(e);
                     }
                 }
-            break;
-            
+                break;
+
             // Download complete
             case 4:
 
                 window.clearTimeout(client.timeout_id);
 
                 try {
-                    switch ( client.xmlhttp.status ) {
+                    switch (client.xmlhttp.status) {
                         case 200:
-                            if ( client.userhandler.onLoad ) {
+                            if (client.userhandler.onLoad) {
                                 try {
                                     client.userhandler.onLoad(client.xmlhttp.responseText, callName);
                                 } catch (e) {
@@ -254,21 +261,21 @@ JPSpan_HttpClient.prototype = {
                                 }
                             }
                             break;
-                        
+
                         // Special case for IE on aborted requests
                         case 0:
                             // Do nothing
                             break;
-                            
+
                         default:
-                            if ( client.userhandler.onError ) {
+                            if (client.userhandler.onError) {
                                 try {
-                                var errorMsg = '['+client.xmlhttp.status
-                                    +'] '+client.xmlhttp.statusText;
-                                var err = new Error(errorMsg);
-                                err.headers = this.xmlhttp.getAllResponseHeaders();
-                                client.userhandler.onError(JPSpan_Client_Error(err,1002), callName);
-                                } catch(e) {
+                                    var errorMsg = '[' + client.xmlhttp.status
+                                        + '] ' + client.xmlhttp.statusText;
+                                    var err = new Error(errorMsg);
+                                    err.headers = this.xmlhttp.getAllResponseHeaders();
+                                    client.userhandler.onError(JPSpan_Client_Error(err, 1002), callName);
+                                } catch (e) {
                                     client.displayHandlerError(e);
                                 }
                             }
@@ -278,7 +285,7 @@ JPSpan_HttpClient.prototype = {
                 } catch (e) {
                     // client.xmlhttp.status not available - failed requests
                 }
-            break;
+                break;
         }
     }
 }

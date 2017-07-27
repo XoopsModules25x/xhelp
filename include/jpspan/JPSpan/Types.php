@@ -1,79 +1,86 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Types
- * @version $Id: Types.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //--------------------------------------------------------------------------------
 
 /**
  * Javascript Objects are unserialized into instances of
  * of this class
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Types
- * @access public
+ * @access     public
  */
-class JPSpan_Object {}
+class JPSpan_Object
+{
+}
+
 //--------------------------------------------------------------------------------
 
 /**
  * Used to generate Javascript errors
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Types
- * @access public
+ * @access     public
  */
-class JPSpan_Error {
+class JPSpan_Error
+{
     /**
      * Error code
      * @var string
      * @access public
      */
-    var $code;
+    public $code;
 
     /**
      * Name of Javascript error class
      * @var string
      * @access public
      */
-    var $name;
+    public $name;
 
     /**
      * Error message
      * @var string
      * @access public
      */
-    var $message;
+    public $message;
 
     /**
      * Values can be passed optionally to the constructor
-     * @param int (optional) error code
-     * @param string (optional) name to be given to Javascript error class
-     * @param string (optional) error message
-     * @return void
-     * @access public
+     * @param null        $code
+     * @param null|string $name
+     * @param null        $message
+     * @internal param int $error code
+     * @internal param string $name to be given to Javascript error class
+     * @internal param string $error message
+     * @access   public
      */
-    function JPSpan_Error($code=NULL,$name=NULL,$message=NULL) {
-        if ( $code && $name && $message ) {
-            $this->setError($code,$name,$message);
+    public function __construct($code = null, $name = null, $message = null)
+    {
+        if ($code && $name && $message) {
+            $this->setError($code, $name, $message);
         }
     }
 
     /**
      * Set the error name and message (also reports to the monitor
-     * @see JPSpan_Monitor
-     * @param int error code
+     * @see    JPSpan_Monitor
+     * @param int    error code
      * @param string name to be given to Javascript error class
      * @param string error message
      * @return void
      * @access public
      */
-    function setError($code,$name,$message) {
-        $this->code = $code;
-        $this->name = $name;
+    public function setError($code, $name, $message)
+    {
+        $this->code    = $code;
+        $this->name    = $name;
         $this->message = $message;
 
         require_once JPSPAN . 'Monitor.php';
-        $M = & JPSpan_Monitor::instance();
+        $M = &JPSpan_Monitor::instance();
         $M->announceError($name, $code, $message, __FILE__, __LINE__);
     }
 }
@@ -82,12 +89,13 @@ class JPSpan_Error {
 /**
  * Registers the native types for unserialization. Called when Unserializer.php is
  * included (and expects it to already be included)
- * @access private
+ * @access     private
  * @return void
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Types
  */
-function JPSpan_Register_Unserialization_Types() {
+function JPSpan_Register_Unserialization_Types()
+{
     JPSpan_Unserializer::addType('JPSpan_Object');
     JPSpan_Unserializer::addType('JPSpan_Error');
 }

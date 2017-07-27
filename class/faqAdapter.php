@@ -1,18 +1,22 @@
 <?php
-// $Id: faqAdapter.php,v 1.4 2005/11/23 16:05:02 ackbarr Exp $
+//
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
-require_once(XHELP_CLASS_PATH .'/faq.php');
+require_once XHELP_CLASS_PATH . '/faq.php';
 
 define('XHELP_FAQ_CATEGORY_SING', 0);
 define('XHELP_FAQ_CATEGORY_MULTI', 1);
 define('XHELP_FAQ_CATEGORY_NONE', 2);
 
-class xhelpFaqAdapter {
-    var $categoryType = XHELP_FAQ_CATEGORY_SING;
+/**
+ * Class XHelpFaqAdapter
+ */
+class XHelpFaqAdapter
+{
+    public $categoryType = XHELP_FAQ_CATEGORY_SING;
 
     /**
      * Adapter Details
@@ -26,19 +30,20 @@ class xhelpFaqAdapter {
      * module_dir - module directory name (not needed if class overloads the isActive() function from xhelpFAQAdapter)
      * @access public
      */
-    var $meta = array(
-            'name' => '',
-            'author' => '',
-            'author_email' => '',
-            'version' => '',
-            'tested_versions' => '',
-            'url' => '',
-            'module_dir' => '');
+    public $meta = [
+        'name'            => '',
+        'author'          => '',
+        'author_email'    => '',
+        'version'         => '',
+        'tested_versions' => '',
+        'url'             => '',
+        'module_dir'      => ''
+    ];
 
     /**
      * Perform any initilization needed
      */
-    function init()
+    public function init()
     {
     }
 
@@ -46,15 +51,14 @@ class xhelpFaqAdapter {
      * Stub function (does nothing)
      * @return array of xhelpFaqCategory objects
      */
-    function &getCategories()
+    public function &getCategories()
     {
-
     }
 
     /**
      * @return bool true (success)/false (failure)
      */
-    function storeFaq()
+    public function storeFaq()
     {
         // Store an faq
         return false;
@@ -63,7 +67,7 @@ class xhelpFaqAdapter {
     /**
      * @return xhelpFaq object
      */
-    function &createFaq()
+    public function createFaq()
     {
         // Create an faq
         $faq = new xhelpFaq();
@@ -74,23 +78,24 @@ class xhelpFaqAdapter {
     /**
      * @return bool true (success) / false (failure)
      */
-    function isActive()
+    public function isActive()
     {
-        $module_dir = $this->meta['module_dir'];
+        $module_dir  = $this->meta['module_dir'];
         $module_name = $this->meta['name'];
 
-        if($module_dir == '' || $module_name == ''){      // Sanity check
+        if ($module_dir == '' || $module_name == '') {      // Sanity check
+
             return false;
         }
 
         // Make sure that module is active
-        $hModule =& xoops_gethandler('module');
-        $mod =& $hModule->getByDirname($module_dir);
+        $hModule = xoops_getHandler('module');
+        $mod     = $hModule->getByDirname($module_dir);
 
-        if(is_object($mod)){
-            if($mod->getVar('isactive')){   // Module active?
+        if (is_object($mod)) {
+            if ($mod->getVar('isactive')) {   // Module active?
                 $activeAdapter = xhelpGetMeta('faq_adapter');
-                if($activeAdapter = $module_name){
+                if ($activeAdapter = $module_name) {
                     return true;
                 } else {
                     return false;

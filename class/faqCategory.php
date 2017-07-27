@@ -1,22 +1,40 @@
 <?php
-// $Id: faqCategory.php,v 1.3 2005/11/23 17:20:27 eric_juden Exp $
 
-class xhelpFaqCategory extends XoopsObject {
-    function xhelpFaqCategory()
+//
+
+/**
+ * Class XHelpFaqCategory
+ */
+class XHelpFaqCategory extends XoopsObject
+{
+    /**
+     * XHelpFaqCategory constructor.
+     */
+    public function __construct()
     {
         $this->initVar('id', XOBJ_DTYPE_INT, null, false);
         $this->initVar('name', XOBJ_DTYPE_TXTBOX, null, true, 255);
         $this->initVar('parent', XOBJ_DTYPE_INT, null, false);
     }
 
-    function &create()
+    /**
+     * @return XHelpFaqCategory
+     */
+    public function &create()
     {
         return new xhelpFaqCategory();
     }
 }
 
-Class xhelpFaqCategoryHandler extends XoopsObjectHandler {
-    function &create()
+/**
+ * Class XHelpFaqCategoryHandler
+ */
+class XHelpFaqCategoryHandler extends XoopsObjectHandler
+{
+    /**
+     * @return XHelpFaqCategory
+     */
+    public function &create()
     {
         return new xhelpFaqCategory();
     }

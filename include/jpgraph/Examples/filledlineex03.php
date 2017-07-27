@@ -1,11 +1,11 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_line.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_line.php';
 
-$datay = array(11,30,20,13,10,'x',16,12,'x',15,4,9);
+$datay = array(11, 30, 20, 13, 10, 'x', 16, 12, 'x', 15, 4, 9);
 
 // Setup the graph
-$graph = new Graph(400,250);
+$graph = new Graph(400, 250);
 $graph->SetScale('intlin');
 $graph->title->Set('Filled line with NULL values');
 //Make sure data starts from Zero whatever data we have

@@ -1,22 +1,24 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_bar.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_bar.php';
 
 // Callback function for Y-scale to get 1000 separator on labels
-function separator1000($aVal) {
+function separator1000($aVal)
+{
     return number_format($aVal);
 }
 
-function separator1000_usd($aVal) {
-    return '$'.number_format($aVal);
+function separator1000_usd($aVal)
+{
+    return '$' . number_format($aVal);
 }
 
 // Some data
-$datay=array(120567,134013,192000,87000);
+$datay = array(120567, 134013, 192000, 87000);
 
 // Create the graph and setup the basic parameters
-$graph = new Graph(500,300,'auto');
-$graph->img->SetMargin(80,30,30,40);
+$graph = new Graph(500, 300, 'auto');
+$graph->img->SetMargin(80, 30, 30, 40);
 $graph->SetScale('textint');
 $graph->SetShadow();
 $graph->SetFrame(false); // No border around the graph
@@ -36,9 +38,9 @@ $graph->xaxis->SetFont(FF_FONT2);
 
 // Setup graph title ands fonts
 $graph->title->Set('Example of Y-scale callback formatting');
-$graph->title->SetFont(FF_FONT2,FS_BOLD);
+$graph->title->SetFont(FF_FONT2, FS_BOLD);
 $graph->xaxis->title->Set('Year 2002');
-$graph->xaxis->title->SetFont(FF_FONT2,FS_BOLD);
+$graph->xaxis->title->SetFont(FF_FONT2, FS_BOLD);
 
 // Create a bar pot
 $bplot = new BarPlot($datay);
@@ -50,12 +52,12 @@ $bplot->SetShadow();
 $bplot->value->Show();
 
 // Must use TTF fonts if we want text at an arbitrary angle
-$bplot->value->SetFont(FF_ARIAL,FS_BOLD);
+$bplot->value->SetFont(FF_ARIAL, FS_BOLD);
 $bplot->value->SetAngle(45);
 $bplot->value->SetFormatCallback('separator1000_usd');
 
 // Black color for positive values and darkred for negative values
-$bplot->value->SetColor('black','darkred');
+$bplot->value->SetColor('black', 'darkred');
 $graph->Add($bplot);
 
 // Finally stroke the graph

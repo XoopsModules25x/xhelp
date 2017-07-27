@@ -19,16 +19,16 @@
  *
  *   You might (will) want to play around with the addListRow() method to make the output prettier.
  *
- *   You might also want to change the line 
+ *   You might also want to change the line
  *       element.name = 'file_' + this.count;
  *   ...to a naming convention that makes more sense to you.
- * 
+ *
  * Licence:
  *   Use this however/wherever you like, just don't blame me if it breaks anything.
  *
  * Credit:
  *   If you're nice, you'll leave this bit:
- *  
+ *
  *   Class by Stickman -- http://www.the-stickman.com
  *      with thanks to:
  *      [for Safari fixes]
@@ -38,119 +38,122 @@
  *      [for duplicate name bug]
  *         'neal'
  */
-function MultiSelector( list_target, max ){
+function MultiSelector(list_target, max) {
 
-	// Where to write the list
-	this.list_target = list_target;
-	// How many elements?
-	this.count = 0;
-	// How many elements?
-	this.id = 0;
-	// Is there a maximum?
-	if( max ){
-		this.max = max;
-	} else {
-		this.max = -1;
-	};
-	
-	/**
-	 * Add a new file input element
-	 */
-	this.addElement = function( element ){
+    // Where to write the list
+    this.list_target = list_target;
+    // How many elements?
+    this.count = 0;
+    // How many elements?
+    this.id = 0;
+    // Is there a maximum?
+    if (max) {
+        this.max = max;
+    } else {
+        this.max = -1;
+    }
+    ;
 
-		// Make sure it's a file input element
-		if( element.tagName == 'INPUT' && element.type == 'file' ){
+    /**
+     * Add a new file input element
+     */
+    this.addElement = function (element) {
 
-			// Element name -- what number am I?
-			element.name = 'userfile_' + this.id++;
+        // Make sure it's a file input element
+        if (element.tagName == 'INPUT' && element.type == 'file') {
 
-			// Add reference to this object
-			element.multi_selector = this;
+            // Element name -- what number am I?
+            element.name = 'userfile_' + this.id++;
 
-			// What to do when a file is selected
-			element.onchange = function(){
+            // Add reference to this object
+            element.multi_selector = this;
 
-				// New file input
-				var new_element = document.createElement( 'input' );
-				new_element.type = 'file';
+            // What to do when a file is selected
+            element.onchange = function () {
 
-				// Add new element
-				this.parentNode.insertBefore( new_element, this );
+                // New file input
+                var new_element = document.createElement('input');
+                new_element.type = 'file';
 
-				// Apply 'update' to element
-				this.multi_selector.addElement( new_element );
+                // Add new element
+                this.parentNode.insertBefore(new_element, this);
 
-				// Update list
-				this.multi_selector.addListRow( this );
+                // Apply 'update' to element
+                this.multi_selector.addElement(new_element);
 
-				// Hide this: we can't use display:none because Safari doesn't like it
-				this.style.position = 'absolute';
-				this.style.left = '-1000px';
+                // Update list
+                this.multi_selector.addListRow(this);
 
-			};
-			// If we've reached maximum number, disable input element
-			if( this.max != -1 && this.count >= this.max ){
-				element.disabled = true;
-			};
+                // Hide this: we can't use display:none because Safari doesn't like it
+                this.style.position = 'absolute';
+                this.style.left = '-1000px';
 
-			// File element counter
-			this.count++;
-			// Most recent element
-			this.current_element = element;
-			
-		} else {
-			// This can only be applied to file input elements!
-			alert( 'Error: not a file input element' );
-		};
+            };
+            // If we've reached maximum number, disable input element
+            if (this.max != -1 && this.count >= this.max) {
+                element.disabled = true;
+            }
+            ;
 
-	};
+            // File element counter
+            this.count++;
+            // Most recent element
+            this.current_element = element;
 
-	/**
-	 * Add a new row to the list of files
-	 */
-	this.addListRow = function( element ){
+        } else {
+            // This can only be applied to file input elements!
+            alert('Error: not a file input element');
+        }
+        ;
 
-		// Row div
-		var new_row = document.createElement( 'div' );
+    };
 
-		// Delete button
-		var new_row_button = document.createElement( 'input' );
-		new_row_button.type = 'button';
-		new_row_button.value = 'Delete';
+    /**
+     * Add a new row to the list of files
+     */
+    this.addListRow = function (element) {
 
-		// References
-		new_row.element = element;
+        // Row div
+        var new_row = document.createElement('div');
 
-		// Delete function
-		new_row_button.onclick= function(){
+        // Delete button
+        var new_row_button = document.createElement('input');
+        new_row_button.type = 'button';
+        new_row_button.value = 'Delete';
 
-			// Remove element from form
-			this.parentNode.element.parentNode.removeChild( this.parentNode.element );
+        // References
+        new_row.element = element;
 
-			// Remove this row from the list
-			this.parentNode.parentNode.removeChild( this.parentNode );
+        // Delete function
+        new_row_button.onclick = function () {
 
-			// Decrement counter
-			this.parentNode.element.multi_selector.count--;
+            // Remove element from form
+            this.parentNode.element.parentNode.removeChild(this.parentNode.element);
 
-			// Re-enable input element (if it's disabled)
-			this.parentNode.element.multi_selector.current_element.disabled = false;
+            // Remove this row from the list
+            this.parentNode.parentNode.removeChild(this.parentNode);
 
-			// Appease Safari
-			//    without it Safari wants to reload the browser window
-			//    which nixes your already queued uploads
-			return false;
-		};
+            // Decrement counter
+            this.parentNode.element.multi_selector.count--;
 
-		// Set row value
-		new_row.innerHTML = element.value;
+            // Re-enable input element (if it's disabled)
+            this.parentNode.element.multi_selector.current_element.disabled = false;
 
-		// Add button
-		new_row.appendChild( new_row_button );
+            // Appease Safari
+            //    without it Safari wants to reload the browser window
+            //    which nixes your already queued uploads
+            return false;
+        };
 
-		// Add it to the list
-		this.list_target.appendChild( new_row );
-		
-	};
+        // Set row value
+        new_row.innerHTML = element.value;
+
+        // Add button
+        new_row.appendChild(new_row_button);
+
+        // Add it to the list
+        this.list_target.appendChild(new_row);
+
+    };
 
 };

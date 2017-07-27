@@ -1,11 +1,12 @@
 <?php
 //------------------------------------------------------------------------------||
-// Creator:		Alan Juden						||
-// Creation Date:	8/10/2004						||
-// Filename:		admin_buttons.php					||
-// Description:		Draws nice looking tabs in the admin section		||
-//										||
+// Creator:     Alan Juden                      ||
+// Creation Date:   8/10/2004                       ||
+// Filename:        admin_buttons.php                   ||
+// Description:     Draws nice looking tabs in the admin section        ||
+//                                      ||
 //------------------------------------------------------------------------------||
+
 /**
  * @todo - comment code (phpdocumentor)
  * @todo - move to XHELP_CLASS_PATH
@@ -13,66 +14,77 @@
  */
 class AdminButtons
 {
-    var $arrLinks = array();
-    var $arrUrls = array();
-    var $arrTopLinks = array();
-    var $arrTopUrls = array();
-    var $admintitle;
-    var $selectedtab;
+    public $arrLinks    = [];
+    public $arrUrls     = [];
+    public $arrTopLinks = [];
+    public $arrTopUrls  = [];
+    public $admintitle;
+    public $selectedtab;
 
-    function AdminButtons()
+    /**
+     * AdminButtons constructor.
+     * @param        $linkname
+     * @param        $url
+     * @param string $key
+     */
+    public function __construct($linkname, $url, $key = '')
     {
-         
-    }
-
-    function AddButton($linkname, $url, $key = '')
-    {
-        if(!$key){
+        if (!$key) {
             $this->arrLinks[] = $linkname;
-            $this->arrUrls[] = $url;
+            $this->arrUrls[]  = $url;
         } else {
             $this->arrLinks[$key] = $linkname;
-            $this->arrUrls[$key] = $url;
+            $this->arrUrls[$key]  = $url;
         }
     }
 
-    function AddTopLink($linkname, $url, $key = '')
+    /**
+     * @param        $linkname
+     * @param        $url
+     * @param string $key
+     */
+    public function AddTopLink($linkname, $url, $key = '')
     {
         if (!$key) {
             $this->arrTopLinks[] = $linkname;
-            $this->arrTopUrls[] = $url;
+            $this->arrTopUrls[]  = $url;
         } else {
             $this->arrTopLinks[$key] = $linkname;
-            $this->arrTopUrls[$key] = $url;
+            $this->arrTopUrls[$key]  = $url;
         }
     }
 
-    function AddTitle($title)
+    /**
+     * @param $title
+     */
+    public function AddTitle($title)
     {
         $this->admintitle = $title;
     }
 
-    function renderButtons($selectedtab = 0)
+    /**
+     * @param int $selectedtab
+     * @return string
+     */
+    public function renderButtons($selectedtab = 0)
     {
-        $section = "";
-        $i = 0;
-         
+        $section = '';
+        $i       = 0;
+
         if ($selectedtab) {
             $this->setSelectedTab($selectedtab);
         } else {
             $selectedtab = $this->getSelectedTab();
         }
-         
-        $section .= "<style type='text/css'>@import \"../styles/admin_buttons.css\";</style>";
-         
-         
+
+        $section .= "<style type='text/css'>@import \"../assets/css/admin_buttons.css\";</style>";
+
         $section .= "<div id=\"buttonNav\">\n";
-        $section .= "<h2 id=\"appTitle\">". $this->admintitle . "</h2>\n";
+        $section .= "<h2 id=\"appTitle\">" . $this->admintitle . "</h2>\n";
         $section .= "<ul id=\"linkMenu\">\n";
-        for ($i = 0; $i < count($this->arrTopLinks); $i++)
-        {
+        for ($i = 0, $iMax = count($this->arrTopLinks); $i < $iMax; ++$i) {
             if ($i) {
-                $section .= "<li>";
+                $section .= '<li>';
             } else {
                 $section .= "<li class=\"first\">";
             }
@@ -82,27 +94,30 @@ class AdminButtons
         $section .= "</ul>\n";
         $section .= "<ul id=\"buttonMenu\">\n";
         //Add the Tabs
-        foreach ($this->arrLinks as $key=>$value){
-            if($key == $selectedtab){
+        foreach ($this->arrLinks as $key => $value) {
+            if ($key == $selectedtab) {
                 $section .= "<li id=\"current\">";
             } else {
-                $section .= "<li>";
+                $section .= '<li>';
             }
             $section .= "<a href=\"" . $this->arrUrls[$key] . "\"><span>" . $this->arrLinks[$key] . "</span></a></li>\n";
         }
         $section .= "</ul>\n";
-        $section .= "<br class=\"lclear\" />\n";
+        $section .= "<br class=\"lclear\">\n";
         $section .= "</div>\n";
-         
+
         return $section;
     }
 
-    function setSelectedTab($value)
+    /**
+     * @param $value
+     */
+    public function setSelectedTab($value)
     {
         $this->selectedtab = $value;
     }
 
-    function getSelectedTab()
+    public function getSelectedTab()
     {
         return $this->selectedtab;
     }

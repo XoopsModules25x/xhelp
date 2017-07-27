@@ -1,15 +1,15 @@
 <?php // content="text/plain; charset=utf-8"
 
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_bar.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_bar.php';
 
 // We need some data
-$datay=array(4,8,6);
+$datay = array(4, 8, 6);
 
 // Setup the graph.
-$graph = new Graph(200,150);
-$graph->SetScale("textlin");
-$graph->img->SetMargin(25,15,25,25);
+$graph = new Graph(200, 150);
+$graph->SetScale('textlin');
+$graph->img->SetMargin(25, 15, 25, 25);
 
 $graph->title->Set('"GRAD_MIDHOR"');
 $graph->title->SetColor('darkred');
@@ -23,10 +23,10 @@ $bplot = new BarPlot($datay);
 $bplot->SetWidth(0.6);
 
 // Setup color for gradient fill style
-$bplot->SetFillGradient("navy","lightsteelblue",GRAD_MIDHOR);
+$bplot->SetFillGradient('navy', 'lightsteelblue', GRAD_MIDHOR);
 
 // Set color for the frame of each bar
-$bplot->SetColor("navy");
+$bplot->SetColor('navy');
 $graph->Add($bplot);
 
 // Finally send the graph to the browser

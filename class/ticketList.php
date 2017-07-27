@@ -1,24 +1,41 @@
 <?php
-//$Id: ticketList.php,v 1.8 2005/11/21 15:47:47 eric_juden Exp $
-//  ------------------------------------------------------------------------ //
-//                XOOPS - PHP Content Management System                      //
-//                    Copyright (c) 2000 XOOPS.org                           //
-//                       <http://www.xoops.org/>                             //
-//  ------------------------------------------------------------------------ //
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
-require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
+require_once XHELP_CLASS_PATH . '/xhelpBaseObjectHandler.php';
 
 /**
  * xhelpTicketList class
  *
- * @author Eric Juden <ericj@epcusa.com>
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com>
+ * @access  public
  * @package xhelp
  */
-class xhelpTicketList extends XoopsObject {
-    function xhelpTicketList($id = null)
+class XHelpTicketList extends XoopsObject
+{
+    /**
+     * XHelpTicketList constructor.
+     * @param null $id
+     */
+    public function __construct($id = null)
     {
         $this->initVar('id', XOBJ_DTYPE_INT, null, false);
         $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
@@ -40,19 +57,19 @@ class xhelpTicketList extends XoopsObject {
  *
  * TicketList Handler for xhelpTicketList class
  *
- * @author Eric Juden <ericj@epcusa.com> &
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com> &
+ * @access  public
  * @package xhelp
  */
-
-class xhelpTicketListHandler extends xhelpBaseObjectHandler {
+class XHelpTicketListHandler extends xhelpBaseObjectHandler
+{
     /**
      * Name of child class
      *
      * @var string
-     * @access	private
+     * @access  private
      */
-    var $classname = 'xhelpticketlist';
+    public $classname = 'xhelpticketlist';
 
     /**
      * DB table name
@@ -60,46 +77,55 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
      * @var string
      * @access private
      */
-    var $_dbtable = 'xhelp_ticket_lists';
+    public $_dbtable = 'xhelp_ticket_lists';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function xhelpTicketListHandler(&$db)
+    public function __construct(XoopsDatabase $db)
     {
         parent::init($db);
     }
 
-    function _insertQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("INSERT INTO %s (id, uid, searchid, weight) VALUES (%u, %d, %u, %u)",
-        $this->_db->prefix($this->_dbtable), $id, $uid, $searchid, $weight);
+        $sql = sprintf('INSERT INTO %s (id, uid, searchid, weight) VALUES (%u, %d, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $searchid, $weight);
 
         return $sql;
-
     }
 
-    function _updateQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("UPDATE %s SET uid = %d, searchid = %u, weight = %u WHERE id = %u",
-        $this->_db->prefix($this->_dbtable), $uid, $searchid, $weight, $id);
+        $sql = sprintf('UPDATE %s SET uid = %d, searchid = %u, weight = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $searchid, $weight, $id);
 
         return $sql;
     }
 
-    function _deleteQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _deleteQuery($obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
@@ -107,9 +133,14 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
     }
 
     // Weight of last ticketList(from staff) and +1
-    function createNewWeight($uid)
+
+    /**
+     * @param $uid
+     * @return int
+     */
+    public function createNewWeight($uid)
     {
-        $uid = intval($uid);
+        $uid = (int)$uid;
 
         $crit = new CriteriaCompo(new Criteria('uid', $uid), 'OR');
         $crit->add(new Criteria('uid', XHELP_GLOBAL_UID), 'OR');
@@ -117,28 +148,33 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
         $crit->setOrder('desc');
         $crit->setLimit(1);
         $ticketList = $this->getObjects($crit);
-        $weight = ((is_object($ticketList[0])) ? $ticketList[0]->getVar('weight') : 0);
+        $weight     = (is_object($ticketList[0]) ? $ticketList[0]->getVar('weight') : 0);
 
         return $weight + 1;
     }
 
-    function changeWeight($listID, $up = true)
+    /**
+     * @param      $listID
+     * @param bool $up
+     * @return bool
+     */
+    public function changeWeight($listID, $up = true)
     {
-        $listID = intval($listID);
-        $ticketList =& $this->get($listID);     // Get ticketList being changed
+        $listID           = (int)$listID;
+        $ticketList       = $this->get($listID);     // Get ticketList being changed
         $origTicketWeight = $ticketList->getVar('weight');
-        $crit = new Criteria('weight', $origTicketWeight, (($up) ? '<' : '>'));
+        $crit             = new Criteria('weight', $origTicketWeight, ($up ? '<' : '>'));
         $crit->setSort('weight');
-        $crit->setOrder(($up) ? 'DESC' : 'ASC');
+        $crit->setOrder($up ? 'DESC' : 'ASC');
         $crit->setLimit(1);
 
-        $changeTicketList =& $this->getObject($crit);               // Get ticketList being changed with
-        $newTicketWeight = $changeTicketList->getVar('weight');
+        $changeTicketList = $this->getObject($crit);               // Get ticketList being changed with
+        $newTicketWeight  = $changeTicketList->getVar('weight');
 
         $ticketList->setVar('weight', $newTicketWeight);
-        if($this->insert($ticketList, true)){      // If first one succeeds, change 2nd number
+        if ($this->insert($ticketList, true)) {      // If first one succeeds, change 2nd number
             $changeTicketList->setVar('weight', $origTicketWeight);
-            if(!$this->insert($changeTicketList, true)){
+            if (!$this->insert($changeTicketList, true)) {
                 return false;
             }
         } else {
@@ -146,12 +182,16 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
         }
     }
 
-    function &getObject($criteria = null)
+    /**
+     * @param null $criteria
+     * @return array|bool
+     */
+    public function &getObject($criteria = null)
     {
-        $ret    = array();
-        $limit  = $start = 0;
-        $sql    = $this->_selectQuery($criteria);
-        $id     = $this->_idfield;
+        $ret   = [];
+        $limit = $start = 0;
+        $sql   = $this->_selectQuery($criteria);
+        $id    = $this->_idfield;
 
         if (isset($criteria)) {
             $limit = $criteria->getLimit();
@@ -163,7 +203,7 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
             return $ret;
         }
         $numrows = $this->_db->getRowsNum($result);
-        if($numrows == 1) {
+        if ($numrows == 1) {
             $obj = new $this->classname($this->_db->fetchArray($result));
 
             return $obj;
@@ -172,9 +212,13 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
         }
     }
 
-    function &getListsByUser($uid)
+    /**
+     * @param $uid
+     * @return array
+     */
+    public function &getListsByUser($uid)
     {
-        $uid = intval($uid);
+        $uid  = (int)$uid;
         $crit = new CriteriaCompo(new Criteria('uid', $uid), 'OR');
         $crit->add(new Criteria('uid', XHELP_GLOBAL_UID), 'OR');
         $crit->setSort('weight');
@@ -183,23 +227,27 @@ class xhelpTicketListHandler extends xhelpBaseObjectHandler {
         return $ret;
     }
 
-    function createStaffGlobalLists($uid)
+    /**
+     * @param $uid
+     * @return bool|void
+     */
+    public function createStaffGlobalLists($uid)
     {
-        $hSavedSearches =& xhelpGetHandler('savedSearch');
-        $uid = intval($uid);
+        $hSavedSearches = xhelpGetHandler('savedSearch');
+        $uid            = (int)$uid;
 
         $crit = new Criteria('uid', XHELP_GLOBAL_UID);
         $crit->setSort('id');
         $crit->setOrder('ASC');
         $globalSearches = $hSavedSearches->getObjects($crit, true);
-        $i = 1;
-        foreach($globalSearches as $search){
-            $list =& $this->create();
+        $i              = 1;
+        foreach ($globalSearches as $search) {
+            $list = $this->create();
             $list->setVar('uid', $uid);
             $list->setVar('searchid', $search->getVar('id'));
             $list->setVar('weight', $i);
             $ret = $this->insert($list, true);
-            $i++;
+            ++$i;
         }
 
         return $ret;

@@ -1,5 +1,5 @@
 <?php
-// $Id: timeSpentByDept.php,v 1.1 2006/01/31 16:34:32 eric_juden Exp $
+//
 
 define('_XHELP_TSBD_NAME', 'Time Spent By Department');
 define('_XHELP_TSBD_DESC', 'Retrieve the amount of time spent by each department.');

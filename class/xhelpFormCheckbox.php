@@ -1,8 +1,11 @@
 <?php
 
-include_once XOOPS_ROOT_PATH."/class/xoopsform/formcheckbox.php";
+require_once XOOPS_ROOT_PATH . '/class/xoopsform/formcheckbox.php';
 
-class xhelpFormCheckbox extends XoopsFormCheckbox
+/**
+ * Class XHelpFormCheckbox
+ */
+class XHelpFormCheckbox extends XoopsFormCheckbox
 {
     /**
      * Add an option
@@ -10,7 +13,8 @@ class xhelpFormCheckbox extends XoopsFormCheckbox
      * @param string $value
      * @param string $name
      */
-    function addOption($value, $name=""){
+    public function addOption($value, $name = '')
+    {
         $this->_options[$value] = $name;
     }
 }

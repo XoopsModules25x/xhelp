@@ -1,27 +1,27 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_pie.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_pie.php';
 
-$data = array(40,60,31,35);
+$data = array(40, 60, 31, 35);
 
 // A new pie graph
-$graph = new PieGraph(250,200);
+$graph = new PieGraph(250, 200);
 $graph->SetShadow();
 
 // Title setup
-$graph->title->Set("Exploding all slices");
-$graph->title->SetFont(FF_FONT1,FS_BOLD);
+$graph->title->Set('Exploding all slices');
+$graph->title->SetFont(FF_FONT1, FS_BOLD);
 
 // Setup the pie plot
 $p1 = new PiePlot($data);
 
 // Adjust size and position of plot
 $p1->SetSize(0.35);
-$p1->SetCenter(0.5,0.52);
+$p1->SetCenter(0.5, 0.52);
 
 // Setup slice labels and move them into the plot
-$p1->value->SetFont(FF_FONT1,FS_BOLD);
-$p1->value->SetColor("darkred");
+$p1->value->SetFont(FF_FONT1, FS_BOLD);
+$p1->value->SetColor('darkred');
 $p1->SetLabelPos(0.65);
 
 // Explode all slices

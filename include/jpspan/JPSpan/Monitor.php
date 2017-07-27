@@ -1,75 +1,81 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Monitor
- * @version $Id: Monitor.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //--------------------------------------------------------------------------------
 /**
  * Define as TRUE to switch on monitor
  */
-if ( !defined('JPSPAN_MONITOR') ) {
-    define('JPSPAN_MONITOR',FALSE);
+if (!defined('JPSPAN_MONITOR')) {
+    define('JPSPAN_MONITOR', false);
 }
 
 /**
  * Observable for logging - notifies registered logger of events
  * You should create instances of this using the instance method
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Monitor
- * @access public
+ * @access     public
  */
-class JPSpan_Monitor {
-
+class JPSpan_Monitor
+{
     /**
      * Array of request info containing keys 'class', 'method', 'args'
      * @var array
      * @access private
      */
-    var $requestInfo = array('class'=>NULL,'method'=>NULL,'args'=>NULL);
+    public $requestInfo = ['class' => null, 'method' => null, 'args' => null];
 
     /**
      * Array of response info containing keys 'payload'
      * @var array
      * @access private
      */
-    var $responseInfo = array('payload'=>NULL);
+    public $responseInfo = ['payload' => null];
 
     /**
      * Objects observing the monitor
      * @var array
      * @access private
      */
-    var $observers = array();
+    public $observers = [];
 
     /**
      * Register and observer for notifications
-     * @see JPSpan_Monitor_Observer
+     * @see    JPSpan_Monitor_Observer
      * @param object
      * @return void
      * @access public
      */
-    function addObserver(& $Observer) {
-        $this->observers[] = & $Observer;
+    public function addObserver(& $Observer)
+    {
+        $this->observers[] =& $Observer;
     }
 
     /**
      * Add a value to the request info.
-     * @param string key ('class', 'method'  or 'args')
+     * @param $key
+     * @param $value
      * @return void
-     * @access protected
+     * @internal param key $string
+     * @access   protected
      */
-    function setRequestInfo($key,$value) {
+    public function setRequestInfo($key, $value)
+    {
         $this->requestInfo[$key] = $value;
     }
 
     /**
      * Add a value to the response info.
-     * @param string key ('payload')
+     * @param $key
+     * @param $value
      * @return void
-     * @access protected
+     * @internal param key $string
+     * @access   protected
      */
-    function setResponseInfo($key,$value) {
+    public function setResponseInfo($key, $value)
+    {
         $this->responseInfo[$key] = $value;
     }
 
@@ -78,22 +84,23 @@ class JPSpan_Monitor {
      * @return array
      * @access private
      */
-    function prepareData() {
-        global $HTTP_RAW_POST_DATA;
+    public function prepareData()
+    {
+        $http_raw_post_data = file_get_contents('php://input');
 
-        $Data = array (
-            'timestamp' => time(),
-            'gmt' => gmdate("D, d M Y H:i:s", time())." GMT",
-            'requestInfo' => $this->requestInfo,
+        $Data = [
+            'timestamp'    => time(),
+            'gmt'          => gmdate('D, d M Y H:i:s', time()) . ' GMT',
+            'requestInfo'  => $this->requestInfo,
             'responseInfo' => $this->responseInfo,
-            'SERVER'=>$_SERVER,
-            'GET'=>$_GET,
-            'POST'=>$_POST,
-            'RAWPOST'=>$HTTP_RAW_POST_DATA,
-        );
+            'SERVER'       => $_SERVER,
+            'GET'          => $_GET,
+            'POST'         => $_POST,
+            'RAWPOST'      => $http_raw_post_data,
+        ];
 
-        if ( function_exists('apache_request_headers') ) {
-            $Data['requestHeaders']= apache_request_headers();
+        if (function_exists('apache_request_headers')) {
+            $Data['requestHeaders']  = apache_request_headers();
             $Data['responseHeaders'] = apache_response_headers();
         }
 
@@ -103,18 +110,19 @@ class JPSpan_Monitor {
     /**
      * Report and error to observers
      * @param string name of error
-     * @param int error code
+     * @param int    error code
      * @param string error message
      * @param string file where error was triggered
-     * @param int line number in file where error was triggered
+     * @param int    line number in file where error was triggered
      * @return void
      * @access protected
      */
-    function announceError($name, $code, $message, $file, $line) {
-        $Data = $this->prepareData();
+    public function announceError($name, $code, $message, $file, $line)
+    {
+        $Data              = $this->prepareData();
         $Data['errorName'] = $name;
         $Data['errorCode'] = $code;
-        $Data['errorMsg'] = $message;
+        $Data['errorMsg']  = $message;
         $Data['errorFile'] = $file;
         $Data['errorLine'] = $line;
         foreach (array_keys($this->observers) as $key) {
@@ -127,7 +135,8 @@ class JPSpan_Monitor {
      * @return void
      * @access protected
      */
-    function announceSuccess() {
+    public function announceSuccess()
+    {
         $Data = $this->prepareData();
         foreach (array_keys($this->observers) as $key) {
             $this->observers[$key]->success($Data);
@@ -140,11 +149,12 @@ class JPSpan_Monitor {
      * @return JPSpan_Monitor or JPSpan_Monitor_Null is monitoring disabled
      * @access public
      */
-    function & instance($getMonitor = FALSE) {
-        static $Monitor = NULL;
-        if ( !$Monitor ) {
+    public function & instance($getMonitor = false)
+    {
+        static $Monitor = null;
+        if (!$Monitor) {
             // Allow constant or argument to specify use of the real instance
-            if ( JPSPAN_MONITOR || $getMonitor ) {
+            if (JPSPAN_MONITOR || $getMonitor) {
                 $Monitor = new JPSpan_Monitor();
             } else {
                 $Monitor = new JPSpan_Monitor_Null();
@@ -153,44 +163,72 @@ class JPSpan_Monitor {
 
         return $Monitor;
     }
-
 }
 
 /**
  * Null monitor for when monitoring is disabled
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Monitor
- * @access public
+ * @access     public
  */
-class JPSpan_Monitor_Null {
+class JPSpan_Monitor_Null
+{
+    /**
+     * @param $Observer
+     */
+    public function addObserver(& $Observer)
+    {
+    }
 
-    function addObserver(& $Observer) {}
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function setRequestInfo($key, $value)
+    {
+    }
 
-    function setRequestInfo($key,$value) {}
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function setResponseInfo($key, $value)
+    {
+    }
 
-    function setResponseInfo($key,$value) {}
+    /**
+     * @param $name
+     * @param $code
+     * @param $message
+     * @param $file
+     * @param $line
+     */
+    public function announceError($name, $code, $message, $file, $line)
+    {
+    }
 
-    function announceError($name, $code, $message, $file, $line) {}
-
-    function announceSuccess() {}
-
+    public function announceSuccess()
+    {
+    }
 }
 
 /**
  * Interface observers should provide. Just for info - you don't need to directly extend it
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Monitor
- * @access public
+ * @access     public
  */
-class JPSpan_Monitor_Observer {
-
+class JPSpan_Monitor_Observer
+{
     /**
      * Called when an error occurs
      * @param array request / response / error / environment data snapshot
      * @return void
      * @access public
      */
-    function error($Data) {}
+    public function error($Data)
+    {
+    }
 
     /**
      * Called on a successful request / response
@@ -198,6 +236,7 @@ class JPSpan_Monitor_Observer {
      * @return void
      * @access public
      */
-    function success($Data) {}
-
+    public function success($Data)
+    {
+    }
 }

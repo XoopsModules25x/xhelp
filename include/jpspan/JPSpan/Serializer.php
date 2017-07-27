@@ -2,9 +2,8 @@
 /**
  * Library for serializing PHP variables into Javascript for use with
  * Javascript eval()
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @version $Id: Serializer.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //-----------------------------------------------------------------------------
 
@@ -17,49 +16,49 @@ require_once JPSPAN . 'CodeWriter.php';
 /**
  * Define global for mapping PHP types to element generation
  * classes
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
  */
-$GLOBALS['_JPSPAN_SERIALIZER_MAP'] = array(
-    'string'=>array(
-        'class'=>'JPSpan_SerializedString',
-        'file'=>NULL
-),
-    'integer'=>array(
-        'class'=>'JPSpan_SerializedInteger',
-        'file'=>NULL
-),
-    'boolean'=>array(
-        'class'=>'JPSpan_SerializedBoolean',
-        'file'=>NULL
-),
-    'double'=>array(
-        'class'=>'JPSpan_SerializedFloat',
-        'file'=>NULL
-),
-    'null'=>array(
-        'class'=>'JPSpan_SerializedNull',
-        'file'=>NULL
-),
-    'array'=>array(
-        'class'=>'JPSpan_SerializedArray',
-        'file'=>NULL
-),
-    'object'=>array(
-        'class'=>'JPSpan_SerializedObject',
-        'file'=>NULL
-),
-    'jpspan_error'=>array(
-        'class'=>'JPSpan_SerializedError',
-        'file'=>NULL
-),
-);
+$GLOBALS['_JPSPAN_SERIALIZER_MAP'] = [
+    'string'       => [
+        'class' => 'JPSpan_SerializedString',
+        'file'  => null
+    ],
+    'integer'      => [
+        'class' => 'JPSpan_SerializedInteger',
+        'file'  => null
+    ],
+    'boolean'      => [
+        'class' => 'JPSpan_SerializedBoolean',
+        'file'  => null
+    ],
+    'double'       => [
+        'class' => 'JPSpan_SerializedFloat',
+        'file'  => null
+    ],
+    'null'         => [
+        'class' => 'JPSpan_SerializedNull',
+        'file'  => null
+    ],
+    'array'        => [
+        'class' => 'JPSpan_SerializedArray',
+        'file'  => null
+    ],
+    'object'       => [
+        'class' => 'JPSpan_SerializedObject',
+        'file'  => null
+    ],
+    'jpspan_error' => [
+        'class' => 'JPSpan_SerializedError',
+        'file'  => null
+    ],
+];
 //-----------------------------------------------------------------------------
 
 /**
  * Serializes PHP data types into a JavaScript string containing an Function
  * object for use with eval()<br>
- * Based on Frederic Saunier's JSserializerCLASS<br/>
+ * Based on Frederic Saunier's JSserializerCLASS<br>
  * Example:
  * <pre>
  * $myVar = 'Hello World!';
@@ -72,12 +71,13 @@ $GLOBALS['_JPSPAN_SERIALIZER_MAP'] = array(
  * var data_func = eval(data_serialized);
  * var data = data_func(); // data now contains string: Hello World!
  * </pre>
- * @see http://www.tekool.net/php/js_serializer/
- * @package JPSpan
+ * @see        http://www.tekool.net/php/js_serializer/
+ * @package    JPSpan
  * @subpackage Serializer
- * @access public
+ * @access     public
  */
-class JPSpan_Serializer {
+class JPSpan_Serializer
+{
     /**
      * Serializes a PHP data structure into Javascript
      * @param mixed PHP data structure
@@ -85,30 +85,33 @@ class JPSpan_Serializer {
      * @access public
      * @static
      */
-    function serialize($data) {
-        JPSpan_getTmpVar(TRUE);
-        $code = & new JPSpan_CodeWriter();
-        $root = & new JPSpan_RootElement($data);
+    public function serialize($data)
+    {
+        JPSpan_getTmpVar(true);
+        $code = new JPSpan_CodeWriter();
+        $root = new JPSpan_RootElement($data);
         $root->generate($code);
 
         return $code->toString();
     }
+
     /**
      * Adds an entry to the type map
-     * @param string name of type
-     * @param string name of PHP class to map type to
-     * @param string (optional) filename where class can be found
+     * @param                   string                     name of type
+     * @param                   string                     name of PHP class to map type to
+     * @param                   string                     (optional) filename                   where class can be found
      * @return void
      * @access public
      * @static
      */
-    function addType($type,$class,$file=NULL) {
-        $GLOBALS['_JPSPAN_SERIALIZER_MAP'][strtolower($type)] =
-        array (
-                'class'=>$class,
-                'file'=>$file,
-        );
+    public function addType($type, $class, $file = null)
+    {
+        $GLOBALS['_JPSPAN_SERIALIZER_MAP'][strtolower($type)] = [
+            'class' => $class,
+            'file'  => $file,
+        ];
     }
+
     /**
      * Determine the type of a PHP value, returning an object
      * used to generated a serialized Javascript representation
@@ -116,23 +119,24 @@ class JPSpan_Serializer {
      * @return object subclass of JPSpan_SerializedElement
      * @access protected
      */
-    function & reflect($data) {
+    public function & reflect($data)
+    {
         $type = strtolower(gettype($data));
-        if ( $type == 'object' ) {
+        if ($type == 'object') {
             $objtype = strtolower(get_class($data));
-            if (array_key_exists($objtype,$GLOBALS['_JPSPAN_SERIALIZER_MAP']) ) {
+            if (array_key_exists($objtype, $GLOBALS['_JPSPAN_SERIALIZER_MAP'])) {
                 $type = $objtype;
             }
         }
-        if ( array_key_exists($type,$GLOBALS['_JPSPAN_SERIALIZER_MAP']) ) {
+        if (array_key_exists($type, $GLOBALS['_JPSPAN_SERIALIZER_MAP'])) {
             $class = $GLOBALS['_JPSPAN_SERIALIZER_MAP'][$type]['class'];
-            $file = $GLOBALS['_JPSPAN_SERIALIZER_MAP'][$type]['file'];
-            if ( !is_null($file) ) {
+            $file  = $GLOBALS['_JPSPAN_SERIALIZER_MAP'][$type]['file'];
+            if (null !== $file) {
                 require_once $file;
             }
-            $element = & new $class();
+            $element = new $class();
         } else {
-            $element = & new JPSpan_SerializedNull();
+            $element = new JPSpan_SerializedNull();
         }
         $element->setTmpVar();
         $element->setValue($data);
@@ -140,48 +144,54 @@ class JPSpan_Serializer {
         return $element;
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Function for generating temporary variable names for use in
  * serialized Javascript. Uses a static counter to keep names
  * unique
+ * @param bool $refresh
  * @return string e.g. t2
- * @access protected
- * @package JPSpan
+ * @access     protected
+ * @package    JPSpan
  * @subpackage Serializer
  */
-function JPSpan_getTmpVar($refresh = FALSE) {
+function JPSpan_getTmpVar($refresh = false)
+{
     static $count = 1;
-    if ( !$refresh ) {
-        $name = 't'.$count;
-        $count++;
+    if (!$refresh) {
+        $name = 't' . $count;
+        ++$count;
 
         return $name;
     }
     $count = 1;
 }
+
 //-----------------------------------------------------------------------------
+
 /**
  * Wraps the generated JavaScript in an anonymous function
- * @access protected
- * @package JPSpan
+ * @access     protected
+ * @package    JPSpan
  * @subpackage Serializer
  */
-class JPSpan_RootElement {
-
+class JPSpan_RootElement
+{
     /**
      * Data to be serialized
      * @var mixed
      * @access private
      */
-    var $data;
+    public $data;
 
     /**
      * @param mixed data to be serialized
      * @access protected
      */
-    function JPSpan_RootElement($data) {
+    public function __construct($data)
+    {
         $this->data = $data;
     }
 
@@ -192,36 +202,37 @@ class JPSpan_RootElement {
      * @return void
      * @access protected
      */
-    function generate(&$code) {
-
-        $child = & JPSpan_Serializer::reflect($this->data);
+    public function generate(&$code)
+    {
+        $child = &JPSpan_Serializer::reflect($this->data);
         $child->generate($code);
 
-        $code->write('new Function("'.addcslashes($code->toString(),"\000\042\047\134").$child->getReturn().'");');
+        $code->write('new Function("' . addcslashes($code->toString(), "\000\042\047\134") . $child->getReturn() . '");');
     }
 }
 
 /**
  * Base of class hierarchy for generating Javascript
- * @access protected
- * @package JPSpan
+ * @access     protected
+ * @package    JPSpan
  * @subpackage Serializer
  * @abstract
  */
-class JPSpan_SerializedElement {
+class JPSpan_SerializedElement
+{
     /**
      * Value of the element - used only for scalar types
      * @var mixed
      * @access private
      */
-    var $value;
+    public $value;
 
     /**
      * Temporary variable name to use in serialized Javascript
      * @var string
      * @access private
      */
-    var $tmpName;
+    public $tmpName;
 
     /**
      * Sets the value of the element
@@ -229,7 +240,8 @@ class JPSpan_SerializedElement {
      * @return void
      * @access protected
      */
-    function setValue($value) {
+    public function setValue($value)
+    {
         $this->value = $value;
     }
 
@@ -238,7 +250,8 @@ class JPSpan_SerializedElement {
      * @return void
      * @access protected
      */
-    function setTmpVar() {
+    public function setTmpVar()
+    {
         $this->tmpName = JPSpan_getTmpVar();
     }
 
@@ -248,8 +261,9 @@ class JPSpan_SerializedElement {
      * @return string
      * @access protected
      */
-    function getReturn() {
-        return 'return '.$this->tmpName.';';
+    public function getReturn()
+    {
+        return 'return ' . $this->tmpName . ';';
     }
 
     /**
@@ -258,145 +272,167 @@ class JPSpan_SerializedElement {
      * @return void
      * @access protected
      */
-    function generate(&$code) {}
-
+    public function generate(&$code)
+    {
+    }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Generates the representation of a string in Javascript
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedString extends JPSpan_SerializedElement {
+class JPSpan_SerializedString extends JPSpan_SerializedElement
+{
     /**
      * @param JPSpan_CodeWriter
      * @return void
      * @access protected
      */
-    function generate(&$code) {
-        $value = addcslashes($this->value,"\000\042\047\134");
-        $value = str_replace("\r\n",'\n',$value);
-        $value = str_replace("\n",'\n',$value);
-        $value = str_replace("\r",'\n',$value);
-        $value = str_replace("\t",'\t',$value);
+    public function generate(&$code)
+    {
+        $value = addcslashes($this->value, "\000\042\047\134");
+        $value = str_replace("\r\n", '\n', $value);
+        $value = str_replace("\n", '\n', $value);
+        $value = str_replace("\r", '\n', $value);
+        $value = str_replace("\t", '\t', $value);
         $code->append("var {$this->tmpName} = '$value';");
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Generates the representation of a boolean value in Javascript
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedBoolean extends JPSpan_SerializedElement {
+class JPSpan_SerializedBoolean extends JPSpan_SerializedElement
+{
     /**
      * @param JPSpan_CodeWriter
      * @return void
      * @access protected
      */
-    function generate(&$code) {
-        if ( $this->value ) {
+    public function generate(&$code)
+    {
+        if ($this->value) {
             $code->append("var {$this->tmpName} = true;");
         } else {
             $code->append("var {$this->tmpName} = false;");
         }
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Generates the representation of an integer value in Javascript
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedInteger extends JPSpan_SerializedElement {
+class JPSpan_SerializedInteger extends JPSpan_SerializedElement
+{
     /**
      * @param JPSpan_CodeWriter
      * @return void
      * @access protected
      */
-    function generate(&$code) {
+    public function generate(&$code)
+    {
         $code->append("var {$this->tmpName} = parseInt('{$this->value}');");
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Generates the representation of a float value in Javascript
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedFloat extends JPSpan_SerializedElement {
+class JPSpan_SerializedFloat extends JPSpan_SerializedElement
+{
     /**
      * @param JPSpan_CodeWriter
      * @return void
      * @access protected
      */
-    function generate(&$code) {
+    public function generate(&$code)
+    {
         $code->append("var {$this->tmpName} = parseFloat('{$this->value}');");
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Generates the representation of a null value in Javascript
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedNull extends JPSpan_SerializedElement {
+class JPSpan_SerializedNull extends JPSpan_SerializedElement
+{
     /**
      * @param JPSpan_CodeWriter
      * @return void
      * @access protected
      */
-    function generate(&$code) {
+    public function generate(&$code)
+    {
         $code->append("var {$this->tmpName} = null;");
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Generates the representation of an array in Javascript
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedArray extends JPSpan_SerializedElement {
+class JPSpan_SerializedArray extends JPSpan_SerializedElement
+{
     /**
      * Representations of the elements of the array
      * @var array
      * @access private
      */
-    var $children = array();
+    public $children = [];
+
     /**
      * @param mixed
      * @return void
      * @access protected
      */
-    function setValue($value) {
-        foreach ( $value as $key => $value ) {
-            $this->children[$key] = & JPSpan_Serializer::reflect($value);
+    public function setValue($value)
+    {
+        foreach ($value as $key => $value) {
+            $this->children[$key] = &JPSpan_Serializer::reflect($value);
         }
     }
+
     /**
      * @param JPSpan_CodeWriter
      * @return void
      * @access protected
      */
-    function generate(&$code) {
+    public function generate(&$code)
+    {
         $code->append("var {$this->tmpName} = new Array();");
-        foreach ( array_keys($this->children) as $key ) {
+        foreach (array_keys($this->children) as $key) {
             $this->children[$key]->generate($code);
             $tmpName = $this->children[$key]->tmpName;
             // Spot the difference between index and hash keys..
-            if ( preg_match('/^[0-9]+$/',$key) ) {
+            if (preg_match('/^[0-9]+$/', $key)) {
                 $code->append("{$this->tmpName}[$key] = $tmpName;");
             } else {
                 $code->append("{$this->tmpName}['$key'] = $tmpName;");
@@ -404,48 +440,53 @@ class JPSpan_SerializedArray extends JPSpan_SerializedElement {
         }
 
         // Override Javascript toString to display hash values
-        $toString = "function() { ";
-        $toString.= "var str = '[';";
-        $toString.= "var sep = '';";
-        $toString.= "for (var prop in this) { ";
-        $toString.= "if (prop == 'toString') { continue; }";
-        $toString.= "str+=sep+prop+': '+this[prop];";
-        $toString.= "sep = ', ';";
-        $toString.= "} return str+']';";
-        $toString.= "}";
+        $toString = 'function() { ';
+        $toString .= "var str = '[';";
+        $toString .= "var sep = '';";
+        $toString .= 'for (var prop in this) { ';
+        $toString .= "if (prop == 'toString') { continue; }";
+        $toString .= "str+=sep+prop+': '+this[prop];";
+        $toString .= "sep = ', ';";
+        $toString .= "} return str+']';";
+        $toString .= '}';
 
         $code->append("{$this->tmpName}.toString = $toString;");
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * Generates the representation of an object in Javascript
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedObject extends JPSpan_SerializedElement {
+class JPSpan_SerializedObject extends JPSpan_SerializedElement
+{
     /**
      * Name for Javascript object
      * @var string (= Object)
      * @access private
      */
-    var $classname = 'Object';
+    public $classname = 'Object';
     /**
      * Representations of the properties of the object
      * @var array
      * @access private
      */
-    var $children = array();
+    public $children = [];
+
     /**
      * @param mixed
      * @return void
      * @access protected
      */
-    function setValue($value) {
+    public function setValue($value)
+    {
         $this->setChildValues($value);
     }
+
     /**
      * Called from setValue. Sets the value of all children of
      * an object
@@ -453,21 +494,25 @@ class JPSpan_SerializedObject extends JPSpan_SerializedElement {
      * @return void
      * @access protected
      */
-    function setChildValues($value) {
+    public function setChildValues($value)
+    {
         $properties = get_object_vars($value);
-        foreach ( array_keys($properties) as $property ) {
-            $this->children[$property] = & JPSpan_Serializer::reflect($value->$property);
+        foreach (array_keys($properties) as $property) {
+            $this->children[$property] = &JPSpan_Serializer::reflect($value->$property);
         }
     }
+
     /**
      * @param JPSpan_CodeWriter
      * @return void
      * @access protected
      */
-    function generate(&$code) {
-        $code->append('var '.$this->tmpName.' = new '.$this->classname.'();');
+    public function generate(&$code)
+    {
+        $code->append('var ' . $this->tmpName . ' = new ' . $this->classname . '();');
         $this->generateChildren($code);
     }
+
     /**
      * Called from generate. Invokes generate on each child
      * of the object
@@ -475,11 +520,12 @@ class JPSpan_SerializedObject extends JPSpan_SerializedElement {
      * @return void
      * @access protected
      */
-    function generateChildren(&$code) {
-        foreach ( array_keys($this->children) as $key ) {
+    public function generateChildren(&$code)
+    {
+        foreach (array_keys($this->children) as $key) {
             $this->children[$key]->generate($code);
             $tmpName = $this->children[$key]->tmpName;
-            if ( preg_match('/^[0-9]+$/',$key) ) {
+            if (preg_match('/^[0-9]+$/', $key)) {
                 $code->append("{$this->tmpName}[$key] = $tmpName;");
             } else {
                 $code->append("{$this->tmpName}.$key = $tmpName;");
@@ -487,6 +533,7 @@ class JPSpan_SerializedObject extends JPSpan_SerializedElement {
         }
     }
 }
+
 //-----------------------------------------------------------------------------
 
 /**
@@ -494,44 +541,45 @@ class JPSpan_SerializedObject extends JPSpan_SerializedElement {
  * Note that you can only generate a single error and that it will
  * erase all other generated code (the first error in a data structure
  * will be that which be generated)
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Serializer
- * @access protected
+ * @access     protected
  */
-class JPSpan_SerializedError {
-
+class JPSpan_SerializedError
+{
     /**
      * Name of Javascript Error class
      * @var string
      * @access private
      */
-    var $name;
+    public $name;
 
     /**
      * Error message
      * @var string
      * @access private
      */
-    var $message;
+    public $message;
 
     /**
      * Obey interface
      * @var string
      * @access private
      */
-    var $tmpName = '';
+    public $tmpName = '';
 
     /**
      * @param mixed
      * @return void
      * @access protected
      */
-    function setValue($error) {
-        $this->code = $error->code;
-        $this->name = $error->name;
+    public function setValue($error)
+    {
+        $this->code    = $error->code;
+        $this->name    = $error->name;
         $this->message = strip_tags($error->message);
-        $this->message = str_replace("'",'',$this->message);
-        $this->message = str_replace('"','',$this->message);
+        $this->message = str_replace("'", '', $this->message);
+        $this->message = str_replace('"', '', $this->message);
     }
 
     /**
@@ -539,14 +587,17 @@ class JPSpan_SerializedError {
      * @return void
      * @access protected
      */
-    function setTmpVar() {}
+    public function setTmpVar()
+    {
+    }
 
     /**
      * Errors do no return - exception thrown
      * @ return string empty
      * @access protected
      */
-    function getReturn() {
+    public function getReturn()
+    {
         return '';
     }
 
@@ -555,16 +606,16 @@ class JPSpan_SerializedError {
      * @return void
      * @access protected
      */
-    function generate(&$code) {
-
+    public function generate(&$code)
+    {
         $error = "var e = new Error('{$this->message}');";
         $error .= "e.name = '{$this->name}';";
         $error .= "e.code = '{$this->code}';";
-        $error .= "throw e;";
+        $error .= 'throw e;';
         // Wrap in anon function - violates RootElement
-        $code->write('new Function("'.addcslashes($error,"\000\042\047\134").'");');
+        $code->write('new Function("' . addcslashes($error, "\000\042\047\134") . '");');
 
         // Disable further code writing so only single Error returned
-        $code->enabled = FALSE;
+        $code->enabled = false;
     }
 }

@@ -7,22 +7,22 @@
  * Abstract class responsible for outputting pages of the xhelp application
  *
  *
- * @author Brian Wahoff <ackbarr@xoops.org>
- * @access public
+ * @author  Brian Wahoff <ackbarr@xoops.org>
+ * @access  public
  * @package xhelp
  */
-
-class xhelp_Renderer
+class XHelp_Renderer
 {
-    function xhelp_Renderer()
+    /**
+     * XHelp_Renderer constructor.
+     */
+    public function __construct()
     {
         //Do Nothing
         exit();
     }
 
-    function render()
+    public function render()
     {
-
     }
-
 }

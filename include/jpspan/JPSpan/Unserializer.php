@@ -1,19 +1,18 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Unserialzier
- * @version $Id: Unserializer.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //--------------------------------------------------------------------------------
 
 /**
  * Global array of known classes which may be unserialized.
  * Use JPSpan_Unserializer::register() to register new types
- * @see JPSpan_Unserializer::register
- * @package JPSpan
+ * @see        JPSpan_Unserializer::register
+ * @package    JPSpan
  * @subpackage Unserialzier
  */
-$GLOBALS['_JPSPAN_UNSERIALIZER_MAP'] = array();
+$GLOBALS['_JPSPAN_UNSERIALIZER_MAP'] = [];
 
 /**
  * Include the Script Server types for mapping JS <> PHP
@@ -30,11 +29,12 @@ JPSpan_Register_Unserialization_Types();
 
 /**
  * Handles unserialization on incoming request data
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Unserialzier
- * @access public
+ * @access     public
  */
-class JPSpan_Unserializer {
+class JPSpan_Unserializer
+{
     /**
      * Unserialize a string into PHP data types.
      * @param string data serialized with PHP's serialization protocol
@@ -43,16 +43,17 @@ class JPSpan_Unserializer {
      * @access private
      * @static
      */
-    function unserialize($data, $encoding = 'xml') {
-        switch ( $encoding ) {
+    public function unserialize($data, $encoding = 'xml')
+    {
+        switch ($encoding) {
             case 'php':
                 require_once JPSPAN . 'Unserializer/PHP.php';
-                $U = & new JPSpan_Unserializer_PHP();
+                $U = new JPSpan_Unserializer_PHP();
                 break;
             case 'xml':
             default:
                 require_once JPSPAN . 'Unserializer/XML.php';
-                $U = & new JPSpan_Unserializer_XML();
+                $U = new JPSpan_Unserializer_XML();
                 break;
         }
 
@@ -62,14 +63,14 @@ class JPSpan_Unserializer {
     /**
      * Register a known class for unserialization
      * Places a value in the global _JPSpan_UNSERIALIZER_MAP variable
-     * @param string class name
-     * @param string (optional) script include - your job to get path right!
+     * @param                   string                   class name
+     * @param                   string                   (optional) script                   include - your job to get path right!
      * @return void
      * @access public
      * @static
      */
-    function addType($class, $file = NULL) {
+    public function addType($class, $file = null)
+    {
         $GLOBALS['_JPSPAN_UNSERIALIZER_MAP'][strtolower($class)] = $file;
     }
-
 }

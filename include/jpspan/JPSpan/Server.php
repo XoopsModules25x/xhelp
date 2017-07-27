@@ -1,15 +1,14 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Server
- * @version $Id: Server.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //--------------------------------------------------------------------------------
 /**
  * Define
  */
-if ( !defined('JPSPAN') ) {
-    define('JPSPAN',dirname(__FILE__).'/');
+if (!defined('JPSPAN')) {
+    define('JPSPAN', __DIR__ . '/');
 }
 /**
  * Include
@@ -19,45 +18,46 @@ require_once JPSPAN . 'Handle.php';
 
 /**
  * Base Server class.
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Server
  * @public
  * @abstract
  */
-class JPSpan_Server {
-
+class JPSpan_Server
+{
     /**
      * Hash of user defined handlers (keys are class name)
      * @var array
      * @access private
      */
-    var $handlers = array();
+    public $handlers = [];
 
     /**
      * Descriptions of handlers stored here as hash
      * @var array
      * @access private
      */
-    var $descriptions = array();
+    public $descriptions = [];
 
     /**
      * URL where server is published
      * @var string
      * @access private
      */
-    var $serverUrl;
+    public $serverUrl;
 
     /**
      * Sets up the default server url
      * @access public
      */
-    function JPSpan_Server() {
-        if ( isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ) {
+    public function __construct()
+    {
+        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') {
             $prot = 'https://';
         } else {
             $prot = 'http://';
         }
-        $this->serverUrl = $prot.$_SERVER['HTTP_HOST'].$this->resolveScriptName();
+        $this->serverUrl = $prot . $_SERVER['HTTP_HOST'] . $this->resolveScriptName();
     }
 
     /**
@@ -66,7 +66,8 @@ class JPSpan_Server {
      * @return void
      * @access public
      */
-    function setServerUrl($serverUrl) {
+    public function setServerUrl($serverUrl)
+    {
         $this->serverUrl = $serverUrl;
     }
 
@@ -75,7 +76,8 @@ class JPSpan_Server {
      * @return string server url (where the server is public)
      * @access public
      */
-    function getServerUrl() {
+    public function getServerUrl()
+    {
         return $this->serverUrl;
     }
 
@@ -86,15 +88,16 @@ class JPSpan_Server {
      * @return mixed object handler or FALSE if not found
      * @access public
      */
-    function & getHandler($name) {
+    public function & getHandler($name)
+    {
         $name = strtolower($name);
-        if ( isset($this->handlers[$name]) ) {
+        if (isset($this->handlers[$name])) {
             JPSpan_Handle::resolve($this->handlers[$name]);
 
             return $this->handlers[$name];
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -103,38 +106,42 @@ class JPSpan_Server {
      * @return mixed object handler description or FALSE if not found
      * @access public
      */
-    function getDescription($name) {
+    public function getDescription($name)
+    {
         $name = strtolower($name);
-        if ( isset($this->descriptions[$name]) ) {
+        if (isset($this->descriptions[$name])) {
             return $this->descriptions[$name];
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
      * Registers a user handler class with the server
-     * @see http://wact.sourceforge.net/index.php/Handle
-     * @param mixed handle to user class
+     * @see      http://wact.sourceforge.net/index.php/Handle
+     * @param      $Handle
+     * @param null $Description
      * @return void
-     * @access public
+     * @internal param handle $mixed to user class
+     * @access   public
      */
-    function addHandler(& $Handle, $Description = NULL) {
-        if ( is_null($Description) ) {
-            if ( FALSE !== ($Description = JPSpan_Handle::examine($Handle)) ) {
-                $this->handlers[$Description->Class] = & $Handle;
+    public function addHandler(& $Handle, $Description = null)
+    {
+        if (null === $Description) {
+            if (false !== ($Description = JPSpan_Handle::examine($Handle))) {
+                $this->handlers[$Description->Class]     =& $Handle;
                 $this->descriptions[$Description->Class] = $Description;
             } else {
-                trigger_error('Invalid handle',E_USER_ERROR);
+                trigger_error('Invalid handle', E_USER_ERROR);
             }
         } else {
-            if ( isset($Description->Class) && is_string($Description->Class) && is_array($Description->methods) ) {
-                $Description->Class = strtolower($Description->Class);
-                $Description->methods = array_map('strtolower',$Description->methods);
-                $this->handlers[strtolower($Description->Class)] = & $Handle;
+            if (isset($Description->Class) && is_string($Description->Class) && is_array($Description->methods)) {
+                $Description->Class                                  = strtolower($Description->Class);
+                $Description->methods                                = array_map('strtolower', $Description->methods);
+                $this->handlers[strtolower($Description->Class)]     =& $Handle;
                 $this->descriptions[strtolower($Description->Class)] = $Description;
             } else {
-                trigger_error('Invalid description',E_USER_ERROR);
+                trigger_error('Invalid description', E_USER_ERROR);
             }
         }
     }
@@ -145,7 +152,9 @@ class JPSpan_Server {
      * @access public
      * @abstract
      */
-    function getGenerator() {}
+    public function getGenerator()
+    {
+    }
 
     /**
      * Start serving (override in subclasses)
@@ -153,7 +162,9 @@ class JPSpan_Server {
      * @access public
      * @abstact
      */
-    function serve() {}
+    public function serve()
+    {
+    }
 
     /**
      * Returns the portion of the URL to the right of the executed
@@ -164,27 +175,26 @@ class JPSpan_Server {
      * @access public
      * @static
      */
-    function getUriPath() {
-
-        $basePath = explode('/',$this->resolveScriptName());
-        $script = array_pop($basePath);
-        $basePath = implode('/',$basePath);
+    public function getUriPath()
+    {
+        $basePath = explode('/', $this->resolveScriptName());
+        $script   = array_pop($basePath);
+        $basePath = implode('/', $basePath);
 
         // Determine URI path - path variables to the right of the PHP script
-        if ( $script && ( false !== strpos ( $_SERVER['REQUEST_URI'], $script ) ) ) {
-            $uriPath = explode( $script,$_SERVER['REQUEST_URI'] );
+        if ($script && (false !== strpos($_SERVER['REQUEST_URI'], $script))) {
+            $uriPath = explode($script, $_SERVER['REQUEST_URI']);
             $uriPath = $uriPath[1];
         } else {
-            $pattern = '/^'.str_replace('/','\/',$basePath).'/';
-            $uriPath = preg_replace($pattern,'',$_SERVER['REQUEST_URI']);
+            $pattern = '/^' . str_replace('/', '\/', $basePath) . '/';
+            $uriPath = preg_replace($pattern, '', $_SERVER['REQUEST_URI']);
         }
-        if ( FALSE !== ( $pos = strpos($uriPath,'?') )  ) {
-            $uriPath = substr($uriPath,0,$pos);
+        if (false !== ($pos = strpos($uriPath, '?'))) {
+            $uriPath = substr($uriPath, 0, $pos);
         }
-        $uriPath = preg_replace(array('/^\//','/\/$/'),'',$uriPath);
+        $uriPath = preg_replace(['/^\//', '/\/$/'], '', $uriPath);
 
         return $uriPath;
-
     }
 
     /**
@@ -194,8 +204,9 @@ class JPSpan_Server {
      * @return string script name
      * @access public
      */
-    function resolveScriptName() {
-        if ( isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] == $_SERVER['PHP_SELF'] ) {
+    public function resolveScriptName()
+    {
+        if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] == $_SERVER['PHP_SELF']) {
             $script_name = $_SERVER['PATH_INFO'];
         } else {
             $script_name = $_SERVER['SCRIPT_NAME'];
@@ -206,17 +217,21 @@ class JPSpan_Server {
 
     /**
      * Load the error reader
-     * @param string (optional) 2 letter localization code e.g. 'en'
-     * @param array (optional) list of Application_Errors to merge in
-     * @param array (optional) list of Server_Errors to merge in
-     * @param array (optional) list of Client_Errors to merge in
-     * @todo Break this function up
+     * @param string $lang (optional) 2 letter localization code e.g. 'en'
+     * @param array  $app
+     * @param array  $ser
+     * @param array  $cli
      * @return void
-     * @access public
+     * @internal param array $list of Application_Errors to merge in
+     * @internal param array $list of Server_Errors to merge in
+     * @internal param array $list of Client_Errors to merge in
+     * @todo     Break this function up
+     * @access   public
      */
-    function loadErrorReader($lang='en',$app=array(),$ser=array(),$cli=array()) {
+    public function loadErrorReader($lang = 'en', $app = [], $ser = [], $cli = [])
+    {
         require_once JPSPAN . 'Include.php';
-        JPSpan_Include_ErrorReader($lang,$app,$ser,$cli);
+        JPSpan_Include_ErrorReader($lang, $app, $ser, $cli);
     }
 
     /**
@@ -224,18 +239,18 @@ class JPSpan_Server {
      * @return void
      * @access public
      */
-    function displayClient() {
-        $G = & $this->getGenerator();
+    public function displayClient()
+    {
+        $G =& $this->getGenerator();
         require_once JPSPAN . 'Include.php';
-        $I = & JPSpan_Include::instance();
+        $I = &JPSpan_Include::instance();
 
         // HACK - this needs to change
-        $I->loadString(__FILE__,$G->getClient());
+        $I->loadString(__FILE__, $G->getClient());
         $client = $I->getCode();
         header('Content-Type: application/x-javascript');
-        header('Content-Length: '.strlen($client));
+        header('Content-Length: ' . strlen($client));
         echo $client;
         exit();
     }
-
 }

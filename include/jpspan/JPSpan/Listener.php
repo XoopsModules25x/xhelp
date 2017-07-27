@@ -1,8 +1,7 @@
 <?php
 /**
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Listener
- * @version $Id: Listener.php,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
  */
 //-----------------------------------------------------------------------------
 
@@ -14,42 +13,40 @@ require_once JPSPAN . 'RequestData.php';
 /**
  * Check always_populate_raw_post_data is switched off
  */
-if ( ini_get('always_populate_raw_post_data') ) {
-    trigger_error (
-        "Configuration error: PHP ini setting 'always_populate_raw_post_data' must be off",
-    E_USER_ERROR
-    );
+if (ini_get('always_populate_raw_post_data')) {
+    trigger_error("Configuration error: PHP ini setting 'always_populate_raw_post_data' must be off", E_USER_ERROR);
 }
 //-----------------------------------------------------------------------------
 
 /**
  * Listener for incoming requests
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Listener
- * @access public
+ * @access     public
  */
-class JPSpan_Listener {
-
+class JPSpan_Listener
+{
     /**
      * Encoding used by request (e.g. 'xml' or 'php')
      * @var string
      * @access public
      */
-    var $encoding = 'xml';
+    public $encoding = 'xml';
 
     /**
      * Object which responds to request
      * @var object implementing Responder interface
      * @access private
      */
-    var $Responder;
+    public $Responder;
 
     /**
      * Constructs the listener, setting the default NullResponder
      * @access public
      */
-    function JPSpan_Listener() {
-        $this->Response = & new JPSpan_NullResponder();
+    public function __construct()
+    {
+        $this->Response = new JPSpan_NullResponder();
     }
 
     /**
@@ -58,8 +55,9 @@ class JPSpan_Listener {
      * @return void
      * @access public
      */
-    function setResponder(& $Responder) {
-        $this->Responder= & $Responder;
+    public function setResponder(& $Responder)
+    {
+        $this->Responder =& $Responder;
     }
 
     /**
@@ -67,7 +65,8 @@ class JPSpan_Listener {
      * @return void
      * @access public
      */
-    function serve() {
+    public function serve()
+    {
         $this->Responder->execute($this->getRequestData());
     }
 
@@ -77,11 +76,12 @@ class JPSpan_Listener {
      * @return mixed request data as native PHP variables.
      * @access private
      */
-    function getRequestData () {
-        switch ( $_SERVER['REQUEST_METHOD'] ) {
+    public function getRequestData()
+    {
+        switch ($_SERVER['REQUEST_METHOD']) {
             case 'POST':
-                global $HTTP_RAW_POST_DATA;
-                if ( $HTTP_RAW_POST_DATA ) {
+                $http_raw_post_data = file_get_contents('php://input');
+                if ($http_raw_post_data) {
                     return JPSpan_RequestData_RawPost::fetch($this->encoding);
                 } else {
                     return JPSpan_RequestData_Post::fetch($this->encoding);
@@ -93,22 +93,25 @@ class JPSpan_Listener {
                 break;
         }
     }
-
 }
+
 //-----------------------------------------------------------------------------
 
 /**
  * A NullResponder loaded as the default responder
- * @package JPSpan
+ * @package    JPSpan
  * @subpackage Listener
- * @access public
+ * @access     public
  */
-class JPSpan_NullResponder {
+class JPSpan_NullResponder
+{
     /**
      * Does nothing
      * @param mixed incoming request data
      * @return void
      * @access public
      */
-    function execute(& $payload) {}
+    public function execute(& $payload)
+    {
+    }
 }

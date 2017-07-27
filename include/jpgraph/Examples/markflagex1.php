@@ -1,18 +1,19 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_line.php');
-require_once ('jpgraph/jpgraph_scatter.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_line.php';
+require_once __DIR__ . '/jpgraph/jpgraph_scatter.php';
 
 $datay = array(
-array(4,26,15,44),
-array(20,51,32,20));
+    array(4, 26, 15, 44),
+    array(20, 51, 32, 20)
+);
 
 // Setup the graph
-$graph = new Graph(300,200);
+$graph = new Graph(300, 200);
 $graph->SetMarginColor('white');
-$graph->SetScale("textlin");
+$graph->SetScale('textlin');
 $graph->SetFrame(false);
-$graph->SetMargin(30,5,25,20);
+$graph->SetMargin(30, 5, 25, 20);
 
 // Enable X-grid as well
 $graph->xgrid->Show();
@@ -24,16 +25,16 @@ $graph->xaxis->SetTickLabels($gDateLocale->GetShortMonth());
 // Create the plots
 //------------------------
 $p1 = new LinePlot($datay[0]);
-$p1->SetColor("navy");
+$p1->SetColor('navy');
 
 // Use a flag
-$p1->mark->SetType(MARK_FLAG1,197);
+$p1->mark->SetType(MARK_FLAG1, 197);
 
 // Displayes value on top of marker image
 $p1->value->SetFormat('%d mil');
 $p1->value->Show();
 $p1->value->SetColor('darkred');
-$p1->value->SetFont(FF_ARIAL,FS_BOLD,10);
+$p1->value->SetFont(FF_ARIAL, FS_BOLD, 10);
 // Increase the margin so that the value is printed avove tje
 // img marker
 $p1->value->SetMargin(14);
@@ -48,16 +49,16 @@ $graph->Add($p1);
 // 2:nd plot
 //------------
 $p2 = new LinePlot($datay[1]);
-$p2->SetColor("navy");
+$p2->SetColor('navy');
 
 // Use a flag
-$p2->mark->SetType(MARK_FLAG1,'united states');
+$p2->mark->SetType(MARK_FLAG1, 'united states');
 
 // Displayes value on top of marker image
 $p2->value->SetFormat('%d mil');
 $p2->value->Show();
 $p2->value->SetColor('darkred');
-$p2->value->SetFont(FF_ARIAL,FS_BOLD,10);
+$p2->value->SetFont(FF_ARIAL, FS_BOLD, 10);
 // Increase the margin so that the value is printed avove tje
 // img marker
 $p2->value->SetMargin(14);

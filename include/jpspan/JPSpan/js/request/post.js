@@ -1,19 +1,18 @@
 /**@
-* include 'request.js';
-*/
-// @version $Id: post.js,v 1.1 2005/06/21 15:31:20 eric_juden Exp $
+ * include 'request.js';
+ */
 
 // For building HTTP POST requests to use with XmlHttpClient
 function JPSpan_Request_Post(encoder) {
 
     var oParent = new JPSpan_Request(encoder);
-    
+
     // Builds the post body
     // @protected
     // @throws Error code 1006
-    oParent.build = function() {
+    oParent.build = function () {
         var sep = '';
-        for ( var argName in this.args ) {
+        for (var argName in this.args) {
             try {
                 this.body += sep + argName + '=';
                 this.body += encodeURIComponent(this.encoder.encode(this.args[argName]));
@@ -29,45 +28,47 @@ function JPSpan_Request_Post(encoder) {
     // @param XMLHttpRequest
     // @protected
     // @throws Error codes 1005, 1006 and 1007
-    oParent.prepare = function(http) {
-    
+    oParent.prepare = function (http) {
+
         this.http = http;
         this.build();
-        
-        switch ( this.type ) {
+
+        switch (this.type) {
             case 'async':
                 try {
-                    this.http.open('POST',this.requesturl,true);
+                    this.http.open('POST', this.requesturl, true);
                 } catch (e) {
-                    throw JPSpan_Client_Error(new Error(e),1007);
-                };
-            break;
+                    throw JPSpan_Client_Error(new Error(e), 1007);
+                }
+                ;
+                break;
             case 'sync':
                 try {
-                    this.http.open('POST',this.requesturl,false);
+                    this.http.open('POST', this.requesturl, false);
                 } catch (e) {
-                    throw JPSpan_Client_Error(new Error(e),1007);
-                };
-            break;
+                    throw JPSpan_Client_Error(new Error(e), 1007);
+                }
+                ;
+                break;
             default:
                 throw JPSpan_Client_Error(
-                        new Error('Call type invalid '+this.type),
-                        1005
-                    );
-            break;
+                    new Error('Call type invalid ' + this.type),
+                    1005
+                );
+                break;
         }
         this.http.setRequestHeader('Content-Length', this.body.length);
         this.http.setRequestHeader(
-                    'Content-Type',
-                    'application/x-www-form-urlencoded; charset=UTF-8'
-                );
+            'Content-Type',
+            'application/x-www-form-urlencoded; charset=UTF-8'
+        );
     };
 
     // Send the request
     // @protected
-    oParent.send = function() {
+    oParent.send = function () {
         this.http.send(this.body);
     };
-    
+
     return oParent;
 };

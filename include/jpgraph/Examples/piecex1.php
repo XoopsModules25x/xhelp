@@ -1,18 +1,18 @@
 <?php // content="text/plain; charset=utf-8"
 // $Id
 // Example of pie with center circle
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_pie.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_pie.php';
 
 // Some data
-$data = array(50,28,25,27,31,20);
+$data = array(50, 28, 25, 27, 31, 20);
 
 // A new pie graph
-$graph = new PieGraph(300,300,'auto');
+$graph = new PieGraph(300, 300, 'auto');
 
 // Setup title
-$graph->title->Set("Pie plot with center circle");
-$graph->title->SetFont(FF_ARIAL,FS_BOLD,14);
+$graph->title->Set('Pie plot with center circle');
+$graph->title->SetFont(FF_ARIAL, FS_BOLD, 14);
 $graph->title->SetMargin(8); // Add a little bit more margin from the top
 
 // Create the pie plot
@@ -22,12 +22,12 @@ $p1 = new PiePlotC($data);
 $p1->SetSize(0.32);
 
 // Label font and color setup
-$p1->value->SetFont(FF_ARIAL,FS_BOLD,10);
+$p1->value->SetFont(FF_ARIAL, FS_BOLD, 10);
 $p1->value->SetColor('black');
 
 // Setup the title on the center circle
 $p1->midtitle->Set("Test mid\nRow 1\nRow 2");
-$p1->midtitle->SetFont(FF_ARIAL,FS_NORMAL,10);
+$p1->midtitle->SetFont(FF_ARIAL, FS_NORMAL, 10);
 
 // Set color for mid circle
 $p1->SetMidColor('yellow');

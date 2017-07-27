@@ -1,15 +1,27 @@
 <?php
-//$Id: ticketValues.php,v 1.11 2005/12/21 14:37:33 ackbarr Exp $
-//  ------------------------------------------------------------------------ //
-//                XOOPS - PHP Content Management System                      //
-//                    Copyright (c) 2000 XOOPS.org                           //
-//                       <http://www.xoops.org/>                             //
-//  ------------------------------------------------------------------------ //
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
-require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
+require_once XHELP_CLASS_PATH . '/xhelpBaseObjectHandler.php';
 xhelpIncludeLang('admin');
 
 /**
@@ -17,41 +29,41 @@ xhelpIncludeLang('admin');
  *
  * Metadata that represents a custom value created for xhelp
  *
- * @author Eric Juden <eric@3dev.org>
- * @access public
+ * @author  Eric Juden <eric@3dev.org>
+ * @access  public
  * @package xhelp
  */
-class xhelpTicketValues extends XoopsObject
+class XHelpTicketValues extends XoopsObject
 {
-    var $_fields = array();
-     
+    public $_fields = [];
+
     /**
      * Class Constructor
      *
-     * @param  mixed $ticketid null for a new object, hash table for an existing object
-     * @return none
-     * @access public
+     * @param null $id
+     * @internal param mixed $ticketid null for a new object, hash table for an existing object
+     * @access   public
      */
-    function xhelpTicketValues($id = null)
+    public function __construct($id = null)
     {
         $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
 
-        $hFields =& xhelpGetHandler('ticketField');
-        $fields = $hFields->getObjects(null, true);
+        $hFields = xhelpGetHandler('ticketField');
+        $fields  = $hFields->getObjects(null, true);
 
-        foreach($fields as $field){
-            $key = $field->getVar('fieldname');
-            $datatype = $this->_getDataType($field->getVar('datatype'), $field->getVar('controltype'));
-            $value = $this->_getValueFromXoopsDataType($datatype);
-            $required = $field->getVar('required');
+        foreach ($fields as $field) {
+            $key       = $field->getVar('fieldname');
+            $datatype  = $this->_getDataType($field->getVar('datatype'), $field->getVar('controltype'));
+            $value     = $this->_getValueFromXoopsDataType($datatype);
+            $required  = $field->getVar('required');
             $maxlength = ($field->getVar('fieldlength') < 50 ? $field->getVar('fieldlength') : 50);
-            $options = '';
+            $options   = '';
 
             $this->initVar($key, $datatype, null, $required, $maxlength, $options);
 
-            $this->_fields[$key] = (($field->getVar('datatype') == _XHELP_DATATYPE_TEXT) ? "%s" : "%d");
+            $this->_fields[$key] = (($field->getVar('datatype') == _XHELP_DATATYPE_TEXT) ? '%s' : '%d');
         }
-        $this->_fields['ticketid'] = "%u";
+        $this->_fields['ticketid'] = '%u';
 
         if (isset($id)) {
             if (is_array($id)) {
@@ -62,10 +74,14 @@ class xhelpTicketValues extends XoopsObject
         }
     }
 
-    function _getDataType($datatype, $controltype)
+    /**
+     * @param $datatype
+     * @param $controltype
+     * @return int
+     */
+    public function _getDataType($datatype, $controltype)
     {
-        switch($controltype)
-        {
+        switch ($controltype) {
             case XHELP_CONTROL_TXTBOX:
                 return $this->_getXoopsDataType($datatype);
                 break;
@@ -100,10 +116,13 @@ class xhelpTicketValues extends XoopsObject
         }
     }
 
-    function _getXoopsDataType($datatype)
+    /**
+     * @param $datatype
+     * @return int
+     */
+    public function _getXoopsDataType($datatype)
     {
-        switch($datatype)
-        {
+        switch ($datatype) {
             case _XHELP_DATATYPE_TEXT:
                 return XOBJ_DTYPE_TXTBOX;
                 break;
@@ -122,10 +141,13 @@ class xhelpTicketValues extends XoopsObject
         }
     }
 
-    function _getValueFromXoopsDataType($datatype)
+    /**
+     * @param $datatype
+     * @return float|int|null|string
+     */
+    public function _getValueFromXoopsDataType($datatype)
     {
-        switch($datatype)
-        {
+        switch ($datatype) {
             case XOBJ_DTYPE_TXTBOX:
             case XOBJ_DTYPE_TXTAREA:
                 return '';
@@ -145,44 +167,53 @@ class xhelpTicketValues extends XoopsObject
         }
     }
 
-    function getTicketFields()
+    /**
+     * @return array
+     */
+    public function getTicketFields()
     {
         return $this->_fields;
     }
-
 }
 
-class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
+/**
+ * Class XHelpTicketValuesHandler
+ */
+class XHelpTicketValuesHandler extends xhelpBaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access	private
+     * @access  private
      */
-    var $classname = 'xhelpTicketValues';
+    public $classname = 'xhelpTicketValues';
 
     /**
      * DB Table Name
      *
      * @var string
-     * @access 	private
+     * @access  private
      */
-    var $_dbtable = 'xhelp_ticket_values';
-    var $id = 'ticketid';
-    var $_idfield = 'ticketid';
+    public $_dbtable = 'xhelp_ticket_values';
+    public $id       = 'ticketid';
+    public $_idfield = 'ticketid';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function xhelpTicketValuesHandler(&$db)
+    public function __construct(XoopsDatabase $db)
     {
         parent::init($db);
     }
 
-    function _insertQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {     // Assumes cleanVars has already been called
@@ -191,31 +222,35 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
 
         $myFields = $obj->getTicketFields();    // Returns array[$fieldname] = %s or %d for all custom fields
 
-        $count = 1;
-        $sqlFields = "";
-        $sqlVars = "";
-        foreach($myFields as $myField=>$datatype){      // Create sql name and value pairs
-            if(isset(${$myField}) && ${$myField} != null){
-                if($count > 1){                                // If we have been through the loop already
-                    $sqlVars .= ", ";
-                    $sqlFields .= ", ";
+        $count     = 1;
+        $sqlFields = '';
+        $sqlVars   = '';
+        foreach ($myFields as $myField => $datatype) {      // Create sql name and value pairs
+            if (isset(${$myField}) && ${$myField} != null) {
+                if ($count > 1) {                                // If we have been through the loop already
+                    $sqlVars   .= ', ';
+                    $sqlFields .= ', ';
                 }
                 $sqlFields .= $myField;
-                if($datatype == "%s"){                      // If this field is a string
+                if ($datatype == '%s') {                      // If this field is a string
                     $sqlVars .= $this->_db->quoteString(${$myField});     // Add text to sqlVars string
                 } else {                                    // If this field is a number
                     $sqlVars .= ${$myField};      // Add text to sqlVars string
                 }
-                $count++;
+                ++$count;
             }
         }
         // Create sql statement
-        $sql = "INSERT INTO ". $this->_db->prefix($this->_dbtable)." (" . $sqlFields .") VALUES (". $sqlVars .")";
+        $sql = 'INSERT INTO ' . $this->_db->prefix($this->_dbtable) . ' (' . $sqlFields . ') VALUES (' . $sqlVars . ')';
 
         return $sql;
     }
 
-    function _updateQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -223,31 +258,35 @@ class xhelpTicketValuesHandler extends xhelpBaseObjectHandler
         }
 
         $myFields = $obj->getTicketFields();    // Returns array[$fieldname] = %s or %u for all custom fields
-        $count = 1;
-        $sqlVars = "";
-        foreach($myFields as $myField=>$datatype){      // Used to create sql field and value substrings
-            if(isset(${$myField}) && ${$myField} !== null){
-                if($count > 1){                                // If we have been through the loop already
-                    $sqlVars .= ", ";
+        $count    = 1;
+        $sqlVars  = '';
+        foreach ($myFields as $myField => $datatype) {      // Used to create sql field and value substrings
+            if (isset(${$myField}) && ${$myField} !== null) {
+                if ($count > 1) {                                // If we have been through the loop already
+                    $sqlVars .= ', ';
                 }
-                if($datatype == "%s"){                      // If this field is a string
-                    $sqlVars .= $myField ." = ". $this->_db->quoteString(${$myField});     // Add text to sqlVars string
+                if ($datatype == '%s') {                      // If this field is a string
+                    $sqlVars .= $myField . ' = ' . $this->_db->quoteString(${$myField});     // Add text to sqlVars string
                 } else {                                    // If this field is a number
-                    $sqlVars .= $myField ." = ". ${$myField};      // Add text to sqlVars string
+                    $sqlVars .= $myField . ' = ' . ${$myField};      // Add text to sqlVars string
                 }
-                $count++;
+                ++$count;
             }
         }
 
         // Create update statement
-        $sql = "UPDATE ". $this->_db->Prefix($this->_dbtable)." SET ". $sqlVars ." WHERE ticketid = ". $obj->getVar('ticketid');
+        $sql = 'UPDATE ' . $this->_db->Prefix($this->_dbtable) . ' SET ' . $sqlVars . ' WHERE ticketid = ' . $obj->getVar('ticketid');
 
         return $sql;
     }
 
-    function _deleteQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _deleteQuery($obj)
     {
-        $sql = sprintf("DELETE FROM %s WHERE ticketid = %u", $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
+        $sql = sprintf('DELETE FROM %s WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
 
         return $sql;
     }

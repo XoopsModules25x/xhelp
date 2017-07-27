@@ -1,37 +1,37 @@
 <?php // content="text/plain; charset=utf-8"
-require_once ('jpgraph/jpgraph.php');
-require_once ('jpgraph/jpgraph_bar.php');
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_bar.php';
 
-$datay=array(2,3,5,8,12,6,3);
-$datax=array('Jan','Feb','Mar','Apr','May','Jun','Jul');
+$datay = array(2, 3, 5, 8, 12, 6, 3);
+$datax = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul');
 
 // Size of graph
-$width=400;
-$height=500;
+$width  = 400;
+$height = 500;
 
 // Set the basic parameters of the graph
-$graph = new Graph($width,$height,'auto');
+$graph = new Graph($width, $height, 'auto');
 $graph->SetScale('textlin');
 
 // Rotate graph 90 degrees and set margin
-$graph->Set90AndMargin(50,20,50,30);
+$graph->Set90AndMargin(50, 20, 50, 30);
 
 // Nice shadow
 $graph->SetShadow();
 
 // Setup title
 $graph->title->Set('Horizontal bar graph ex 1');
-$graph->title->SetFont(FF_VERDANA,FS_BOLD,14);
+$graph->title->SetFont(FF_VERDANA, FS_BOLD, 14);
 
 // Setup X-axis
 $graph->xaxis->SetTickLabels($datax);
-$graph->xaxis->SetFont(FF_VERDANA,FS_NORMAL,12);
+$graph->xaxis->SetFont(FF_VERDANA, FS_NORMAL, 12);
 
 // Some extra margin looks nicer
 $graph->xaxis->SetLabelMargin(10);
 
 // Label align for X-axis
-$graph->xaxis->SetLabelAlign('right','center');
+$graph->xaxis->SetLabelAlign('right', 'center');
 
 // Add some grace to y-axis so the bars doesn't go
 // all the way to the end of the plot area
@@ -50,9 +50,9 @@ $bplot->SetShadow();
 
 // We want to display the value of each bar at the top
 $bplot->value->Show();
-$bplot->value->SetFont(FF_ARIAL,FS_BOLD,12);
-$bplot->value->SetAlign('left','center');
-$bplot->value->SetColor('black','darkred');
+$bplot->value->SetFont(FF_ARIAL, FS_BOLD, 12);
+$bplot->value->SetAlign('left', 'center');
+$bplot->value->SetColor('black', 'darkred');
 $bplot->value->SetFormat('%.1f mkr');
 
 // Add the bar to the graph

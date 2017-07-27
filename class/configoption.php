@@ -1,27 +1,32 @@
 <?php
 
-class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
+/**
+ * Class XHelpConfigOptionHandler
+ */
+class XHelpConfigOptionHandler extends XoopsConfigOptionHandler
+{
     /**
      * Database connection
      *
      * @var object
-     * @access	private
+     * @access  private
      */
-    var $_db;
+    public $_db;
 
     /**
      * Autoincrementing DB fieldname
      * @var string
      * @access private
      */
-    var $_idfield = 'confop_id';
+    public $_idfield = 'confop_id';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function init(&$db) {
+    public function init(XoopsDatabase $db)
+    {
         $this->_db = $db;
     }
 
@@ -31,22 +36,23 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
      * @var string
      * @access private
      */
-    var $_dbtable = 'configoption';
-     
+    public $_dbtable = 'configoption';
+
     /**
      * delete configoption matching a set of conditions
      *
      * @param  object $criteria {@link CriteriaElement}
-     * @return bool   FALSE if deletion failed
-     * @access	public
+     * @param bool    $force
+     * @return bool FALSE if deletion failed
+     * @access  public
      */
-    function deleteAll($criteria = null, $force = false)
+    public function deleteAll($criteria = null, $force = false)
     {
-        $sql = 'DELETE FROM '.$this->db->prefix($this->_dbtable);
+        $sql = 'DELETE FROM ' . $this->db->prefix($this->_dbtable);
         if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
-            $sql .= ' '.$criteria->renderWhere();
+            $sql .= ' ' . $criteria->renderWhere();
         }
-        if(!$force){
+        if (!$force) {
             if (!$result = $this->db->query($sql)) {
                 return false;
             }
@@ -62,12 +68,13 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
     /**
      * Insert a new option in the database
      *
-     * @param  object &$confoption reference to a {@link XoopsConfigOption}
-     * @return bool   TRUE if successfull.
+     * @param  XoopsObject $confoption reference to a {@link XoopsConfigOption}
+     * @param bool         $force
+     * @return bool TRUE if successfull.
      */
-    function insert(&$confoption, $force = false)
+    public function insert(XoopsObject $confoption, $force = false)
     {
-        if (strtolower(get_class($confoption)) != 'xoopsconfigoption') {
+        if (strtolower(get_class($confoption)) !== 'xoopsconfigoption') {
             return false;
         }
         if (!$confoption->isDirty()) {
@@ -81,17 +88,17 @@ class xhelpConfigOptionHandler extends XoopsConfigOptionHandler {
         }
         if ($confoption->isNew()) {
             $confop_id = $this->db->genId('configoption_confop_id_seq');
-            $sql = sprintf("INSERT INTO %s (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)", $this->db->prefix('configoption'), $confop_id, $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $conf_id);
+            $sql       = sprintf('INSERT INTO %s (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)', $this->db->prefix('configoption'), $confop_id, $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $conf_id);
         } else {
-            $sql = sprintf("UPDATE %s SET confop_name = %s, confop_value = %s WHERE confop_id = %u", $this->db->prefix('configoption'), $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $confop_id);
+            $sql = sprintf('UPDATE %s SET confop_name = %s, confop_value = %s WHERE confop_id = %u', $this->db->prefix('configoption'), $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $confop_id);
         }
 
-        if(!$force){
+        if (!$force) {
             if (!$result = $this->db->query($sql)) {
                 return false;
             }
         } else {
-            if(!$result = $this->db->queryF($sql)){
+            if (!$result = $this->db->queryF($sql)) {
                 return false;
             }
         }

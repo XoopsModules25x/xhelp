@@ -1,39 +1,39 @@
-// $Id: typeof.js,v 1.1 2005/06/21 15:31:21 eric_juden Exp $
+//
 // Taken from http://www.webreference.com/dhtml/column68/ by Peter Belesis
-function JPSpan_Util_typeof( vExpression ) {
+function JPSpan_Util_typeof(vExpression) {
 
     var sTypeOf = typeof vExpression;
-    
-    if( sTypeOf == "function" ) {
+
+    if (sTypeOf == "function") {
         var sFunction = vExpression.toString();
-        if( ( /^\/.*\/$/ ).test( sFunction ) ) {
+        if (( /^\/.*\/$/ ).test(sFunction)) {
             return "regexp";
-        } else if( ( /^\[object.*\]$/i ).test( sFunction ) ) {
+        } else if (( /^\[object.*\]$/i ).test(sFunction)) {
             sTypeOf = "object"
         }
     }
-    
-    if( sTypeOf != "object" ) {
+
+    if (sTypeOf != "object") {
         return sTypeOf;
     }
-    
-    switch( vExpression ) {
+
+    switch (vExpression) {
         case null:
             return "null";
         case window:
             return "window";
-        case window.event:    
+        case window.event:
             return "event";
     }
-    
-    if( window.event && ( event.type == vExpression.type ) ) {
+
+    if (window.event && ( event.type == vExpression.type )) {
         return "event";
     }
-    
+
     var fConstructor = vExpression.constructor;
-    
-    if( fConstructor != null ) {
-        switch( fConstructor ) {
+
+    if (fConstructor != null) {
+        switch (fConstructor) {
             case Array:
                 sTypeOf = "array";
                 break;
@@ -48,19 +48,19 @@ function JPSpan_Util_typeof( vExpression ) {
                 return "error";
             default:
                 var sConstructor = fConstructor.toString();
-                var aMatch = sConstructor.match( /\s*function (.*)\(/ );
-                if( aMatch != null ) {
-                    return aMatch[ 1 ];
+                var aMatch = sConstructor.match(/\s*function (.*)\(/);
+                if (aMatch != null) {
+                    return aMatch[1];
                 }
-            
+
         }
     }
 
     var nNodeType = vExpression.nodeType;
-    if( nNodeType != null ) {
-        switch( nNodeType ) {
+    if (nNodeType != null) {
+        switch (nNodeType) {
             case 1:
-                if( vExpression.item == null ) {
+                if (vExpression.item == null) {
                     return "domelement";
                 }
                 break;
@@ -68,22 +68,22 @@ function JPSpan_Util_typeof( vExpression ) {
                 return "textnode";
         }
     }
-    
-    if( vExpression.toString != null ) {
-    
+
+    if (vExpression.toString != null) {
+
         var sExpression = vExpression.toString();
-        
-        var aMatch = sExpression.match( /^\[object (.*)\]$/i );
-        
-        if( aMatch != null ) {
-        
-            var sMatch = aMatch[ 1 ];
-            switch( sMatch.toLowerCase() ) {
+
+        var aMatch = sExpression.match(/^\[object (.*)\]$/i);
+
+        if (aMatch != null) {
+
+            var sMatch = aMatch[1];
+            switch (sMatch.toLowerCase()) {
                 case "event":
                     return "event";
                 case "math":
                     return "math";
-                case "error":    
+                case "error":
                     return "error";
                 case "mimetypearray":
                     return "mimetypecollection";
@@ -98,14 +98,14 @@ function JPSpan_Util_typeof( vExpression ) {
             }
         }
     }
-    
-    if( vExpression.moveToBookmark && vExpression.moveToElementText ) {
+
+    if (vExpression.moveToBookmark && vExpression.moveToElementText) {
         return "textrange";
-    } else if( vExpression.callee != null ) {
+    } else if (vExpression.callee != null) {
         return "arguments";
-    } else if( vExpression.item != null ) {
+    } else if (vExpression.item != null) {
         return "domcollection";
     }
-    
+
     return sTypeOf;
 }

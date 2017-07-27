@@ -1,8 +1,16 @@
 <?php
-// $Id: faq.php,v 1.3 2005/12/02 23:16:09 ackbarr Exp $
 
-class xhelpFaq extends XoopsObject {
-    function xhelpFaq()
+//
+
+/**
+ * Class XHelpFaq
+ */
+class XHelpFaq extends XoopsObject
+{
+    /**
+     * XHelpFaq constructor.
+     */
+    public function __construct()
     {
         $this->initVar('subject', XOBJ_DTYPE_TXTBOX, null, true, 100);      // Ticket subject
         $this->initVar('problem', XOBJ_DTYPE_TXTAREA, null, true);

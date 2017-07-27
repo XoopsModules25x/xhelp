@@ -1,21 +1,38 @@
 <?php
-//$Id: ticketEmails.php,v 1.7 2005/04/12 16:00:24 eric_juden Exp $
-//  ------------------------------------------------------------------------ //
-//                XOOPS - PHP Content Management System                      //
-//                    Copyright (c) 2000 XOOPS.org                           //
-//                       <http://www.xoops.org/>                             //
-//  ------------------------------------------------------------------------ //
-require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
+require_once XHELP_CLASS_PATH . '/xhelpBaseObjectHandler.php';
 
 /**
  * xhelpTicketEmails class
  *
- * @author Eric Juden <ericj@epcusa.com>
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com>
+ * @access  public
  * @package xhelp
  */
-class xhelpTicketEmails extends XoopsObject {
-    function xhelpTicketEmails($id = null)
+class XHelpTicketEmails extends XoopsObject
+{
+    /**
+     * XHelpTicketEmails constructor.
+     * @param null $id
+     */
+    public function __construct($id = null)
     {
         $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
         $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
@@ -37,19 +54,19 @@ class xhelpTicketEmails extends XoopsObject {
  *
  * Department Handler for xhelpDepartment class
  *
- * @author Eric Juden <ericj@epcusa.com> &
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com> &
+ * @access  public
  * @package xhelp
  */
-
-class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
+class XHelpTicketEmailsHandler extends xhelpBaseObjectHandler
+{
     /**
      * Name of child class
      *
      * @var string
-     * @access	private
+     * @access  private
      */
-    var $classname = 'xhelpticketemails';
+    public $classname = 'xhelpticketemails';
 
     /**
      * DB table name
@@ -57,48 +74,57 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
      * @var string
      * @access private
      */
-    var $_dbtable = 'xhelp_ticket_submit_emails';
+    public $_dbtable = 'xhelp_ticket_submit_emails';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function xhelpTicketEmailsHandler(&$db)
+    public function __construct(XoopsDatabase $db)
     {
         parent::init($db);
     }
 
-    function _insertQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("INSERT INTO %s (ticketid, uid, email, suppress) VALUES (%u, %u, %s, %u)",
-        $this->_db->prefix($this->_dbtable), $ticketid, $uid, $this->_db->quoteString($email), $suppress);
+        $sql = sprintf('INSERT INTO %s (ticketid, uid, email, suppress) VALUES (%u, %u, %s, %u)', $this->_db->prefix($this->_dbtable), $ticketid, $uid, $this->_db->quoteString($email), $suppress);
 
         return $sql;
-
     }
 
-    function _deleteQuery($criteria = null)
+    /**
+     * @param null $criteria
+     * @return string
+     */
+    public function _deleteQuery($criteria = null)
     {
-        $sql = sprintf("DELETE FROM %s WHERE ticketid = %u", $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
+        $sql = sprintf('DELETE FROM %s WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
 
         return $sql;
     }
 
-    function _updateQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("UPDATE %s SET suppress = %u WHERE ticketid = %u AND uid = %u AND email = %s", $this->_db->prefix($this->_dbtable),
-        $suppress, $ticketid, $uid, $this->_db->quotestring($email));
+        $sql = sprintf('UPDATE %s SET suppress = %u WHERE ticketid = %u AND uid = %u AND email = %s', $this->_db->prefix($this->_dbtable), $suppress, $ticketid, $uid, $this->_db->quotestring($email));
 
         return $sql;
     }
@@ -109,13 +135,13 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
      * @param  object $criteria  {@link CriteriaElement} conditions to be met
      * @param  bool   $id_as_key Should the department ID be used as array key
      * @return array  array of {@link xhelpDepartment} objects
-     * @access	public
+     * @access  public
      */
-    function &getObjects($criteria = null)
+    public function &getObjects($criteria = null, $id_as_key = false)
     {
-        $ret    = array();
-        $limit  = $start = 0;
-        $sql    = $this->_selectQuery($criteria);
+        $ret   = [];
+        $limit = $start = 0;
+        $sql   = $this->_selectQuery($criteria);
         if (isset($criteria)) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
@@ -129,8 +155,8 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
 
         // Add each returned record to the result array
         while ($myrow = $this->_db->fetchArray($result)) {
-            $obj = new $this->classname($myrow);
-            $ret[$obj->getVar('email')] =& $obj;
+            $obj                        = new $this->classname($myrow);
+            $ret[$obj->getVar('email')] = $obj;
             unset($obj);
         }
 
@@ -140,16 +166,17 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
     /**
      * retrieve objects from the database
      *
-     * @param  object $criteria  {@link CriteriaElement} conditions to be met
-     * @param  bool   $id_as_key Should the department ID be used as array key
-     * @return array  array of {@link xhelpDepartment} objects
-     * @access	public
+     * @param  object $criteria {@link CriteriaElement} conditions to be met
+     * @return array array of <a href='psi_element://xhelpDepartment'>xhelpDepartment</a> objects
+     * objects
+     * @internal param bool $id_as_key Should the department ID be used as array key
+     * @access   public
      */
-    function &getObjectsSortedByTicket($criteria = null)
+    public function &getObjectsSortedByTicket($criteria = null)
     {
-        $ret    = array();
-        $limit  = $start = 0;
-        $sql    = $this->_selectQuery($criteria);
+        $ret   = [];
+        $limit = $start = 0;
+        $sql   = $this->_selectQuery($criteria);
         if (isset($criteria)) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
@@ -163,8 +190,8 @@ class xhelpTicketEmailsHandler extends xhelpBaseObjectHandler {
 
         // Add each returned record to the result array
         while ($myrow = $this->_db->fetchArray($result)) {
-            $obj = new $this->classname($myrow);
-            $ret[$obj->getVar('ticketid')] =& $obj;
+            $obj                           = new $this->classname($myrow);
+            $ret[$obj->getVar('ticketid')] = $obj;
             unset($obj);
         }
 

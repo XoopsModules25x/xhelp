@@ -1,5 +1,5 @@
 //1. Get the custom fields for a given department
-$hTicketCustField =& xoops_getmodulehandler('ticketCustomField');
+$hTicketCustField = xoops_getModuleHandler('ticketCustomField');
 $fields =& $hTicketCustField->getByDept($deptid);
 
 foreach($fields as $field) {
@@ -10,16 +10,16 @@ foreach($fields as $field) {
     echo $field->getVar('required'); //Is this entry required?
     echo $field->getVar('weight'); //Which order should this field be displayed
     $values = $field->getValues(); // An hash of name / value pairs
-    
+
     echo $field->getVar('defaultvalue'); //Default value of field
     $validators = $field->getValidators(); //An array of validation objects to validate data entry
     echo $field->getVar('promptuser');
-    
-    echo $ticket->getCustomVar($field->getVar('fieldname')); // get the current fields value  
+
+    echo $ticket->getCustomVar($field->getVar('fieldname')); // get the current fields value
 }
 
 //2. Create a new custom field
-$hTicketCustField =& xoops_getmodulehandler('ticketCustomField');
+$hTicketCustField = xoops_getModuleHandler('ticketCustomField');
 $field =& $hTicketCustField->create();
 $field->setVar('name', $name);
 $field->setVar('description', $description);
@@ -45,9 +45,9 @@ $ret = $hTicketCustField->insert($field);
 foreach ($fields as $field) {
     $fieldname  = $field->getVar('fieldname');
     $submission = $_POST[$fieldname];
-    
+
     //... Validate Entry
-    
+
     if ($validEntry) {
         $ticket->setCustomVar($fieldname, $submission);
     }

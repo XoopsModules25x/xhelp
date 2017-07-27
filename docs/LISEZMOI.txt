@@ -1,48 +1,48 @@
-Module Proposé
+Module ProposÃ©
 -----------------------------------------------------------------------
-xhelp est dessiné en vu de vous apporter une réponse adéquate en matière
+xhelp est dessinÃ© en vu de vous apporter une rÃ©ponse adÃ©quate en matiÃ¨re
 de support utilisateurs dans une application "helpdesk" sous la forme
-d'un module dans un environnement applicatif XOOPS. 
+d'un module dans un environnement applicatif XOOPS.
 
-Pré-requis d'installation
+PrÃ©-requis d'installation
 -----------------------------------------------------------------------
 XOOPS 2.0.4+
 
 Instructions d'installation
 -----------------------------------------------------------------------
-Unzippez l'archive fournit dans le répertoire 'modules'. 
-Installer l'applicatif en utilisant le panneau de contrôle Xoops usuel. 
-Ajustez vos préférences pour le module si cela est nécéssaire.
-Ajouter les départements opérateurs des traitements de tickets (catégories).
-Paramètre les comptes utilisateurs XOOPS en les répartissant dans leur(s) département(s)
+Unzippez l'archive fournit dans le rÃ©pertoire 'modules'.
+Installer l'applicatif en utilisant le panneau de contrÃ´le Xoops usuel.
+Ajustez vos prÃ©fÃ©rences pour le module si cela est nÃ©cÃ©ssaire.
+Ajouter les dÃ©partements opÃ©rateurs des traitements de tickets (catÃ©gories).
+ParamÃ¨tre les comptes utilisateurs XOOPS en les rÃ©partissant dans leur(s) dÃ©partement(s)
 Respectifs.
 Tout est fin pret!!!
 
-Instructions de mise à jour
+Instructions de mise Ã  jour
 -----------------------------------------------------------------------
-Unzippez l'archive fournit dans le répertoire 'modules'.
-Mettez à jour le module en utilisant le panneau de contrôle Xoops usuel. 
-Cliquez sur 'Contrôle de Tables' à partir du menu principal xhelp, ou du menu pop-up.
-Contrôlez et Ajustez vos préférences pour le module si cela est nécéssaire.
+Unzippez l'archive fournit dans le rÃ©pertoire 'modules'.
+Mettez Ã  jour le module en utilisant le panneau de contrÃ´le Xoops usuel.
+Cliquez sur 'ContrÃ´le de Tables' Ã  partir du menu principal xhelp, ou du menu pop-up.
+ContrÃ´lez et Ajustez vos prÃ©fÃ©rences pour le module si cela est nÃ©cÃ©ssaire.
 Tout est fin pret!!!
 
 License
 -----------------------------------------------------------------------
 GPL consultez LICENSE.txt
 
-Mises à jour, Erreurs ou Retours
+Mises Ã  jour, Erreurs ou Retours
 -----------------------------------------------------------------------
-Pour mettre à jour les versions ou nous faire un retour d'expérience
-quant à votre utilisation sur cette version d'application veuillez vous 
-diriger sur le site de développement xhelp :
+Pour mettre Ã  jour les versions ou nous faire un retour d'expÃ©rience
+quant Ã  votre utilisation sur cette version d'application veuillez vous
+diriger sur le site de dÃ©veloppement xhelp :
 
 http://dev.xoops.org/modules/xfmod/project/?xhelp
 
-Crédits et Remerciements
+CrÃ©dits et Remerciements
 -----------------------------------------------------------------------
 Ackbarr (Brian Wahoff)    - Chef de Projet
-ejuden (Eric Juden)       - Développeur
+ejuden (Eric Juden)       - DÃ©veloppeur
 ajuden (Alan Juden)       - Testeur
-Outch (Eric Wegrzynowski) - Traduction Française
+Outch (Eric Wegrzynowski) - Traduction FranÃ§aise
 CeRbErO                   - Traduction Espagnole
-silviotech                - Traduction Portugaise Brésilienne
+silviotech                - Traduction Portugaise BrÃ©silienne

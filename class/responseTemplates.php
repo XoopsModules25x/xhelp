@@ -1,24 +1,41 @@
 <?php
-//$Id: responseTemplates.php,v 1.7 2005/11/01 15:05:42 eric_juden Exp $
-//  ------------------------------------------------------------------------ //
-//                XOOPS - PHP Content Management System                      //
-//                    Copyright (c) 2000 XOOPS.org                           //
-//                       <http://www.xoops.org/>                             //
-//  ------------------------------------------------------------------------ //
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @package
+ * @since
+ * @author       XOOPS Development Team
+ */
+
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
-require_once(XHELP_CLASS_PATH.'/xhelpBaseObjectHandler.php');
+require_once XHELP_CLASS_PATH . '/xhelpBaseObjectHandler.php';
 
 /**
  * xhelpResponseTemplates class
  *
- * @author Eric Juden <ericj@epcusa.com>
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com>
+ * @access  public
  * @package xhelp
  */
-class xhelpResponseTemplates extends XoopsObject {
-    function xhelpResponseTemplates($id = null)
+class XHelpResponseTemplates extends XoopsObject
+{
+    /**
+     * XHelpResponseTemplates constructor.
+     * @param null $id
+     */
+    public function __construct($id = null)
     {
         $this->initVar('id', XOBJ_DTYPE_INT, null, false);
         $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
@@ -40,19 +57,19 @@ class xhelpResponseTemplates extends XoopsObject {
  *
  * ResponseTemplates Handler for xhelpResponseTemplates class
  *
- * @author Eric Juden <ericj@epcusa.com> &
- * @access public
+ * @author  Eric Juden <ericj@epcusa.com> &
+ * @access  public
  * @package xhelp
  */
-
-class xhelpResponseTemplatesHandler extends xhelpBaseObjectHandler {
+class XHelpResponseTemplatesHandler extends xhelpBaseObjectHandler
+{
     /**
      * Name of child class
      *
      * @var string
-     * @access	private
+     * @access  private
      */
-    var $classname = 'xhelpresponsetemplates';
+    public $classname = 'xhelpresponsetemplates';
 
     /**
      * DB table name
@@ -60,52 +77,59 @@ class xhelpResponseTemplatesHandler extends xhelpBaseObjectHandler {
      * @var string
      * @access private
      */
-    var $_dbtable = 'xhelp_responsetemplates';
+    public $_dbtable = 'xhelp_responsetemplates';
 
     /**
      * Constructor
      *
-     * @param object $db reference to a xoopsDB object
+     * @param object|XoopsDatabase $db reference to a xoopsDB object
      */
-    function xhelpResponseTemplatesHandler(&$db)
+    public function __construct(XoopsDatabase $db)
     {
         parent::init($db);
     }
 
-    function _insertQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("INSERT INTO %s (id, uid, name, response)
-                VALUES (%u, %u, %s, %s)", $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name),
-        $this->_db->quoteString($response));
+        $sql = sprintf('INSERT INTO %s (id, uid, NAME, response)
+                VALUES (%u, %u, %s, %s)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name), $this->_db->quoteString($response));
 
         return $sql;
-
     }
 
-    function _updateQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf("UPDATE %s SET uid = %u, name = %s, response = %s WHERE id = %u",
-        $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name),
-        $this->_db->quoteString($response), $id);
+        $sql = sprintf('UPDATE %s SET uid = %u, NAME = %s, response = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($response), $id);
 
         return $sql;
     }
 
-    function _deleteQuery(&$obj)
+    /**
+     * @param $obj
+     * @return string
+     */
+    public function _deleteQuery($obj)
     {
         $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
-
 }
