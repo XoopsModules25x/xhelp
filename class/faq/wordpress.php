@@ -40,7 +40,7 @@ class xhelpWordpressAdapter extends xhelpFaqAdapter {
         'description' => 'Create article in wordpress module for XOOPS from xHelp helpdesk tickets (phppp module version)',
         'version' => '1.0',
         'tested_versions' => '1.52',
-        'url' => 'http://xoops.org.cn',
+        'url' => 'https://xoops.org.cn',
         'module_dir' => 'wordpress');
 
     function xhelpWordpressAdapter()

@@ -40,7 +40,7 @@ class xhelpXoopsfaqAdapter extends xhelpFaqAdapter {
         'description' => 'Create xoopsfaq entries from xHelp helpdesk tickets',
         'version' => '1.0',
         'tested_versions' => '1.1',
-        'url' => 'http://xoops.org',
+        'url' => 'https://xoops.org',
         'module_dir' => 'xoopsfaq');
 
     function xhelpXoopsfaqAdapter()
