@@ -16,6 +16,6 @@ Follow this link to re-submit your ticket:
 
 ----------------------------------------------
 
-{X_SITENAME} ({X_SITEURL}) 
+{X_SITENAME} ({X_SITEURL})
 webmaster
 {X_ADMINMAIL}

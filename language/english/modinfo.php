@@ -279,7 +279,7 @@ define('_MI_XHELP_MENU_MANAGER', 'Manager');
 
 //Help
 define('_MI_XHELP_DIRNAME', basename(dirname(dirname(__DIR__))));
-define('_MI_XHELP_HELP_HEADER', __DIR__ . '/help/helpheader.html');
+define('_MI_XHELP_HELP_HEADER', __DIR__ . '/help/helpheader.tpl');
 define('_MI_XHELP_BACK_2_ADMIN', 'Back to Administration of ');
 define('_MI_XHELP_OVERVIEW', 'Overview');
 

@@ -6,7 +6,7 @@ You can access your user account on {X_MODULE_URL} by using the following userna
 
 You password was generated randomly, which you can change by editing your account settings.
 
-To activate your account, please click on the link below: 
+To activate your account, please click on the link below:
 {X_UACTLINK}
 ----------------------------------------------
 
