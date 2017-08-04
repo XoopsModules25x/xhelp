@@ -51,6 +51,14 @@ $modversion['bug_url']         = 'http://dev.xoops.org/modules/xfmod/tracker/?gr
 $modversion['feature_url']     = 'http://dev.xoops.org/modules/xfmod/tracker/?group_id=1058&atid=339';
 $modversion['questions_email'] = 'xhelp-questions@3dev.org';
 
+// ------------------- Help files ------------------- //
+$modversion['helpsection'] = array(
+    ['name' => _MI_XXXXX_OVERVIEW, 'link' => 'page=help'],
+    ['name' => _MI_XXXXX_DISCLAIMER, 'link' => 'page=disclaimer'],
+    ['name' => _MI_XXXXX_LICENSE, 'link' => 'page=license'],
+    ['name' => _MI_XXXXX_SUPPORT, 'link' => 'page=support'],
+);
+
 // Developers
 $modversion['contributors']['developers'][0]['name']    = 'Eric Juden';
 $modversion['contributors']['developers'][0]['uname']   = 'eric_juden';
