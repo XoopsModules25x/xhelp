@@ -19,21 +19,18 @@
 
 // defined('XOOPS_ROOT_PATH') || exit('XOOPS root path not defined');
 
-$modversion['version']       = '0.81';
-$modversion['module_status'] = 'Beta 2';
-$modversion['release_date']  = '2016/12/30';
-$modversion['name']          = _MI_XHELP_NAME;
-$modversion['description']   = _MI_XHELP_DESC;
-$modversion['author']        = '3dev.org';
-$modversion['help']          = 'page=help';
-$modversion['license']       = 'GNU GPL 2.0 or later';
-$modversion['license_url']   = 'www.gnu.org/licenses/gpl-2.0.html';
-$modversion['official']      = 0; //1 indicates supported by Xoops CORE Dev Team, 0 means 3rd party supported
-$modversion['image']         = 'assets/images/logoModule.png';
-$modversion['dirname']       = basename(__DIR__);
-//$modversion['dirmoduleadmin']      = '/Frameworks/moduleclasses/moduleadmin';
-//$modversion['icons16']             = '../../Frameworks/moduleclasses/icons/16';
-//$modversion['icons32']             = '../../Frameworks/moduleclasses/icons/32';
+$modversion['version']             = '0.81';
+$modversion['module_status']       = 'Beta 2';
+$modversion['release_date']        = '2016/12/30';
+$modversion['name']                = _MI_XHELP_NAME;
+$modversion['description']         = _MI_XHELP_DESC;
+$modversion['author']              = '3dev.org';
+$modversion['help']                = 'page=help';
+$modversion['license']             = 'GNU GPL 2.0 or later';
+$modversion['license_url']         = 'www.gnu.org/licenses/gpl-2.0.html';
+$modversion['official']            = 0; //1 indicates supported by Xoops CORE Dev Team, 0 means 3rd party supported
+$modversion['image']               = 'assets/images/logoModule.png';
+$modversion['dirname']             = basename(__DIR__);
 $modversion['modicons16']          = 'assets/images/icons/16';
 $modversion['modicons32']          = 'assets/images/icons/32';
 $modversion['release_file']        = XOOPS_URL . '/modules/' . $modversion['dirname'] . '/docs/changelog.txt';

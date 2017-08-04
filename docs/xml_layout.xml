@@ -25,14 +25,14 @@
                 <updateTime></updateTime>
                 <userIP></userIP>
                 <private></private>
-                
+
                 <files>
                     <file id=''>
                         <filename></filename>
                         <mimetype></mimetype>
                     </file>
                 </files>
-                
+
                 <staffReviews>
                     <review id=''>
                         <staffid></staffid>
@@ -43,7 +43,7 @@
                 </staffReview>
             </response>
         </responses>
-        
+
         <files>
             <file id=''>
                 <filename></filename>
@@ -51,7 +51,7 @@
                 <mimetype></mimetype>
             </file>
         </files>
-        
+
         <logMessages>
             <log id=''>
                 <uid></uid>
@@ -59,7 +59,7 @@
                 <action></action>
             </log>
         </logMessage>
-        
+
         <subscribedUsers>
             <user>
                 <uid></uid>
@@ -72,108 +72,108 @@
 </tickets>
 
 <statuses>
-    <status id=''>
-        <state></state>
-        <description></description>
-    </status>
+<status id=''>
+    <state></state>
+    <description></description>
+</status>
 </statuses>
 
 <departments>
-    <department id=''>
-        <department></department>
-        
-        <mailboxes>
-            <mailbox id=''>
-                <emailaddress></emailaddress>
-                <server></server>
-                <serverport></serverport>
-                <username></username>
-                <password></password>
-                <priority></priority>
-                <mboxtype></mboxtype>
-                <active></active>
-            </mailbox>
-        </mailboxes>
-    </department>
+<department id=''>
+    <department></department>
+
+    <mailboxes>
+        <mailbox id=''>
+            <emailaddress></emailaddress>
+            <server></server>
+            <serverport></serverport>
+            <username></username>
+            <password></password>
+            <priority></priority>
+            <mboxtype></mboxtype>
+            <active></active>
+        </mailbox>
+    </mailboxes>
+</department>
 </departments>
 
 <staff>
-    <staff id=''>
+<staff id=''>
+    <uid></uid>
+    <email></email>
+    <responseTime></responseTime>
+    <numReviews></numReviews>
+    <callsClosed></callsClosed>
+    <attachSig></attachSig>
+    <rating></rating>
+    <ticketsResponded></ticketsResponded>
+    <notify></notify>
+    <permTimestamp></permTimestamp>
+
+    <response_templates>
+        <response id=''>
+            <uid></uid>
+            <name></name>
+            <response></response>
+        </response>
+    </response_templates>
+
+    <roles>
+        <role>
+            <uid></uid>
+            <roleid></roleid>
+            <deptid></deptid>
+        </role>
+    </roles>
+
+    <saved_searches>
+        <search id=''>
+            <uid></uid>
+            <name></name>
+            <search></search>
+            <pagenav_vars></pagenav_vars>
+        </search>
+    </saved_searches>
+
+    <staff_depts>
+    <staff_dept id=''>
         <uid></uid>
-        <email></email>
-        <responseTime></responseTime>
-        <numReviews></numReviews>
-        <callsClosed></callsClosed>
-        <attachSig></attachSig>
-        <rating></rating>
-        <ticketsResponded></ticketsResponded>
-        <notify></notify>
-        <permTimestamp></permTimestamp>
-        
-        <response_templates>
-            <response id=''>
-                <uid></uid>
-                <name></name>
-                <response></response>
-            </response>
-        </response_templates>
-        
-        <roles>
-            <role>
-                <uid></uid>
-                <roleid></roleid>
-                <deptid></deptid>
-            </role>
-        </roles>
-        
-        <saved_searches>
-            <search id=''>
-                <uid></uid>
-                <name></name>
-                <search></search>
-                <pagenav_vars></pagenav_vars>
-            </search>
-        </saved_searches>
-        
-        <staff_depts>
-            <staff_dept id=''>
-                <uid></uid>
-                <department></department>
-            </staff_dept>
-        <staff_depts>
-    </staff>
+        <department></department>
+    </staff_dept>
+    <staff_depts>
+</staff>
 </staff>
 
 <mailEvents>
-    <event id=''>
-        <mbox_id></mbox_id>
-        <event_desc></event_desc>
-        <event_class></event_class>
-        <posted></posted>
-    </event>
+<event id=''>
+    <mbox_id></mbox_id>
+    <event_desc></event_desc>
+    <event_class></event_class>
+    <posted></posted>
+</event>
 </mailEvents>
 
 <mimetypes>
-    <mimetype id=''>
-        <mime_ext></mime_ext>
-        <mime_types></mime_types>
-        <mime_name></mime_name>
-        <mime_admin></mime_admin>
-        <mime_user></mime_user>
-    </mimetype>
+<mimetype id=''>
+    <mime_ext></mime_ext>
+    <mime_types></mime_types>
+    <mime_name></mime_name>
+    <mime_admin></mime_admin>
+    <mime_user></mime_user>
+</mimetype>
 </mimetypes>
-        
+
 <roles>
-    <role id=''>
-        <name></name>
-        <description></description>
-        <tasks></tasks>
-    </role>
+<role id=''>
+    <name></name>
+    <description></description>
+    <tasks></tasks>
+</role>
 </roles>
 
 <metas>
-    <meta>
-        <metakey></metakey>
-        <metavalue></metavalue>
-    </meta>
+<meta>
+    <metakey></metakey>
+    <metavalue></metavalue>
+</meta>
 <metas>

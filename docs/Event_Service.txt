@@ -4,7 +4,7 @@
 /**
  * Getting an instance of the xHelp event service
  */
-$_eventSrv =& xhelp_eventService::singleton(); 
+$_eventSrv =& xhelp_eventService::singleton();
 
 /**
  * Listening for an event
@@ -64,7 +64,7 @@ function batch_priority($tickets, $priority)
  * @param array $tickets The xhelpTicket objects that were modified
  * @param xhelpResponses $response The response added to each ticket
  */
-function batch_response($tickets, $response) 
+function batch_response($tickets, $response)
 {}
 
 /**
@@ -256,7 +256,7 @@ function update_priority($ticket, $oldPriority)
 /**
  * Event: update_status
  * Triggered after a ticket status change
- * Also See: batch_status, close_ticket, reopen_ticket 
+ * Also See: batch_status, close_ticket, reopen_ticket
  * @param xhelpTicket $ticket The ticket that was modified
  * @param xhelpStatus $oldStatus The previous ticket status
  * @param xhelpStatus $newStatus The new ticket status

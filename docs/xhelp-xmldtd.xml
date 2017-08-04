@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE tickets [
-    <!ELEMENT tickets         (ticket)>
-    <!ELEMENT ticket          (uid, subject, description, department, priority, status, posted, lastUpdated, ownership,
-                               closedBy, totalTimeSpent, userIP, serverid, emailHash, email, overdueTime, responses, files,
-                               logMessages, subscribedUsers)>
+        <!ELEMENT tickets         (ticket)>
+        <!ELEMENT ticket          (uid, subject, description, department, priority, status, posted, lastUpdated, ownership,
+                closedBy, totalTimeSpent, userIP, serverid, emailHash, email, overdueTime, responses, files,
+                logMessages, subscribedUsers)>
         <!ELEMENT uid             (#PCDATA)>
         <!ELEMENT subject         (#PCDATA)>
         <!ELEMENT description     (#PCDATA)>
@@ -21,119 +21,119 @@
         <!ELEMENT email           (#PCDATA)>
         <!ELEMENT overdueTime     (#PCDATA)>
         <!ELEMENT responses       (uid, message, timeSpent, updateTime, userIP, private, files, staffReviews)>
-            <!ELEMENT uid             (#PCDATA)>
-            <!ELEMENT message         (#PCDATA)>
-            <!ELEMENT timeSpent       (#PCDATA)>
-            <!ELEMENT updateTime      (#PCDATA)>
-            <!ELEMENT userIP          (#PCDATA)>
-            <!ELEMENT private         (#PCDATA)>
-            <!ELEMENT files           (filename, mimetype)>
-                <!ELEMENT filename        (#PCDATA)>
-                <!ELEMENT mimetype        (#PCDATA)>
-            <!ELEMENT staffReviews    (staffid, comments, submittedBy, userIP)>
-                <!ELEMENT staffid         (#PCDATA)>
-                <!ELEMENT comments        (#PCDATA)>
-                <!ELEMENT submittedBy     (#PCDATA)>
-                <!ELEMENT userIP          (#PCDATA)>
+        <!ELEMENT uid             (#PCDATA)>
+        <!ELEMENT message         (#PCDATA)>
+        <!ELEMENT timeSpent       (#PCDATA)>
+        <!ELEMENT updateTime      (#PCDATA)>
+        <!ELEMENT userIP          (#PCDATA)>
+        <!ELEMENT private         (#PCDATA)>
+        <!ELEMENT files           (filename, mimetype)>
+        <!ELEMENT filename        (#PCDATA)>
+        <!ELEMENT mimetype        (#PCDATA)>
+        <!ELEMENT staffReviews    (staffid, comments, submittedBy, userIP)>
+        <!ELEMENT staffid         (#PCDATA)>
+        <!ELEMENT comments        (#PCDATA)>
+        <!ELEMENT submittedBy     (#PCDATA)>
+        <!ELEMENT userIP          (#PCDATA)>
         <!ELEMENT files           (filename, responseid, mimetype)>
-            <!ELEMENT filename        (#PCDATA)>
-            <!ELEMENT responseid      (#PCDATA)>
-            <!ELEMENT mimetype        (#PCDATA)>
+        <!ELEMENT filename        (#PCDATA)>
+        <!ELEMENT responseid      (#PCDATA)>
+        <!ELEMENT mimetype        (#PCDATA)>
         <!ELEMENT logMessages     (uid, lastUpdated, action)>
-            <!ELEMENT uid             (#PCDATA)>
-            <!ELEMENT lastUpdated     (#PCDATA)>
-            <!ELEMENT action          (#PCDATA)>
+        <!ELEMENT uid             (#PCDATA)>
+        <!ELEMENT lastUpdated     (#PCDATA)>
+        <!ELEMENT action          (#PCDATA)>
         <!ELEMENT subscribedUsers (uid, ticketid, email, suppress)>
-            <!ELEMENT uid             (#PCDATA)>
-            <!ELEMENT ticketid        (#PCDATA)>
-            <!ELEMENT email           (#PCDATA)>
-            <!ELEMENT suppress        (#PCDATA)>
-]>
+        <!ELEMENT uid             (#PCDATA)>
+        <!ELEMENT ticketid        (#PCDATA)>
+        <!ELEMENT email           (#PCDATA)>
+        <!ELEMENT suppress        (#PCDATA)>
+        ]>
 
 <!DOCTYPE statuses [
-    <!ELEMENT statuses        (state, description)>
+        <!ELEMENT statuses        (state, description)>
         <!ELEMENT state           (#PCDATA)>
         <!ELEMENT description     (#PCDATA)>
-]>
+        ]>
 
 <!DOCTYPE departments [
-    <!ELEMENT departments     (department, mailboxes)>
+        <!ELEMENT departments     (department, mailboxes)>
         <!ELEMENT department      (department)>
-            <!ELEMENT department      (#PCDATA)>
+        <!ELEMENT department      (#PCDATA)>
         <!ELEMENT mailboxes       (emailaddress, server, serverport, username, password, priority, mboxtype, active)>
-            <!ELEMENT emailaddress    (#PCDATA)>
-            <!ELEMENT server          (#PCDATA)>
-            <!ELEMENT serverport      (#PCDATA)>
-            <!ELEMENT username        (#PCDATA)>
-            <!ELEMENT password        (#PCDATA)>
-            <!ELEMENT priority        (#PCDATA)>
-            <!ELEMENT mboxtype        (#PCDATA)>
-            <!ELEMENT active          (#PCDATA)>
-]>
+        <!ELEMENT emailaddress    (#PCDATA)>
+        <!ELEMENT server          (#PCDATA)>
+        <!ELEMENT serverport      (#PCDATA)>
+        <!ELEMENT username        (#PCDATA)>
+        <!ELEMENT password        (#PCDATA)>
+        <!ELEMENT priority        (#PCDATA)>
+        <!ELEMENT mboxtype        (#PCDATA)>
+        <!ELEMENT active          (#PCDATA)>
+        ]>
 
 <!DOCTYPE staff_members [
-    <!ELEMENT staff_members   (staff)>
+        <!ELEMENT staff_members   (staff)>
         <!ELEMENT staff           (uid, email, responseTime, numReviews, callsClosed, attachSig, rating, ticketsResponded,
-                                   notify, permTimestamp, response_templates, roles, saved_searches, staff_depts)>
-            <!ELEMENT uid                 (#PCDATA)>
-            <!ELEMENT email               (#PCDATA)>
-            <!ELEMENT responseTime        (#PCDATA)>
-            <!ELEMENT numReviews          (#PCDATA)>
-            <!ELEMENT callsClosed         (#PCDATA)>
-            <!ELEMENT attachSig           (#PCDATA)>
-            <!ELEMENT rating              (#PCDATA)>
-            <!ELEMENT ticketsResponded    (#PCDATA)>
-            <!ELEMENT notify              (#PCDATA)>
-            <!ELEMENT permTimestamp       (#PCDATA)>
-            <!ELEMENT response_templates  (uid, name, response)>
-                <!ELEMENT uid                (#PCDATA)>
-                <!ELEMENT name               (#PCDATA)>
-                <!ELEMENT response           (#PCDATA)>
-            <!ELEMENT roles               (uid, roleid, deptid)>
-                <!ELEMENT uid                (#PCDATA)>
-                <!ELEMENT roleid             (#PCDATA)>
-                <!ELEMENT deptid             (#PCDATA)>
-            <!ELEMENT saved_searches      (uid, name, search, pagenav_vars)>
-                <!ELEMENT uid                (#PCDATA)>
-                <!ELEMENT name               (#PCDATA)>
-                <!ELEMENT search             (#PCDATA)>
-                <!ELEMENT pagenav_vars       (#PCDATA)>
-            <!ELEMENT staff_depts         (staff_dept)>
-                <!ELEMENT staff_dept         (uid, department)>
-                    <!ELEMENT uid               (#PCDATA)>
-                    <!ELEMENT department        (#PCDATA)>
-]>
+                notify, permTimestamp, response_templates, roles, saved_searches, staff_depts)>
+        <!ELEMENT uid                 (#PCDATA)>
+        <!ELEMENT email               (#PCDATA)>
+        <!ELEMENT responseTime        (#PCDATA)>
+        <!ELEMENT numReviews          (#PCDATA)>
+        <!ELEMENT callsClosed         (#PCDATA)>
+        <!ELEMENT attachSig           (#PCDATA)>
+        <!ELEMENT rating              (#PCDATA)>
+        <!ELEMENT ticketsResponded    (#PCDATA)>
+        <!ELEMENT notify              (#PCDATA)>
+        <!ELEMENT permTimestamp       (#PCDATA)>
+        <!ELEMENT response_templates  (uid, name, response)>
+        <!ELEMENT uid                (#PCDATA)>
+        <!ELEMENT name               (#PCDATA)>
+        <!ELEMENT response           (#PCDATA)>
+        <!ELEMENT roles               (uid, roleid, deptid)>
+        <!ELEMENT uid                (#PCDATA)>
+        <!ELEMENT roleid             (#PCDATA)>
+        <!ELEMENT deptid             (#PCDATA)>
+        <!ELEMENT saved_searches      (uid, name, search, pagenav_vars)>
+        <!ELEMENT uid                (#PCDATA)>
+        <!ELEMENT name               (#PCDATA)>
+        <!ELEMENT search             (#PCDATA)>
+        <!ELEMENT pagenav_vars       (#PCDATA)>
+        <!ELEMENT staff_depts         (staff_dept)>
+        <!ELEMENT staff_dept         (uid, department)>
+        <!ELEMENT uid               (#PCDATA)>
+        <!ELEMENT department        (#PCDATA)>
+        ]>
 
 <!DOCTYPE mailEvents    [
-    <!ELEMENT mailEvents      (event)>
+        <!ELEMENT mailEvents      (event)>
         <!ELEMENT event           (mbox_id, event_desc, event_class, posted)>
-            <!ELEMENT mbox_id         (#PCDATA)>
-            <!ELEMENT event_desc      (#PCDATA)>
-            <!ELEMENT event_class     (#PCDATA)>
-            <!ELEMENT posted          (#PCDATA)>
-]>
-        
+        <!ELEMENT mbox_id         (#PCDATA)>
+        <!ELEMENT event_desc      (#PCDATA)>
+        <!ELEMENT event_class     (#PCDATA)>
+        <!ELEMENT posted          (#PCDATA)>
+        ]>
+
 <!DOCTYPE mimetypes     [
-    <!ELEMENT mimetypes       (mimetype)>
+        <!ELEMENT mimetypes       (mimetype)>
         <!ELEMENT mimetype        (mime_ext, mime_types, mime_name, mime_admin, mime_user)>
-            <!ELEMENT mime_ext        (#PCDATA)>
-            <!ELEMENT mime_types      (#PCDATA)>
-            <!ELEMENT mime_name       (#PCDATA)>
-            <!ELEMENT mime_admin      (#PCDATA)>
-            <!ELEMENT mime_user       (#PCDATA)>
-]>
+        <!ELEMENT mime_ext        (#PCDATA)>
+        <!ELEMENT mime_types      (#PCDATA)>
+        <!ELEMENT mime_name       (#PCDATA)>
+        <!ELEMENT mime_admin      (#PCDATA)>
+        <!ELEMENT mime_user       (#PCDATA)>
+        ]>
 
 <!DOCTYPE roles         [
-    <!ELEMENT roles           (role)>
+        <!ELEMENT roles           (role)>
         <!ELEMENT role            (name, description, tasks)>
-            <!ELEMENT name            (#PCDATA)>
-            <!ELEMENT description     (#PCDATA)>
-            <!ELEMENT tasks           (#PCDATA)>
-]>
+        <!ELEMENT name            (#PCDATA)>
+        <!ELEMENT description     (#PCDATA)>
+        <!ELEMENT tasks           (#PCDATA)>
+        ]>
 
 <!DOCTYPE metas         [
-    <!ELEMENT metas           (meta)>
+        <!ELEMENT metas           (meta)>
         <!ELEMENT meta            (metakey, metavalue)>
-            <!ELEMENT metakey         (#PCDATA)>
-            <!ELEMENT metavalue       (#PCDATA)>
-]>
+        <!ELEMENT metakey         (#PCDATA)>
+        <!ELEMENT metavalue       (#PCDATA)>
+        ]>

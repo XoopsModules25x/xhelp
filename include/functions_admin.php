@@ -2,7 +2,7 @@
 
 //function xhelpAdminFooter()
 //{
-//    echo "<br><center><a target='_BLANK' href='http://www.3dev.org'><img src='".XHELP_IMAGE_URL."/3Dev_xhelp.png'></a></center>";
+//    echo "<br><div class='center;'><a target='_BLANK' href='http://www.3dev.org'><img src='".XHELP_IMAGE_URL."/3Dev_xhelp.png'></a></div>";
 //}
 
 /**
