@@ -14,7 +14,7 @@ $pathIcon32 = \Xmf\Module\Admin::menuIconPath('');
 
 $moduleHelper->loadLanguage('modinfo');
 
-$adminObject            = [];
+$adminmenu              = [];
 $i                      = 0;
 $adminmenu[$i]['title'] = _AM_MODULEADMIN_HOME;
 $adminmenu[$i]['link']  = 'admin/index.php';
