@@ -180,7 +180,7 @@ switch ($op) {
         $xoopsConfigUser = [];
         $crit            = new CriteriaCompo(new Criteria('conf_name', 'allow_register'), 'OR');
         $crit->add(new Criteria('conf_name', 'activation_type'), 'OR');
-        $myConfigs =& $configHandler->getConfigs($crit);
+        $myConfigs = $configHandler->getConfigs($crit);
 
         foreach ($myConfigs as $myConf) {
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');

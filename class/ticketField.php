@@ -244,9 +244,23 @@ class XHelpTicketFieldHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, NAME, description, fieldname, controltype, datatype, required, fieldlength, weight, fieldvalues, defaultvalue, VALIDATION)
-            VALUES (%u, %s, %s, %s, %u, %s, %u, %u, %s, %s, %s, %s)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($name), $this->_db->quoteString($description), $this->_db->quoteString($fieldname), $controltype, $this->_db->quoteString($datatype), $required, $fieldlength,
-                       $weight, $this->_db->quoteString($fieldvalues), $this->_db->quoteString($defaultvalue), $this->_db->quoteString($validation));
+        $sql = sprintf(
+            'INSERT INTO %s (id, NAME, description, fieldname, controltype, datatype, required, fieldlength, weight, fieldvalues, defaultvalue, VALIDATION)
+            VALUES (%u, %s, %s, %s, %u, %s, %u, %u, %s, %s, %s, %s)',
+            $this->_db->prefix($this->_dbtable),
+            $id,
+            $this->_db->quoteString($name),
+            $this->_db->quoteString($description),
+            $this->_db->quoteString($fieldname),
+            $controltype,
+            $this->_db->quoteString($datatype),
+            $required,
+            $fieldlength,
+                       $weight,
+            $this->_db->quoteString($fieldvalues),
+            $this->_db->quoteString($defaultvalue),
+            $this->_db->quoteString($validation)
+        );
 
         return $sql;
     }
@@ -262,9 +276,23 @@ class XHelpTicketFieldHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET NAME = %s, description = %s, fieldname = %s, controltype = %u, datatype = %s, required = %u, fieldlength = %u, weight = %u, fieldvalues = %s,
-            defaultvalue = %s, VALIDATION = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($name), $this->_db->quoteString($description), $this->_db->quoteString($fieldname), $controltype, $this->_db->quoteString($datatype), $required, $fieldlength, $weight,
-                       $this->_db->quoteString($fieldvalues), $this->_db->quoteString($defaultvalue), $this->_db->quoteString($validation), $id);
+        $sql = sprintf(
+            'UPDATE %s SET NAME = %s, description = %s, fieldname = %s, controltype = %u, datatype = %s, required = %u, fieldlength = %u, weight = %u, fieldvalues = %s,
+            defaultvalue = %s, VALIDATION = %s WHERE id = %u',
+            $this->_db->prefix($this->_dbtable),
+            $this->_db->quoteString($name),
+            $this->_db->quoteString($description),
+            $this->_db->quoteString($fieldname),
+            $controltype,
+            $this->_db->quoteString($datatype),
+            $required,
+            $fieldlength,
+            $weight,
+                       $this->_db->quoteString($fieldvalues),
+            $this->_db->quoteString($defaultvalue),
+            $this->_db->quoteString($validation),
+            $id
+        );
 
         return $sql;
     }
@@ -400,6 +428,7 @@ class XHelpTicketFieldHandler extends xhelpBaseObjectHandler
                         $mysqldb['fieldtype'] = 'DECIMAL';
                         $mysqldb['length']    = '7,4';
 
+                        // no break
                     default:
                         $mysqldb['fieldtype'] = 'VARCHAR';
                         $mysqldb['length']    = 255;
@@ -445,6 +474,7 @@ class XHelpTicketFieldHandler extends xhelpBaseObjectHandler
                         $mysqldb['fieldtype'] = 'DECIMAL';
                         $mysqldb['length']    = '7,4';
 
+                        // no break
                     default:
                         $mysqldb['fieldtype'] = 'VARCHAR';
                         $mysqldb['length']    = 255;
@@ -480,6 +510,7 @@ class XHelpTicketFieldHandler extends xhelpBaseObjectHandler
                         $mysqldb['fieldtype'] = 'DECIMAL';
                         $mysqldb['length']    = '7,4';
 
+                        // no break
                     default:
                         $mysqldb['fieldtype'] = 'VARCHAR';
                         $mysqldb['length']    = 255;

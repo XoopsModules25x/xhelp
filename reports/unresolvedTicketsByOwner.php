@@ -177,8 +177,14 @@ class XHelpUnresolvedTicketsByOwnerReport extends xhelpReport
     {
         global $xoopsDB;
 
-        $sSQL = sprintf('SELECT t.subject, d.department, s.description AS status, t.totalTimeSpent, t.posted, t.id, FROM_UNIXTIME(t.posted) AS postTime, u.name AS owner FROM %s d, %s t, %s u, %s s WHERE (d.id = t.department) AND (t.ownership = u.uid) AND (t.status = s.id) AND (s.state = 1) %s',
-                        $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
+        $sSQL = sprintf(
+            'SELECT t.subject, d.department, s.description AS status, t.totalTimeSpent, t.posted, t.id, FROM_UNIXTIME(t.posted) AS postTime, u.name AS owner FROM %s d, %s t, %s u, %s s WHERE (d.id = t.department) AND (t.ownership = u.uid) AND (t.status = s.id) AND (s.state = 1) %s',
+                        $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_tickets'),
+            $xoopsDB->prefix('users'),
+            $xoopsDB->prefix('xhelp_status'),
+            $this->extraWhere
+        );
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

@@ -17,7 +17,7 @@
  * @author       XOOPS Development Team
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('XOOPS root path not defined');
+// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
 
 $modversion['version']             = '0.81';
 $modversion['module_status']       = 'Beta 2';
@@ -52,12 +52,12 @@ $modversion['feature_url']     = 'http://dev.xoops.org/modules/xfmod/tracker/?gr
 $modversion['questions_email'] = 'xhelp-questions@3dev.org';
 
 // ------------------- Help files ------------------- //
-$modversion['helpsection'] = array(
-    ['name' => _MI_XXXXX_OVERVIEW, 'link' => 'page=help'],
-    ['name' => _MI_XXXXX_DISCLAIMER, 'link' => 'page=disclaimer'],
-    ['name' => _MI_XXXXX_LICENSE, 'link' => 'page=license'],
-    ['name' => _MI_XXXXX_SUPPORT, 'link' => 'page=support'],
-);
+$modversion['helpsection'] = [
+    ['name' => _MI_XHELP_OVERVIEW, 'link' => 'page=help'],
+    ['name' => _MI_XHELP_DISCLAIMER, 'link' => 'page=disclaimer'],
+    ['name' => _MI_XHELP_LICENSE, 'link' => 'page=license'],
+    ['name' => _MI_XHELP_SUPPORT, 'link' => 'page=support'],
+];
 
 // Developers
 $modversion['contributors']['developers'][0]['name']    = 'Eric Juden';
@@ -218,11 +218,11 @@ $modversion['adminindex']  = 'admin/index.php';
 $modversion['adminmenu']   = 'admin/menu.php';
 
 // ------------------- Help files ------------------- //
-$modversion['helpsection'] = array(
-    array('name' => _MI_XHELP_OVERVIEW, 'link' => 'page=help'),
-    array('name' => _MI_XHELP_DISCLAIMER, 'link' => 'page=disclaimer'),
-    array('name' => _MI_XHELP_LICENSE, 'link' => 'page=license'),
-    array('name' => _MI_XHELP_SUPPORT, 'link' => 'page=support'),
+$modversion['helpsection'] = [
+    ['name' => _MI_XHELP_OVERVIEW, 'link' => 'page=help'],
+    ['name' => _MI_XHELP_DISCLAIMER, 'link' => 'page=disclaimer'],
+    ['name' => _MI_XHELP_LICENSE, 'link' => 'page=license'],
+    ['name' => _MI_XHELP_SUPPORT, 'link' => 'page=support'],
 
     //    array('name' => _MI_XHELP_HELP1, 'link' => 'page=help1'),
     //    array('name' => _MI_XHELP_HELP2, 'link' => 'page=help2'),
@@ -232,7 +232,7 @@ $modversion['helpsection'] = array(
     //    array('name' => _MI_XHELP_REQUIREMENTS, 'link' => 'page=__requirements'),
     //    array('name' => _MI_XHELP_CREDITS, 'link' => 'page=__credits'),
 
-);
+];
 
 // Templates
 $modversion['templates'][1]['file']         = 'xhelp_staff_header.tpl';

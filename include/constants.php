@@ -44,7 +44,8 @@ define('XHELP_SEC_TICKET_TAKE_OWNERSHIP', 12); //Take ownership of ticket
 //Default Security Permissions
 // @todo - I'm not happy with pow(2, ...) to work with each security bit, should we store each bit as its mask?
 //Ticket Manager Role - Can do everything
-define('XHELP_ROLE_PERM_1',
+define(
+    'XHELP_ROLE_PERM_1',
        pow(2, XHELP_SEC_TICKET_ADD)
        | pow(2, XHELP_SEC_TICKET_EDIT)
        | pow(2, XHELP_SEC_TICKET_DELETE)
@@ -57,7 +58,8 @@ define('XHELP_ROLE_PERM_1',
        | pow(2, XHELP_SEC_TICKET_MERGE)
        | pow(2, XHELP_SEC_FILE_DELETE)
        | pow(2, XHELP_SEC_FAQ_ADD)
-       | pow(2, XHELP_SEC_TICKET_TAKE_OWNERSHIP));
+       | pow(2, XHELP_SEC_TICKET_TAKE_OWNERSHIP)
+);
 
 //Support Role - Log Tickets and Responses, Change Status/Priority, Log tickets as user
 define('XHELP_ROLE_PERM_2', pow(2, XHELP_SEC_TICKET_ADD) | pow(2, XHELP_SEC_TICKET_STATUS) | pow(2, XHELP_SEC_TICKET_PRIORITY) | pow(2, XHELP_SEC_TICKET_LOGUSER) | pow(2, XHELP_SEC_RESPONSE_ADD) | pow(2, XHELP_SEC_FAQ_ADD) | pow(2, XHELP_SEC_TICKET_TAKE_OWNERSHIP));

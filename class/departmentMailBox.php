@@ -309,8 +309,20 @@ class XHelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, departmentid, SERVER, serverport, username, PASSWORD, priority, emailaddress, mboxtype, active) VALUES (%u, %u, %s, %u, %s, %s, %u, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $departmentid, $this->_db->quoteString($server), $serverport,
-                       $this->_db->quoteString($username), $this->_db->quoteString($password), $priority, $this->_db->quoteString($emailaddress), $mboxtype, $active);
+        $sql = sprintf(
+            'INSERT INTO %s (id, departmentid, SERVER, serverport, username, PASSWORD, priority, emailaddress, mboxtype, active) VALUES (%u, %u, %s, %u, %s, %s, %u, %s, %u, %u)',
+            $this->_db->prefix($this->_dbtable),
+            $id,
+            $departmentid,
+            $this->_db->quoteString($server),
+            $serverport,
+                       $this->_db->quoteString($username),
+            $this->_db->quoteString($password),
+            $priority,
+            $this->_db->quoteString($emailaddress),
+            $mboxtype,
+            $active
+        );
 
         return $sql;
     }
@@ -326,8 +338,20 @@ class XHelpDepartmentMailBoxHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET departmentid = %u, SERVER = %s, serverport = %u, username = %s, PASSWORD = %s, priority = %u, emailaddress = %s, mboxtype = %u, active = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $departmentid, $this->_db->quoteString($server), $serverport,
-                       $this->_db->quoteString($username), $this->_db->quoteString($password), $priority, $this->_db->quoteString($emailaddress), $mboxtype, $active, $id);
+        $sql = sprintf(
+            'UPDATE %s SET departmentid = %u, SERVER = %s, serverport = %u, username = %s, PASSWORD = %s, priority = %u, emailaddress = %s, mboxtype = %u, active = %u WHERE id = %u',
+            $this->_db->prefix($this->_dbtable),
+            $departmentid,
+            $this->_db->quoteString($server),
+            $serverport,
+                       $this->_db->quoteString($username),
+            $this->_db->quoteString($password),
+            $priority,
+            $this->_db->quoteString($emailaddress),
+            $mboxtype,
+            $active,
+            $id
+        );
 
         return $sql;
     }

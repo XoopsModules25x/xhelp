@@ -207,11 +207,21 @@ class XHelpDepartmentSummaryReport extends xhelpReport
     {
         global $xoopsDB;
 
-        $sSQL = sprintf('SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, COUNT(*) AS resolvedTickets, 0 AS unresolvedTickets, 0 AS avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 2 AND (t.department = d.id) %s GROUP BY d.department',
-                        $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
+        $sSQL = sprintf(
+            'SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, COUNT(*) AS resolvedTickets, 0 AS unresolvedTickets, 0 AS avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 2 AND (t.department = d.id) %s GROUP BY d.department',
+                        $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_tickets'),
+            $xoopsDB->prefix('xhelp_status'),
+            $this->extraWhere
+        );
 
-        $sSQL2 = sprintf('SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, 0 AS resolvedTickets, COUNT(*) AS unresolvedTickets, 0 AS avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 1 AND (t.department = d.id) %s GROUP BY d.department',
-                         $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
+        $sSQL2 = sprintf(
+            'SELECT d.id, d.department, SUM(t.totalTimeSpent) AS totalTimeSpent, 0 AS resolvedTickets, COUNT(*) AS unresolvedTickets, 0 AS avgResponseTime FROM %s d, %s t INNER JOIN %s st ON st.id = t.status WHERE st.state = 1 AND (t.department = d.id) %s GROUP BY d.department',
+                         $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_tickets'),
+            $xoopsDB->prefix('xhelp_status'),
+            $this->extraWhere
+        );
 
         $result  = $xoopsDB->queryF($sSQL);
         $result2 = $xoopsDB->queryF($sSQL2);

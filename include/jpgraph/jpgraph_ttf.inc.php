@@ -520,8 +520,10 @@ class TTF
     {
         $fam = @$this->font_files[$family];
         if (!$fam) {
-            JpGraphError::RaiseL(25046,
-                                 $family);//("Specified TTF font family (id=$family) is unknown or does not exist. Please note that TTF fonts are not distributed with JpGraph for copyright reasons. You can find the MS TTF WEB-fonts (arial, courier etc) for download at http://corefonts.sourceforge.net/");
+            JpGraphError::RaiseL(
+                25046,
+                                 $family
+            );//("Specified TTF font family (id=$family) is unknown or does not exist. Please note that TTF fonts are not distributed with JpGraph for copyright reasons. You can find the MS TTF WEB-fonts (arial, courier etc) for download at http://corefonts.sourceforge.net/");
         }
         $ff = @$fam[$style];
 

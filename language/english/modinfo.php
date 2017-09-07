@@ -84,8 +84,10 @@ define('_MI_XHELP_STAFF_ACTIONS_DSC', 'What style would you like the staff actio
 define('_MI_XHELP_ACTION1', 'Inline-Style');
 define('_MI_XHELP_ACTION2', 'Block-Style');
 define('_MI_XHELP_DEFAULT_DEPT', 'Default Department');
-define('_MI_XHELP_DEFAULT_DEPT_DSC',
-       "This will be the default department that is selected in the list when adding a ticket. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateDepts\", \"xoops_module_install_xhelp\",400, 300);'>Click here</a> to update the departments.");
+define(
+    '_MI_XHELP_DEFAULT_DEPT_DSC',
+       "This will be the default department that is selected in the list when adding a ticket. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateDepts\", \"xoops_module_install_xhelp\",400, 300);'>Click here</a> to update the departments."
+);
 define('_MI_XHELP_OVERDUE_TIME', 'Ticket Overdue Time');
 define('_MI_XHELP_OVERDUE_TIME_DSC', 'This determines how long the staff have to finish a ticket before it is late (in hours).');
 define('_MI_XHELP_ALLOW_ANON', 'Allow Anonymous User Ticket Submission');

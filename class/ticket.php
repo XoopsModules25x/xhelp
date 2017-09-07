@@ -918,8 +918,13 @@ class XHelpTicketHandler extends xhelpBaseObjectHandler
         if (!$hasCustFields) {
             $sql = sprintf('SELECT COUNT(*) AS TicketCount FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'), $this->_db->prefix('xhelp_status'));
         } else {
-            $sql = sprintf('SELECT COUNT(*) AS TicketCount FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id INNER JOIN %s f ON t.id = f.ticketid ', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'),
-                           $this->_db->prefix('xhelp_status'), $this->_db->prefix('xhelp_ticket_values'));
+            $sql = sprintf(
+                'SELECT COUNT(*) AS TicketCount FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id INNER JOIN %s f ON t.id = f.ticketid ',
+                $this->_db->prefix('xhelp_tickets'),
+                $this->_db->prefix('xhelp_jstaffdept'),
+                           $this->_db->prefix('xhelp_status'),
+                $this->_db->prefix('xhelp_ticket_values')
+            );
         }
 
         if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
@@ -1046,9 +1051,28 @@ class XHelpTicketHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, SUBJECT, description, department, priority, STATUS, lastUpdated, ownership, closedBy, totalTimeSpent, posted, userIP, emailHash, email, serverid, overdueTime)
-            VALUES (%u, %u, %s, %s, %u, %u, %u, %u, %u, %u, %u, %u, %s, %s, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($subject), $this->_db->quoteString($description), $department, $priority, $status, time(), $ownership, $closedBy, $totalTimeSpent,
-                       $posted, $this->_db->quoteString($userIP), $this->_db->quoteString($emailHash), $this->_db->quoteString($email), $serverid, $overdueTime);
+        $sql = sprintf(
+            'INSERT INTO %s (id, uid, SUBJECT, description, department, priority, STATUS, lastUpdated, ownership, closedBy, totalTimeSpent, posted, userIP, emailHash, email, serverid, overdueTime)
+            VALUES (%u, %u, %s, %s, %u, %u, %u, %u, %u, %u, %u, %u, %s, %s, %s, %u, %u)',
+            $this->_db->prefix($this->_dbtable),
+            $id,
+            $uid,
+            $this->_db->quoteString($subject),
+            $this->_db->quoteString($description),
+            $department,
+            $priority,
+            $status,
+            time(),
+            $ownership,
+            $closedBy,
+            $totalTimeSpent,
+                       $posted,
+            $this->_db->quoteString($userIP),
+            $this->_db->quoteString($emailHash),
+            $this->_db->quoteString($email),
+            $serverid,
+            $overdueTime
+        );
 
         return $sql;
     }
@@ -1064,9 +1088,26 @@ class XHelpTicketHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET SUBJECT = %s, description = %s, department = %u, priority = %u, STATUS = %u, lastUpdated = %u, ownership = %u,
-            closedBy = %u, totalTimeSpent = %u, userIP = %s, emailHash = %s, email = %s, serverid = %u, overdueTime = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($subject), $this->_db->quoteString($description), $department, $priority, $status, time(), $ownership,
-                       $closedBy, $totalTimeSpent, $this->_db->quoteString($userIP), $this->_db->quoteString($emailHash), $this->_db->quoteString($email), $serverid, $overdueTime, $id);
+        $sql = sprintf(
+            'UPDATE %s SET SUBJECT = %s, description = %s, department = %u, priority = %u, STATUS = %u, lastUpdated = %u, ownership = %u,
+            closedBy = %u, totalTimeSpent = %u, userIP = %s, emailHash = %s, email = %s, serverid = %u, overdueTime = %u WHERE id = %u',
+            $this->_db->prefix($this->_dbtable),
+            $this->_db->quoteString($subject),
+            $this->_db->quoteString($description),
+            $department,
+            $priority,
+            $status,
+            time(),
+            $ownership,
+                       $closedBy,
+            $totalTimeSpent,
+            $this->_db->quoteString($userIP),
+            $this->_db->quoteString($emailHash),
+            $this->_db->quoteString($email),
+            $serverid,
+            $overdueTime,
+            $id
+        );
 
         return $sql;
     }

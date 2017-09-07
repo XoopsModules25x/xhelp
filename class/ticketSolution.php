@@ -125,8 +125,17 @@ class XHelpTicketSolutionHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET ticketid = %u, url = %s, title = %s, description = %s, uid = %u, posted = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $ticketid, $this->_db->quoteString($url), $this->_db->quoteString($title), $this->_db->quoteString($description), $uid, $posted,
-                       $id);
+        $sql = sprintf(
+            'UPDATE %s SET ticketid = %u, url = %s, title = %s, description = %s, uid = %u, posted = %u WHERE id = %u',
+            $this->_db->prefix($this->_dbtable),
+            $ticketid,
+            $this->_db->quoteString($url),
+            $this->_db->quoteString($title),
+            $this->_db->quoteString($description),
+            $uid,
+            $posted,
+                       $id
+        );
 
         return $sql;
     }

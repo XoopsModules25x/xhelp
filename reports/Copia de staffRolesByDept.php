@@ -106,8 +106,14 @@ class XHelpStaffRolesByDeptReport extends xhelpReport
     {
         global $xoopsDB;
 
-        $sSQL = sprintf('SELECT u.name, r.name AS Role, d.department AS Department FROM %s u, %s s, %s sr, %s r, %s d WHERE (u.uid = s.uid) AND (u.uid = sr.uid) AND (sr.roleid = r.id) AND (sr.deptid = d.id) AND (u.uid = sr.uid) AND (u.uid = s.uid) ORDER BY d.department, u.name',
-                        $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'), $xoopsDB->prefix('xhelp_staffroles'), $xoopsDB->prefix('xhelp_roles'), $xoopsDB->prefix('xhelp_departments'));
+        $sSQL = sprintf(
+            'SELECT u.name, r.name AS Role, d.department AS Department FROM %s u, %s s, %s sr, %s r, %s d WHERE (u.uid = s.uid) AND (u.uid = sr.uid) AND (sr.roleid = r.id) AND (sr.deptid = d.id) AND (u.uid = sr.uid) AND (u.uid = s.uid) ORDER BY d.department, u.name',
+                        $xoopsDB->prefix('users'),
+            $xoopsDB->prefix('xhelp_staff'),
+            $xoopsDB->prefix('xhelp_staffroles'),
+            $xoopsDB->prefix('xhelp_roles'),
+            $xoopsDB->prefix('xhelp_departments')
+        );
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

@@ -157,8 +157,13 @@ class XHelpStaffInfoReport extends xhelpReport
     public function _setResults()
     {
         global $xoopsDB;
-        $sSQL = sprintf('SELECT DISTINCT s.ticketsResponded, s.callsClosed, s.email, u.name, s.responseTime / s.ticketsResponded / 60 AS avgResponseTime FROM %s s, %s u, %s t WHERE (s.uid = u.uid) AND (s.uid = t.ownership) AND (s.uid = t.closedBy) %s', $xoopsDB->prefix('xhelp_staff'),
-                        $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_tickets'), $this->extraWhere);
+        $sSQL = sprintf(
+            'SELECT DISTINCT s.ticketsResponded, s.callsClosed, s.email, u.name, s.responseTime / s.ticketsResponded / 60 AS avgResponseTime FROM %s s, %s u, %s t WHERE (s.uid = u.uid) AND (s.uid = t.ownership) AND (s.uid = t.closedBy) %s',
+            $xoopsDB->prefix('xhelp_staff'),
+                        $xoopsDB->prefix('users'),
+            $xoopsDB->prefix('xhelp_tickets'),
+            $this->extraWhere
+        );
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

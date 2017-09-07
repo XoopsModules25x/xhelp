@@ -1,6 +1,6 @@
 <?php
 //
-// defined('XOOPS_ROOT_PATH') || exit('XOOPS root path not defined');
+// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -124,11 +124,21 @@ function b_xhelp_performance_show($options)
     $xoopsModule = xhelpGetModule();
 
     if ($xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
-        $sql = sprintf('SELECT COUNT(*) AS TicketCount, d.department, d.id FROM %s t INNER JOIN %s d ON t.department = d.id  INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 GROUP BY d.department, d.id ORDER BY d.department', $xoopsDB->prefix('xhelp_tickets'),
-                       $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_status'));
+        $sql = sprintf(
+            'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM %s t INNER JOIN %s d ON t.department = d.id  INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 GROUP BY d.department, d.id ORDER BY d.department',
+            $xoopsDB->prefix('xhelp_tickets'),
+                       $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_status')
+        );
     } else {
-        $sql = sprintf('SELECT COUNT(*) AS TicketCount, d.department, d.id FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s d ON t.department = d.id INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 AND j.uid = %u GROUP BY d.department, d.id',
-                       $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_jstaffdept'), $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_status'), $xoopsUser->getVar('uid'));
+        $sql = sprintf(
+            'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s d ON t.department = d.id INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 AND j.uid = %u GROUP BY d.department, d.id',
+                       $xoopsDB->prefix('xhelp_tickets'),
+            $xoopsDB->prefix('xhelp_jstaffdept'),
+            $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_status'),
+            $xoopsUser->getVar('uid')
+        );
     }
 
     $ret = $xoopsDB->query($sql);

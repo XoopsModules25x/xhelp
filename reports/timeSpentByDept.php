@@ -160,8 +160,13 @@ class XHelpTimeSpentByDeptReport extends xhelpReport
     {
         global $xoopsDB;
 
-        $sSQL = sprintf('SELECT d.department, SUM(r.timeSpent) AS TotalTime FROM %s d, %s t, %s r WHERE (d.id = t.department) AND (t.id = r.ticketid) %s GROUP BY d.department', $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_responses'),
-                        $this->extraWhere);
+        $sSQL = sprintf(
+            'SELECT d.department, SUM(r.timeSpent) AS TotalTime FROM %s d, %s t, %s r WHERE (d.id = t.department) AND (t.id = r.ticketid) %s GROUP BY d.department',
+            $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_tickets'),
+            $xoopsDB->prefix('xhelp_responses'),
+                        $this->extraWhere
+        );
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

@@ -61,7 +61,7 @@ if ($xoopsUser) {
             $message = _XHELP_MESSAGE_NO_DEPTS;
             redirect_header(XHELP_BASE_URL . '/index.php', 3, $message);
         }
-        $aDept    = array();
+        $aDept    = [];
         $myGroups = $hMember->getGroupsByUser($xoopsUser->getVar('uid'));
         if ($xhelp_isStaff && ($xoopsModuleConfig['xhelp_deptVisibility'] == 0)) {     // If staff are not applied
             foreach ($departments as $dept) {

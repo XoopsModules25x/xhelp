@@ -414,8 +414,22 @@ class XHelpStaffHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, email, responseTime, numReviews, callsClosed, attachSig, rating, allDepartments, ticketsResponded, notify, permTimestamp) VALUES (%u, %u, %s, %u, %u, %u, %u, %u, %u, %u, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $uid,
-                       $this->_db->quoteString($email), $responseTime, $numReviews, $callsClosed, $attachSig, $rating, $allDepartments, $ticketsResponded, $notify, $permTimestamp);
+        $sql = sprintf(
+            'INSERT INTO %s (id, uid, email, responseTime, numReviews, callsClosed, attachSig, rating, allDepartments, ticketsResponded, notify, permTimestamp) VALUES (%u, %u, %s, %u, %u, %u, %u, %u, %u, %u, %u, %u)',
+            $this->_db->prefix($this->_dbtable),
+            $id,
+            $uid,
+                       $this->_db->quoteString($email),
+            $responseTime,
+            $numReviews,
+            $callsClosed,
+            $attachSig,
+            $rating,
+            $allDepartments,
+            $ticketsResponded,
+            $notify,
+            $permTimestamp
+        );
 
         return $sql;
     }
@@ -431,8 +445,22 @@ class XHelpStaffHandler extends xhelpBaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET uid = %u, email = %s, responseTime = %u, numReviews = %u, callsClosed = %u, attachSig = %u, rating = %u, allDepartments = %u, ticketsResponded = %u, notify = %u, permTimestamp = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid,
-                       $this->_db->quoteString($email), $responseTime, $numReviews, $callsClosed, $attachSig, $rating, $allDepartments, $ticketsResponded, $notify, $permTimestamp, $id);
+        $sql = sprintf(
+            'UPDATE %s SET uid = %u, email = %s, responseTime = %u, numReviews = %u, callsClosed = %u, attachSig = %u, rating = %u, allDepartments = %u, ticketsResponded = %u, notify = %u, permTimestamp = %u WHERE id = %u',
+            $this->_db->prefix($this->_dbtable),
+            $uid,
+                       $this->_db->quoteString($email),
+            $responseTime,
+            $numReviews,
+            $callsClosed,
+            $attachSig,
+            $rating,
+            $allDepartments,
+            $ticketsResponded,
+            $notify,
+            $permTimestamp,
+            $id
+        );
 
         return $sql;
     }

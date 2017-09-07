@@ -119,8 +119,8 @@ class XHeplUtility extends XoopsObject
             }
         }
 
-        if (!$success) {
-            $module->setErrors(sprintf(_AM_XXXXX_ERROR_BAD_XOOPS, $requiredVer, $currentVer));
+        if (false === $success) {
+            $module->setErrors(sprintf(_AM_XHELP_ERROR_BAD_XOOPS, $requiredVer, $currentVer));
         }
 
         return $success;
@@ -143,7 +143,7 @@ class XHeplUtility extends XoopsObject
         $reqVer  = $module->getInfo('min_php');
         if (false !== $reqVer && '' !== $reqVer) {
             if (version_compare($verNum, $reqVer, '<')) {
-                $module->setErrors(sprintf(_AM_XXXXX_ERROR_BAD_PHP, $reqVer, $verNum));
+                $module->setErrors(sprintf(_AM_XHELP_ERROR_BAD_PHP, $reqVer, $verNum));
                 $success = false;
             }
         }

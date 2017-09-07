@@ -91,37 +91,38 @@
  * @package Mail
  */
 
-class Mail_mimePart {
+class Mail_mimePart
+{
 
     /**
      * The encoding type of this part
      * @var string
      */
-    var $_encoding;
+    public $_encoding;
 
     /**
      * An array of subparts
      * @var array
      */
-    var $_subparts;
+    public $_subparts;
 
     /**
      * The output of this part after being built
      * @var string
      */
-    var $_encoded;
+    public $_encoded;
 
     /**
      * Headers for this part
      * @var array
      */
-    var $_headers;
+    public $_headers;
 
     /**
      * The body of this part (not encoded)
      * @var string
      */
-    var $_body;
+    public $_body;
 
     /**
      * Constructor.
@@ -139,10 +140,10 @@ class Mail_mimePart {
      *                  charset      - Character set to use
      * @access public
      */
-    function Mail_mimePart($body = '', $params = array())
+    public function Mail_mimePart($body = '', $params = [])
     {
         if (!defined('MAIL_MIMEPART_CRLF')) {
-            define('MAIL_MIMEPART_CRLF', defined('MAIL_MIME_CRLF') ? MAIL_MIME_CRLF : "\r\n", TRUE);
+            define('MAIL_MIMEPART_CRLF', defined('MAIL_MIME_CRLF') ? MAIL_MIME_CRLF : "\r\n", true);
         }
 
         foreach ($params as $key => $value) {
@@ -197,7 +198,7 @@ class Mail_mimePart {
         }
 
         // Assign stuff to member variables
-        $this->_encoded  = array();
+        $this->_encoded  = [];
         $this->_headers  = $headers;
         $this->_body     = $body;
     }
@@ -213,7 +214,7 @@ class Mail_mimePart {
      *            an indexed array.
      * @access public
      */
-    function encode()
+    public function encode()
     {
         $encoded =& $this->_encoded;
 
@@ -224,7 +225,7 @@ class Mail_mimePart {
 
             // Add body parts to $subparts
             for ($i = 0; $i < count($this->_subparts); $i++) {
-                $headers = array();
+                $headers = [];
                 $tmp = $this->_subparts[$i]->encode();
                 foreach ($tmp['headers'] as $key => $value) {
                     $headers[] = $key . ': ' . $value;
@@ -235,7 +236,6 @@ class Mail_mimePart {
             $encoded['body'] = '--' . $boundary . MAIL_MIMEPART_CRLF .
             implode('--' . $boundary . MAIL_MIMEPART_CRLF, $subparts) .
                                '--' . $boundary.'--' . MAIL_MIMEPART_CRLF;
-
         } else {
             $encoded['body'] = $this->_getEncodedData($this->_body, $this->_encoding) . MAIL_MIMEPART_CRLF;
         }
@@ -261,7 +261,7 @@ class Mail_mimePart {
      *           otherwise you will not be able to add further subparts.
      * @access public
      */
-    function &addSubPart($body, $params)
+    public function &addSubPart($body, $params)
     {
         $this->_subparts[] = new Mail_mimePart($body, $params);
 
@@ -278,7 +278,7 @@ class Mail_mimePart {
      *                  or quoted-printable.
      * @access private
      */
-    function _getEncodedData($data, $encoding)
+    public function _getEncodedData($data, $encoding)
     {
         switch ($encoding) {
             case '8bit':
@@ -310,15 +310,14 @@ class Mail_mimePart {
      *
      * @access private
      */
-    function _quotedPrintableEncode($input , $line_max = 76)
+    public function _quotedPrintableEncode($input, $line_max = 76)
     {
         $lines  = preg_split("/\r?\n/", $input);
         $eol    = MAIL_MIMEPART_CRLF;
         $escape = '=';
         $output = '';
 
-        while(list(, $line) = each($lines)){
-
+        while (list(, $line) = each($lines)) {
             $linlen     = strlen($line);
             $newline = '';
 
@@ -326,12 +325,11 @@ class Mail_mimePart {
                 $char = substr($line, $i, 1);
                 $dec  = ord($char);
 
-                if (($dec == 32) AND ($i == ($linlen - 1))){    // convert space at eol only
+                if (($dec == 32) and ($i == ($linlen - 1))) {    // convert space at eol only
                     $char = '=20';
-
-                } elseif($dec == 9) {
+                } elseif ($dec == 9) {
                     ; // Do nothing if a tab.
-                } elseif(($dec == 61) OR ($dec < 32 ) OR ($dec > 126)) {
+                } elseif (($dec == 61) or ($dec < 32) or ($dec > 126)) {
                     $char = $escape . strtoupper(sprintf('%02s', dechex($dec)));
                 }
 

@@ -705,8 +705,19 @@ function editStaff()
             //Should element be checked?
             $checked = ($inDept ? 'checked' : '');
 
-            printf("<tr><td><input type='checkbox' name='departments[]' value='%u' %s onclick=\"xhelpRoleCustOnClick('frmEditStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">%s [<a href='staff.php?op=customDept&amp;deptid=%u&amp;uid=%u&amp;xhelp_role=%s&amp;xhelp_depts=%s' class='xhelp_dept_cust'>Customize</a>] <i>%s</i><input type='hidden' name='custrole[%u]' value='%s'></td></tr>",
-                   $deptid, $checked, $deptname, $deptid, $uid, $deptroleids, $xhelp_depts, $deptrolenames, $deptid, $deptroleids);
+            printf(
+                "<tr><td><input type='checkbox' name='departments[]' value='%u' %s onclick=\"xhelpRoleCustOnClick('frmEditStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">%s [<a href='staff.php?op=customDept&amp;deptid=%u&amp;uid=%u&amp;xhelp_role=%s&amp;xhelp_depts=%s' class='xhelp_dept_cust'>Customize</a>] <i>%s</i><input type='hidden' name='custrole[%u]' value='%s'></td></tr>",
+                   $deptid,
+                $checked,
+                $deptname,
+                $deptid,
+                $uid,
+                $deptroleids,
+                $xhelp_depts,
+                $deptrolenames,
+                $deptid,
+                $deptroleids
+            );
         }
         echo "<tr><td>
                   <input type='checkbox' name='checkAll' value='0' onclick='selectAll(this.form,\"departments[]\", this.checked);xhelpRoleCustOnClick(\"frmEditStaff\", \"departments[]\", \"xhelp_depts\", \"&amp;\", \"xhelp_dept_cust\");'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';

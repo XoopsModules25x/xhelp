@@ -206,7 +206,7 @@ class Mail_mimeDecode extends PEAR
 
         foreach ($headers as $value) {
             if (isset($return->headers[strtolower($value['name'])]) AND !is_array($return->headers[strtolower($value['name'])])) {
-                $return->headers[strtolower($value['name'])]   = array($return->headers[strtolower($value['name'])]);
+                $return->headers[strtolower($value['name'])]   = [$return->headers[strtolower($value['name'])]];
                 $return->headers[strtolower($value['name'])][] = $value['value'];
 
             } elseif (isset($return->headers[strtolower($value['name'])])) {
@@ -292,7 +292,7 @@ class Mail_mimeDecode extends PEAR
 
                 case 'message/rfc822':
                     $obj = &new Mail_mimeDecode($body);
-                    $return->parts[] = $obj->decode(array('include_bodies' => $this->_include_bodies));
+                    $return->parts[] = $obj->decode(['include_bodies' => $this->_include_bodies]);
                     unset($obj);
                     break;
 
@@ -323,7 +323,7 @@ class Mail_mimeDecode extends PEAR
      */
     function &getMimeNumbers(&$structure, $no_refs = false, $mime_number = '', $prepend = '')
     {
-        $return = array();
+        $return = [];
         if (!empty($structure->parts)) {
             if ($mime_number != '') {
                 $structure->mime_id = $prepend . $mime_number;
@@ -366,7 +366,7 @@ class Mail_mimeDecode extends PEAR
     function _splitBodyHeader($input)
     {
         if (preg_match("/^(.*?)\r?\n\r?\n(.*)/s", $input, $match)) {
-            return array($match[1], $match[2]);
+            return [$match[1], $match[2]];
         }
         $this->_error = 'Could not split header and body';
 
@@ -396,13 +396,13 @@ class Mail_mimeDecode extends PEAR
                 if($hdr_value[0] == ' ')
                 $hdr_value = substr($hdr_value, 1);
 
-                $return[] = array(
+                $return[] = [
                                   'name'  => $hdr_name,
                                   'value' => $this->_decode_headers ? $this->_decodeHeader($hdr_value) : $hdr_value
-                );
+                ];
             }
         } else {
-            $return = array();
+            $return = [];
         }
 
         return $return;
@@ -629,7 +629,7 @@ class Mail_mimeDecode extends PEAR
 
                 }
             }
-            $files[] = array('filename' => $filename, 'fileperm' => $fileperm, 'filedata' => $file);
+            $files[] = ['filename' => $filename, 'fileperm' => $fileperm, 'filedata' => $file];
         }
 
         return $files;
@@ -679,7 +679,7 @@ class Mail_mimeDecode extends PEAR
         }
         $to = substr($to,1);
 
-        return array($to,$header,$this->_body);
+        return [$to, $header, $this->_body];
     }
 
     /**
@@ -771,7 +771,7 @@ class Mail_mimeDecode extends PEAR
         $crlf   = "\r\n";
         $return = '';
 
-        $new_hdr_value = ($hdr_name != 'received') ? Mail_mimeDecode::_parseHeaderValue($hdr_value) : array('value' => $hdr_value);
+        $new_hdr_value = ($hdr_name != 'received') ? Mail_mimeDecode::_parseHeaderValue($hdr_value) : ['value' => $hdr_value];
         $new_hdr_name  = str_replace(' ', '-', ucwords(str_replace('-', ' ', $hdr_name)));
 
         // Sort out any parameters

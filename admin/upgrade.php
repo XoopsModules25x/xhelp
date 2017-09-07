@@ -142,8 +142,11 @@ function upgradeDB()
             echo '<ul>';
             //Create meta table
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (metakey varchar(50) NOT NULL default '', metavalue varchar(255) NOT NULL default '', PRIMARY KEY (metakey)) ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_meta')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_meta'),
-                                sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_meta'));
+                   && _runQuery(
+                       sprintf("CREATE TABLE %s (metakey varchar(50) NOT NULL default '', metavalue varchar(255) NOT NULL default '', PRIMARY KEY (metakey)) ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_meta')),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_meta'),
+                                sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_meta')
+                   );
 
             //Insert Current Version into table
             $qry = $xoopsDB->query(sprintf("INSERT INTO %s VALUES('version', %s)", $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($ver)));
@@ -197,6 +200,7 @@ function upgradeDB()
                        && _runQuery(sprintf('UPDATE %s SET email = %s, notify = %u WHERE uid = %u', $staff_tbl, $xoopsDB->quoteString($email), $usernotif, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid));
             }
             echo '</ul>';
+            // no break
         case '0.6':
             set_time_limit(60);
             //Do DB updates to make 0.7
@@ -307,6 +311,7 @@ function upgradeDB()
             }
             echo '</ul>';
 
+            // no break
         case '0.7':
             set_time_limit(60);
             //Do DB updates to make 0.71
@@ -315,6 +320,7 @@ function upgradeDB()
             echo '<ul>';
             echo '</ul>';
 
+            // no break
         case '0.71':
             set_time_limit(60);
             //Do DB updates to make 0.75
@@ -502,6 +508,7 @@ function upgradeDB()
             $ret = $ret
                    && _runQuery(sprintf("ALTER TABLE %s MODIFY SUBJECT VARCHAR(255) NOT NULL DEFAULT ''", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
 
+                   // no break
         case '0.75':
             set_time_limit(60);
             // Set default department
@@ -578,6 +585,7 @@ function upgradeDB()
                 }
             }
 
+            // no break
         case '0.77':
             // No schema changes for 0.78
 
