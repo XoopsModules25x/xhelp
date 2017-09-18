@@ -117,7 +117,7 @@ class Net_IMAPProtocol
          * we disable the authentication methods that depend upon it.
          */
 
-        if ((@include_once 'Auth/SASL.php') == false) {
+        if ((@include_once 'Auth/SASL.php') === false) {
             foreach ($this->supportedSASLAuthMethods as $SASLMethod) {
                 $pos = array_search($SASLMethod, $this->supportedAuthMethods);
                 unset($this->supportedAuthMethods[$pos]);
@@ -882,7 +882,7 @@ class Net_IMAPProtocol
         $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
         // TODO:
         // Falta el codigo para que flags list y time hagan algo!!
-        if ($this->hasCapability("LITERAL+") == true) {
+        if ($this->hasCapability("LITERAL+") === true) {
             $param=sprintf("%s %s%s{%s+}\r\n%s", $mailbox_name, $flags_list, $time, $msg_size, $msg);
             if (PEAR::isError($error = $this->_putCMD($cmdid, 'APPEND', $param))) {
                 return $error;
@@ -1873,7 +1873,7 @@ class Net_IMAPProtocol
         }
         switch ($str[0]) {
             case '{':
-                if (($posClosingBraces = $this->_getClosingBracesPos($str, '{', '}')) == false) {
+                if (($posClosingBraces = $this->_getClosingBracesPos($str, '{', '}')) === false) {
                     $this->_prot_error("_getClosingBracesPos() error!!!", __LINE__, __FILE__);
                 }
                 if (! is_numeric(($strBytes = substr($str, 1, $posClosingBraces - 1)))) {
@@ -1954,7 +1954,7 @@ class Net_IMAPProtocol
                 $str = substr($str, $pos);
                 break;
             case '(':
-                if ($parenthesisIsToken == false) {
+                if ($parenthesisIsToken === false) {
                     $pos = $this->_getClosingBracesPos($str);
                     $content_size = $pos + 1;
                     $content = substr($str, 0, $pos + 1);
@@ -2147,7 +2147,7 @@ class Net_IMAPProtocol
 
                 $ret_aux = ["MAILBOX" =>$this->utf_7_decode($mailbox)];
                 $this->_getNextToken($str, $quota_resp);
-                if (($ext = $this->_retrParsedResponse($str, $quota_resp)) == false) {
+                if (($ext = $this->_retrParsedResponse($str, $quota_resp)) === false) {
                     $this->_prot_error("bogus response!!!!", __LINE__, __FILE__);
                 }
                 $ret_aux=array_merge($ret_aux, $ext);
@@ -2160,7 +2160,7 @@ class Net_IMAPProtocol
                 $this->_parseSpace($str, __LINE__, __FILE__);
 
                 $this->_getNextToken($str, $quota_resp);
-                if (($ext = $this->_retrParsedResponse($str, $quota_resp)) == false) {
+                if (($ext = $this->_retrParsedResponse($str, $quota_resp)) === false) {
                     $this->_prot_error("bogus response!!!!", __LINE__, __FILE__);
                 }
                 $ret_aux=array_merge($ret_aux, $ext);
@@ -2472,7 +2472,7 @@ class Net_IMAPProtocol
                 // I get the command
                 $this->_getNextToken($str, $command);
 
-                if (($ext_arr = $this->_retrParsedResponse($str, $command, $msg_nro)) == false) {
+                if (($ext_arr = $this->_retrParsedResponse($str, $command, $msg_nro)) === false) {
                     //  if this bogus response cis a FLAGS () or EXPUNGE response
                     // the ignore it
                     if ($command != 'FLAGS' && $command != 'EXPUNGE') {
@@ -2488,7 +2488,7 @@ class Net_IMAPProtocol
                  take care of bogus responses!
                  */
 
-                if (($ext_arr = $this->_retrParsedResponse($str, $command)) == false) {
+                if (($ext_arr = $this->_retrParsedResponse($str, $command)) === false) {
                     $this->_prot_error("bogus response!!!! (COMMAND:$command)", __LINE__, __FILE__);
                 }
                 $result_array[] = ["COMMAND" =>$command, "EXT" =>$ext_arr];
@@ -2552,7 +2552,7 @@ class Net_IMAPProtocol
 
     public function utf_7_encode($str)
     {
-        if ($this->_useUTF_7 == false) {
+        if ($this->_useUTF_7 === false) {
             return $str;
         }
         //return imap_utf7_encode($str);
@@ -2595,7 +2595,7 @@ class Net_IMAPProtocol
 
     public function utf_7_decode($str)
     {
-        if ($this->_useUTF_7 == false) {
+        if ($this->_useUTF_7 === false) {
             return $str;
         }
 

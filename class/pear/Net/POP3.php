@@ -153,7 +153,7 @@ class Net_POP3
          * Include the Auth_SASL package.  If the package is not available,
          * we disable the authentication methods that depend upon it.
          */
-        if ((@include_once 'Auth/SASL.php') == false) {
+        if ((@include_once 'Auth/SASL.php') === false) {
             if ($this->_debug) {
                 echo "AUTH_SASL NOT PRESENT!\n";
             }
