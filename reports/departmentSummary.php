@@ -21,7 +21,7 @@ $i            = 0;
 $aDepts       = [];
 $aDepts[-999] = 'All';
 foreach ($departments as $id => $dept) {
-    if ($i == 0) {
+    if (0 == $i) {
         $deptid = $id;
     }
     $aDepts[$id] = $dept->getVar('department');
@@ -31,8 +31,8 @@ foreach ($departments as $id => $dept) {
 // Cannot fill date values in class...have to fill these values later
 $paramVals = [
     'startDate'  => (isset($_REQUEST['startDate'])
-                     && $_REQUEST['startDate'] != '') ? $_REQUEST['startDate'] : $startDate,
-    'endDate'    => (isset($_REQUEST['endDate']) && $_REQUEST['endDate'] != '') ? $_REQUEST['endDate'] : $endDate,
+                     && '' != $_REQUEST['startDate']) ? $_REQUEST['startDate'] : $startDate,
+    'endDate'    => (isset($_REQUEST['endDate']) && '' != $_REQUEST['endDate']) ? $_REQUEST['endDate'] : $endDate,
     'department' => [$aDepts, isset($_REQUEST['department']) ? $_REQUEST['department'] : '']
 ];
 
@@ -181,11 +181,11 @@ class XHelpDepartmentSummaryReport extends xhelpReport
 
     public function generateGraph()
     {
-        if ($this->getVar('hasGraph') == 0) {
+        if (0 == $this->getVar('hasGraph')) {
             return false;
         }
 
-        if ($this->getVar('hasResults') == 0) {
+        if (0 == $this->getVar('hasResults')) {
             $this->_setResults();
         }
         $aResults = $this->getVar('results');

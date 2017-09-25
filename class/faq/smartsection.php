@@ -194,7 +194,7 @@ class XHelpSmartsectionAdapter extends xhelpFaqAdapter
      */
     public function _articleNeedsApproval()
     {
-        return (XHELP_SSECTION_FORCEAPPROVAL == 2 && $ssConfig['autoapprove_submitted'] == 0)
+        return (XHELP_SSECTION_FORCEAPPROVAL == 2 && 0 == $ssConfig['autoapprove_submitted'])
                || XHELP_SSECTION_FORCEAPPROVAL == 1;
     }
 }

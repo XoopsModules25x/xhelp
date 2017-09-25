@@ -138,7 +138,7 @@ class XHelpReportParameter
                        . "' id='"
                        . $this->fieldname
                        . "1' value='1' "
-                       . (($this->value == 1) ? 'checked' : '')
+                       . ((1 == $this->value) ? 'checked' : '')
                        . '>'
                        . _XHELP_TEXT_YES
                        . "<input type='radio' name='"
@@ -146,7 +146,7 @@ class XHelpReportParameter
                        . "' id='"
                        . $this->fieldname
                        . "0' value='0' "
-                       . (($this->value == 1) ? 'checked' : '')
+                       . ((1 == $this->value) ? 'checked' : '')
                        . '>'
                        . _XHELP_TEXT_NO;
                 break;

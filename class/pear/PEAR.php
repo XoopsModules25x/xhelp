@@ -34,7 +34,7 @@ define('PEAR_ERROR_EXCEPTION', 32);
 define('PEAR_ZE2', (function_exists('version_compare') &&
 version_compare(zend_version(), "2-dev", "ge")));
 
-if (substr(PHP_OS, 0, 3) == 'WIN') {
+if ('WIN' == substr(PHP_OS, 0, 3)) {
     define('OS_WINDOWS', true);
     define('OS_UNIX', false);
     define('PEAR_OS', 'Windows');
@@ -156,7 +156,7 @@ class PEAR
         if ($this->_debug) {
             print "PEAR constructor called, class=$classname\n";
         }
-        if ($error_class !== null) {
+        if (null !== $error_class) {
             $this->_error_class = $error_class;
         }
         while ($classname) {
@@ -513,14 +513,15 @@ class PEAR
         }
 
         if (isset($this) && isset($this->_expected_errors) && sizeof($this->_expected_errors) > 0 && sizeof($exp = end($this->_expected_errors))) {
-            if ($exp[0] == "*" ||
-            (is_int(reset($exp)) && in_array($code, $exp)) ||
-            (is_string(reset($exp)) && in_array($message, $exp))) {
+            if ("*" == $exp[0]
+                ||
+                (is_int(reset($exp)) && in_array($code, $exp)) ||
+                (is_string(reset($exp)) && in_array($message, $exp))) {
                 $mode = PEAR_ERROR_RETURN;
             }
         }
         // No mode given, try global ones
-        if ($mode === null) {
+        if (null === $mode) {
             // Class error handler
             if (isset($this) && isset($this->_default_error_mode)) {
                 $mode    = $this->_default_error_mode;
@@ -532,7 +533,7 @@ class PEAR
             }
         }
 
-        if ($error_class !== null) {
+        if (null !== $error_class) {
             $ec = $error_class;
         } elseif (isset($this) && isset($this->_error_class)) {
             $ec = $this->_error_class;
@@ -644,7 +645,7 @@ class PEAR
     {
         if (!extension_loaded($ext)) {
             // if either returns true dl() will produce a FATAL error, stop that
-            if ((ini_get('enable_dl') != 1) || (ini_get('safe_mode') == 1)) {
+            if ((1 != ini_get('enable_dl')) || (1 == ini_get('safe_mode'))) {
                 return false;
             }
             if (OS_WINDOWS) {
@@ -745,7 +746,7 @@ class PEAR_Error
         $options = null,
         $userinfo = null
     ) {
-        if ($mode === null) {
+        if (null === $mode) {
             $mode = PEAR_ERROR_RETURN;
         }
         $this->message   = $message;
@@ -759,7 +760,7 @@ class PEAR_Error
             $this->level = E_USER_NOTICE;
             $this->callback = $options;
         } else {
-            if ($options === null) {
+            if (null === $options) {
                 $options = E_USER_NOTICE;
             }
             $this->level = $options;
@@ -780,7 +781,7 @@ class PEAR_Error
             $msg = $this->getMessage();
             if (is_null($options) || is_int($options)) {
                 $format = "%s";
-                if (substr($msg, -1) != "\n") {
+                if ("\n" != substr($msg, -1)) {
                     $msg .= "\n";
                 }
             } else {
@@ -911,7 +912,7 @@ class PEAR_Error
      */
     public function getBacktrace($frame = null)
     {
-        if ($frame === null) {
+        if (null === $frame) {
             return $this->backtrace;
         }
 

@@ -53,10 +53,10 @@ function manage()
             $author      = $oAdapter->meta['author'];
             $author_name = $author;
 
-            if ($oAdapter->meta['url'] != '') {   // If a website is specified
+            if ('' != $oAdapter->meta['url']) {   // If a website is specified
                 $name = "<a href='" . $oAdapter->meta['url'] . "'>" . $oAdapter->meta['name'] . '</a>'; // Add link to module name
             }
-            if ($oAdapter->meta['author_email'] != '') {
+            if ('' != $oAdapter->meta['author_email']) {
                 $author = "<a href='mailto:" . $oAdapter->meta['author_email'] . "'>" . $author_name . '</a>';  // Add link to email author
             }
             echo "<tr class='even'>

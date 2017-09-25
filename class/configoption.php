@@ -74,7 +74,7 @@ class XHelpConfigOptionHandler extends XoopsConfigOptionHandler
      */
     public function insert(XoopsObject $confoption, $force = false)
     {
-        if (strtolower(get_class($confoption)) !== 'xoopsconfigoption') {
+        if ('xoopsconfigoption' !== strtolower(get_class($confoption))) {
             return false;
         }
         if (!$confoption->isDirty()) {

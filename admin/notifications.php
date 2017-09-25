@@ -117,7 +117,7 @@ function edit()
     if (isset($_POST['save_notification'])) {
         $settings->setVar('staff_setting', (int)$_POST['staff_setting']);
         $settings->setVar('user_setting', (int)$_POST['user_setting']);
-        if ($_POST['staff_setting'] == XHELP_NOTIF_STAFF_DEPT) {
+        if (XHELP_NOTIF_STAFF_DEPT == $_POST['staff_setting']) {
             $settings->setVar('staff_options', $_POST['roles']);
         } else {
             $settings->setVar('staff_options', []);
@@ -136,7 +136,7 @@ function edit()
     $staff_settings = xhelpGetMeta("notify_staff{$id}");
     $user_settings  = xhelpGetMeta("notify_user{$id}");
     $hRoles         = xhelpGetHandler('role');
-    if ($settings->getVar('staff_setting') == XHELP_NOTIF_STAFF_DEPT) {
+    if (XHELP_NOTIF_STAFF_DEPT == $settings->getVar('staff_setting')) {
         $selectedRoles = $settings->getVar('staff_options');
     } else {
         $selectedRoles = [];
@@ -159,7 +159,7 @@ function edit()
         }
         echo "<input type='radio' name='staff_setting' id='staff" . $value . "' value='" . $value . "' $checked>
                           <label for='staff" . $value . "'>" . $setting . '</label>&nbsp;';
-        if ($value == XHELP_NOTIF_STAFF_DEPT) {
+        if (XHELP_NOTIF_STAFF_DEPT == $value) {
             echo "<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <select name='roles[]' multiple='multiple'>";
             foreach ($roles as $role) {
@@ -239,14 +239,14 @@ function manage()
             $user_setting  = $cSettings->getVar('user_setting');
 
             // Build text of who gets notification
-            if ($user_setting == XHELP_NOTIF_USER_YES) {
-                if ($staff_setting == XHELP_NOTIF_STAFF_NONE) {
+            if (XHELP_NOTIF_USER_YES == $user_setting) {
+                if (XHELP_NOTIF_STAFF_NONE == $staff_setting) {
                     $sSettings = _AM_XHELP_TEXT_SUBMITTER;
                 } else {
                     $sSettings = $aStaffSettings[$staff_setting] . ' ' . _AM_XHELP_TEXT_AND . ' ' . _AM_XHELP_TEXT_SUBMITTER;
                 }
             } else {
-                if ($staff_setting == XHELP_NOTIF_STAFF_NONE) {
+                if (XHELP_NOTIF_STAFF_NONE == $staff_setting) {
                     $sSettings = '';
                 } else {
                     $sSettings = $aStaffSettings[$staff_setting];
@@ -415,7 +415,7 @@ function modifyEmlTpl()
 
     $notKeys = array_keys($notNames);
 
-    while (($file = readdir($opendir)) != null) {
+    while (null != ($file = readdir($opendir))) {
         //Do not Display .
         if (is_dir($file)) {
             continue;
@@ -445,7 +445,7 @@ function modifyEmlTpl()
 
         foreach ($aFiles as $file) {
             static $rowSwitch = 0;
-            if ($rowSwitch == 0) {
+            if (0 == $rowSwitch) {
                 echo "<tr class='odd'><td><a href='" . $file['url'] . "'>" . $file['name'] . '</a></td><td>' . $file['desc'] . '</td></tr>';
                 $rowSwitch = 1;
             } else {

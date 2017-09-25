@@ -78,7 +78,7 @@ function displayEvents($mailEvents, $mailboxes)
                       <td>' . $event->getVar('event_desc') . '</td>
                       <td>' . $event->posted() . '</td>
                   </tr>';
-            $class = ($class == 'odd') ? 'even' : 'odd';
+            $class = ('odd' == $class) ? 'even' : 'odd';
         }
     } else {
         echo '<tr><th>' . _AM_XHELP_TEXT_MAIL_EVENTS . '</th></tr>';
@@ -163,11 +163,11 @@ function searchMailEvents()
 
         $crit = new CriteriaCompo(new Criteria('posted', $begin_time, '>='));
         $crit->add(new Criteria('posted', $end_time, '<='));
-        if ($_POST['email'] != '') {
+        if ('' != $_POST['email']) {
             $email = $_POST['email'];
             $crit->add(new Criteria('emailaddress', "%$email%", 'LIKE', 'd'));
         }
-        if ($_POST['description'] != '') {
+        if ('' != $_POST['description']) {
             $description = $_POST['description'];
             $crit->add(new Criteria('event_desc', "%$description%", 'LIKE'));
         }
@@ -198,7 +198,7 @@ function xhelpChangeHour($mode, $hour)
     $mode = (int)$mode;
     $hour = (int)$hour;
 
-    if ($mode == 2) {
+    if (2 == $mode) {
         $hour += 12;
 
         return $hour;
@@ -234,7 +234,7 @@ function xhelpDrawMinuteSelect($name)
 
     echo "<select name='" . $name . "'>";
     for ($i = 0; $lSum <= 50; ++$i) {
-        if ($i == 0) {
+        if (0 == $i) {
             echo "<option value='00' selected>00</option>";
         } else {
             $lSum += 5;
@@ -251,7 +251,7 @@ function xhelpDrawMinuteSelect($name)
 function xhelpDrawModeSelect($name, $sSelect = 'AM')
 {
     echo "<select name='" . $name . "'>";
-    if ($sSelect == 'AM') {
+    if ('AM' == $sSelect) {
         echo "<option value='1' selected>AM</option>";
         echo "<option value='2'>PM</option>";
     } else {
@@ -295,7 +295,7 @@ function xhelp_default()
         $totalTickets += $numTickets;
 
         echo "<tr class='" . $class . "'><td>" . $status->getVar('description') . '</td><td>' . $numTickets . '</td></tr>';
-        if ($class == 'odd') {
+        if ('odd' == $class) {
             $class = 'even';
         } else {
             $class = 'odd';
@@ -398,7 +398,7 @@ function xhelp_default()
             } else {
                 $dept_url = _AM_XHELP_TEXT_NO_DEPT;
             }
-            if ($ticket->getVar('ownership') <> 0) {
+            if (0 <> $ticket->getVar('ownership')) {
                 $owner_url = sprintf("<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid') . "' target='_BLANK'>%s</a>", xhelpGetUsername($ticket->getVar('ownership'), $displayName));
             } else {
                 $owner_url = _AM_XHELP_TEXT_NO_OWNER;

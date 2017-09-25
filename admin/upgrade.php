@@ -513,7 +513,7 @@ function upgradeDB()
             set_time_limit(60);
             // Set default department
             $xoopsModuleConfig =& xhelpGetModuleConfig();
-            if (isset($xoopsModuleConfig['xhelp_defaultDept']) && $xoopsModuleConfig['xhelp_defaultDept'] != 0) {
+            if (isset($xoopsModuleConfig['xhelp_defaultDept']) && 0 != $xoopsModuleConfig['xhelp_defaultDept']) {
                 $ret = xhelpSetMeta('default_department', $xoopsModuleConfig['xhelp_defaultDept']);
             } else {
                 $hDepartments = xhelpGetHandler('department');
@@ -606,7 +606,7 @@ function upgradeDB()
     require_once __DIR__ . '/admin_footer.php';
 }
 
-if ($op == 'upgradeDB') {
+if ('upgradeDB' == $op) {
     echo "<script language='JavaScript' type='text/javascript'>
 window.onload=function() {
     var objWindow=window.open('about:blank', 'progress', '');

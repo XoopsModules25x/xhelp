@@ -117,7 +117,7 @@ class XHelpMailEventHandler extends xhelpBaseObjectHandler
 
         if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
             $sql .= ' ' . $criteria->renderWhere();
-            if ($criteria->getSort() != '') {
+            if ('' != $criteria->getSort()) {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . '
                     ' . $criteria->getOrder();
             }

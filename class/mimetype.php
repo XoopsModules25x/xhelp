@@ -110,7 +110,7 @@ class XHelpMimetypeHandler extends xhelpBaseObjectHandler
                 return $ret;
             }
             $numrows = $this->_db->getRowsNum($result);
-            if ($numrows == 1) {
+            if (1 == $numrows) {
                 $obj = new $this->classname($this->_db->fetchArray($result));
 
                 return $obj;
@@ -242,7 +242,7 @@ class XHelpMimetypeHandler extends xhelpBaseObjectHandler
         }
         if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
             $sql .= ' ' . $criteria->renderWhere();
-            if ($criteria->getSort() != '') {
+            if ('' != $criteria->getSort()) {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . ' ' . $criteria->getOrder();
             }
         }

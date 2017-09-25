@@ -148,7 +148,7 @@ function manageFields()
             $deptarr[$obj->getVar('id')] = $obj->getVar('department');
         }
 
-        if (!$field_info === false) {
+        if (false === !$field_info) {
             //extract($field_info , EXTR_PREFIX_ALL , 'fld_');
             $fld_controltype  = $field_info['controltype'];
             $fld_datatype     = $field_info['datatype'];
@@ -177,7 +177,7 @@ function manageFields()
             $fld_validation   = '';
         }
 
-        if (!$field_errors === false) {
+        if (false === !$field_errors) {
             xhelpRenderErrors($field_errors, xhelpMakeURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'clearAddSession']));
         }
 
@@ -272,7 +272,7 @@ function manageFields()
         $fld_needsvalues = $control['needs_values'];
 
         //name field filled?
-        if (trim($_POST['fld_name']) == '') {
+        if ('' == trim($_POST['fld_name'])) {
             $has_errors           = true;
             $errors['fld_name'][] = _AM_XHELP_VALID_ERR_NAME;
         }
@@ -280,7 +280,7 @@ function manageFields()
         $fld_fieldname = sanitizeFieldName($_POST['fld_fieldname']);
 
         //fieldname filled
-        if (trim($fld_fieldname) == '') {
+        if ('' == trim($fld_fieldname)) {
             $has_errors                = true;
             $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME;
         }
@@ -293,7 +293,7 @@ function manageFields()
         }
 
         //Length filled
-        if ((int)$_POST['fld_length'] == 0 && $fld_needslength === true) {
+        if (0 == (int)$_POST['fld_length'] && true === $fld_needslength) {
             $has_errors             = true;
             $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, 2, 16777215);
         }
@@ -393,7 +393,7 @@ function &_parseValues($raw_values)
     $_inValue = false;
     $values   = [];
 
-    if ($raw_values == '') {
+    if ('' == $raw_values) {
         return $values;
     }
 
@@ -402,7 +402,7 @@ function &_parseValues($raw_values)
 
     //Parse each line into name=value
     foreach ($lines as $line) {
-        if (trim($line) == '') {
+        if ('' == trim($line)) {
             continue1;
         }
         $name     = $value = '';
@@ -410,7 +410,7 @@ function &_parseValues($raw_values)
         $chrs     = strlen($line);
         for ($i = 0; $i <= $chrs; ++$i) {
             $chr = substr($line, $i, 1);
-            if ($chr === '=' && $_inValue === false) {
+            if ('=' === $chr && false === $_inValue) {
                 $_inValue = true;
             } else {
                 if ($_inValue) {
@@ -421,7 +421,7 @@ function &_parseValues($raw_values)
             }
         }
         //Add value to array
-        if ($value == '') {
+        if ('' == $value) {
             $values[$name] = $name;
         } else {
             $values[$value] = $name;
@@ -485,7 +485,7 @@ function editField()
         $field_info   = $session->get('xhelp_editField_' . $fld_id);
         $field_errors = $session->get('xhelp_editFieldErrors_' . $fld_id);
 
-        if (!$field_info === false) {
+        if (false === !$field_info) {
             $fld_controltype  = $field_info['controltype'];
             $fld_datatype     = $field_info['datatype'];
             $fld_departments  = $field_info['departments'];
@@ -550,7 +550,7 @@ function editField()
         }
         unset($depts);
 
-        if (!$field_errors === false) {
+        if (false === !$field_errors) {
             xhelpRenderErrors($field_errors, xhelpMakeURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'clearEditSession', 'id' => $fld_id]));
         }
 
@@ -624,13 +624,13 @@ function editField()
         $fld_needsvalues = $control['needs_values'];
 
         //name field filled?
-        if (trim($_POST['fld_name']) == '') {
+        if ('' == trim($_POST['fld_name'])) {
             $has_errors           = true;
             $errors['fld_name'][] = _AM_XHELP_VALID_ERR_NAME;
         }
 
         //fieldname filled
-        if (trim($_POST['fld_fieldname']) == '') {
+        if ('' == trim($_POST['fld_fieldname'])) {
             $has_errors                = true;
             $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME;
         }
@@ -644,7 +644,7 @@ function editField()
         }
 
         //Length filled
-        if ((int)$_POST['fld_length'] == 0 && $fld_needslength === true) {
+        if (0 == (int)$_POST['fld_length'] && true === $fld_needslength) {
             $has_errors             = true;
             $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, _XHELP_FIELD_MINLEN, _XHELP_FIELD_MAXLEN);
         }
@@ -734,7 +734,7 @@ function setFieldRequired()
     $setRequired = (int)$_GET['setrequired'];
     $id          = (int)$_GET['id'];
 
-    $setRequired = ($setRequired <> 0 ? 1 : 0);
+    $setRequired = (0 <> $setRequired ? 1 : 0);
 
     $hField = xhelpGetHandler('ticketField');
 

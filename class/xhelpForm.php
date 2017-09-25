@@ -46,7 +46,7 @@ class XHelpForm extends XoopsForm
                 $class = 'even';
 
                 $ret .= "<tr><td class='head' valign='top' $labelWidth><label for='" . $ele->getName(false) . "'>" . $ele->getCaption() . '</label>';
-                if ($ele->getDescription() != '') {
+                if ('' != $ele->getDescription()) {
                     $ret .= '<br><br><span style="font-weight: normal;">' . $ele->getDescription() . '</span>';
                 }
                 $ret .= "</td><td class='$class'>" . $ele->render() . '</td></tr>';

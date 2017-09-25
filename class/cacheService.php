@@ -75,7 +75,7 @@ class XHelpCacheService extends xhelpService
         $hStatus = xhelpGetHandler('status');
         $status  = $hStatus->get($ticket->getVar('status'));
 
-        if ($status->getVar('state') == XHELP_STATE_UNRESOLVED) {
+        if (XHELP_STATE_UNRESOLVED == $status->getVar('state')) {
             return $this->_clearPerfImages();
         }
     }
@@ -132,8 +132,8 @@ class XHelpCacheService extends xhelpService
         //Remove all cached department queue images
         $opendir = opendir($this->_cacheDir);
 
-        while (($file = readdir($opendir)) != null) {
-            if (strpos($file, 'xhelp_perf_') === false) {
+        while (null != ($file = readdir($opendir))) {
+            if (false === strpos($file, 'xhelp_perf_')) {
                 continue;
             }
 

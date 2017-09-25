@@ -150,7 +150,7 @@ class XHelpMembershipHandler
                 $a_depts[] = (int)$deptid;
             }
         }
-        if (count($a_depts) == 1) {
+        if (1 == count($a_depts)) {
             $sql = sprintf('SELECT s.* FROM %s s INNER JOIN %s j ON s.uid = j.uid WHERE j.department = %u', $this->_db->prefix('xhelp_staff'), $this->_db->prefix('xhelp_jstaffdept'), $a_depts[0]);
         } else {
             $uids = $this->_uidsInDepts($a_depts);
@@ -198,7 +198,7 @@ class XHelpMembershipHandler
                 $a_depts[] = (int)$deptid;
             }
         }
-        if (count($a_depts) == 1) {
+        if (1 == count($a_depts)) {
             $sql = sprintf('SELECT u.* FROM %s u INNER JOIN %s j ON u.uid = j.uid WHERE j.department = %u', $this->_db->prefix('users'), $this->_db->prefix('xhelp_jstaffdept'), $a_depts[0]);
         } else {
             $uids = $this->_uidsInDepts($a_depts);

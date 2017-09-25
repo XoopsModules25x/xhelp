@@ -83,7 +83,7 @@ class XHelpFaqAdapter
         $module_dir  = $this->meta['module_dir'];
         $module_name = $this->meta['name'];
 
-        if ($module_dir == '' || $module_name == '') {      // Sanity check
+        if ('' == $module_dir || '' == $module_name) {      // Sanity check
 
             return false;
         }

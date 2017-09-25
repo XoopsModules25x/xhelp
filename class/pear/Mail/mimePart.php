@@ -325,11 +325,11 @@ class Mail_mimePart
                 $char = substr($line, $i, 1);
                 $dec  = ord($char);
 
-                if (($dec == 32) and ($i == ($linlen - 1))) {    // convert space at eol only
+                if ((32 == $dec) and ($i == ($linlen - 1))) {    // convert space at eol only
                     $char = '=20';
-                } elseif ($dec == 9) {
+                } elseif (9 == $dec) {
                     ; // Do nothing if a tab.
-                } elseif (($dec == 61) or ($dec < 32) or ($dec > 126)) {
+                } elseif ((61 == $dec) or ($dec < 32) or ($dec > 126)) {
                     $char = $escape . strtoupper(sprintf('%02s', dechex($dec)));
                 }
 

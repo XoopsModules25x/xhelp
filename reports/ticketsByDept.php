@@ -13,8 +13,8 @@ $endDate   = date('m/d/y') . ' 12:00:00 AM';
 // Cannot fill date values in class...have to fill these values later
 $paramVals = [
     'startDate' => (isset($_REQUEST['startDate'])
-                    && $_REQUEST['startDate'] != '') ? $_REQUEST['startDate'] : $startDate,
-    'endDate'   => (isset($_REQUEST['endDate']) && $_REQUEST['endDate'] != '') ? $_REQUEST['endDate'] : $endDate
+                    && '' != $_REQUEST['startDate']) ? $_REQUEST['startDate'] : $startDate,
+    'endDate'   => (isset($_REQUEST['endDate']) && '' != $_REQUEST['endDate']) ? $_REQUEST['endDate'] : $endDate
 ];
 
 /**
@@ -134,7 +134,7 @@ class XHelpTicketsByDeptReport extends xhelpReport
      */
     public function generateGraph()
     {
-        if ($this->getVar('hasResults') == 0) {
+        if (0 == $this->getVar('hasResults')) {
             $this->_setResults();
         }
 

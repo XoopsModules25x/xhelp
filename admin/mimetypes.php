@@ -88,11 +88,11 @@ function add()
         $mime_errors = $session->get('xhelp_addMimeErr');
 
         //Display any form errors
-        if (!$mime_errors === false) {
+        if (false === !$mime_errors) {
             xhelpRenderErrors($mime_errors, xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'clearAddSession']));
         }
 
-        if ($mime_type === false) {
+        if (false === $mime_type) {
             $mime_ext   = '';
             $mime_name  = '';
             $mime_types = '';
@@ -127,15 +127,15 @@ function add()
                   <td class='head'>" . _AM_XHELP_MIME_ADMINF . "</td>
                   <td class='even'>";
 
-        echo "<input type='radio' name='mime_admin' value='1' " . ($mime_admin == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
-        echo "<input type='radio' name='mime_admin' value='0' " . ($mime_admin == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+        echo "<input type='radio' name='mime_admin' value='1' " . (1 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
+        echo "<input type='radio' name='mime_admin' value='0' " . (0 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
                   <td class='head'>" . _AM_XHELP_MIME_USERF . "</td>
                   <td class='even'>";
-        echo "<input type='radio' name='mime_user' value='1'" . ($mime_user == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
-        echo "<input type='radio' name='mime_user' value='0'" . ($mime_user == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+        echo "<input type='radio' name='mime_user' value='1'" . (1 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
+        echo "<input type='radio' name='mime_user' value='0'" . (0 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
@@ -171,17 +171,17 @@ function add()
         $mime_user  = (int)$_POST['mime_user'];
 
         //Validate Mimetype entry
-        if (trim($mime_ext) == '') {
+        if ('' == trim($mime_ext)) {
             $has_errors          = true;
             $error['mime_ext'][] = _AM_XHELP_VALID_ERR_MIME_EXT;
         }
 
-        if (trim($mime_name) == '') {
+        if ('' == trim($mime_name)) {
             $has_errors           = true;
             $error['mime_name'][] = _AM_XHELP_VALID_ERR_MIME_NAME;
         }
 
-        if (trim($mime_types) == '') {
+        if ('' == trim($mime_types)) {
             $has_errors            = true;
             $error['mime_types'][] = _AM_XHELP_VALID_ERR_MIME_TYPES;
         }
@@ -255,11 +255,11 @@ function edit()
         $adminObject->displayNavigation(basename(__FILE__));
 
         //Display any form errors
-        if (!$mime_errors === false) {
+        if (false === !$mime_errors) {
             xhelpRenderErrors($mime_errors, xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'clearEditSession', 'id' => $mime_id]));
         }
 
-        if ($mime_type === false) {
+        if (false === $mime_type) {
             $mime_ext   = $mimetype->getVar('mime_ext');
             $mime_name  = $mimetype->getVar('mime_name', 'e');
             $mime_types = $mimetype->getVar('mime_types', 'e');
@@ -295,15 +295,15 @@ function edit()
         echo "<tr valign='top'>
                   <td class='head'>" . _AM_XHELP_MIME_ADMINF . "</td>
                   <td class='even'>
-                      <input type='radio' name='mime_admin' value='1' " . ($mime_admin == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
-                      <input type='radio' name='mime_admin' value='0' " . ($mime_admin == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+                      <input type='radio' name='mime_admin' value='1' " . (1 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
+                      <input type='radio' name='mime_admin' value='0' " . (0 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
                   <td class='head'>" . _AM_XHELP_MIME_USERF . "</td>
                   <td class='even'>
-                      <input type='radio' name='mime_user' value='1' " . ($mime_user == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
-                      <input type='radio' name='mime_user' value='0' " . ($mime_user == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+                      <input type='radio' name='mime_user' value='1' " . (1 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
+                      <input type='radio' name='mime_user' value='0' " . (0 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
@@ -320,25 +320,25 @@ function edit()
     } else {
         $mime_admin = 0;
         $mime_user  = 0;
-        if (isset($_POST['mime_admin']) && $_POST['mime_admin'] == 1) {
+        if (isset($_POST['mime_admin']) && 1 == $_POST['mime_admin']) {
             $mime_admin = 1;
         }
-        if (isset($_POST['mime_user']) && $_POST['mime_user'] == 1) {
+        if (isset($_POST['mime_user']) && 1 == $_POST['mime_user']) {
             $mime_user = 1;
         }
 
         //Validate Mimetype entry
-        if (trim($_POST['mime_ext']) == '') {
+        if ('' == trim($_POST['mime_ext'])) {
             $has_errors          = true;
             $error['mime_ext'][] = _AM_XHELP_VALID_ERR_MIME_EXT;
         }
 
-        if (trim($_POST['mime_name']) == '') {
+        if ('' == trim($_POST['mime_name'])) {
             $has_errors           = true;
             $error['mime_name'][] = _AM_XHELP_VALID_ERR_MIME_NAME;
         }
 
-        if (trim($_POST['mime_types']) == '') {
+        if ('' == trim($_POST['mime_types'])) {
             $has_errors            = true;
             $error['mime_types'][] = _AM_XHELP_VALID_ERR_MIME_TYPES;
         }
@@ -732,7 +732,7 @@ function updateMimeValue()
  */
 function _changeMimeValue($mime_value)
 {
-    if ($mime_value == 1) {
+    if (1 == $mime_value) {
         $mime_value = 0;
     } else {
         $mime_value = 1;

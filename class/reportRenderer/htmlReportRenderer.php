@@ -34,7 +34,7 @@ class XHelpHtmlReportRenderer extends xhelpReportRenderer
         global $paramVals;
         $report = $this->report;
 
-        if ($report->getVar('hasResults') == 0) {
+        if (0 == $report->getVar('hasResults')) {
             $report->_setResults();
         }
         $aResults = $report->getVar('results');

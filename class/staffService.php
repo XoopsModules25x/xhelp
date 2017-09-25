@@ -46,7 +46,7 @@ class XHelpStaffService extends xhelpService
         //if first response for ticket, update staff responsetime
         $hResponse   = xhelpGetHandler('responses');
         $hMembership = xhelpGetHandler('membership');
-        if ($hResponse->getStaffResponseCount($ticket->getVar('id')) == 1) {
+        if (1 == $hResponse->getStaffResponseCount($ticket->getVar('id'))) {
             if ($hMembership->isStaffMember($response->getVar('uid'), $ticket->getVar('department'))) {
                 $responseTime = abs($response->getVar('updateTime') - $ticket->getVar('posted'));
                 $this->_hStaff->updateResponseTime($response->getVar('uid'), $responseTime);
@@ -75,7 +75,7 @@ class XHelpStaffService extends xhelpService
             //if first response for ticket, update staff responsetime
 
             $hMembership = xhelpGetHandler('membership');
-            if ($hResponse->getStaffResponseCount($ticket->getVar('id')) == 1) {
+            if (1 == $hResponse->getStaffResponseCount($ticket->getVar('id'))) {
                 $responseTime = abs($update - $ticket->getVar('posted'));
                 $this->_hStaff->updateResponseTime($uid, $responseTime);
             }
@@ -95,7 +95,7 @@ class XHelpStaffService extends xhelpService
 
         $uid = $xoopsUser->getVar('uid');
 
-        if ($newstatus->getVar('state') == XHELP_STATE_RESOLVED) {
+        if (XHELP_STATE_RESOLVED == $newstatus->getVar('state')) {
             $this->_hStaff->increaseCallsClosed($uid, count($tickets));
         }
     }

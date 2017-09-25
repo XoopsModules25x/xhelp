@@ -96,10 +96,10 @@ class Net_Socket extends PEAR
             $this->addr = gethostbyname($addr);
         }
         $this->port = $port % 65536;
-        if ($persistent !== null) {
+        if (null !== $persistent) {
             $this->persistent = $persistent;
         }
-        if ($timeout !== null) {
+        if (null !== $timeout) {
             $this->timeout = $timeout;
         }
         $openfunc = $this->persistent ? 'pfsockopen' : 'fsockopen';
@@ -383,7 +383,7 @@ class Net_Socket extends PEAR
     {
         if (is_resource($this->fp)) {
             $string = '';
-            while (($char = $this->read(1)) != "\x00") {
+            while ("\x00" != ($char = $this->read(1))) {
                 $string .= $char;
             }
 
@@ -438,8 +438,9 @@ class Net_Socket extends PEAR
             while (!$this->eof() && (!$this->timeout || time() < $timeout)) {
                 $line .= $this->gets($this->lineLength);
                 if (strlen($line) >= 2 &&
-                (substr($line, -2) == "\r\n" ||
-                substr($line, -1) == "\n")) {
+                ("\r\n" == substr($line, -2)
+                 ||
+                 "\n" == substr($line, -1))) {
                     return rtrim($line);
                 }
             }

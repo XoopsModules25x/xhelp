@@ -210,7 +210,7 @@ function manageFiles()
     echo "<form method='post' action='" . XHELP_ADMIN_URL . "/file.php?op=manageFiles'>";
     echo "<table width='100%' cellspacing='1' class='outer'>
           <tr><th colspan='6'><label>" . _AM_XHELP_TEXT_MANAGE_FILES . '</label></th></tr>';
-    if ($total != 0) {
+    if (0 != $total) {
         echo "<tr class='head'>
                   <td>" . _AM_XHELP_TEXT_ID . '</td>
                   <td>' . _AM_XHELP_TEXT_TICKETID . '</td>

@@ -186,7 +186,7 @@ switch ($op) {
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
         }
 
-        if ($xoopsConfigUser['allow_register'] == 0) {
+        if (0 == $xoopsConfigUser['allow_register']) {
             header('Location: ' . XHELP_BASE_URL . '/error.php');
         } else {
             header('Location: ' . XHELP_BASE_URL . '/addTicket.php');
@@ -762,7 +762,7 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
     /** @var XoopsModuleHandler $moduleHandler */
     $moduleHandler = xoops_getHandler('module');
 
-    if (!$count = $moduleHandler->getByDirname('news') || $topicid == 0) {
+    if (!$count = $moduleHandler->getByDirname('news') || 0 == $topicid) {
         $xoopsTpl->assign('xhelp_useAnnouncements', false);
 
         return false;
@@ -785,7 +785,7 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
         $story           = [];
         $story['id']     = $sarray[$i]->storyid();
         $story['poster'] = $sarray[$i]->uname();
-        if ($story['poster'] !== false) {
+        if (false !== $story['poster']) {
             $story['poster'] = "<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $sarray[$i]->uid() . "'>" . $story['poster'] . '</a>';
         } else {
             $story['poster'] = $xoopsConfig['anonymous'];
@@ -805,11 +805,11 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
         $ccount    = $sarray[$i]->comments();
         $morelink  .= '<a href="' . XOOPS_URL . '/modules/news/article.php?storyid=' . $sarray[$i]->storyid() . '';
         $morelink2 = '<a href="' . XOOPS_URL . '/modules/news/article.php?storyid=' . $sarray[$i]->storyid() . '';
-        if ($ccount == 0) {
+        if (0 == $ccount) {
             $morelink .= '">' . _XHELP_COMMMENTS . '</a>';
         } else {
             if ($fullcount < 1) {
-                if ($ccount == 1) {
+                if (1 == $ccount) {
                     $morelink .= '">' . _XHELP_ANNOUNCE_READMORE . '</a> | ' . $morelink2 . '">' . _XHELP_ANNOUNCE_ONECOMMENT . '</a>';
                 } else {
                     $morelink .= '">' . _XHELP_ANNOUNCE_READMORE . '</a> | ' . $morelink2 . '">';
@@ -817,7 +817,7 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
                     $morelink .= '</a>';
                 }
             } else {
-                if ($ccount == 1) {
+                if (1 == $ccount) {
                     $morelink .= '">' . _XHELP_ANNOUNCE_ONECOMMENT . '</a>';
                 } else {
                     $morelink .= '">';
@@ -904,7 +904,7 @@ function staffmain_display()
     $hTicketList  = xhelpGetHandler('ticketList');
 
     //Set Number of items in each section
-    if ($limit == 0) {
+    if (0 == $limit) {
         $limit = $xhelpConfig['xhelp_staffTicketCount'];
     } elseif ($limit == -1) {
         $limit = 0;
@@ -1079,7 +1079,7 @@ function staffviewall_display()
     $hTickets    = xhelpGetHandler('ticket');
     $hMembership = xhelpGetHandler('membership');
 
-    if ($limit == 0) {
+    if (0 == $limit) {
         $limit = $xhelpConfig['xhelp_staffTicketCount'];
     } elseif ($limit == -1) {
         $limit = 0;
@@ -1247,7 +1247,7 @@ window.setTimeout('window_onload()', 1500);
         '2' => _XHELP_PRIORITY2,
         '1' => _XHELP_PRIORITY1
     ]);
-    if ($limit != 0) {
+    if (0 != $limit) {
         $xoopsTpl->assign('xhelp_pagenav', $nav->renderNav());
     }
     $xoopsTpl->assign('xhelp_limit_options', [-1 => _XHELP_TEXT_SELECT_ALL, 10 => '10', 15 => '15', 20 => '20', 30 => '30']);
@@ -1265,7 +1265,7 @@ window.setTimeout('window_onload()', 1500);
     $xoopsTpl->append('xhelp_department_values', 0);
     $xoopsTpl->append('xhelp_department_options', _XHELP_TEXT_SELECT_ALL);
 
-    if ($xhelpConfig['xhelp_deptVisibility'] == 1) {    // Apply dept visibility to staff members?
+    if (1 == $xhelpConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
         $hMembership = xhelpGetHandler('membership');
         $depts       = $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
     }
@@ -1314,7 +1314,7 @@ function usermain_display()
     $hStaff      = xhelpGetHandler('staff');
 
     $staffCount = $hStaff->getObjects();
-    if (count($staffCount) == 0) {
+    if (0 == count($staffCount)) {
         $xoopsTpl->assign('xhelp_noStaff', true);
     }
     /**
@@ -1394,7 +1394,7 @@ function userviewall_display()
     $state  = (int)(isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
     $depts  = $hDepartments->getObjects(null, true);
 
-    if ($limit == 0) {
+    if (0 == $limit) {
         $limit = 10;
     } elseif ($limit == -1) {
         $limit = 0;
@@ -1449,7 +1449,7 @@ function userviewall_display()
 
     $xoopsTpl->assign('xhelp_cols', $tpl_cols);
     $staffCount = $hStaff->getObjects();
-    if (count($staffCount) == 0) {
+    if (0 == count($staffCount)) {
         $xoopsTpl->assign('xhelp_noStaff', true);
     }
 

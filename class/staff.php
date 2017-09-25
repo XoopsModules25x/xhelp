@@ -97,7 +97,7 @@ class XHelpStaff extends XoopsObject
         foreach ($depts as $deptid) {
             if (isset($rights[$deptid])) {
                 $hasRights = ($rights[$deptid]['tasks'] & pow(2, $task)) > 0;
-                if ($hasRights === false) {
+                if (false === $hasRights) {
                     return false;
                 }
             } else {
@@ -343,7 +343,7 @@ class XHelpStaffHandler extends xhelpBaseObjectHandler
     public function &getTimeSpent($uid = 0)
     {
         $hResponses = xhelpGetHandler('responses');
-        if (!$uid == 0) {
+        if (0 == !$uid) {
             $uid       = (int)$uid;
             $crit      = new Criteria('uid', $uid);
             $responses = $hResponses->getObjects($crit);
@@ -487,7 +487,7 @@ class XHelpStaffHandler extends xhelpBaseObjectHandler
      */
     public function delete(XoopsObject $obj, $force = false)
     {
-        if (strcasecmp($this->classname, get_class($obj)) != 0) {
+        if (0 != strcasecmp($this->classname, get_class($obj))) {
             return false;
         }
 
@@ -555,7 +555,7 @@ class XHelpStaffHandler extends xhelpBaseObjectHandler
      */
     public function updateResponseTime($uid, $responseTime, $ticketCount = 0)
     {
-        if ($ticketCount == 0) {
+        if (0 == $ticketCount) {
             //Incrementing responseTime
             $sql = sprintf('UPDATE %s SET responseTime = responseTime + %u, ticketsResponded = ticketsResponded + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $uid);
         } else {
@@ -580,7 +580,7 @@ class XHelpStaffHandler extends xhelpBaseObjectHandler
      */
     public function updateRating($uid, $rating, $numReviews = 0)
     {
-        if ($numReviews == 0) {
+        if (0 == $numReviews) {
             //Add New Review
             $sql = sprintf('UPDATE %s SET rating = rating + %u, numReviews = numReviews + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $uid);
         } else {

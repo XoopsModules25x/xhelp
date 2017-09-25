@@ -105,7 +105,7 @@ class XHelpTicket extends XoopsObject
      */
     public function createEmailHash($email)
     {
-        if ($this->getVar('posted') == '') {
+        if ('' == $this->getVar('posted')) {
             $this->setVar('posted', time());
         }
         $hash = $this->getVar('posted') . '-' . $email;
@@ -405,7 +405,7 @@ class XHelpTicket extends XoopsObject
 
         foreach ($time as $unit => $value) {
             if ($value) {
-                if ($value == 1) {
+                if (1 == $value) {
                     $useSingle = true;
                 }
                 switch ($unit) {
@@ -452,7 +452,7 @@ class XHelpTicket extends XoopsObject
 
             if ($overdueTime) {
                 $status = $hStatus->get($this->getVar('status'));
-                if ($status->getVar('state') == 1) {
+                if (1 == $status->getVar('state')) {
                     if (time() > $this->getVar('overdueTime')) {
                         return true;
                     }
@@ -473,7 +473,7 @@ class XHelpTicket extends XoopsObject
     {
         $uid = (int)$uid;
 
-        if ($email != '') {
+        if ('' != $email) {
             $hTicketEmails = xhelpGetHandler('ticketEmails');
             $tEmail        = $hTicketEmails->create();
 
@@ -654,16 +654,16 @@ class XHelpTicket extends XoopsObject
             $hasValue = false;
             $_arr     = $field->toArray();
 
-            if ($values !== false
-                && $values->getVar($field->getVar('fieldname')) != '') {     // If values for this field has something
+            if (false !== $values
+                && '' != $values->getVar($field->getVar('fieldname'))) {     // If values for this field has something
                 $fieldvalues = $field->getVar('fieldvalues');           // Set fieldvalues
                 $value       = $key = $values->getVar($field->getVar('fieldname'));  // Value of current field
 
-                if ($field->getVar('controltype') == XHELP_CONTROL_YESNO) {
-                    $value = (($value == 1) ? _YES : _NO);
+                if (XHELP_CONTROL_YESNO == $field->getVar('controltype')) {
+                    $value = ((1 == $value) ? _YES : _NO);
                 }
 
-                if ($field->getVar('controltype') == XHELP_CONTROL_FILE) {
+                if (XHELP_CONTROL_FILE == $field->getVar('controltype')) {
                     $file     = explode('_', $value);
                     $fileid   = $file[0];
                     $filename = $file[1];
@@ -740,7 +740,7 @@ class XHelpTicketHandler extends xhelpBaseObjectHandler
                 return false;
             }
             $numrows = $this->_db->getRowsNum($result);
-            if ($numrows == 1) {
+            if (1 == $numrows) {
                 $obj = new $this->classname($this->_db->fetchArray($result));
 
                 return $obj;
@@ -764,7 +764,7 @@ class XHelpTicketHandler extends xhelpBaseObjectHandler
             return false;
         }
         $numrows = $this->_db->getRowsNum($result);
-        if ($numrows == 1) {
+        if (1 == $numrows) {
             $obj = new $this->classname($this->_db->fetchArray($result));
 
             return $obj;
@@ -1150,7 +1150,7 @@ class XHelpTicketHandler extends xhelpBaseObjectHandler
         }
         if (isset($criteria) && is_subclass_of($criteria, 'criteriaelement')) {
             $sql .= ' ' . $criteria->renderWhere();
-            if ($criteria->getSort() != '') {
+            if ('' != $criteria->getSort()) {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . ' ' . $criteria->getOrder();
             }
         }
@@ -1170,7 +1170,7 @@ class XHelpTicketHandler extends xhelpBaseObjectHandler
      */
     public function delete(XoopsObject $obj, $force = false)
     {
-        if (strcasecmp($this->classname, get_class($obj)) != 0) {
+        if (0 != strcasecmp($this->classname, get_class($obj))) {
             return false;
         }
 

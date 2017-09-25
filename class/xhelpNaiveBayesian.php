@@ -230,7 +230,7 @@ class XHelpNaiveBayesian
         $rawtokens = [];
         $tokens    = [];
         $string    = $this->_cleanString($string);
-        if (count($this->ignore_list) == 0) {
+        if (0 == count($this->ignore_list)) {
             $this->ignore_list = $this->getIgnoreList();
         }
         $rawtokens = preg_split('[^-_A-Za-z0-9]+', $string);
@@ -436,7 +436,7 @@ class XHelpNaiveBayesianStorage
             $total_words              += $arr['total'];
             $cat[$arr['category_id']] = $arr['total'];
         }
-        if ($total_words == 0) {
+        if (0 == $total_words) {
             $this->con->query('UPDATE ' . $this->con->prefix('xhelp_bayes_wordfreqs') . ' SET word_count=0, probability=0');
 
             return true;

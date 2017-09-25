@@ -149,7 +149,7 @@ class XHelpEmailStore
         global $xoopsModuleConfig;
         $attachments       = $msg->getAttachments();
         $dir               = XOOPS_UPLOAD_PATH . '/xhelp';
-        $prefix            = ($responseid != 0 ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
+        $prefix            = (0 != $responseid ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
         $hMime             = xhelpGetHandler('mimetype');
         $allowed_mimetypes = $hMime->getArray();
 
@@ -201,7 +201,7 @@ class XHelpEmailStore
      */
     public function _addAttachmentError($errors, $msg, $fname)
     {
-        if ($errors <> 0) {
+        if (0 <> $errors) {
             $aErrors = [];
             foreach ($errors as $err) {
                 if (in_array($err, $aErrors)) {

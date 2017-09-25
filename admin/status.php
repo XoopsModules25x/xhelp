@@ -116,7 +116,7 @@ function editStatus()
               </tr>";
         echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_STATE . "</td><td class='even'>
                   <select name='state'>";
-        if ($status->getVar('state') == 1) {
+        if (1 == $status->getVar('state')) {
             echo "<option value='1' selected>" . xhelpGetState(1) . "</option>
                           <option value='2'>" . xhelpGetState(2) . '</option>';
         } else {
@@ -129,7 +129,7 @@ function editStatus()
 
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        if ($_POST['desc'] == '') {  // If no description supplied
+        if ('' == $_POST['desc']) {  // If no description supplied
             $message = _AM_XHELP_MESSAGE_NO_DESC;
             redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
         }
@@ -155,7 +155,7 @@ function manageStatus()
     }
 
     if (isset($_POST['newStatus'])) {
-        if ($_POST['desc'] == '') {  // If no description supplied
+        if ('' == $_POST['desc']) {  // If no description supplied
             $message = _AM_XHELP_MESSAGE_NO_DESC;
             redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
         }

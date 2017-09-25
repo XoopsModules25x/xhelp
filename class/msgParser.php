@@ -246,7 +246,7 @@ class XHelpParsedMessage
         $this->_hash = $msg['hash'];
         $this->_msg  = $msg['msg'];
 
-        $this->_msgtype     = (strlen($msg['hash']) == 0 ? _XHELP_MSGTYPE_TICKET : _XHELP_MSGTYPE_RESPONSE);
+        $this->_msgtype     = (0 == strlen($msg['hash']) ? _XHELP_MSGTYPE_TICKET : _XHELP_MSGTYPE_RESPONSE);
         $this->_attachments = [];
         $this->_loadAttachments($struct);
     }
@@ -351,8 +351,8 @@ class XHelpParsedMessage
             if (isset($part->parts)) {
                 $this->_loadAttachments($part->parts);
             } else {
-                if ($part->ctype_primary == 'text' && $part->ctype_secondary == 'plain') {
-                    if (isset($part->disposition) && $part->disposition == 'attachment') {
+                if ('text' == $part->ctype_primary && 'plain' == $part->ctype_secondary) {
+                    if (isset($part->disposition) && 'attachment' == $part->disposition) {
                         $this->_addAttachment($part);
                     }
                     // Do Nothing

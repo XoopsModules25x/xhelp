@@ -23,7 +23,7 @@ class XHelpFaqAdapterFactory
         // Step 1 - directory listing of all files in class/faq/ directory
         $adapters_dir = @ dir(XHELP_FAQ_ADAPTER_PATH);
         if ($adapters_dir) {
-            while (($file = $adapters_dir->read()) !== false) {
+            while (false !== ($file = $adapters_dir->read())) {
                 if (preg_match('|^\.+$|', $file)) {
                     continue;
                 }
@@ -56,9 +56,9 @@ class XHelpFaqAdapterFactory
     {
         // Step 1 - Retrieve configured faq application
         $ret = false;
-        if ($name == '') {
+        if ('' == $name) {
             $name = xhelpGetMeta('faq_adapter');
-            if ($name == '') {
+            if ('' == $name) {
                 return $ret;
             }
         }

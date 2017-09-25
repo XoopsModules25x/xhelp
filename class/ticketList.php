@@ -203,7 +203,7 @@ class XHelpTicketListHandler extends xhelpBaseObjectHandler
             return $ret;
         }
         $numrows = $this->_db->getRowsNum($result);
-        if ($numrows == 1) {
+        if (1 == $numrows) {
             $obj = new $this->classname($this->_db->fetchArray($result));
 
             return $obj;

@@ -61,7 +61,7 @@ class XHelpTicketValues extends XoopsObject
 
             $this->initVar($key, $datatype, null, $required, $maxlength, $options);
 
-            $this->_fields[$key] = (($field->getVar('datatype') == _XHELP_DATATYPE_TEXT) ? '%s' : '%d');
+            $this->_fields[$key] = ((_XHELP_DATATYPE_TEXT == $field->getVar('datatype')) ? '%s' : '%d');
         }
         $this->_fields['ticketid'] = '%u';
 
@@ -226,13 +226,13 @@ class XHelpTicketValuesHandler extends xhelpBaseObjectHandler
         $sqlFields = '';
         $sqlVars   = '';
         foreach ($myFields as $myField => $datatype) {      // Create sql name and value pairs
-            if (isset(${$myField}) && ${$myField} != null) {
+            if (isset(${$myField}) && null != ${$myField}) {
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars   .= ', ';
                     $sqlFields .= ', ';
                 }
                 $sqlFields .= $myField;
-                if ($datatype == '%s') {                      // If this field is a string
+                if ('%s' == $datatype) {                      // If this field is a string
                     $sqlVars .= $this->_db->quoteString(${$myField});     // Add text to sqlVars string
                 } else {                                    // If this field is a number
                     $sqlVars .= ${$myField};      // Add text to sqlVars string
@@ -261,11 +261,11 @@ class XHelpTicketValuesHandler extends xhelpBaseObjectHandler
         $count    = 1;
         $sqlVars  = '';
         foreach ($myFields as $myField => $datatype) {      // Used to create sql field and value substrings
-            if (isset(${$myField}) && ${$myField} !== null) {
+            if (isset(${$myField}) && null !== ${$myField}) {
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars .= ', ';
                 }
-                if ($datatype == '%s') {                      // If this field is a string
+                if ('%s' == $datatype) {                      // If this field is a string
                     $sqlVars .= $myField . ' = ' . $this->_db->quoteString(${$myField});     // Add text to sqlVars string
                 } else {                                    // If this field is a number
                     $sqlVars .= $myField . ' = ' . ${$myField};      // Add text to sqlVars string

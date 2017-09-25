@@ -17,7 +17,7 @@ class XHelpReportFactory
     public function getReport($name)
     {
         $report = false;
-        if ($name != '') {
+        if ('' != $name) {
             $classname = 'xhelp' . ucfirst($name) . 'Report';
             require_once XHELP_REPORT_PATH . "/$name.php";
             $report = new $classname();
@@ -36,7 +36,7 @@ class XHelpReportFactory
         // Step 1 - directory listing of all files in /reports directory
         $report_dir = @ dir(XHELP_REPORT_PATH);
         if ($report_dir) {
-            while (($file = $report_dir->read()) !== false) {
+            while (false !== ($file = $report_dir->read())) {
                 $meta = [];
                 if (preg_match('|^\.+$|', $file)) {
                     continue;

@@ -430,14 +430,14 @@ class ValidatePassword extends Validator
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
         }
 
-        if (!isset($this->pass) || $this->pass == '' || !isset($this->vpass) || $this->vpass == '') {
+        if (!isset($this->pass) || '' == $this->pass || !isset($this->vpass) || '' == $this->vpass) {
             $this->setError(_XHELP_MESSAGE_NOT_SUPPLIED);
             //$stop .= _US_ENTERPWD.'<br>';
         }
         if (isset($this->pass) && ($this->pass != $this->vpass)) {
             $this->setError(_XHELP_MESSAGE_NOT_SAME);
             //$stop .= _US_PASSNOTSAME.'<br>';
-        } elseif (($this->pass != '') && (strlen($this->pass) < $xoopsConfigUser['minpass'])) {
+        } elseif (('' != $this->pass) && (strlen($this->pass) < $xoopsConfigUser['minpass'])) {
             $this->setError(sprintf(_XHELP_MESSAGE_SHORT, $xoopsConfigUser['minpass']));
             //$stop .= sprintf(_US_PWDTOOSHORT,$xoopsConfigUser['minpass'])."<br>";
         }
@@ -588,13 +588,13 @@ class ValidateRegEx extends Validator
      */
     public function validate()
     {
-        if ($this->required == 1) {                                // If value is required
+        if (1 == $this->required) {                                // If value is required
             if (is_array($this->checkText) && isset($this->checkText['size'])) {     // If this is a file
-                if ($this->checkText['name'] == '') {
+                if ('' == $this->checkText['name']) {
                     $this->setError(_XHELP_MESSAGE_REQUIRED);           // Return message saying required value
                 }
             } else {                                                    // If not a file
-                if ($this->pattern != '') {                               // If regex pattern is not empty
+                if ('' != $this->pattern) {                               // If regex pattern is not empty
                     if (!preg_match('/' . $this->pattern . '/', $this->checkText)) {  // Check regex against supplied text
                         $this->setError(_XHELP_MESSAGE_INVALID);        // Return message saying invalid value
                     }
@@ -606,7 +606,7 @@ class ValidateRegEx extends Validator
             }
         } else {
             if (empty($this->checkText)) {
-                if ($this->pattern != '') {
+                if ('' != $this->pattern) {
                     if (!preg_match('/' . $this->pattern . '/', $this->checkText)) {
                         $this->setError(_XHELP_MESSAGE_INVALID);
                     }

@@ -195,8 +195,8 @@ class Mail_mime
      */
     public function addHTMLImage($file, $c_type='application/octet-stream', $name = '', $isfilename = true)
     {
-        $filedata = ($isfilename === true) ? $this->_file2str($file) : $file;
-        $filename = ($isfilename === true) ? basename($file) : basename($name);
+        $filedata = (true === $isfilename) ? $this->_file2str($file) : $file;
+        $filename = (true === $isfilename) ? basename($file) : basename($name);
         if (PEAR::isError($filedata)) {
             return $filedata;
         }
@@ -222,8 +222,8 @@ class Mail_mime
      */
     public function addAttachment($file, $c_type='application/octet-stream', $name = '', $isfilename = true, $encoding = 'base64')
     {
-        $filedata = ($isfilename === true) ? $this->_file2str($file) : $file;
-        if ($isfilename === true) {
+        $filedata = (true === $isfilename) ? $this->_file2str($file) : $file;
+        if (true === $isfilename) {
             // Force the name the user supplied, otherwise use $file
             $filename = (!empty($name)) ? $name : $file;
         } else {

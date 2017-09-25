@@ -76,16 +76,16 @@ class XHelpFile extends XoopsObject
         $old_responseid = $this->getVar('responseid');
 
         $filename = $this->getVar('filename');
-        if (($old_responseid != 0) && ($responseid != 0)) {   // Was a response and is going to be a response
+        if ((0 != $old_responseid) && (0 != $responseid)) {   // Was a response and is going to be a response
             $newFilename = str_replace('_' . $old_responseid . '_', '_' . $responseid . '_', $filename);
             $newFilename = str_replace($old_ticketid . '_', $ticketid . '_', $newFilename);
-        } elseif (($old_responseid != 0) && ($responseid == 0)) { // Was a response and is part of the ticket now
+        } elseif ((0 != $old_responseid) && (0 == $responseid)) { // Was a response and is part of the ticket now
             $newFilename = str_replace('_' . $old_responseid . '_', '_', $filename);
             $newFilename = str_replace($old_ticketid . '_', $ticketid . '_', $newFilename);
-        } elseif (($old_responseid == 0) && ($responseid != 0)) {  // Was part of the ticket, now going to a response
+        } elseif ((0 == $old_responseid) && (0 != $responseid)) {  // Was part of the ticket, now going to a response
             $newFilename = str_replace($old_ticketid . '_', $ticketid . '_' . $responseid . '_', $filename);
-        } elseif (($old_responseid == 0)
-                  && ($responseid == 0)) {  // Was part of the ticket, and is part of the ticket now
+        } elseif ((0 == $old_responseid)
+                  && (0 == $responseid)) {  // Was part of the ticket, and is part of the ticket now
             $newFilename = str_replace($old_ticketid . '_', $ticketid . '_', $filename);
         }
 

@@ -76,7 +76,7 @@ class XHelpReport extends XoopsObject
      */
     public function generateGraph()
     {
-        if ($this->getVar('hasGraph') == 0) {
+        if (0 == $this->getVar('hasGraph')) {
             return false;
         }
     }
@@ -161,8 +161,8 @@ class XHelpReport extends XoopsObject
         $where = '';
         $i     = 0;
         foreach ($params as $param) {
-            if ($param->value != '' && $param->value != -999) {   // -999 used for all fields
-                if ($i == 0 && $includeAnd === true || $i > 0) {
+            if ('' != $param->value && $param->value != -999) {   // -999 used for all fields
+                if (0 == $i && true === $includeAnd || $i > 0) {
                     $where .= ' AND ';
                 }
 
@@ -237,7 +237,7 @@ class XHelpReport extends XoopsObject
         $p1->ExplodeSlice($a);
 
         // Set graph background image
-        if ($image !== false) {
+        if (false !== $image) {
             $graph->SetBackgroundImage($image, BGIMG_FILLFRAME);
         }
 

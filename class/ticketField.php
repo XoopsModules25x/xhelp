@@ -138,7 +138,7 @@ class XHelpTicketField extends XoopsObject
      */
     public function addDepartments(&$dept_arr)
     {
-        if (!is_array($dept_arr) || count($dept_arr) == 0) {
+        if (!is_array($dept_arr) || 0 == count($dept_arr)) {
             return false;
         }
         foreach ($dept_arr as $dept) {
@@ -172,7 +172,7 @@ class XHelpTicketField extends XoopsObject
         $arr = [];
 
         $values = $this->getVar('fieldvalues');
-        if ($this->getVar('controltype') == XHELP_CONTROL_YESNO) {
+        if (XHELP_CONTROL_YESNO == $this->getVar('controltype')) {
             $values = [1 => _YES, 0 => _NO];
         }
 

@@ -118,7 +118,7 @@ class XHelpStaffRoleHandler extends xhelpBaseObjectHandler
 
         $arr = $this->getObjects($crit, $id_as_key);
 
-        if (count($arr) == 0) {
+        if (0 == count($arr)) {
             $arr = false;
         }
 

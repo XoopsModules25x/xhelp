@@ -26,7 +26,7 @@ class XHelpReportRendererFactory
     public static function getRenderer($type, &$report)
     {
         $ret = false;
-        if ($type == '') {
+        if ('' == $type) {
             return $ret;
         }
 
