@@ -69,7 +69,7 @@ $modversion['contributors']['translators'][0]['language'] = 'Brazilian Portugues
 $modversion['contributors']['translators'][0]['name']     = 'Silvio Palmieri';
 $modversion['contributors']['translators'][0]['uname']    = 'silvio';
 $modversion['contributors']['translators'][0]['email']    = 'silvio@silviotech.com.br';
-$modversion['contributors']['translators'][0]['website']  = 'www.xooops.pr.gov.br';
+$modversion['contributors']['translators'][0]['website']  = 'www.xoops.pr.gov.br';
 
 $modversion['contributors']['translators'][1]['language'] = 'French';
 $modversion['contributors']['translators'][1]['name']     = '';
