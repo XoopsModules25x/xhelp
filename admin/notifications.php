@@ -1,14 +1,16 @@
 <?php
-//
+
+use Xoopsmodules\xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
-require_once XHELP_CLASS_PATH . '/session.php';
-$_xhelpSession = new Session();
-$hNotification = xhelpGetHandler('notification');
+// require_once XHELP_CLASS_PATH . '/session.php';
+$_xhelpSession = new xhelp\Session();
+$hNotification = new xhelp\NotificationHandler($GLOBALS['xoopsDB']);
 
 global $xoopsModule;
 if (!$templates = $_xhelpSession->get('xhelp_notifications')) {
-    $templates =& $xoopsModule->getInfo('_email_tpl');
+    $templates = $xoopsModule->getInfo('_email_tpl');
     $_xhelpSession->set('xhelp_notifications', $templates);
 }
 $has_notifications = count($templates);
@@ -105,7 +107,7 @@ function edit()
         redirect_header(XHELP_ADMIN_URL . '/notifications.php?op=manage', 3, _AM_XHELP_MESSAGE_NO_ID);
     }
 
-    $settings =& $hNotification->get($id);
+    $settings = $hNotification->get($id);
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manNotify');
@@ -127,15 +129,15 @@ function edit()
     }
 
     // Retrieve list of email templates
-    if (!$templates =& $_xhelpSession->get('xhelp_notifications')) {
-        $templates =& $xoopsModule->getInfo('_email_tpl');
+    if (!$templates = $_xhelpSession->get('xhelp_notifications')) {
+        $templates = $xoopsModule->getInfo('_email_tpl');
         $_xhelpSession->set('xhelp_notifications', $templates);
     }
     $notification = $aNotifications[$id];
 
-    $staff_settings = xhelpGetMeta("notify_staff{$id}");
-    $user_settings  = xhelpGetMeta("notify_user{$id}");
-    $hRoles         = xhelpGetHandler('role');
+    $staff_settings = xhelp\Utility::getMeta("notify_staff{$id}");
+    $user_settings  = xhelp\Utility::getMeta("notify_user{$id}");
+    $hRoles         = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
     if (XHELP_NOTIF_STAFF_DEPT == $settings->getVar('staff_setting')) {
         $selectedRoles = $settings->getVar('staff_options');
     } else {

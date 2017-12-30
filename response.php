@@ -1,5 +1,7 @@
 <?php
-//
+
+use Xoopsmodules\xhelp;
+
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
 
@@ -23,11 +25,11 @@ if (isset($_GET['responseid'])) {
     $responseid = (int)$_GET['responseid'];
 }
 
-$hTicket      = xhelpGetHandler('ticket');
-$hResponseTpl = xhelpGetHandler('responseTemplates');
-$hMembership  = xhelpGetHandler('membership');
-$hResponse    = xhelpGetHandler('responses');
-$hStaff       = xhelpGetHandler('staff');
+$hTicket      = xhelp\Utility::getHandler('Ticket');
+$hResponseTpl = xhelp\Utility::getHandler('ResponseTemplates');
+$hMembership  = xhelp\Utility::getHandler('Membership');
+$hResponse    = xhelp\Utility::getHandler('Responses');
+$hStaff       = xhelp\Utility::getHandler('Staff');
 
 if (!$ticketInfo =& $hTicket->get($ticketid)) {
     //Invalid ticketID specified
@@ -58,20 +60,20 @@ switch ($op) {
 
         if ($xhelp_isStaff) {
             // Check if staff has permission to respond to the ticket
-            $hTicketEmails = xhelpGetHandler('ticketEmails');
-            $crit          = new CriteriaCompo(new Criteria('ticketid', $ticketid));
-            $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
+            $hTicketEmails = xhelp\Utility::getHandler('TicketEmails');
+            $crit          = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
+            $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
             $ticketEmails = $hTicketEmails->getObjects($crit);
             if (count($ticketEmails > 0)
                 || $xhelp_staff->checkRoleRights(XHELP_SEC_RESPONSE_ADD, $ticketInfo->getVar('department'))) {
                 //1. Verify Response fields are filled properly
-                require_once XHELP_CLASS_PATH . '/validator.php';
+                // require_once XHELP_CLASS_PATH . '/validator.php';
                 $v                = [];
                 $v['response'][]  = new ValidateLength($_POST['response'], 2, 50000);
                 $v['timespent'][] = new ValidateNumber($_POST['timespent']);
 
                 if ($xoopsModuleConfig['xhelp_allowUpload'] && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
-                    $hMime = xhelpGetHandler('mimetype');
+                    $hMime = xhelp\Utility::getHandler('Mimetype');
                     //Add File Upload Validation Rules
                     $v['userfile'][] = new ValidateMimeType($_FILES['userfile']['name'], $_FILES['userfile']['type'], $hMime->getArray());
                     $v['userfile'][] = new ValidateFileSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadSize']);
@@ -83,7 +85,7 @@ switch ($op) {
                 $fields = [];
                 $errors = [];
                 foreach ($v as $fieldname => $validator) {
-                    if (!xhelpCheckRules($validator, $errors)) {
+                    if (!xhelp\Utility::checkRules($validator, $errors)) {
                         $hasErrors = true;
                         //Mark field with error
                         $fields[$fieldname]['haserrors'] = true;
@@ -104,13 +106,13 @@ switch ($op) {
 
                 //Check if status changed
                 if ($_POST['status'] <> $ticketInfo->getVar('status')) {
-                    $hStatus   = xhelpGetHandler('status');
+                    $hStatus   = xhelp\Utility::getHandler('Status');
                     $oldStatus = $hStatus->get($ticketInfo->getVar('status'));
                     $newStatus = $hStatus->get((int)$_POST['status']);
 
-                    if ($oldStatus->getVar('state') == 1 && $newStatus->getVar('state') == 2) {
+                    if (1 == $oldStatus->getVar('state') && 2 == $newStatus->getVar('state')) {
                         $ticketClosed = true;
-                    } elseif ($oldStatus->getVar('state') == 2 && $newStatus->getVar('state') == 1) {
+                    } elseif (2 == $oldStatus->getVar('state') && 1 == $newStatus->getVar('state')) {
                         $ticketReopen = true;
                     }
                     $ticketInfo->setVar('status', (int)$_POST['status']);
@@ -201,16 +203,16 @@ switch ($op) {
         $isStaff     = $hMembership->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'));
 
         // Check if staff has permission to respond to the ticket
-        $hTicketEmails = xhelpGetHandler('ticketEmails');
-        $crit          = new CriteriaCompo(new Criteria('ticketid', $ticketid));
-        $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
+        $hTicketEmails = xhelp\Utility::getHandler('TicketEmails');
+        $crit          = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
+        $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
         $ticketEmails = $hTicketEmails->getObjects($crit);
         if (count($ticketEmails) > 0) {
             $isSubmitter = true;
         }
         if ($isSubmitter || $xhelp_staff->checkRoleRights(XHELP_SEC_RESPONSE_ADD, $ticketInfo->getVar('department'))) {
-            $hStatus = xhelpGetHandler('status');
-            $crit    = new Criteria('', '');
+            $hStatus = xhelp\Utility::getHandler('Status');
+            $crit    = new \Criteria('', '');
             $crit->setSort('description');
             $crit->setOrder('ASC');
             $statuses  = $hStatus->getObjects($crit);
@@ -268,7 +270,7 @@ switch ($op) {
             }
 
             //Get all staff defined templates
-            $crit = new Criteria('uid', $uid);
+            $crit = new \Criteria('uid', $uid);
             $crit->setSort('name');
             $responseTpl = $hResponseTpl->getObjects($crit, true);
 
@@ -330,8 +332,8 @@ switch ($op) {
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_editResponse.tpl';             // Always set main template before including the header
         require XOOPS_ROOT_PATH . '/header.php';
 
-        $hStatus = xhelpGetHandler('status');
-        $crit    = new Criteria('', '');
+        $hStatus = xhelp\Utility::getHandler('Status');
+        $crit    = new \Criteria('', '');
         $crit->setSort('description');
         $crit->setOrder('ASC');
         $statuses  = $hStatus->getObjects($crit);
@@ -350,7 +352,7 @@ switch ($op) {
         $xoopsTpl->assign('xhelp_timeSpent', $response->getVar('timeSpent'));
         $xoopsTpl->assign('xhelp_status', $ticketInfo->getVar('status'));
         $xoopsTpl->assign('xhelp_has_owner', $has_owner);
-        $xoopsTpl->assign('xhelp_responsePrivate', (($response->getVar('private') == 1) ? _XHELP_TEXT_YES : _XHELP_TEXT_NO));
+        $xoopsTpl->assign('xhelp_responsePrivate', ((1 == $response->getVar('private')) ? _XHELP_TEXT_YES : _XHELP_TEXT_NO));
         $xoopsTpl->assign('xhelp_currentUser', $uid);
         $xoopsTpl->assign('xhelp_allowUpload', 0);
         $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
@@ -385,8 +387,8 @@ switch ($op) {
             }
         }
 
-        $hResponseTpl = xhelpGetHandler('responseTemplates');          // Used to display responseTemplates
-        $crit         = new Criteria('uid', $uid);
+        $hResponseTpl = xhelp\Utility::getHandler('ResponseTemplates');          // Used to display responseTemplates
+        $crit         = new \Criteria('uid', $uid);
         $crit->setSort('name');
         $responseTpl = $hResponseTpl->getObjects($crit);
 
@@ -403,7 +405,7 @@ switch ($op) {
         unset($responseTpl);
         $displayTpl = $hResponseTpl->get($refresh);
 
-        $xoopsTpl->assign('xhelp_response_text', ($refresh != 0 ? $displayTpl->getVar('response', 'e') : ''));
+        $xoopsTpl->assign('xhelp_response_text', (0 != $refresh ? $displayTpl->getVar('response', 'e') : ''));
         $xoopsTpl->assign('xhelp_responseTpl', $aResponseTpl);
         $xoopsTpl->assign('xhelp_hasResponseTpl', count($aResponseTpl) > 0);
         $xoopsTpl->assign('xhelp_refresh', $refresh);
@@ -414,7 +416,7 @@ switch ($op) {
         break;
 
     case 'staffEditSave':
-        require_once XHELP_CLASS_PATH . '/validator.php';
+        // require_once XHELP_CLASS_PATH . '/validator.php';
         $v['response'][]  = new ValidateLength($_POST['response'], 2, 50000);
         $v['timespent'][] = new ValidateNumber($_POST['timespent']);
 
@@ -447,12 +449,12 @@ switch ($op) {
             $ticketInfo->setVar('status', $_POST['status']);
             $newStatus = true;
 
-            if ($_POST['status'] == 2) { //Closed Ticket
+            if (2 == $_POST['status']) { //Closed Ticket
                 $ticketInfo->setVar('closedBy', $xoopsUser->getVar('uid'));
                 $ticketClosed = true;
             }
 
-            if ($oldticket->getVar('status') == 2) { //Ticket reopened
+            if (2 == $oldticket->getVar('status')) { //Ticket reopened
                 $ticketReopen = true;
             }
         }
@@ -483,7 +485,7 @@ switch ($op) {
         $fields = [];
         $errors = [];
         foreach ($v as $fieldname => $validator) {
-            if (!xhelpCheckRules($validator, $errors)) {
+            if (!xhelp\Utility::checkRules($validator, $errors)) {
                 // Mark field with error
                 $fields[$fieldname]['haserrors'] = true;
                 $fields[$fieldname]['errors']    = $errors;

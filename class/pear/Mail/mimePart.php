@@ -140,7 +140,7 @@ class Mail_mimePart
      *                  charset      - Character set to use
      * @access public
      */
-    public function Mail_mimePart($body = '', $params = [])
+    public function __construct($body = '', $params = [])
     {
         if (!defined('MAIL_MIMEPART_CRLF')) {
             define('MAIL_MIMEPART_CRLF', defined('MAIL_MIME_CRLF') ? MAIL_MIME_CRLF : "\r\n", true);
@@ -224,7 +224,7 @@ class Mail_mimePart
             $this->_headers['Content-Type'] .= ';' . MAIL_MIMEPART_CRLF . "\t" . 'boundary="' . $boundary . '"';
 
             // Add body parts to $subparts
-            for ($i = 0; $i < count($this->_subparts); $i++) {
+            for ($i = 0, $iMax = count($this->_subparts); $i < $iMax; $i++) {
                 $headers = [];
                 $tmp = $this->_subparts[$i]->encode();
                 foreach ($tmp['headers'] as $key => $value) {
@@ -277,6 +277,7 @@ class Mail_mimePart
      * @param $encoding The encoding type to use, 7bit, base64,
      *                  or quoted-printable.
      * @access private
+     * @return bool|string|\The
      */
     public function _getEncodedData($data, $encoding)
     {
@@ -304,10 +305,11 @@ class Mail_mimePart
      *
      * Encodes data to quoted-printable standard.
      *
-     * @param $input    The data to encode
-     * @param $line_max Optional max line length. Should
-     *                  not be more than 76 chars
+     * @param     $input    The data to encode
+     * @param int $line_max Optional max line length. Should
+     *                      not be more than 76 chars
      *
+     * @return bool|string
      * @access private
      */
     public function _quotedPrintableEncode($input, $line_max = 76)

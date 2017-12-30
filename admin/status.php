@@ -1,9 +1,11 @@
 <?php
-//
+
+use Xoopsmodules\xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
-require_once XHELP_CLASS_PATH . '/xhelpForm.php';
+// require_once XHELP_CLASS_PATH . '/Form.php';
 
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
@@ -69,12 +71,12 @@ function deleteStatus()
         header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
-    $hTickets = xhelpGetHandler('ticket');
-    $hStatus  = xhelpGetHandler('status');
+    $hTickets = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hStatus  = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
     $status   = $hStatus->get($statusid);
 
     // Check for tickets with this status first
-    $crit        = new Criteria('status', $statusid);
+    $crit        = new \Criteria('status', $statusid);
     $ticketCount = $hTickets->getCount($crit);
 
     if ($ticketCount > 0) {
@@ -97,7 +99,7 @@ function editStatus()
         header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
-    $hStatus = xhelpGetHandler('status');
+    $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
     $status  = $hStatus->get($statusid);
 
     if (!isset($_POST['updateStatus'])) {
@@ -117,11 +119,11 @@ function editStatus()
         echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_STATE . "</td><td class='even'>
                   <select name='state'>";
         if (1 == $status->getVar('state')) {
-            echo "<option value='1' selected>" . xhelpGetState(1) . "</option>
-                          <option value='2'>" . xhelpGetState(2) . '</option>';
+            echo "<option value='1' selected>" . xhelp\Utility::getState(1) . "</option>
+                          <option value='2'>" . xhelp\Utility::getState(2) . '</option>';
         } else {
-            echo "<option value='1'>" . xhelpGetState(1) . "</option>
-                          <option value='2' selected>" . xhelpGetState(2) . '</option>';
+            echo "<option value='1'>" . xhelp\Utility::getState(1) . "</option>
+                          <option value='2' selected>" . xhelp\Utility::getState(2) . '</option>';
         }
         echo '</select></td></tr>';
         echo "<tr><td class='foot' colspan='2'><input type='submit' name='updateStatus' value='" . _AM_XHELP_BUTTON_UPDATE . "' class='formButton'></td></tr>";
@@ -148,10 +150,10 @@ function editStatus()
 function manageStatus()
 {
     global $aSortBy, $aOrderBy, $aLimitBy, $order, $limit, $start, $sort;
-    $hStatus = xhelpGetHandler('status');
+    $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
     if (isset($_POST['changeDefaultStatus'])) {
-        xhelpSetMeta('default_status', $_POST['default']);
+        xhelp\Utility::setMeta('default_status', $_POST['default']);
     }
 
     if (isset($_POST['newStatus'])) {
@@ -185,14 +187,14 @@ function manageStatus()
           </tr>";
     echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_STATE . "</td><td class='even'>
               <select name='state'>
-              <option value='1'>" . xhelpGetState(1) . "</option>
-              <option value='2'>" . xhelpGetState(2) . '</option>
+              <option value='1'>" . xhelp\Utility::getState(1) . "</option>
+              <option value='2'>" . xhelp\Utility::getState(2) . '</option>
           </select></td></tr>';
     echo "<tr><td class='foot' colspan='2'><input type='submit' name='newStatus' value='" . _AM_XHELP_TEXT_ADD_STATUS . "' class='formButton'></td></tr>";
     echo '</table></form>';
 
     // Get list of existing statuses
-    $crit = new Criteria('', '');
+    $crit = new \Criteria('', '');
     $crit->setOrder($order);
     $crit->setSort($sort);
     $crit->setLimit($limit);
@@ -205,21 +207,21 @@ function manageStatus()
         $aStatuses[$status->getVar('id')] = $status->getVar('description');
     }
 
-    if (!$default_status = xhelpGetMeta('default_status')) {
-        xhelpSetMeta('default_status', '1');
+    if (!$default_status = xhelp\Utility::getMeta('default_status')) {
+        xhelp\Utility::setMeta('default_status', '1');
         $default_status = 1;
     }
-    $form          = new xhelpForm(_AM_XHELP_TEXT_DEFAULT_STATUS, 'default_status', xhelpMakeURI(XHELP_ADMIN_URL . '/status.php', ['op' => 'manageStatus']));
-    $status_select = new XoopsFormSelect(_AM_XHELP_TEXT_STATUS, 'default', $default_status);
+    $form          = new xhelp\Form(_AM_XHELP_TEXT_DEFAULT_STATUS, 'default_status', xhelp\Utility::createURI(XHELP_ADMIN_URL . '/status.php', ['op' => 'manageStatus']));
+    $status_select = new \XoopsFormSelect(_AM_XHELP_TEXT_STATUS, 'default', $default_status);
     $status_select->addOptionArray($aStatuses);
-    $btn_tray = new XoopsFormElementTray('');
-    $btn_tray->addElement(new XoopsFormButton('', 'changeDefaultStatus', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
+    $btn_tray = new \XoopsFormElementTray('');
+    $btn_tray->addElement(new \XoopsFormButton('', 'changeDefaultStatus', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
     $form->addElement($status_select);
     $form->addElement($btn_tray);
     $form->setLabelWidth('20%');
     echo $form->render();
 
-    $nav = new XoopsPageNav($total, $limit, $start, 'start', "op=manageStatus&amp;limit=$limit");
+    $nav = new \XoopsPageNav($total, $limit, $start, 'start', "op=manageStatus&amp;limit=$limit");
 
     echo "<form action='" . XHELP_ADMIN_URL . "/status.php?op=manageStatus' style='margin:0; padding:0;' method='post'>";
     echo $GLOBALS['xoopsSecurity']->getTokenHTML();
@@ -262,7 +264,7 @@ function manageStatus()
           </tr>';
     foreach ($statuses as $status) {
         echo "<tr class='even'><td>" . $status->getVar('id') . '</td><td>' . $status->getVar('description') . '</td>
-              <td>' . xhelpGetState($status->getVar('state')) . "</td>
+              <td>' . xhelp\Utility::getState($status->getVar('state')) . "</td>
               <td>
                   <a href='status.php?op=editStatus&amp;statusid=" . $status->getVar('id') . "'><img src='" . XHELP_IMAGE_URL . "/button_edit.png' title='" . _AM_XHELP_TEXT_EDIT . "' name='editStatus'></a>&nbsp;
                   <a href='status.php?op=deleteStatus&amp;statusid=" . $status->getVar('id') . "'><img src='" . XHELP_IMAGE_URL . "/button_delete.png' title='" . _AM_XHELP_TEXT_DELETE . "' name='deleteStatus'></a></td></tr>

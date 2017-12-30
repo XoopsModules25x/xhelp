@@ -64,9 +64,9 @@ class Net_Socket extends PEAR
      *
      * @access public
      */
-    public function Net_Socket()
+    public function __construct()
     {
-        $this->PEAR();
+        parent::__construct();
     }
     // }}}
 
@@ -137,7 +137,7 @@ class Net_Socket extends PEAR
             return true;
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -174,7 +174,7 @@ class Net_Socket extends PEAR
             return true;
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -196,7 +196,7 @@ class Net_Socket extends PEAR
             return true;
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -221,7 +221,7 @@ class Net_Socket extends PEAR
             return socket_get_status($this->fp);
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -230,7 +230,8 @@ class Net_Socket extends PEAR
      * Get a specified line of data
      *
      * @access public
-     * @return $size bytes of data from the socket, or a PEAR_Error if
+     * @param $size
+     * @return bool|object|string $size bytes of data from the socket, or a PEAR_Error if
      *               not connected.
      */
     public function gets($size)
@@ -239,7 +240,7 @@ class Net_Socket extends PEAR
             return fgets($this->fp, $size);
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -250,10 +251,10 @@ class Net_Socket extends PEAR
      * chunk; if you know the size of the data you're getting
      * beforehand, this is definitely the way to go.
      *
-     * @param $size The number of bytes to read from the socket.
-     * @access public
-     * @return $size bytes of data from the socket, or a PEAR_Error if
+     * @param $size  The number of bytes to read from the socket.
+     * @return bool|object|string $size bytes of data from the socket, or a PEAR_Error if
      *               not connected.
+     * @access public
      */
     public function read($size)
     {
@@ -261,7 +262,7 @@ class Net_Socket extends PEAR
             return fread($this->fp, $size);
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -270,6 +271,7 @@ class Net_Socket extends PEAR
      * Write a specified amount of data.
      *
      * @access public
+     * @param $data
      * @return mixed true on success or an error object otherwise
      */
     public function write($data)
@@ -278,7 +280,7 @@ class Net_Socket extends PEAR
             return fwrite($this->fp, $data);
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -287,6 +289,7 @@ class Net_Socket extends PEAR
      * Write a line of data to the socket, followed by a trailing "\r\n".
      *
      * @access public
+     * @param $data
      * @return mixed fputs result, or an error
      */
     public function writeLine($data)
@@ -295,7 +298,7 @@ class Net_Socket extends PEAR
             return $this->write($data . "\r\n");
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -317,7 +320,7 @@ class Net_Socket extends PEAR
      * Reads a byte of data
      *
      * @access public
-     * @return 1 byte of data from the socket, or a PEAR_Error if
+     * @return int|object 1 byte of data from the socket, or a PEAR_Error if
      *           not connected.
      */
     public function readByte()
@@ -326,7 +329,7 @@ class Net_Socket extends PEAR
             return ord($this->read(1));
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -335,7 +338,7 @@ class Net_Socket extends PEAR
      * Reads a word of data
      *
      * @access public
-     * @return 1 word of data from the socket, or a PEAR_Error if
+     * @return int|object 1 word of data from the socket, or a PEAR_Error if
      *           not connected.
      */
     public function readWord()
@@ -346,7 +349,7 @@ class Net_Socket extends PEAR
             return (ord($buf[0]) + (ord($buf[1]) << 8));
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -355,7 +358,7 @@ class Net_Socket extends PEAR
      * Reads an int of data
      *
      * @access public
-     * @return 1 int of data from the socket, or a PEAR_Error if
+     * @return int|object 1 int of data from the socket, or a PEAR_Error if
      *           not connected.
      */
     public function readInt()
@@ -367,7 +370,7 @@ class Net_Socket extends PEAR
             (ord($buf[2]) << 16) + (ord($buf[3]) << 24));
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -390,7 +393,7 @@ class Net_Socket extends PEAR
             return $string;
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -408,15 +411,15 @@ class Net_Socket extends PEAR
             $buf = $this->read(4);
 
             return sprintf(
-                "%s.%s.%s.%s",
+                '%s.%s.%s.%s',
                 ord($buf[0]),
                 ord($buf[1]),
-            ord($buf[2]),
+                ord($buf[2]),
                 ord($buf[3])
             );
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -448,7 +451,7 @@ class Net_Socket extends PEAR
             return $line;
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 
@@ -472,7 +475,7 @@ class Net_Socket extends PEAR
             return $data;
         }
 
-        return $this->raiseError("not connected");
+        return $this->raiseError('not connected');
     }
     // }}}
 }

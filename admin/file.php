@@ -1,5 +1,7 @@
 <?php
-//
+
+use Xoopsmodules\xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
@@ -63,7 +65,7 @@ switch ($op) {
 
 function deleteFile()
 {
-    $hFile = xhelpGetHandler('file');
+    $hFile = new xhelp\FileHandler($GLOBALS['xoopsDB']);
 
     if (!isset($_GET['fileid'])) {
         redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles', 3, _XHELP_MESSAGE_DELETE_FILE_ERR);
@@ -93,8 +95,8 @@ function deleteResolved()
         xoops_confirm(['op' => 'deleteResolved', 'ok' => 1], XHELP_BASE_URL . '/admin/file.php', _AM_XHELP_MSG_DELETE_RESOLVED);
         xoops_cp_footer();
     } else {
-        $hTicket = xhelpGetHandler('ticket');
-        $hFile   = xhelpGetHandler('file');
+        $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $hFile   = new xhelp\FileHandler($GLOBALS['xoopsDB']);
 
         $tickets = $hTicket->getObjectsByState(1);     // Memory saver - unresolved should be less tickets
 
@@ -104,9 +106,9 @@ function deleteResolved()
         }
 
         // Retrieve all unresolved ticket attachments
-        $crit = new CriteriaCompo();
+        $crit = new \CriteriaCompo();
         foreach ($aTickets as $ticket) {
-            $crit->add(new Criteria('ticketid', $ticket, '!='));
+            $crit->add(new \Criteria('ticketid', $ticket, '!='));
         }
         if ($hFile->deleteAll($crit)) {
             header('Location: ' . XHELP_ADMIN_URL . '/file.php?op=manageFiles');
@@ -126,11 +128,11 @@ function manageFiles()
         $can_upload = xhelp_admin_mkdir($xhelpUploadDir);
     }
 
-    $hFile = xhelpGetHandler('file');
+    $hFile = new xhelp\FileHandler($GLOBALS['xoopsDB']);
 
     if (isset($_POST['deleteFiles'])) {   // Delete all selected files
         $aFiles = $_POST['files'];
-        $crit   = new Criteria('id', '(' . implode($aFiles, ',') . ')', 'IN');
+        $crit   = new \Criteria('id', '(' . implode($aFiles, ',') . ')', 'IN');
 
         if ($hFile->deleteAll($crit)) {
             header('Location: ' . XHELP_ADMIN_URL . '/file.php?op=manageFiles');
@@ -166,7 +168,7 @@ function manageFiles()
           </tr>';
     echo '</table></form>';
 
-    $crit = new Criteria('', '');
+    $crit = new \Criteria('', '');
     $crit->setOrder($order);
     $crit->setSort($sort);
     $crit->setLimit($limit);
@@ -174,7 +176,7 @@ function manageFiles()
     $files = $hFile->getObjects($crit);
     $total = $hFile->getCount($crit);
 
-    $nav = new XoopsPageNav($total, $limit, $start, 'start', "op=manageFiles&amp;limit=$limit");
+    $nav = new \XoopsPageNav($total, $limit, $start, 'start', "op=manageFiles&amp;limit=$limit");
 
     echo "<form action='" . XHELP_ADMIN_URL . "/file.php?op=manageFiles' style='margin:0; padding:0;' method='post'>";
     echo $GLOBALS['xoopsSecurity']->getTokenHTML();
@@ -229,7 +231,7 @@ function manageFiles()
                       <td><input type='checkbox' name='files[]' value='" . $file->getVar('id') . "'> " . $file->getVar('id') . "</td>
                       <td><a href='" . $ticketpath . "' target='_BLANK'>" . $file->getVar('ticketid') . "</a></td>
                       <td><a href='" . $filepath . "'>" . $file->getVar('filename') . '</a></td>
-                      <td>' . xhelpPrettyBytes($filesize) . '</td>
+                      <td>' . xhelp\Utility::prettyBytes($filesize) . '</td>
                       <td>' . $file->getVar('mimetype') . "</td>
                       <td>
                           <a href='" . XHELP_ADMIN_URL . '/file.php?op=deleteFile&amp;fileid=' . $file->getVar('id') . "'><img src='" . XOOPS_URL . "/modules/xhelp/assets/images/button_delete.png' title='" . _AM_XHELP_TEXT_DELETE . "' name='deleteFile'></a>

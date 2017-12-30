@@ -1,12 +1,14 @@
 <?php
-//
+
+use Xoopsmodules\xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
-require_once XHELP_CLASS_PATH . '/xhelpPageNav.php';
+// require_once XHELP_CLASS_PATH . '/PageNav.php';
 
 global $xoopsModule, $xoopsModuleConfig;
 $module_id   = $xoopsModule->getVar('mid');
-$displayName =& $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+$displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 
 $aLimitByS = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' => 100];
 $aLimitByD = ['1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '10' => 10];
@@ -53,8 +55,8 @@ switch ($op) {
 
 function addRole()
 {
-    require_once XHELP_CLASS_PATH . '/session.php';
-    $_xhelpSession = new Session();
+    // require_once XHELP_CLASS_PATH . '/session.php';
+    $_xhelpSession = new xhelp\Session();
     if (!isset($_POST['add'])) {
         // Set array of security items
         $tasks = [
@@ -108,7 +110,7 @@ function addRole()
         echo '</table></form>';
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $hRole = xhelpGetHandler('role');
+        $hRole = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
         $role = $hRole->create();
         $role->setVar('name', $_POST['roleName']);
@@ -135,7 +137,7 @@ function addRole()
 function clearOrphanedStaff()
 {
     $hMember = xoops_getHandler('member');
-    $hStaff  = xhelpGetHandler('staff');
+    $hStaff  = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
     $users   = $hMember->getUserList();
     $staff   = $hStaff->getObjects();
 
@@ -147,7 +149,7 @@ function clearOrphanedStaff()
         }
     }
 
-    $crit = new Criteria('uid', '(' . implode($aUsers, ',') . ')', 'IN');
+    $crit = new \Criteria('uid', '(' . implode($aUsers, ',') . ')', 'IN');
     $ret  = $hStaff->deleteAll($crit);
 
     if ($ret) {
@@ -159,10 +161,10 @@ function clearOrphanedStaff()
 
 function clearRoles()
 {
-    require_once XHELP_CLASS_PATH . '/session.php';
-    $_xhelpSession = new Session();
+    // require_once XHELP_CLASS_PATH . '/session.php';
+    $_xhelpSession = new xhelp\Session();
 
-    $hDept = xhelpGetHandler('department');
+    $hDept = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
     $depts = $hDept->getObjects();
 
     foreach ($depts as $dept) {
@@ -172,7 +174,7 @@ function clearRoles()
         }
     }
 
-    if (!$returnPage =& $_xhelpSession->get('xhelp_return_page')) {
+    if (!$returnPage = $_xhelpSession->get('xhelp_return_page')) {
         $returnPage = false;
     }
 
@@ -191,8 +193,8 @@ function clearRoles()
 
 function customDept()
 {
-    require_once XHELP_CLASS_PATH . '/session.php';
-    $_xhelpSession = new Session();
+    // require_once XHELP_CLASS_PATH . '/session.php';
+    $_xhelpSession = new xhelp\Session();
     global $xoopsUser, $displayName;
 
     $lastPage = $_xhelpSession->get('xhelp_return_op');
@@ -202,7 +204,7 @@ function customDept()
     } else {
         $uid = 0;
     }
-    if ($uid == 0) {
+    if (0 == $uid) {
         redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage", 3, _AM_XHELP_MSG_NEED_UID);
     }
     if (isset($_REQUEST['deptid'])) {
@@ -232,12 +234,12 @@ function customDept()
             $_xhelpSession->set('xhelp_mainDepts', $aDepts);    // Store depts from the manage staff page
         }
 
-        $hDept = xhelpGetHandler('department');
-        $hRole = xhelpGetHandler('role');
+        $hDept = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hRole = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
-        $dept =& $hDept->get($deptid);
+        $dept = $hDept->get($deptid);
 
-        $crit = new Criteria('', '');
+        $crit = new \Criteria('', '');
         $crit->setOrder('ASC');
         $crit->setSort('name');
         $roles = $hRole->getObjects($crit);
@@ -251,14 +253,14 @@ function customDept()
         echo "<table width='100%' cellspacing='1' class='outer'>";
         echo "<tr><th colspan='2'>" . _AM_XHELP_TEXT_DEPT_PERMS . '</th></tr>';
         echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_USER . "</td>
-                  <td class='even'>" . xhelpGetUsername($uid, $displayName) . '</td></tr>';
+                  <td class='even'>" . xhelp\Utility::getUsername($uid, $displayName) . '</td></tr>';
         echo "<tr><td class='head'>" . _AM_XHELP_TEXT_DEPARTMENT . "</td>
                   <td class='even'>" . $dept->getVar('department') . '</td></tr>';
         echo "<tr><td class='head'>" . _AM_XHELP_TEXT_ROLES . "</td>
                   <td class='even'><table width='75%'>";
 
         $bFound = false;
-        if ($storedRoles =& $_xhelpSession->get("xhelp_dept_$deptid")) {    // If editing previously customized dept
+        if ($storedRoles = $_xhelpSession->get("xhelp_dept_$deptid")) {    // If editing previously customized dept
             foreach ($roles as $role) {
                 if ($storedRoles['roles'] != -1) {
                     foreach ($storedRoles['roles'] as $storedRole) {
@@ -284,9 +286,9 @@ function customDept()
                     echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' checked><a href='staff.php?op=editRole&amp;id=" . $role->getVar('id') . '&amp;uid=' . $uid . "'>" . $role->getVar('name') . '</a> - ' . $role->getVar('description') . '</td></tr>';
                 }
             }
-        } elseif ($lastPage == 'editStaff' && (!$storedRoles =& $_xhelpSession->get("xhelp_dept_$deptid"))) {
-            $hStaff  = xhelpGetHandler('staff');
-            $myRoles =& $hStaff->getRolesByDept($uid, $deptid);
+        } elseif ('editStaff' === $lastPage && (!$storedRoles = $_xhelpSession->get("xhelp_dept_$deptid"))) {
+            $hStaff  = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+            $myRoles = $hStaff->getRolesByDept($uid, $deptid);
 
             $bFound = false;
             foreach ($roles as $role) {
@@ -322,11 +324,11 @@ function customDept()
         echo '</table>';
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $hRole = xhelpGetHandler('role');
+        $hRole = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
         if (!empty($_POST['roles'])) {
             foreach ($_POST['roles'] as $role) {
-                $thisRole     =& $hRole->get($role);
+                $thisRole     = $hRole->get($role);
                 $aRoleNames[] = $thisRole->getVar('name');
             }
         }
@@ -334,8 +336,8 @@ function customDept()
         $_xhelpSession->set("xhelp_dept_$deptid",       // Store roles for customized dept
                             [
                                 'id'        => $deptid,
-                                'roles'     => (!empty($_POST['roles'])) ? $_POST['roles'] : -1,
-                                'roleNames' => (!empty($aRoleNames)) ? $aRoleNames : -1
+                                'roles'     => !empty($_POST['roles']) ? $_POST['roles'] : -1,
+                                'roleNames' => !empty($aRoleNames) ? $aRoleNames : -1
                             ]);
 
         $xhelp_has_deptRoles = false;
@@ -383,7 +385,7 @@ function deleteRole($xhelp_id, $return_op)
 {
     $xhelp_id = (int)$xhelp_id;
 
-    $hRole = xhelpGetHandler('role');
+    $hRole = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
     $role  = $hRole->get($xhelp_id);
 
     if ($hRole->delete($role, true)) {
@@ -397,8 +399,8 @@ function deleteRole($xhelp_id, $return_op)
 
 function editRole()
 {
-    require_once XHELP_CLASS_PATH . '/session.php';
-    $_xhelpSession = new Session();
+    // require_once XHELP_CLASS_PATH . '/session.php';
+    $_xhelpSession = new xhelp\Session();
 
     $lastPage = $_xhelpSession->get('xhelp_return_op');
 
@@ -412,7 +414,7 @@ function editRole()
         $uid = 0;
     }
 
-    $hRole = xhelpGetHandler('role');
+    $hRole = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
     $role  = $hRole->get($xhelp_id);
 
     if (isset($_POST['deleteRole'])) {
@@ -496,7 +498,7 @@ function editRole()
         }
 
         if ($hRole->insert($role)) {
-            xhelpResetStaffUpdatedTime();
+            xhelp\Utility::resetStaffUpdatedTime();
 
             $message = _AM_XHELP_MESSAGE_ROLE_UPDATE;
             header('Location: ' . XHELP_ADMIN_URL . "/staff.php?op=$lastPage&uid=$uid");
@@ -510,8 +512,8 @@ function editRole()
 function editStaff()
 {
     global $_POST, $_GET, $xoopsModule, $xoopsUser, $displayName;
-    require_once XHELP_CLASS_PATH . '/session.php';
-    $_xhelpSession = new Session();
+    // require_once XHELP_CLASS_PATH . '/session.php';
+    $_xhelpSession = new xhelp\Session();
 
     if (isset($_REQUEST['uid'])) {
         $uid = $_REQUEST['uid'];
@@ -533,22 +535,22 @@ function editStaff()
         $memberHandler = xoops_getHandler('member');          // Get member handler
         $member        = $memberHandler->getUser($uid);
 
-        $hRoles = xhelpGetHandler('role');
-        $crit   = new Criteria('', '');
+        $hRoles = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        $crit   = new \Criteria('', '');
         $crit->setOrder('ASC');
         $crit->setSort('name');
         $roles = $hRoles->getObjects($crit, true);
 
-        $hDepartments = xhelpGetHandler('department');    // Get department handler
-        $crit         = new Criteria('', '');
+        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Get department handler
+        $crit         = new \Criteria('', '');
         $crit->setSort('department');
         $crit->setOrder('ASC');
         $total          = $hDepartments->getCount($crit);
         $departmentInfo = $hDepartments->getObjects($crit);
 
-        $hStaff       = xhelpGetHandler('staff');       // Get staff handler
+        $hStaff       = new xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
         $staff        = $hStaff->getByUid($uid);
-        $hMembership  = xhelpGetHandler('membership');
+        $hMembership  = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
         $staffDepts   = $hMembership->membershipByStaff($uid);
         $staffroles   = $staff->getAllRoleRights();
         $global_roles = (isset($staffroles[0]['roles']) ? array_keys($staffroles[0]['roles']) : []);  //Get all Global Roles
@@ -556,7 +558,7 @@ function editStaff()
         $xhelp_depts = [];
         foreach ($staffDepts as $myDept) {
             $deptid = $myDept->getVar('id');
-            if ($deptid != 0) {
+            if (0 != $deptid) {
                 $xhelp_depts[] = $deptid;
             }
         }
@@ -573,7 +575,7 @@ function editStaff()
         echo "<table width='100%' border='0' cellspacing='1' class='outer'>
               <tr><th colspan='2'><label>" . _AM_XHELP_EDIT_STAFF . '</label></th></tr>';
         echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_USER . "</td>
-                  <td class='even'>" . xhelpGetUsername($member, $displayName);
+                  <td class='even'>" . xhelp\Utility::getUsername($member, $displayName);
         echo '</td></tr>';
         echo "<tr><td class='head'>" . _AM_XHELP_TEXT_ROLES . "</td>
                   <td class='even'><table width='75%'>";
@@ -583,7 +585,7 @@ function editStaff()
             if (in_array($roleid, $global_roles)) {
                 echo "<tr><td><input type='checkbox' name='roles[]' checked value='"
                      . $role->getVar('id')
-                     . "' onclick=\"xhelpRoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
+                     . "' onclick=\"xhelp\RoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
                      . $role->getVar('id')
                      . '&amp;uid='
                      . $uid
@@ -597,7 +599,7 @@ function editStaff()
                     if (in_array($roleid, $mainRoles)) {
                         echo "<tr><td><input type='checkbox' name='roles[]' checked value='"
                              . $role->getVar('id')
-                             . "' onclick=\"xhelpRoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
+                             . "' onclick=\"xhelp\RoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
                              . $role->getVar('id')
                              . '&amp;uid='
                              . $uid
@@ -609,7 +611,7 @@ function editStaff()
                     } else {
                         echo "<tr><td><input type='checkbox' name='roles[]'  value='"
                              . $role->getVar('id')
-                             . "' onclick=\"xhelpRoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
+                             . "' onclick=\"xhelp\RoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
                              . $role->getVar('id')
                              . '&amp;uid='
                              . $uid
@@ -622,7 +624,7 @@ function editStaff()
                 } else {
                     echo "<tr><td><input type='checkbox' name='roles[]'  value='"
                          . $role->getVar('id')
-                         . "' onclick=\"xhelpRoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
+                         . "' onclick=\"xhelp\RoleCustOnClick('frmEditStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\"><a href='staff.php?op=editRole&amp;id="
                          . $role->getVar('id')
                          . '&amp;uid='
                          . $uid
@@ -634,7 +636,7 @@ function editStaff()
                 }
             }
         }
-        echo "<tr><td><input type='checkbox' name='checkallRoles' value='0' onclick='selectAll(this.form,\"roles[]\",this.checked); xhelpRoleCustOnClick(\"frmEditStaff\", \"roles[]\", \"xhelp_role\", \"&amp;\", \"xhelp_dept_cust\");'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';
+        echo "<tr><td><input type='checkbox' name='checkallRoles' value='0' onclick='selectAll(this.form,\"roles[]\",this.checked); xhelp\RoleCustOnClick(\"frmEditStaff\", \"roles[]\", \"xhelp_role\", \"&amp;\", \"xhelp_dept_cust\");'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';
         echo '</table></td></tr>';
         echo "<tr><td class='head'>" . _AM_XHELP_TEXT_DEPARTMENTS . "</td>
                   <td class='even'><table width='75%'>";
@@ -706,7 +708,7 @@ function editStaff()
             $checked = ($inDept ? 'checked' : '');
 
             printf(
-                "<tr><td><input type='checkbox' name='departments[]' value='%u' %s onclick=\"xhelpRoleCustOnClick('frmEditStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">%s [<a href='staff.php?op=customDept&amp;deptid=%u&amp;uid=%u&amp;xhelp_role=%s&amp;xhelp_depts=%s' class='xhelp_dept_cust'>Customize</a>] <i>%s</i><input type='hidden' name='custrole[%u]' value='%s'></td></tr>",
+                "<tr><td><input type='checkbox' name='departments[]' value='%u' %s onclick=\"xhelp\RoleCustOnClick('frmEditStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">%s [<a href='staff.php?op=customDept&amp;deptid=%u&amp;uid=%u&amp;xhelp_role=%s&amp;xhelp_depts=%s' class='xhelp_dept_cust'>Customize</a>] <i>%s</i><input type='hidden' name='custrole[%u]' value='%s'></td></tr>",
                    $deptid,
                 $checked,
                 $deptname,
@@ -720,7 +722,7 @@ function editStaff()
             );
         }
         echo "<tr><td>
-                  <input type='checkbox' name='checkAll' value='0' onclick='selectAll(this.form,\"departments[]\", this.checked);xhelpRoleCustOnClick(\"frmEditStaff\", \"departments[]\", \"xhelp_depts\", \"&amp;\", \"xhelp_dept_cust\");'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';
+                  <input type='checkbox' name='checkAll' value='0' onclick='selectAll(this.form,\"departments[]\", this.checked);xhelp\RoleCustOnClick(\"frmEditStaff\", \"departments[]\", \"xhelp_depts\", \"&amp;\", \"xhelp_dept_cust\");'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';
         echo '<tr><td>';
         echo '</td></tr>';
         echo '</table>';
@@ -739,8 +741,8 @@ function editStaff()
         $roles     = $_POST['roles'];
         $custroles = $_POST['custrole'];
 
-        $hStaff      = xhelpGetHandler('staff');
-        $hMembership = xhelpGetHandler('membership');
+        $hStaff      = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $hMembership = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 
         //Remove existing dept membership
         if (!$hMembership->clearStaffMembership($uid)) {
@@ -789,8 +791,8 @@ function editStaff()
 function manageStaff()
 {
     global $xoopsModule, $xoopsUser, $displayName, $aLimitByS, $aLimitByD;
-    require_once XHELP_CLASS_PATH . '/session.php';
-    $_xhelpSession = new Session();
+    // require_once XHELP_CLASS_PATH . '/session.php';
+    $_xhelpSession = new xhelp\Session();
     $_xhelpSession->del('xhelp_return_page');
 
     $start        = $limit = 0;
@@ -842,12 +844,12 @@ function manageStaff()
 
     if (!isset($_POST['addStaff'])) {
         $memberHandler = xoops_getHandler('member');          // Get member handler
-        $hStaff        = xhelpGetHandler('staff');       // Get staff handler
-        $hDepartments  = xhelpGetHandler('department');    // Get department handler
-        $hRoles        = xhelpGetHandler('role');
+        $hStaff        = new xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
+        $hDepartments  = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Get department handler
+        $hRoles        = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
         //Get List of depts in system
-        $crit = new Criteria('', '');
+        $crit = new \Criteria('', '');
         $crit->setSort('department');
         $crit->setOrder('ASC');
 
@@ -860,7 +862,7 @@ function manageStaff()
 
         if (isset($_GET['uid'])) {
             $userid = (int)$_GET['uid'];
-            $uname  = $xoopsUser->getUnameFromId($userid);
+            $uname  = $xoopsUser::getUnameFromId($userid);
         } else {
             $userid = 0;
             $uname  = '';
@@ -870,7 +872,7 @@ function manageStaff()
             $userid = (isset($_GET['uid']) ? (int)$_GET['uid'] : 0);
 
             //Get List of staff members
-            $crit = new Criteria('', '');
+            $crit = new \Criteria('', '');
             $crit->setStart($start);
             $crit->setLimit($limit);
 
@@ -878,10 +880,10 @@ function manageStaff()
             $staff_count = $hStaff->getCount($crit);
             $user_count  = $memberHandler->getUserCount();
 
-            $nav = new xhelpPageNav($staff_count, $limit, $start, 'start', "op=manageStaff&amp;limit=$limit");
+            $nav = new xhelp\PageNav($staff_count, $limit, $start, 'start', "op=manageStaff&amp;limit=$limit");
 
             //Get List of Staff Roles
-            $crit = new Criteria('', '');
+            $crit = new \Criteria('', '');
             $crit->setOrder('ASC');
             $crit->setSort('name');
             $roles = $hRoles->getObjects($crit);
@@ -905,20 +907,20 @@ function manageStaff()
             if ($mainRoles = $_xhelpSession->get('xhelp_mainRoles')) {
                 foreach ($roles as $role) {
                     if (!in_array($role->getVar('id'), $mainRoles)) {
-                        echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' onclick=\"xhelpRoleCustOnClick('manageStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\">
+                        echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' onclick=\"xhelp\RoleCustOnClick('manageStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\">
                               <a href='staff.php?op=editRole&amp;id=" . $role->getVar('id') . '&amp;uid=' . $userid . "'>" . $role->getVar('name') . '</a> - ' . $role->getVar('description') . '</td></tr>';
                     } else {
-                        echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' checked onclick=\"xhelpRoleCustOnClick('manageStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\">
+                        echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' checked onclick=\"xhelp\RoleCustOnClick('manageStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\">
                               <a href='staff.php?op=editRole&amp;id=" . $role->getVar('id') . '&amp;uid=' . $userid . "'>" . $role->getVar('name') . '</a> - ' . $role->getVar('description') . '</td></tr>';
                     }
                 }
             } else {
                 foreach ($roles as $role) {
-                    echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' onclick=\"xhelpRoleCustOnClick('manageStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\">
+                    echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' onclick=\"xhelp\RoleCustOnClick('manageStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\">
                           <a href='staff.php?op=editRole&amp;id=" . $role->getVar('id') . '&amp;uid=' . $userid . "'>" . $role->getVar('name') . '</a> - ' . $role->getVar('description') . '</td></tr>';
                 }
             }
-            echo "<tr><td><input type='checkbox' name='checkallRoles' value='0' onclick='selectAll(this.form,\"roles[]\",this.checked); xhelpRoleCustOnClick(\"manageStaff\", \"roles[]\", \"xhelp_role\", \"&amp;\", \"xhelp_dept_cust\");'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';
+            echo "<tr><td><input type='checkbox' name='checkallRoles' value='0' onclick='selectAll(this.form,\"roles[]\",this.checked); xhelp\RoleCustOnClick(\"manageStaff\", \"roles[]\", \"xhelp_role\", \"&amp;\", \"xhelp_dept_cust\");'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';
             echo '</table></td></tr>';
             echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_DEPARTMENTS . "</td>
                   <td class='even' width='50%'><table width='75%'>";
@@ -934,12 +936,12 @@ function manageStaff()
                     }
                     if (!in_array($dept->getVar('id'), $mainDepts)) {
                         echo "<tr><td>
-                              <input type='checkbox' name='departments[]' value='" . $dept->getVar('id') . "' onclick=\"xhelpRoleCustOnClick('manageStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">
+                              <input type='checkbox' name='departments[]' value='" . $dept->getVar('id') . "' onclick=\"xhelp\RoleCustOnClick('manageStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">
                               " . $dept->getVar('department') . " [<a href='staff.php?op=customDept&amp;deptid=" . $dept->getVar('id') . '&amp;uid=' . $userid . "' class='xhelp_dept_cust'>" . _AM_XHELP_TEXT_CUSTOMIZE . '</a>] <i>' . $deptRoles . '</i>
                               </td></tr>';
                     } else {
                         echo "<tr><td>
-                              <input type='checkbox' name='departments[]' checked value='" . $dept->getVar('id') . "' onclick=\"xhelpRoleCustOnClick('manageStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">
+                              <input type='checkbox' name='departments[]' checked value='" . $dept->getVar('id') . "' onclick=\"xhelp\RoleCustOnClick('manageStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">
                               " . $dept->getVar('department') . " [<a href='staff.php?op=customDept&amp;deptid=" . $dept->getVar('id') . '&amp;uid=' . $userid . "' class='xhelp_dept_cust'>" . _AM_XHELP_TEXT_CUSTOMIZE . '</a>] <i>' . $deptRoles . '</i>
                               </td></tr>';
                     }
@@ -955,12 +957,12 @@ function manageStaff()
                         $deptRoles = '';
                     }
                     echo "<tr><td>
-                          <input type='checkbox' name='departments[]' value='" . $dept->getVar('id') . "' onclick=\"xhelpRoleCustOnClick('manageStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">
+                          <input type='checkbox' name='departments[]' value='" . $dept->getVar('id') . "' onclick=\"xhelp\RoleCustOnClick('manageStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">
                           " . $dept->getVar('department') . " [<a href='staff.php?op=customDept&amp;deptid=" . $dept->getVar('id') . '&amp;uid=' . $userid . "' class='xhelp_dept_cust'>" . _AM_XHELP_TEXT_CUSTOMIZE . '</a>] <i>' . $deptRoles . '</i>
                           </td></tr>';
                 }
             }
-            echo "<tr><td><input type='checkbox' name='checkallDepts' value='0' onclick='selectAll(this.form,\"departments[]\",this.checked);xhelpRoleCustOnClick(\"manageStaff\", \"departments[]\", \"xhelp_depts\", \"&amp;\", \"xhelp_dept_cust\");'><b>"
+            echo "<tr><td><input type='checkbox' name='checkallDepts' value='0' onclick='selectAll(this.form,\"departments[]\",this.checked);xhelp\RoleCustOnClick(\"manageStaff\", \"departments[]\", \"xhelp_depts\", \"&amp;\", \"xhelp_dept_cust\");'><b>"
                  . _AM_XHELP_TEXT_SELECT_ALL
                  . '</b></td></tr>';
             echo '</table></td></tr>';
@@ -985,25 +987,25 @@ function manageStaff()
                 foreach ($staff_obj as $obj) {
                     $staff_uids[] = $obj->getVar('uid');
                 }
-                if ($staff_search === false) {
-                    $crit = new Criteria('uid', '(' . implode(',', $staff_uids) . ')', 'IN');
+                if (false === $staff_search) {
+                    $crit = new \Criteria('uid', '(' . implode(',', $staff_uids) . ')', 'IN');
                 } else {
-                    $crit = new CriteriaCompo(new Criteria('uname', "%$staff_search%", 'LIKE'), 'OR');
-                    $crit->add(new Criteria('name', "%$staff_search%", 'LIKE'), 'OR');
-                    $crit->add(new Criteria('email', "%$staff_search%", 'LIKE'), 'OR');
+                    $crit = new \CriteriaCompo(new \Criteria('uname', "%$staff_search%", 'LIKE'), 'OR');
+                    $crit->add(new \Criteria('name', "%$staff_search%", 'LIKE'), 'OR');
+                    $crit->add(new \Criteria('email', "%$staff_search%", 'LIKE'), 'OR');
                 }
                 $staff_users = $memberHandler->getUsers($crit);
 
-                if ($dept_search === false) {
-                    $crit = new Criteria('', '');
+                if (false === $dept_search) {
+                    $crit = new \Criteria('', '');
                 } else {
-                    $crit = new Criteria('department', "%$dept_search%", 'LIKE');
+                    $crit = new \Criteria('department', "%$dept_search%", 'LIKE');
                 }
                 $crit->setStart($dstart);
                 $crit->setLimit($dlimit);
 
                 $allDepts = $hDepartments->getObjects($crit, true);
-                $dnav     = new xhelpPageNav($hDepartments->getCount($crit), $dlimit, $dstart, 'dstart', "op=manageStaff&amp;start=$start&amp;limit=$limit&amp;dlimit=$dlimit", 'tblManageStaff');
+                $dnav     = new xhelp\PageNav($hDepartments->getCount($crit), $dlimit, $dstart, 'dstart', "op=manageStaff&amp;start=$start&amp;limit=$limit&amp;dlimit=$dlimit", 'tblManageStaff');
 
                 echo "<form action='" . XHELP_ADMIN_URL . "/staff.php?op=manageStaff' style='margin:0; padding:0;' method='post'>";
                 echo $GLOBALS['xoopsSecurity']->getTokenHTML();
@@ -1039,8 +1041,8 @@ function manageStaff()
                     echo '<td>' . $thisdept->getVar('department') . '</td>';
                 }
                 echo '</tr>';
-                $hMembership = xhelpGetHandler('membership');
-                $hStaffRole  = xhelpGetHandler('staffRole');
+                $hMembership = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+                $hStaffRole  = new xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
                 foreach ($staff_users as $staff) {
                     $departments = $hMembership->membershipByStaff($staff->getVar('uid'), true);
                     echo "<tr class='even'><td>" . $staff->getVar('uid') . '</td><td>' . $staff->getVar('uname') . '</td>';
@@ -1070,9 +1072,9 @@ function manageStaff()
         $roles = $_POST['roles'];
         //$selectAll = $_POST['selectall'];
 
-        $hStaff = xhelpGetHandler('staff');
+        $hStaff = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
-        if (!isset($uid) || $uid == '') {
+        if (!isset($uid) || '' == $uid) {
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff', 3, _AM_XHELP_STAFF_ERROR_USERS);
         }
         if (!isset($depts)) {
@@ -1091,7 +1093,7 @@ function manageStaff()
         $email = $newUser->getVar('email');
         if ($hStaff->addStaff($uid, $email)) {    // $selectAll
             $message     = _XHELP_MESSAGE_ADDSTAFF;
-            $hMembership = xhelpGetHandler('membership');
+            $hMembership = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 
             //Set Department Membership
             if ($hMembership->addDeptToStaff($depts, $uid)) {
@@ -1124,7 +1126,7 @@ function manageStaff()
                     }
                 }
             }
-            $hTicketList    = xhelpGetHandler('ticketList');
+            $hTicketList    = new xhelp\TicketListHandler($GLOBALS['xoopsDB']);
             $hasTicketLists = $hTicketList->createStaffGlobalLists($uid);
 
             header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=clearRoles');

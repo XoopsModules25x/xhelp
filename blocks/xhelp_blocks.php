@@ -1,4 +1,7 @@
 <?php
+
+use Xoopsmodules\xhelp;
+
 //
 // defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
 
@@ -6,9 +9,9 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-require_once XHELP_BASE_PATH . '/functions.php';
-require_once XHELP_CLASS_PATH . '/session.php';
-xhelpIncludeLang('main');
+//require_once XHELP_BASE_PATH . '/functions.php';
+// require_once XHELP_CLASS_PATH . '/session.php';
+$helper->loadLanguage('main');
 
 /**
  * @param $options
@@ -23,11 +26,11 @@ function b_xhelp_open_show($options)
     if ($xoopsUser) {
         $uid      = $xoopsUser->getVar('uid');   // Get uid
         $block    = [];
-        $hTickets = xhelpGetHandler('ticket');  // Get ticket handler
-        $hStaff   = xhelpGetHandler('staff');
+        $hTickets = new xhelp\TicketHandler($GLOBALS['xoopsDB']);  // Get ticket handler
+        $hStaff   = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
         if ($isStaff = $hStaff->isStaff($xoopsUser->getVar('uid'))) {
-            $crit = new CriteriaCompo(new Criteria('ownership', $uid));
-            $crit->add(new Criteria('status', 2, '<'));
+            $crit = new \CriteriaCompo(new \Criteria('ownership', $uid));
+            $crit->add(new \Criteria('status', 2, '<'));
             $crit->setOrder('DESC');
             $crit->setSort('priority, posted');
             $crit->setLimit(5);
@@ -65,13 +68,13 @@ function b_xhelp_open_show($options)
             $block['priorityText'] = _MB_XHELP_TEXT_PRIORITY;
             $block['noTickets']    = _MB_XHELP_TEXT_NO_TICKETS;
         } else {
-            $crit = new CriteriaCompo(new Criteria('uid', $uid));
-            $crit->add(new Criteria('status', 2, '<'));
+            $crit = new \CriteriaCompo(new \Criteria('uid', $uid));
+            $crit->add(new \Criteria('status', 2, '<'));
             $crit->setOrder('DESC');
             $crit->setSort('priority, posted');
             $crit->setLimit(5);
             $tickets      = $hTickets->getObjects($crit);
-            $hDepartments = xhelpGetHandler('department');
+            $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
             foreach ($tickets as $ticket) {
                 //$department = $hDepartments->get($ticket->getVar('department'));
@@ -121,7 +124,7 @@ function b_xhelp_performance_show($options)
     //Determine if the GD library is installed
     $block['use_img'] = function_exists('imagecreatefrompng');
 
-    $xoopsModule = xhelpGetModule();
+    $xoopsModule = xhelp\Utility::getModule();
 
     if ($xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
         $sql = sprintf(
@@ -147,7 +150,7 @@ function b_xhelp_performance_show($options)
     $max_open = 0;
     while ($myrow = $xoopsDB->fetchArray($ret)) {
         $max_open = max($max_open, $myrow['TicketCount']);
-        $url      = xhelpMakeURI(XHELP_BASE_URL . '/index.php', ['op' => 'staffViewAll', 'dept' => $myrow['id'], 'state' => 1]);
+        $url      = xhelp\Utility::createURI(XHELP_BASE_URL . '/index.php', ['op' => 'staffViewAll', 'dept' => $myrow['id'], 'state' => 1]);
         $depts[]  = [
             'id'      => $myrow['id'],
             'tickets' => $myrow['TicketCount'],
@@ -156,7 +159,7 @@ function b_xhelp_performance_show($options)
         ];
     }
 
-    if (count($depts) == 0) {
+    if (0 == count($depts)) {
         return false;
     }
 
@@ -233,8 +236,8 @@ function b_xhelp_recent_show($options)
     if (strlen($tmp) > 0) {
         $tmp2 = explode(',', $tmp);
 
-        $crit    = new Criteria('id', '(' . $tmp . ')', 'IN', 't');
-        $hTicket = xhelpGetHandler('ticket');
+        $crit    = new \Criteria('id', '(' . $tmp . ')', 'IN', 't');
+        $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
         $tickets = $hTicket->getObjects($crit, true);
 
         foreach ($tmp2 as $ele) {
@@ -268,16 +271,16 @@ function b_xhelp_recent_show($options)
  */
 function b_xhelp_actions_show()
 {
-    $_xhelpSession = new Session();
+    $_xhelpSession = new xhelp\Session();
     global $ticketInfo, $xoopsUser, $xoopsModule, $xoopsModuleConfig, $ticketInfo, $staff, $xoopsConfig;
 
     $moduleHandler = xoops_getHandler('module');
     $configHandler = xoops_getHandler('config');
     $memberHandler = xoops_getHandler('member');
-    $hTickets      = xhelpGetHandler('ticket');
-    $hMembership   = xhelpGetHandler('membership');
-    $hStaff        = xhelpGetHandler('staff');
-    $hDepartment   = xhelpGetHandler('department');
+    $hTickets      = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hMembership   = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+    $hStaff        = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hDepartment   = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
     //Don't show block for anonymous users or for non-staff members
     if (!$xoopsUser) {
@@ -285,7 +288,7 @@ function b_xhelp_actions_show()
     }
 
     //Don't show block if outside the xhelp module'
-    if (!isset($xoopsModule) || $xoopsModule->getVar('dirname') != 'xhelp') {
+    if (!isset($xoopsModule) || 'xhelp' !== $xoopsModule->getVar('dirname')) {
         return false;
     }
 
@@ -293,7 +296,7 @@ function b_xhelp_actions_show()
 
     $myPage      = $_SERVER['PHP_SELF'];
     $currentPage = substr(strrchr($myPage, '/'), 1);
-    if (($currentPage <> 'ticket.php') || ($xoopsModuleConfig['xhelp_staffTicketActions'] <> 2)) {
+    if (('ticket.php' !== $currentPage) || (2 <> $xoopsModuleConfig['xhelp_staffTicketActions'])) {
         return false;
     }
 
@@ -308,7 +311,7 @@ function b_xhelp_actions_show()
         $ticketInfo = $hTickets->get($block['ticketid']);
     }
 
-    if ($xoopsModuleConfig['xhelp_staffTicketActions'] == 2) {
+    if (2 == $xoopsModuleConfig['xhelp_staffTicketActions']) {
         $aOwnership   = [];
         $aOwnership[] = [
             'uid'   => 0,
@@ -328,7 +331,7 @@ function b_xhelp_actions_show()
             return false;
         }
 
-        $xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
+        $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
         $users   = [];
 
         //@Todo - why is this query here instead of using a function or the XoopsMemberHandler?
@@ -336,7 +339,7 @@ function b_xhelp_actions_show()
         $ret         = $xoopsDB->query($sql);
         $displayName = $xoopsModuleConfig['xhelp_displayName'];
         while ($member = $xoopsDB->fetchArray($ret)) {
-            if (($displayName == 2) && ($member['name'] <> '')) {
+            if ((2 == $displayName) && ('' <> $member['name'])) {
                 $users[$member['uid']] = $member['name'];
             } else {
                 $users[$member['uid']] = $member['uname'];
@@ -396,13 +399,13 @@ function b_xhelp_actions_show()
 
     $checkStaff = $hStaff->getByUid($xoopsUser->getVar('uid'));
     // See if this user is accepted for this ticket
-    $hTicketEmails = xhelpGetHandler('ticketEmails');
-    $crit          = new CriteriaCompo(new Criteria('ticketid', $ticketInfo->getVar('id')));
-    $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
+    $hTicketEmails = new xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+    $crit          = new \CriteriaCompo(new \Criteria('ticketid', $ticketInfo->getVar('id')));
+    $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
     $ticketEmails = $hTicketEmails->getObjects($crit);
 
     //Retrieve all departments
-    $crit = new Criteria('', '');
+    $crit = new \Criteria('', '');
     $crit->setSort('department');
     $alldepts = $hDepartment->getObjects($crit);
     $aDept    = [];
@@ -414,11 +417,11 @@ function b_xhelp_actions_show()
     $block['departmentid'] = $ticketInfo->getVar('department');
 
     foreach ($checkRights as $right => $desc) {
-        if (($right == XHELP_SEC_RESPONSE_ADD) && count($ticketEmails > 0)) {
+        if ((XHELP_SEC_RESPONSE_ADD == $right) && count($ticketEmails > 0)) {
             $block[$desc[0]] = true;
             continue;
         }
-        if (($right == XHELP_SEC_TICKET_STATUS) && count($ticketEmails > 0)) {
+        if ((XHELP_SEC_TICKET_STATUS == $right) && count($ticketEmails > 0)) {
             $block[$desc[0]] = true;
             continue;
         }
@@ -432,8 +435,8 @@ function b_xhelp_actions_show()
 
     $block['xhelp_actions_rowspan'] = $rowspan;
 
-    $hStatus = xhelpGetHandler('status');
-    $crit    = new Criteria('', '');
+    $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $crit    = new \Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
     $statuses  = $hStatus->getObjects($crit);
@@ -503,7 +506,7 @@ function b_xhelp_mainactions_show($options)
             'image' => 'ticket.png',
             'text'  => _XHELP_MENU_ALL_TICKETS
         ];
-        $hStaff            = xhelpGetHandler('staff');
+        $hStaff            = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
         if ($xhelp_staff = $hStaff->getByUid($xoopsUser->getVar('uid'))) {
             $block['whoami']   = 'staff';
             $block['items'][3] = ['link' => 'search.php', 'image' => 'search2.png', 'text' => _XHELP_MENU_SEARCH];
@@ -517,7 +520,7 @@ function b_xhelp_mainactions_show($options)
                 'image' => 'ticket.png',
                 'text'  => _XHELP_MENU_ALL_TICKETS
             ];
-            $hSavedSearch      = xhelpGetHandler('savedSearch');
+            $hSavedSearch      = new xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
             $savedSearches     = $hSavedSearch->getByUid($xoopsUser->getVar('uid'));
             $aSavedSearches    = [];
             foreach ($savedSearches as $sSearch) {
@@ -545,13 +548,13 @@ function b_xhelp_mainactions_edit($options)
 
     // Menu style
     $form .= '<tr><td>' . _MB_XHELP_TEXT_MENUSTYLE . '</td><td>';
-    $form .= "<input type='radio' name='options[0]' value='0'" . (($options[0] == 0) ? ' checked' : '') . '>' . _MB_XHELP_OPTION_MENUSTYLE1 . '';
-    $form .= "<input type='radio' name='options[0]' value='1'" . (($options[0] == 1) ? ' checked' : '') . '>' . _MB_XHELP_OPTION_MENUSTYLE2 . '</td></tr>';
+    $form .= "<input type='radio' name='options[0]' value='0'" . ((0 == $options[0]) ? ' checked' : '') . '>' . _MB_XHELP_OPTION_MENUSTYLE1 . '';
+    $form .= "<input type='radio' name='options[0]' value='1'" . ((1 == $options[0]) ? ' checked' : '') . '>' . _MB_XHELP_OPTION_MENUSTYLE2 . '</td></tr>';
 
     // Auto select last items
     $form .= '<tr><td>' . _MB_XHELP_TEXT_SHOWICON . '</td><td>';
-    $form .= "<input type='radio' name='options[1]' value='0'" . (($options[1] == 0) ? ' checked' : '') . '>' . _NO . '';
-    $form .= "<input type='radio' name='options[1]' value='1'" . (($options[1] == 1) ? ' checked' : '') . '>' . _YES . '</td></tr>';
+    $form .= "<input type='radio' name='options[1]' value='0'" . ((0 == $options[1]) ? ' checked' : '') . '>' . _NO . '';
+    $form .= "<input type='radio' name='options[1]' value='1'" . ((1 == $options[1]) ? ' checked' : '') . '>' . _YES . '</td></tr>';
 
     $form .= '</table>';
 

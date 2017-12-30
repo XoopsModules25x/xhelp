@@ -291,3 +291,5 @@ define('_MI_XHELP_OVERVIEW', 'Overview');
 define('_MI_XHELP_DISCLAIMER', 'Disclaimer');
 define('_MI_XHELP_LICENSE', 'License');
 define('_MI_XHELP_SUPPORT', 'Support');
+
+define('_MI_XHELP_MENU_HOME', 'Home');

@@ -1,4 +1,4 @@
-<h5>0.81 Beta 3    [NOT RELEASED]</h5>
+<h5>0.90 Alpha 1    [NOT RELEASED]</h5>  Dev: Xoops 2.5.9, PHP 7.2.0
 <hr>
 - XOOPS 2.5.9, PHP 7 (mamba)
 - Converted to XOOPS 2.5.8 Admin GUI (mamba)
@@ -25,6 +25,7 @@
     &nbsp;&nbsp;- updated addInfoBoxLine entries (mamba)
     &nbsp;&nbsp;- displayNavigation(basename(__FILE__))  (mamba)
     &nbsp;&nbsp;- changed to ->displayButton('left') (mamba)
+- namespaces conversion (mamba)
 
 <h5>0.81 Beta 2       [NOT RELEASED]</h5>
 <hr>

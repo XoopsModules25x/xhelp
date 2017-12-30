@@ -102,7 +102,7 @@ class Mail_mime
      *
      * @access public
      */
-    public function Mail_mime($crlf = "\r\n")
+    public function __construct($crlf = "\r\n")
     {
         if (!defined('MAIL_MIME_CRLF')) {
             define('MAIL_MIME_CRLF', $crlf, true);
@@ -452,7 +452,7 @@ class Mail_mime
             case !$text and !$html and $attachments:
                 $message =& $this->_addMixedPart();
 
-                for ($i = 0; $i < count($this->_parts); $i++) {
+                for ($i = 0, $iMax = count($this->_parts); $i < $iMax; $i++) {
                     $this->_addAttachmentPart($message, $this->_parts[$i]);
                 }
                 break;
@@ -461,7 +461,7 @@ class Mail_mime
                 $message =& $this->_addMixedPart();
                 $this->_addTextPart($message, $this->_txtbody);
 
-                for ($i = 0; $i < count($this->_parts); $i++) {
+                for ($i = 0, $iMax = count($this->_parts); $i < $iMax; $i++) {
                     $this->_addAttachmentPart($message, $this->_parts[$i]);
                 }
                 break;
@@ -486,7 +486,7 @@ class Mail_mime
                     $related =& $message;
                 }
                 $this->_addHtmlPart($related);
-                for ($i = 0; $i < count($this->_html_images); $i++) {
+                for ($i = 0, $iMax = count($this->_html_images); $i < $iMax; $i++) {
                     $this->_addHtmlImagePart($related, $this->_html_images[$i]);
                 }
                 break;
@@ -500,7 +500,7 @@ class Mail_mime
                 } else {
                     $this->_addHtmlPart($message);
                 }
-                for ($i = 0; $i < count($this->_parts); $i++) {
+                for ($i = 0, $iMax = count($this->_parts); $i < $iMax; $i++) {
                     $this->_addAttachmentPart($message, $this->_parts[$i]);
                 }
                 break;
@@ -515,10 +515,10 @@ class Mail_mime
                     $rel =& $this->_addRelatedPart($message);
                 }
                 $this->_addHtmlPart($rel);
-                for ($i = 0; $i < count($this->_html_images); $i++) {
+                for ($i = 0, $iMax = count($this->_html_images); $i < $iMax; $i++) {
                     $this->_addHtmlImagePart($rel, $this->_html_images[$i]);
                 }
-                for ($i = 0; $i < count($this->_parts); $i++) {
+                for ($i = 0, $iMax = count($this->_parts); $i < $iMax; $i++) {
                     $this->_addAttachmentPart($message, $this->_parts[$i]);
                 }
                 break;

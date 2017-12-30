@@ -1,5 +1,7 @@
 <?php
-//
+
+use Xoopsmodules\xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
@@ -74,7 +76,7 @@ function displayEvents($mailEvents, $mailboxes)
         $class = 'odd';
         foreach ($mailEvents as $event) {
             echo "<tr class='" . $class . "'><td>" . $mailboxes[$event->getVar('mbox_id')]->getVar('emailaddress') . '</td>
-                      <td>' . xhelpGetEventClass($event->getVar('event_class')) . '</td>
+                      <td>' . xhelp\Utility::getEventClass($event->getVar('event_class')) . '</td>
                       <td>' . $event->getVar('event_desc') . '</td>
                       <td>' . $event->posted() . '</td>
                   </tr>';
@@ -91,11 +93,11 @@ function displayEvents($mailEvents, $mailboxes)
 function mailEvents()
 {
     // Will display the last 50 mail events
-    $hMailEvent = xhelpGetHandler('mailEvent');
-    $hDeptMbox  = xhelpGetHandler('departmentMailBox');
+    $hMailEvent = new xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+    $hDeptMbox  = new xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
     $mailboxes  = $hDeptMbox->getObjects(null, true);
 
-    $crit = new Criteria('', '');
+    $crit = new \Criteria('', '');
     $crit->setLimit(50);
     $crit->setOrder('DESC');
     $crit->setSort('posted');
@@ -148,8 +150,8 @@ function searchMailEvents()
 
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $hMailEvent = xhelpGetHandler('mailEvent');
-        $hDeptMbox  = xhelpGetHandler('departmentMailBox');
+        $hMailEvent = new xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+        $hDeptMbox  = new xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
         $mailboxes  = $hDeptMbox->getObjects(null, true);
 
         $begin_date = explode('-', $_POST['begin_date']);
@@ -161,15 +163,15 @@ function searchMailEvents()
         $begin_time = mktime($begin_hour, $_POST['begin_minute'], 0, $begin_date[1], $begin_date[2], $begin_date[0]);
         $end_time   = mktime($end_hour, $_POST['end_minute'], 0, $end_date[1], $end_date[2], $end_date[0]);
 
-        $crit = new CriteriaCompo(new Criteria('posted', $begin_time, '>='));
-        $crit->add(new Criteria('posted', $end_time, '<='));
+        $crit = new \CriteriaCompo(new \Criteria('posted', $begin_time, '>='));
+        $crit->add(new \Criteria('posted', $end_time, '<='));
         if ('' != $_POST['email']) {
             $email = $_POST['email'];
-            $crit->add(new Criteria('emailaddress', "%$email%", 'LIKE', 'd'));
+            $crit->add(new \Criteria('emailaddress', "%$email%", 'LIKE', 'd'));
         }
         if ('' != $_POST['description']) {
             $description = $_POST['description'];
-            $crit->add(new Criteria('event_desc', "%$description%", 'LIKE'));
+            $crit->add(new \Criteria('event_desc', "%$description%", 'LIKE'));
         }
         $crit->setOrder('DESC');
         $crit->setSort('posted');
@@ -191,7 +193,7 @@ function searchMailEvents()
  * @param int $mode , 1-am, 2-pm
  * @param int $hour hour of the day
  *
- * @return hour in 24 hour mode
+ * @return int in 24 hour mode
  */
 function xhelpChangeHour($mode, $hour)
 {
@@ -274,10 +276,10 @@ function xhelp_default()
     echo '<link rel="stylesheet" type="text/css" media="all" href="' . $stylePath . '"><!--[if if lt IE 7]><script src="iepngfix.js" language="JavaScript" type="text/javascript"></script><![endif]-->';
 
     global $xoopsUser, $xoopsDB;
-    $hTickets = xhelpGetHandler('ticket');
-    $hStatus  = xhelpGetHandler('status');
+    $hTickets = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hStatus  = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
-    $crit = new Criteria('', '');
+    $crit = new \Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
     $statuses    = $hStatus->getObjects($crit);
@@ -290,7 +292,7 @@ function xhelp_default()
     $class        = 'odd';
     $totalTickets = 0;
     foreach ($statuses as $status) {
-        $crit         = new Criteria('status', $status->getVar('id'));
+        $crit         = new \Criteria('status', $status->getVar('id'));
         $numTickets   = $hTickets->getCount($crit);
         $totalTickets += $numTickets;
 
@@ -304,8 +306,8 @@ function xhelp_default()
     echo "<tr class='foot'><td>" . _AM_XHELP_TEXT_TOTAL_TICKETS . '</td><td>' . $totalTickets . '</td></tr>';
     echo '</table></div><br>';
 
-    $hStaff     = xhelpGetHandler('staff');
-    $hResponses = xhelpGetHandler('responses');
+    $hStaff     = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hResponses = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
     echo "</td><td valign='top'>";    // Outer table
     echo "<div id='timeSpent'>";    // Start inner top-left cell
     echo "<table border='0' width='100%' cellspacing='1' class='outer'>
@@ -316,7 +318,7 @@ function xhelp_default()
     $i   = 0;
     while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
         $class = $table_class[$i % 2];
-        echo "<tr class='$class'><td>" . xhelpGetDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . xhelpFormatTime($avgResponseTime) . '</td></tr>';
+        echo "<tr class='$class'><td>" . xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
         ++$i;
     }
     echo '</table></div><br>'; // End inner top-left cell
@@ -335,7 +337,7 @@ function xhelp_default()
             $i = 0;
             while (list($uid, $uname, $name, $callsClosed) = $xoopsDB->fetchRow($ret)) {
                 $class = $table_class[$i % 2];
-                echo "<tr class='$class'><td>" . xhelpGetDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . $callsClosed . ' (' . round(($callsClosed / $totalStaffClosed) * 100, 2) . '%)</td></tr>';
+                echo "<tr class='$class'><td>" . xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . $callsClosed . ' (' . round(($callsClosed / $totalStaffClosed) * 100, 2) . '%)</td></tr>';
                 ++$i;
             }
             echo '</table></div><br>'; // End inner table top row
@@ -349,7 +351,7 @@ function xhelp_default()
             $i = 0;
             while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
                 $class = $table_class[$i % 2];
-                echo "<tr class='$class'><td>" . xhelpGetDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . xhelpFormatTime($avgResponseTime) . '</td></tr>';
+                echo "<tr class='$class'><td>" . xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
                 ++$i;
             }
             echo '</table></div>';  // End first cell, second row of inner table
@@ -357,7 +359,7 @@ function xhelp_default()
     }
     echo '</td></tr></table><br>';   // End second cell, second row of inner table
 
-    $crit = new Criteria('state', '2', '<>', 's');
+    $crit = new \Criteria('state', '2', '<>', 's');
     $crit->setSort('priority');
     $crit->setOrder('ASC');
     $crit->setLimit(10);
@@ -399,14 +401,14 @@ function xhelp_default()
                 $dept_url = _AM_XHELP_TEXT_NO_DEPT;
             }
             if (0 <> $ticket->getVar('ownership')) {
-                $owner_url = sprintf("<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid') . "' target='_BLANK'>%s</a>", xhelpGetUsername($ticket->getVar('ownership'), $displayName));
+                $owner_url = sprintf("<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid') . "' target='_BLANK'>%s</a>", xhelp\Utility::getUsername($ticket->getVar('ownership'), $displayName));
             } else {
                 $owner_url = _AM_XHELP_TEXT_NO_OWNER;
             }
-            $user_url = sprintf("<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid') . "' target='_BLANK'>%s</a>", xhelpGetUsername($ticket->getVar('uid'), $displayName));
+            $user_url = sprintf("<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid') . "' target='_BLANK'>%s</a>", xhelp\Utility::getUsername($ticket->getVar('uid'), $displayName));
             echo "<tr class='$class'><td>" . $priority_url . '</td>
                          <td>' . $ticket->elapsed() . '</td>
-                         <td>' . xhelpGetStatus($ticket->getVar('status')) . '</td>
+                         <td>' . xhelp\Utility::getStatus($ticket->getVar('status')) . '</td>
                          <td>' . $subject_url . '</td>
                          <td>' . $dept_url . '</td>
                          <td>' . $owner_url . ' </td>

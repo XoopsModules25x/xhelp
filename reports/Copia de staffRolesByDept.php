@@ -1,18 +1,19 @@
 <?php
-//
 
-require_once XHELP_CLASS_PATH . '/report.php';
-xhelpIncludeReportLangFile('staffRolesByDept');
+use Xoopsmodules\xhelp;
+
+// require_once XHELP_CLASS_PATH . '/report.php';
+xhelp\Utility::includeReportLangFile('staffRolesByDept');
 
 global $xoopsDB;
 
 /**
- * Class XHelpStaffRolesByDeptReport
+ * class StaffRolesByDeptReport
  */
-class XHelpStaffRolesByDeptReport extends xhelpReport
+class StaffRolesByDeptReport extends xhelp\Report
 {
     /**
-     * XHelpStaffRolesByDeptReport constructor.
+     * xhelp\StaffRolesByDeptReport constructor.
      */
     public function __construct()
     {

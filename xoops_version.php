@@ -19,9 +19,11 @@
 
 // defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
 
-$modversion['version']             = '0.81';
-$modversion['module_status']       = 'Beta 2';
-$modversion['release_date']        = '2016/12/30';
+require_once __DIR__ . '/preloads/autoloader.php';
+
+$modversion['version']             = '0.90';
+$modversion['module_status']       = 'Alpha 1';
+$modversion['release_date']        = '2017/12/29';
 $modversion['name']                = _MI_XHELP_NAME;
 $modversion['description']         = _MI_XHELP_DESC;
 $modversion['author']              = '3dev.org';
@@ -42,7 +44,6 @@ $modversion['min_admin']           = '1.2';
 $modversion['min_db']              = ['mysql' => '5.5'];
 
 // Extra stuff for about page
-$modversion['release_date']    = '19/09/2010';
 $modversion['version_info']    = 'Final';
 $modversion['creator']         = '3Dev';
 $modversion['demo_site']       = 'http://demo.3dev.org';

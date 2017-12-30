@@ -1,5 +1,5 @@
 <?php
-// $Id: staffInfo.php 8197 2011-11-07 03:07:38Z beckmi $
+// $Id: StaffInfoReport.php 8197 2011-11-07 03:07:38Z beckmi $
 
 define('_XHELP_STAFF_INFO_NAME', 'Staff Information');
 define('_XHELP_STAFF_INFO_DESC', 'Retrieves staff name, number of tickets responded, and number of tickets closed');

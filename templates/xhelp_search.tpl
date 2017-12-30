@@ -2,7 +2,7 @@
 
 <{if $xhelp_viewResults neq true}>  <{* view results ? *}>
     <{if $xhelp_savedSearches neq false}>   <{* any saved searches? *}>
-        <div id="xhelpSavedSearches">
+        <div id="xhelp\SavedSearches">
             <form name="savedSearches" method="post" action="<{$xhelp_baseURL}>/search.php">
                 <table width="100%" border="1" cellpadding="0" cellspacing="2" class="outer">
                     <tr>

@@ -142,7 +142,7 @@ class Net_POP3
      *
      */
 
-    public function Net_POP3()
+    public function __construct()
     {
         $this->_timestamp =  ''; // Used for APOP
         $this->_maildrop  =  [];
@@ -172,6 +172,8 @@ class Net_POP3
      * on the server
      *
      * @access private
+     * @param     $msg
+     * @param int $code
      * @return PEAR_Error
      */
 
@@ -268,7 +270,7 @@ class Net_POP3
         }
         $data = preg_split('/\r?\n/', $data, -1, PREG_SPLIT_NO_EMPTY);
 
-        for ($i = 0; $i < count($data); $i++) {
+        for ($i = 0, $iMax = count($data); $i < $iMax; $i++) {
             $capa='';
             if (preg_match('/^([a-z,\-]+)( ((.*))|$)$/i', $data[$i], $matches)) {
                 $capa=strtolower($matches[1]);
@@ -557,7 +559,7 @@ class Net_POP3
 
         $challenge = base64_decode($challenge);
         $digest = &Auth_SASL::factory('digestmd5');
-        $auth_str = base64_encode($digest->getResponse($uid, $pwd, $challenge, "localhost", "pop3"));
+        $auth_str = base64_encode($digest->getResponse($uid, $pwd, $challenge, 'localhost', 'pop3'));
 
         if (PEAR::isError($error = $this->_send($auth_str))) {
             return $error;
@@ -1036,6 +1038,7 @@ class Net_POP3
      * Sets the bebug state
      *
      * @access public
+     * @param bool $debug
      * @return void
      */
     public function setDebug($debug=true)
@@ -1090,10 +1093,11 @@ class Net_POP3
     /**
      * Checks de server Response
      *
+     * @param $response
      * @return mixed true on success or a PEAR_Error object on failure.
      *
      * @access  private
-     * @since  1.3.3
+     * @since   1.3.3
      */
 
     public function _checkResponse($response)

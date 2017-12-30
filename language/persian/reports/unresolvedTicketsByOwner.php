@@ -1,5 +1,4 @@
 <?php
-// $Id: unresolvedTicketsByOwner.php 8197 2011-11-07 03:07:38Z beckmi $
 
 define('_XHELP_UTBO_NAME', 'Unresolved Tickets By Owner');
 define('_XHELP_UTBO_DESC', 'Retrieve unresolved tickets by owner.');

@@ -1,20 +1,23 @@
 <?php
+
+use Xoopsmodules\xhelp;
+
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-require XHELP_BASE_PATH . '/admin/admin_buttons.php';
-require_once XHELP_BASE_PATH . '/functions.php';
+require XHELP_BASE_PATH . '/admin/AdminButtons.php';
+//require_once XHELP_BASE_PATH . '/functions.php';
 require_once XHELP_INCLUDE_PATH . '/functions_admin.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
-require_once XHELP_CLASS_PATH . '/session.php';
+// require_once XHELP_CLASS_PATH . '/session.php';
 
 require_once XOOPS_ROOT_PATH . '/class/xoopstree.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopslists.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
 
-xhelpIncludeLang('main');
-xhelpIncludeLang('modinfo');
+$helper->loadLanguage('main');
+$helper->loadLanguage('modinfo');
 
 global $xoopsModule;
 $module_id    = $xoopsModule->getVar('mid');
@@ -37,7 +40,7 @@ $oAdminButton->addTopLink(_MI_XHELP_MENU_CHECK_TABLES, XHELP_ADMIN_URL . '/upgra
 $oAdminButton->AddTopLink(_AM_XHELP_ADMIN_GOTOMODULE, XHELP_BASE_URL . '/index.php');
 $oAdminButton->AddTopLink(_AM_XHELP_ADMIN_ABOUT, XHELP_ADMIN_URL . '/index.php?op=about');
 
-$myts = MyTextSanitizer::getInstance();
+$myts = \MyTextSanitizer::getInstance();
 
 $imagearray = [
     'editimg'   => "<img src='" . XHELP_IMAGE_URL . "/button_edit.png' alt='" . _AM_XHELP_ICO_EDIT . "' align='middle'>",
@@ -47,8 +50,8 @@ $imagearray = [
 ];
 
 // Overdue time
-require_once XHELP_CLASS_PATH . '/session.php';
-$_xhelpSession = new Session();
+// require_once XHELP_CLASS_PATH . '/session.php';
+$_xhelpSession = new xhelp\Session();
 
 if (!$overdueTime = $_xhelpSession->get('xhelp_overdueTime')) {
     $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);
@@ -59,8 +62,8 @@ if ($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']) {
     $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);   // Set new value for overdueTime
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
-    $hTickets       = xhelpGetHandler('ticket');
-    $crit           = new Criteria('status', 2, '<>');
+    $hTickets       = xhelp\Utility::getHandler('Ticket');
+    $crit           = new \Criteria('status', 2, '<>');
     $tickets        = $hTickets->getObjects($crit);
     $updatedTickets = [];
     foreach ($tickets as $ticket) {

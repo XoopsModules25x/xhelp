@@ -1,4 +1,7 @@
 <?php
+
+use Xoopsmodules\xhelp;
+
 //include('header.php');
 require_once __DIR__ . '/../../mainfile.php';
 
@@ -6,7 +9,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-require_once XHELP_BASE_PATH . '/functions.php';
+//require_once XHELP_BASE_PATH . '/functions.php';
 
 if (!$xoopsUser) {
     redirect_header(XOOPS_URL . '/user.php?xoops_redirect=' . htmlencode($xoopsRequestUri), 3);
@@ -18,9 +21,9 @@ if (isset($_GET['id'])) {
 
 $viewFile = false;
 
-$hFiles   = xhelpGetHandler('file');
-$hTicket  = xhelpGetHandler('ticket');
-$hStaff   = xhelpGetHandler('staff');
+$hFiles   = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+$hTicket  = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$hStaff   = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
 $file     =& $hFiles->get($xhelp_id);
 $mimeType = $file->getVar('mimetype');
 $ticket   =& $hTicket->get($file->getVar('ticketid'));

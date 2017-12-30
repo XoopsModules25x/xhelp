@@ -17,27 +17,30 @@
  * @author       XOOPS Development Team
  */
 
-$path = dirname(dirname(dirname(__DIR__)));
-//require_once $path . '/mainfile.php';
-require_once $path . '/include/cp_functions.php';
-//require_once $path . '/include/cp_header.php';
+use Xoopsmodules\xhelp;
+
+require_once __DIR__ . '/../../../include/cp_header.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-require XHELP_BASE_PATH . '/admin/admin_buttons.php';
-require_once XHELP_BASE_PATH . '/functions.php';
+include __DIR__ . '/../preloads/autoloader.php';
+
+/** @var xhelp\Helper $helper */
+$helper = xhelp\Helper::getInstance();
+/** @var Xmf\Module\Admin $adminObject */
+$adminObject = \Xmf\Module\Admin::getInstance();
+
+require XHELP_BASE_PATH . '/admin/AdminButtons.php';
+//require_once XHELP_BASE_PATH . '/functions.php';
 require_once XHELP_INCLUDE_PATH . '/functions_admin.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
-require_once XHELP_CLASS_PATH . '/session.php';
+// require_once XHELP_CLASS_PATH . '/session.php';
 
 require_once XOOPS_ROOT_PATH . '/class/xoopstree.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopslists.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
-
-xhelpIncludeLang('main');
-xhelpIncludeLang('modinfo');
 
 global $xoopsModule;
 /*
@@ -61,28 +64,21 @@ $oAdminButton->addTopLink(_MI_XHELP_MENU_CHECK_TABLES, XHELP_ADMIN_URL."/upgrade
 $oAdminButton->AddTopLink(_AM_XHELP_ADMIN_GOTOMODULE, XHELP_BASE_URL."/index.php");
 $oAdminButton->AddTopLink(_AM_XHELP_ADMIN_ABOUT, XHELP_ADMIN_URL."/index.php?op=about");
 */
-$moduleDirName = basename(dirname(__DIR__));
-
-if (false !== ($moduleHelper = Xmf\Module\Helper::getHelper($moduleDirName))) {
-} else {
-    $moduleHelper = Xmf\Module\Helper::getHelper('system');
-}
-$adminObject = \Xmf\Module\Admin::getInstance();
 
 $pathIcon16    = \Xmf\Module\Admin::iconUrl('', 16);
 $pathIcon32    = \Xmf\Module\Admin::iconUrl('', 32);
-$pathModIcon32 = $moduleHelper->getModule()->getInfo('modicons32');
+$pathModIcon32 = $helper->getModule()->getInfo('modicons32');
 
 // Load language files
-$moduleHelper->loadLanguage('admin');
-$moduleHelper->loadLanguage('modinfo');
-$moduleHelper->loadLanguage('main');
+$helper->loadLanguage('admin');
+$helper->loadLanguage('modinfo');
+$helper->loadLanguage('main');
 
-$myts = MyTextSanitizer::getInstance();
+$myts = \MyTextSanitizer::getInstance();
 
 if (!isset($GLOBALS['xoopsTpl']) || !($GLOBALS['xoopsTpl'] instanceof XoopsTpl)) {
     require_once $GLOBALS['xoops']->path('class/template.php');
-    $xoopsTpl = new XoopsTpl();
+    $xoopsTpl = new \XoopsTpl();
 }
 
 $imagearray = [
@@ -93,8 +89,8 @@ $imagearray = [
 ];
 
 // Overdue time
-require_once XHELP_CLASS_PATH . '/session.php';
-$_xhelpSession = new Session();
+// require_once XHELP_CLASS_PATH . '/session.php';
+$_xhelpSession = new xhelp\Session();
 
 if (!$overdueTime = $_xhelpSession->get('xhelp_overdueTime')) {
     $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);
@@ -105,8 +101,8 @@ if ($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']) {
     $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);   // Set new value for overdueTime
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
-    $hTickets       = xhelpGetHandler('ticket');
-    $crit           = new Criteria('status', 2, '<>');
+    $hTickets       = xhelp\Utility::getHandler('Ticket');
+    $crit           = new \Criteria('status', 2, '<>');
     $tickets        = $hTickets->getObjects($crit);
     $updatedTickets = [];
     foreach ($tickets as $ticket) {

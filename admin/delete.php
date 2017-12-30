@@ -1,5 +1,7 @@
 <?php
-//
+
+use Xoopsmodules\xhelp;
+
 //require_once('header.php');
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
@@ -20,12 +22,12 @@ if (isset($_REQUEST['deleteDept'])) {
         xoops_confirm(['deleteDept' => 1, 'deptid' => $deptID, 'ok' => 1], XHELP_BASE_URL . '/admin/delete.php', sprintf(_AM_XHELP_MSG_DEPT_DEL_CFRM, $deptID));
         xoops_cp_footer();
     } else {
-        $hDepartments = xhelpGetHandler('department');
+        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
         $hGroupPerm   = xoops_getHandler('groupperm');
         $dept         =& $hDepartments->get($deptID);
 
-        $crit = new CriteriaCompo(new Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $crit->add(new Criteria('gperm_itemid', $deptID));
+        $crit = new \CriteriaCompo(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
+        $crit->add(new \Criteria('gperm_itemid', $deptID));
         $hGroupPerm->deleteAll($crit);
 
         $deptCopy = $dept;
@@ -36,8 +38,8 @@ if (isset($_REQUEST['deleteDept'])) {
 
             // Remove configoption for department
             $hConfigOption = xoops_getHandler('configoption');
-            $crit          = new CriteriaCompo(new Criteria('confop_name', $deptCopy->getVar('department')));
-            $crit->add(new Criteria('confop_value', $deptCopy->getVar('id')));
+            $crit          = new \CriteriaCompo(new \Criteria('confop_name', $deptCopy->getVar('department')));
+            $crit->add(new \Criteria('confop_value', $deptCopy->getVar('id')));
             $configOption = $hConfigOption->getObjects($crit);
 
             if (count($configOption) > 0) {
@@ -54,7 +56,7 @@ if (isset($_REQUEST['deleteDept'])) {
                 $aDepts[] = $dpt->getVar('id');
             }
             if (isset($aDepts[0])) {
-                xhelpSetMeta('default_department', $aDepts[0]);
+                xhelp\Utility::setMeta('default_department', $aDepts[0]);
             }
         } else {
             $message = _XHELP_MESSAGE_DEPT_DELETE_ERROR . $dept->getHtmlErrors();
@@ -71,7 +73,7 @@ if (isset($_REQUEST['deleteDept'])) {
             xoops_confirm(['deleteStaff' => 1, 'uid' => $staffid, 'ok' => 1], XHELP_BASE_URL . '/admin/delete.php', sprintf(_AM_XHELP_MSG_STAFF_DEL_CFRM, $staffid));
             xoops_cp_footer();
         } else {
-            $hStaff = xhelpGetHandler('staff');
+            $hStaff = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
             $staff  = $hStaff->getByUid($staffid);
 
             if ($hStaff->delete($staff)) {

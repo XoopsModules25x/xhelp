@@ -1,8 +1,11 @@
 <?php
 //
+
+use Xoopsmodules\xhelp;
+
 require_once __DIR__ . '/header.php';
 
-$hStaff = xhelpGetHandler('staff');
+$hStaff = xhelp\Utility::getHandler('Staff');
 
 //Allow only staff members to view this page
 if (!$xoopsUser) {
@@ -10,7 +13,7 @@ if (!$xoopsUser) {
 }
 
 $inadmin = 0;
-if (isset($_REQUEST['admin']) && $_REQUEST['admin'] == 1) {
+if (isset($_REQUEST['admin']) && 1 == $_REQUEST['admin']) {
     $inadmin = 1;
 }
 
@@ -22,7 +25,7 @@ if (!$inadmin && !$xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
 
 // Initialize Smarty Template Engine
 require_once XOOPS_ROOT_PATH . '/class/template.php';
-$xoopsTpl = new XoopsTpl();
+$xoopsTpl = new \XoopsTpl();
 $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
 $xoopsTpl->assign('sitename', $xoopsConfig['sitename']);
 $xoopsTpl->assign('xoops_themecss', xoops_getcss());
@@ -40,7 +43,7 @@ if (isset($_POST['search'])) {
     $xoopsTpl->assign('xhelp_viewResults', true);
 
     $userHandler = xoops_getHandler('user');
-    $crit        = new Criteria($subject, '%' . $text . '%', 'LIKE');
+    $crit        = new \Criteria($subject, '%' . $text . '%', 'LIKE');
     $crit->setSort($subject);
     $users = $userHandler->getObjects($crit);
     foreach ($users as $user) {

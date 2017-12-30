@@ -49,7 +49,7 @@ class Net_IMAPProtocol
      * The the current mailbox
      * @var string
      */
-    public $currentMailbox = "INBOX" ;
+    public $currentMailbox = 'INBOX';
 
     /**
      * The socket resource being used to connect to the IMAP server.
@@ -108,7 +108,7 @@ class Net_IMAPProtocol
      *
      * @since  1.0
      */
-    public function Net_IMAPProtocol()
+    public function __construct()
     {
         $this->_socket = new Net_Socket();
 
@@ -128,12 +128,14 @@ class Net_IMAPProtocol
     /**
      * Attempt to connect to the IMAP server.
      *
+     * @param string $host
+     * @param int    $port
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
      * @since  1.0
      */
-    public function cmdConnect($host= "localhost", $port = 143)
+    public function cmdConnect($host= 'localhost', $port = 143)
     {
         if ($this->_connected) {
             return new PEAR_Error('already connected, logout first!');
@@ -159,7 +161,7 @@ class Net_IMAPProtocol
      */
     public function _getCmdId()
     {
-        $this->_lastCmdID = "A000" . $this->_cmd_counter ;
+        $this->_lastCmdID = 'A000' . $this->_cmd_counter ;
         $this->_cmd_counter++;
 
         return $this->_lastCmdID;
@@ -196,7 +198,7 @@ class Net_IMAPProtocol
      *
      * @param boolean True or false
      *
-     * @return nothing
+     * @return void
      * @access public
      * @since  1.0
      */
@@ -255,8 +257,8 @@ class Net_IMAPProtocol
         }
         if ($this->_debug) {
             // S: means this data was sent by  the IMAP Server
-            echo "S: " . $this->lastline . "" ;
-            $this->dbgDialog.="S: " . $this->lastline . "" ;
+            echo 'S: ' . $this->lastline . '';
+            $this->dbgDialog.= 'S: ' . $this->lastline . '';
         }
         if ('' == $this->lastline) {
             return new PEAR_Error('Failed to receive from the  socket: ');
@@ -283,10 +285,10 @@ class Net_IMAPProtocol
     public function _putCMD($commandId, $command, $args = '')
     {
         if (!empty($args)) {
-            return $this->_send($commandId . " " . $command . ' ' . $args . "\r\n");
+            return $this->_send($commandId . ' ' . $command . ' ' . $args . "\r\n");
         }
 
-        return $this->_send($commandId . " " . $command . "\r\n");
+        return $this->_send($commandId . ' ' . $command . "\r\n");
     }
 
     /**
@@ -294,8 +296,7 @@ class Net_IMAPProtocol
      * A carriage return / linefeed (CRLF) sequence will be appended to each
      * command string before it is sent to the IMAP server.
      *
-     * @param string $commandid The IMAP commandid retrive from the server.
-     *
+     * @param string $commandId
      * @return string The result response.
      *
      * @access  private
@@ -331,8 +332,8 @@ class Net_IMAPProtocol
     /**
      * set the "returning of the unparsed response" feature on or off
      *
-     * @param  boolean $status: true: feature is on
-     * @return nothing
+     * @param  boolean $status : true: feature is on
+     * @return void
      *
      * @access public
      * @since  1.0
@@ -417,7 +418,7 @@ class Net_IMAPProtocol
      */
     public function _authDigest_MD5($uid, $pwd, $cmdid)
     {
-        if (PEAR::isError($error = $this->_putCMD($cmdid, "AUTHENTICATE", "DIGEST-MD5"))) {
+        if (PEAR::isError($error = $this->_putCMD($cmdid, 'AUTHENTICATE', 'DIGEST-MD5'))) {
             return $error;
         }
 
@@ -435,7 +436,7 @@ class Net_IMAPProtocol
 
         $digest = &Auth_SASL::factory('digestmd5');
 
-        $auth_str = base64_encode($digest->getResponse($uid, $pwd, $challenge, "localhost", "imap"));
+        $auth_str = base64_encode($digest->getResponse($uid, $pwd, $challenge, 'localhost', 'imap'));
 
         if (PEAR::isError($error = $this->_send("$auth_str\r\n"))) {
             return $error;
@@ -466,7 +467,7 @@ class Net_IMAPProtocol
      */
     public function _authCRAM_MD5($uid, $pwd, $cmdid)
     {
-        if (PEAR::isError($error = $this->_putCMD($cmdid, "AUTHENTICATE", "CRAM-MD5"))) {
+        if (PEAR::isError($error = $this->_putCMD($cmdid, 'AUTHENTICATE', 'CRAM-MD5'))) {
             return $error;
         }
 
@@ -504,7 +505,7 @@ class Net_IMAPProtocol
      */
     public function _authLOGIN($uid, $pwd, $cmdid)
     {
-        if (PEAR::isError($error = $this->_putCMD($cmdid, "AUTHENTICATE", "LOGIN"))) {
+        if (PEAR::isError($error = $this->_putCMD($cmdid, 'AUTHENTICATE', 'LOGIN'))) {
             return $error;
         }
 
@@ -645,7 +646,7 @@ class Net_IMAPProtocol
      */
     public function cmdSelect($mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
         if (!PEAR::isError($ret= $this->_genericCommand('SELECT', $mailbox_name))) {
             $this->currentMailbox  = $mailbox;
         }
@@ -664,17 +665,17 @@ class Net_IMAPProtocol
      */
     public function cmdExamine($mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
         $ret=$this->_genericCommand('EXAMINE', $mailbox_name);
         $parsed='';
-        if (isset($ret["PARSED"])) {
-            for ($i=0;$i<count($ret["PARSED"]); $i++) {
-                $command=$ret["PARSED"][$i]["EXT"];
+        if (isset($ret['PARSED'])) {
+            for ($i=0, $iMax = count($ret['PARSED']); $i < $iMax; $i++) {
+                $command= $ret['PARSED'][$i]['EXT'];
                 $parsed[key($command)]=$command[key($command)];
             }
         }
 
-        return ["PARSED" =>$parsed, "RESPONSE" => $ret["RESPONSE"]];
+        return ['PARSED' =>$parsed, 'RESPONSE' => $ret['RESPONSE']];
     }
 
     /**
@@ -688,7 +689,7 @@ class Net_IMAPProtocol
      */
     public function cmdCreate($mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
         return $this->_genericCommand('CREATE', $mailbox_name);
     }
@@ -706,8 +707,8 @@ class Net_IMAPProtocol
      */
     public function cmdRename($mailbox, $new_mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
-        $new_mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($new_mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
+        $new_mailbox_name=sprintf('"%s"', $this->utf_7_encode($new_mailbox));
 
         return $this->_genericCommand('RENAME', "$mailbox_name $new_mailbox_name");
     }
@@ -724,7 +725,7 @@ class Net_IMAPProtocol
      */
     public function cmdDelete($mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
         return $this->_genericCommand('DELETE', $mailbox_name);
     }
@@ -741,7 +742,7 @@ class Net_IMAPProtocol
      */
     public function cmdSubscribe($mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
         return $this->_genericCommand('SUBSCRIBE', $mailbox_name);
     }
@@ -749,6 +750,7 @@ class Net_IMAPProtocol
     /**
      * Send the  UNSUSCRIBE  Mailbox Command
      *
+     * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -756,7 +758,7 @@ class Net_IMAPProtocol
      */
     public function cmdUnsubscribe($mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
         return $this->_genericCommand('UNSUBSCRIBE', $mailbox_name);
     }
@@ -764,6 +766,8 @@ class Net_IMAPProtocol
     /**
      * Send the  FETCH Command
      *
+     * @param $msgset
+     * @param $fetchparam
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -786,16 +790,16 @@ class Net_IMAPProtocol
     {
         $ret = $this->_genericCommand('CAPABILITY');
 
-        if (isset($ret["PARSED"])) {
-            $ret["PARSED"]=$ret["PARSED"][0]["EXT"]["CAPABILITY"];
+        if (isset($ret['PARSED'])) {
+            $ret['PARSED'] = $ret['PARSED'][0]['EXT']['CAPABILITY'];
             //fill the $this->_serverAuthMethods and $this->_serverSupportedCapabilities arrays
-            foreach ($ret["PARSED"]["CAPABILITIES"] as $auth_method) {
-                if ("AUTH=" == strtoupper(substr($auth_method, 0, 5))) {
+            foreach ($ret['PARSED']['CAPABILITIES'] as $auth_method) {
+                if ('AUTH=' == strtoupper(substr($auth_method, 0, 5))) {
                     $this->_serverAuthMethods[] = substr($auth_method, 5);
                 }
             }
             // Keep the capabilities response to use ir later
-            $this->_serverSupportedCapabilities = $ret["PARSED"]["CAPABILITIES"];
+            $this->_serverSupportedCapabilities = $ret['PARSED']['CAPABILITIES'];
         }
 
         return $ret;
@@ -815,18 +819,18 @@ class Net_IMAPProtocol
      */
     public function cmdStatus($mailbox, $request)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
-        if ("MESSAGES" != $request && "RECENT" != $request && "UIDNEXT" != $request
+        if ('MESSAGES' != $request && 'RECENT' != $request && 'UIDNEXT' != $request
             &&
-            "UIDVALIDITY" != $request
-            && "UNSEEN" != $request) {
+            'UIDVALIDITY' != $request
+            && 'UNSEEN' != $request) {
             // TODO:  fix this error!
             $this->_prot_error("request '$request' is invalid! see RFC2060!!!!", __LINE__, __FILE__, false);
         }
         $ret = $this->_genericCommand('STATUS', "$mailbox_name ($request)");
-        if (isset($ret["PARSED"])) {
-            $ret['PARSED']=$ret["PARSED"][count($ret['PARSED'])-1]["EXT"];
+        if (isset($ret['PARSED'])) {
+            $ret['PARSED']= $ret['PARSED'][count($ret['PARSED']) - 1]['EXT'];
         }
 
         return $ret;
@@ -835,6 +839,8 @@ class Net_IMAPProtocol
     /**
      * Send the  LIST  Command
      *
+     * @param $mailbox_base
+     * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -842,8 +848,8 @@ class Net_IMAPProtocol
      */
     public function cmdList($mailbox_base, $mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
-        $mailbox_base=sprintf("\"%s\"", $this->utf_7_encode($mailbox_base));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
+        $mailbox_base=sprintf('"%s"', $this->utf_7_encode($mailbox_base));
 
         return $this->_genericCommand('LIST', "$mailbox_base $mailbox_name");
     }
@@ -851,6 +857,8 @@ class Net_IMAPProtocol
     /**
      * Send the  LSUB  Command
      *
+     * @param $mailbox_base
+     * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -858,8 +866,8 @@ class Net_IMAPProtocol
      */
     public function cmdLsub($mailbox_base, $mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
-        $mailbox_base=sprintf("\"%s\"", $this->utf_7_encode($mailbox_base));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
+        $mailbox_base=sprintf('"%s"', $this->utf_7_encode($mailbox_base));
 
         return $this->_genericCommand('LSUB', "$mailbox_base $mailbox_name");
     }
@@ -867,6 +875,10 @@ class Net_IMAPProtocol
     /**
      * Send the  APPEND  Command
      *
+     * @param        $mailbox
+     * @param        $msg
+     * @param string $flags_list
+     * @param string $time
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -881,10 +893,10 @@ class Net_IMAPProtocol
         $cmdid=$this->_getCmdId();
         $msg_size=strlen($msg);
 
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
         // TODO:
         // Falta el codigo para que flags list y time hagan algo!!
-        if (true === $this->hasCapability("LITERAL+")) {
+        if (true === $this->hasCapability('LITERAL+')) {
             $param=sprintf("%s %s%s{%s+}\r\n%s", $mailbox_name, $flags_list, $time, $msg_size, $msg);
             if (PEAR::isError($error = $this->_putCMD($cmdid, 'APPEND', $param))) {
                 return $error;
@@ -934,14 +946,14 @@ class Net_IMAPProtocol
     {
         $ret=$this->_genericCommand('EXPUNGE');
 
-        if (isset($ret["PARSED"])) {
-            $parsed=$ret["PARSED"];
-            unset($ret["PARSED"]);
+        if (isset($ret['PARSED'])) {
+            $parsed= $ret['PARSED'];
+            unset($ret['PARSED']);
             foreach ($parsed as $command) {
-                if ('EXPUNGE' == strtoupper($command["COMMAND"])) {
-                    $ret["PARSED"][$command["COMMAND"]][]=$command["NRO"];
+                if ('EXPUNGE' == strtoupper($command['COMMAND'])) {
+                    $ret['PARSED'][$command['COMMAND']][] = $command['NRO'];
                 } else {
-                    $ret["PARSED"][$command["COMMAND"]]=$command["NRO"];
+                    $ret['PARSED'][$command['COMMAND']] = $command['NRO'];
                 }
             }
         }
@@ -952,6 +964,7 @@ class Net_IMAPProtocol
     /**
      * Send the SEARCH command.
      *
+     * @param $search_cmd
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -965,8 +978,8 @@ class Net_IMAPProtocol
          $param=sprintf("%s%s",$charset,$search_cmd);
          */
         $ret = $this->_genericCommand('SEARCH', $search_cmd);
-        if (isset($ret["PARSED"])) {
-            $ret["PARSED"]=$ret["PARSED"][0]["EXT"];
+        if (isset($ret['PARSED'])) {
+            $ret['PARSED'] = $ret['PARSED'][0]['EXT'];
         }
 
         return $ret;
@@ -1002,14 +1015,14 @@ class Net_IMAPProtocol
          S: * 4 FETCH FLAGS (\Deleted \Flagged \Seen)
          S: A003 OK STORE completed
          */
-        if ("FLAGS" != $dataitem && "FLAGS.SILENT" != $dataitem && "+FLAGS" != $dataitem
+        if ('FLAGS' != $dataitem && 'FLAGS.SILENT' != $dataitem && '+FLAGS' != $dataitem
             &&
-            "+FLAGS.SILENT" != $dataitem
-            && "-FLAGS" != $dataitem
-            && "-FLAGS.SILENT" != $dataitem) {
+            '+FLAGS.SILENT' != $dataitem
+            && '-FLAGS' != $dataitem
+            && '-FLAGS.SILENT' != $dataitem) {
             $this->_prot_error("dataitem '$dataitem' is invalid! see RFC2060!!!!", __LINE__, __FILE__);
         }
-        $param=sprintf("%s %s (%s)", $message_set, $dataitem, $value);
+        $param=sprintf('%s %s (%s)', $message_set, $dataitem, $value);
 
         return $this->_genericCommand('STORE', $param);
     }
@@ -1017,6 +1030,8 @@ class Net_IMAPProtocol
     /**
      * Send the COPY command.
      *
+     * @param $message_set
+     * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -1025,21 +1040,21 @@ class Net_IMAPProtocol
 
     public function cmdCopy($message_set, $mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
-        return $this->_genericCommand('COPY', sprintf("%s %s", $message_set, $mailbox_name));
+        return $this->_genericCommand('COPY', sprintf('%s %s', $message_set, $mailbox_name));
     }
 
     public function cmdUidFetch($msgset, $fetchparam)
     {
-        return $this->_genericCommand('UID FETCH', sprintf("%s %s", $msgset, $fetchparam));
+        return $this->_genericCommand('UID FETCH', sprintf('%s %s', $msgset, $fetchparam));
     }
 
     public function cmdUidCopy($message_set, $mailbox)
     {
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
-        return $this->_genericCommand('UID COPY', sprintf("%s %s", $message_set, $mailbox_name));
+        return $this->_genericCommand('UID COPY', sprintf('%s %s', $message_set, $mailbox_name));
     }
 
     /**
@@ -1072,20 +1087,21 @@ class Net_IMAPProtocol
          S: * 4 FETCH FLAGS (\Deleted \Flagged \Seen)
          S: A003 OK STORE completed
          */
-        if ("FLAGS" != $dataitem && "FLAGS.SILENT" != $dataitem && "+FLAGS" != $dataitem
+        if ('FLAGS' != $dataitem && 'FLAGS.SILENT' != $dataitem && '+FLAGS' != $dataitem
             &&
-            "+FLAGS.SILENT" != $dataitem
-            && "-FLAGS" != $dataitem
-            && "-FLAGS.SILENT" != $dataitem) {
+            '+FLAGS.SILENT' != $dataitem
+            && '-FLAGS' != $dataitem
+            && '-FLAGS.SILENT' != $dataitem) {
             $this->_prot_error("dataitem '$dataitem' is invalid! see RFC2060!!!!", __LINE__, __FILE__);
         }
 
-        return $this->_genericCommand('UID STORE', sprintf("%s %s (%s)", $message_set, $dataitem, $value));
+        return $this->_genericCommand('UID STORE', sprintf('%s %s (%s)', $message_set, $dataitem, $value));
     }
 
     /**
      * Send the SEARCH command.
      *
+     * @param $search_cmd
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -1094,9 +1110,9 @@ class Net_IMAPProtocol
 
     public function cmdUidSearch($search_cmd)
     {
-        $ret=$this->_genericCommand('UID SEARCH', sprintf("%s", $search_cmd));
-        if (isset($ret["PARSED"])) {
-            $ret["PARSED"]=$ret["PARSED"][0]["EXT"];
+        $ret=$this->_genericCommand('UID SEARCH', sprintf('%s', $search_cmd));
+        if (isset($ret['PARSED'])) {
+            $ret['PARSED'] = $ret['PARSED'][0]['EXT'];
         }
 
         return $ret;
@@ -1105,6 +1121,8 @@ class Net_IMAPProtocol
     /**
      * Send the X command.
      *
+     * @param $atom
+     * @param $parameters
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
      * @access public
@@ -1144,11 +1162,11 @@ class Net_IMAPProtocol
         if (! $this->hasQuotaSupport()) {
             return new PEAR_Error("This IMAP server does not support QUOTA's! ");
         }
-        $mailbox_name=sprintf("%s", $this->utf_7_encode($mailbox_name));
+        $mailbox_name=sprintf('%s', $this->utf_7_encode($mailbox_name));
         $ret = $this->_genericCommand('GETQUOTA', $mailbox_name);
-        if (isset($ret["PARSED"])) {
+        if (isset($ret['PARSED'])) {
             // remove the array index because the quota response returns only 1 line of output
-            $ret['PARSED']=$ret["PARSED"][0];
+            $ret['PARSED']= $ret['PARSED'][0];
         }
 
         return $ret;
@@ -1170,12 +1188,12 @@ class Net_IMAPProtocol
         if (! $this->hasQuotaSupport()) {
             return new PEAR_Error("This IMAP server does not support QUOTA's! ");
         }
-        $mailbox_name=sprintf("%s", $this->utf_7_encode($mailbox_name));
+        $mailbox_name=sprintf('%s', $this->utf_7_encode($mailbox_name));
         $ret = $this->_genericCommand('GETQUOTAROOT', $mailbox_name);
 
-        if (isset($ret["PARSED"])) {
+        if (isset($ret['PARSED'])) {
             // remove the array index because the quota response returns only 1 line of output
-            $ret['PARSED']=$ret["PARSED"][0];
+            $ret['PARSED']= $ret['PARSED'][0];
         }
 
         return $ret;
@@ -1203,21 +1221,21 @@ class Net_IMAPProtocol
         if ((null == $messagesQuota) && (null == $storageQuota)) {
             return new PEAR_Error('$storageQuota and $messagesQuota parameters can\'t be both null if you want to use quota');
         }
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox_name));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
         //Make the command request
-        $param=sprintf("%s (", $mailbox_name);
+        $param=sprintf('%s (', $mailbox_name);
         if (null != $storageQuota) {
-            $param=sprintf("%sSTORAGE %s", $param, $storageQuota);
+            $param=sprintf('%sSTORAGE %s', $param, $storageQuota);
             if (null != $messagesQuota) {
                 //if we have both types of quota on the same call we must append an space between
                 // those parameters
-                $param=sprintf("%s ", $param);
+                $param=sprintf('%s ', $param);
             }
         }
         if (null != $messagesQuota) {
-            $param=sprintf("%sMESSAGES %s", $param, $messagesQuota);
+            $param=sprintf('%sMESSAGES %s', $param, $messagesQuota);
         }
-        $param=sprintf("%s)", $param);
+        $param=sprintf('%s)', $param);
 
         return $this->_genericCommand('SETQUOTA', $param);
     }
@@ -1243,21 +1261,21 @@ class Net_IMAPProtocol
         if ((null == $messagesQuota) && (null == $storageQuota)) {
             return new PEAR_Error('$storageQuota and $messagesQuota parameters can\'t be both null if you want to use quota');
         }
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox_name));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
         //Make the command request
-        $param=sprintf("%s (", $mailbox_name);
+        $param=sprintf('%s (', $mailbox_name);
         if (null != $storageQuota) {
-            $param=sprintf("%sSTORAGE %s", $param, $storageQuota);
+            $param=sprintf('%sSTORAGE %s', $param, $storageQuota);
             if (null != $messagesQuota) {
                 //if we have both types of quota on the same call we must append an space between
                 // those parameters
-                $param=sprintf("%s ", $param);
+                $param=sprintf('%s ', $param);
             }
         }
         if (null != $messagesQuota) {
-            $param=sprintf("%sMESSAGES %s", $param, $messagesQuota);
+            $param=sprintf('%sMESSAGES %s', $param, $messagesQuota);
         }
-        $param=sprintf("%s)", $param);
+        $param=sprintf('%s)', $param);
 
         return $this->_genericCommand('SETQUOTAROOT', $param);
     }
@@ -1268,7 +1286,12 @@ class Net_IMAPProtocol
 
     /********************************************************************
      ***             RFC2086 IMAP4 ACL extension BEGINS HERE
-     ********************************************************************/
+     *******************************************************************
+     * @param $mailbox_name
+     * @param $user
+     * @param $acl
+     * @return array|\PEAR_Error
+     */
 
     public function cmdSetACL($mailbox_name, $user, $acl)
     {
@@ -1277,13 +1300,13 @@ class Net_IMAPProtocol
         if (! $this->hasAclSupport()) {
             return new PEAR_Error("This IMAP server does not support ACL's! ");
         }
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox_name));
-        $user_name=sprintf("\"%s\"", $this->utf_7_encode($user));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
+        $user_name=sprintf('"%s"', $this->utf_7_encode($user));
         if (is_array($acl)) {
             $acl=implode('', $acl);
         }
 
-        return $this->_genericCommand('SETACL', sprintf("%s %s \"%s\"", $mailbox_name, $user_name, $acl));
+        return $this->_genericCommand('SETACL', sprintf('%s %s "%s"', $mailbox_name, $user_name, $acl));
     }
 
     public function cmdDeleteACL($mailbox_name, $user)
@@ -1292,9 +1315,9 @@ class Net_IMAPProtocol
         if (! $this->hasAclSupport()) {
             return new PEAR_Error("This IMAP server does not support ACL's! ");
         }
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox_name));
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
 
-        return $this->_genericCommand('DELETEACL', sprintf("%s \"%s\"", $mailbox_name, $user));
+        return $this->_genericCommand('DELETEACL', sprintf('%s "%s"', $mailbox_name, $user));
     }
 
     public function cmdGetACL($mailbox_name)
@@ -1303,10 +1326,10 @@ class Net_IMAPProtocol
         if (! $this->hasAclSupport()) {
             return new PEAR_Error("This IMAP server does not support ACL's! ");
         }
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox_name));
-        $ret = $this->_genericCommand('GETACL', sprintf("%s", $mailbox_name));
-        if (isset($ret["PARSED"])) {
-            $ret['PARSED']=$ret["PARSED"][0]["EXT"];
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
+        $ret = $this->_genericCommand('GETACL', sprintf('%s', $mailbox_name));
+        if (isset($ret['PARSED'])) {
+            $ret['PARSED']= $ret['PARSED'][0]['EXT'];
         }
 
         return $ret;
@@ -1318,10 +1341,10 @@ class Net_IMAPProtocol
         if (! $this->hasAclSupport()) {
             return new PEAR_Error("This IMAP server does not support ACL's! ");
         }
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox_name));
-        $ret = $this->_genericCommand('LISTRIGHTS', sprintf("%s \"%s\"", $mailbox_name, $user));
-        if (isset($ret["PARSED"])) {
-            $ret["PARSED"]=$ret["PARSED"][0]["EXT"];
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
+        $ret = $this->_genericCommand('LISTRIGHTS', sprintf('%s "%s"', $mailbox_name, $user));
+        if (isset($ret['PARSED'])) {
+            $ret['PARSED'] = $ret['PARSED'][0]['EXT'];
         }
 
         return $ret;
@@ -1333,10 +1356,10 @@ class Net_IMAPProtocol
         if (! $this->hasAclSupport()) {
             return new PEAR_Error("This IMAP server does not support ACL's! ");
         }
-        $mailbox_name=sprintf("\"%s\"", $this->utf_7_encode($mailbox_name));
-        $ret = $this->_genericCommand('MYRIGHTS', sprintf("%s", $mailbox_name));
-        if (isset($ret["PARSED"])) {
-            $ret["PARSED"]=$ret["PARSED"][0]["EXT"];
+        $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
+        $ret = $this->_genericCommand('MYRIGHTS', sprintf('%s', $mailbox_name));
+        if (isset($ret['PARSED'])) {
+            $ret['PARSED'] = $ret['PARSED'][0]['EXT'];
         }
 
         return $ret;
@@ -1348,7 +1371,12 @@ class Net_IMAPProtocol
 
     /*******************************************************************************
      ***  draft-daboo-imap-annotatemore-05 IMAP4 ANNOTATEMORE extension BEGINS HERE
-     ********************************************************************************/
+     *******************************************************************************
+     * @param $mailbox_name
+     * @param $entry
+     * @param $values
+     * @return array|\PEAR_Error
+     */
 
     public function cmdSetAnnotation($mailbox_name, $entry, $values)
     {
@@ -1458,6 +1486,7 @@ class Net_IMAPProtocol
     /**
      * tell if the server has capability $capability
      *
+     * @param $capability
      * @return true or false
      *
      * @access public
@@ -1519,8 +1548,9 @@ class Net_IMAPProtocol
     /**
      * Parses the responses like RFC822.SIZE and INTERNALDATE
      *
-     * @param string the IMAP's server response
-     *
+     * @param $str
+     * @param $line
+     * @param $file
      * @return string containing  the parsed response
      * @access private
      * @since  1.0
@@ -1548,7 +1578,7 @@ class Net_IMAPProtocol
         $this->_parseSpace($str, __LINE__, __FILE__);
         $params_arr[] = $this->_arrayfy_content($str);
         $flags_arr= [];
-        for ($i = 0 ; $i < count($params_arr[0]) ; $i++) {
+        for ($i = 0, $iMax = count($params_arr[0]); $i < $iMax; $i++) {
             $flags_arr[] = $params_arr[0][$i];
         }
 
@@ -1558,8 +1588,8 @@ class Net_IMAPProtocol
     /**
      * Parses the BODY response
      *
-     * @param string the IMAP's server response
-     *
+     * @param $str
+     * @param $command
      * @return Array containing  the parsed  response
      * @access private
      * @since  1.0
@@ -1624,8 +1654,8 @@ class Net_IMAPProtocol
     /**
      * Parses the BODY[],BODY[TEXT],.... responses
      *
-     * @param string the IMAP's server response
-     *
+     * @param $str
+     * @param $command
      * @return Array containing  the parsed  response
      * @access private
      * @since  1.0
@@ -1636,7 +1666,7 @@ class Net_IMAPProtocol
         $this->_parseSpace($str, __LINE__, __FILE__);
         $size  =$this->_getNextToken($str, $content);
 
-        return ["CONTENT" => $content, "CONTENT_SIZE" =>$size];
+        return ['CONTENT' => $content, 'CONTENT_SIZE' =>$size];
     }
 
     /**
@@ -1711,9 +1741,9 @@ class Net_IMAPProtocol
         }
 
         return [
-            "DATE"   => $date, "SUBJECT" => $subject, "FROM" => $from_arr,
-            "SENDER" => $sender_arr, "REPLY_TO" => $reply_to_arr, "TO" => $to_arr,
-            "CC"     =>$cc_arr, "BCC" => $bcc_arr, "IN_REPLY_TO" =>$in_reply_to, "MESSAGE_ID" =>$message_id
+            'DATE'   => $date, 'SUBJECT' => $subject, 'FROM' => $from_arr,
+            'SENDER' => $sender_arr, 'REPLY_TO' => $reply_to_arr, 'TO' => $to_arr,
+            'CC'     =>$cc_arr, 'BCC' => $bcc_arr, 'IN_REPLY_TO' =>$in_reply_to, 'MESSAGE_ID' =>$message_id
         ];
     }
 
@@ -1739,7 +1769,7 @@ class Net_IMAPProtocol
             $mailbox_name   = $params_arr[0][2];
             $host_name      = $params_arr[0][3];
             if ('' != $mailbox_name && '' != $host_name) {
-                $email=$mailbox_name . "@" . $host_name;
+                $email= $mailbox_name . '@' . $host_name;
             } else {
                 $email=false;
             }
@@ -1747,15 +1777,15 @@ class Net_IMAPProtocol
                 $rfc822_email=false;
             } else {
                 if (!isset($personal_name)) {
-                    $rfc822_email= "<". $email . ">";
+                    $rfc822_email= '<' . $email . '>';
                 } else {
-                    $rfc822_email= "\"". $personal_name ."\" <". $email . ">";
+                    $rfc822_email= '"' . $personal_name . '" <' . $email . '>';
                 }
             }
             $email_arr[] = [
-                "PERSONAL_NAME" => $personal_name, "AT_DOMAIN_LIST" =>$at_domain_list,
-                "MAILBOX_NAME"  => $this->utf_7_decode($mailbox_name), "HOST_NAME" => $host_name,
-                "EMAIL"         =>$email, "RFC822_EMAIL" => $rfc822_email
+                'PERSONAL_NAME' => $personal_name, 'AT_DOMAIN_LIST' =>$at_domain_list,
+                'MAILBOX_NAME'  => $this->utf_7_decode($mailbox_name), 'HOST_NAME' => $host_name,
+                'EMAIL'         =>$email, 'RFC822_EMAIL' => $rfc822_email
             ];
 
             return $email_arr;
@@ -1767,8 +1797,9 @@ class Net_IMAPProtocol
     /**
      * Utility funcion to find the closing parenthesis ")" Position it takes care of quoted ones
      *
-     * @param string the IMAP's server response
-     *
+     * @param        $str_line
+     * @param string $startDelim
+     * @param string $stopDelim
      * @return int containing  the pos of the closing parenthesis ")"
      * @access private
      * @since  1.0
@@ -1824,6 +1855,7 @@ class Net_IMAPProtocol
      *
      * @param string the IMAP's server response
      *
+     * @param bool $including
      * @return string containing  the string to the end of the line
      * @access private
      * @since  1.0
@@ -1858,11 +1890,10 @@ class Net_IMAPProtocol
     /**
      * Fetches the next IMAP token or parenthesis
      *
-     * @param string the IMAP's server response
-     * @param string the next token
-     * @param boolean true: the parenthesis IS a token, false: I consider
-     *        all the response in parenthesis as a token
-     *
+     * @param      $str
+     * @param      $content
+     * @param bool $parenthesisIsToken
+     * @param bool $colonIsToken
      * @return int containing  the content size
      * @access private
      * @since  1.0
@@ -1882,7 +1913,7 @@ class Net_IMAPProtocol
         switch ($str[0]) {
             case '{':
                 if (false === ($posClosingBraces = $this->_getClosingBracesPos($str, '{', '}'))) {
-                    $this->_prot_error("_getClosingBracesPos() error!!!", __LINE__, __FILE__);
+                    $this->_prot_error('_getClosingBracesPos() error!!!', __LINE__, __FILE__);
                 }
                 if (! is_numeric(($strBytes = substr($str, 1, $posClosingBraces - 1)))) {
                     $this->_prot_error("must be a number but is a '" . $strBytes ."'!!!!", __LINE__, __FILE__);
@@ -1898,7 +1929,7 @@ class Net_IMAPProtocol
                 }
                 $content = substr($str, $posClosingBraces + 3, $strBytes);
                 if (strlen($content) != $strBytes) {
-                    $this->_prot_error("content size is ". strlen($content) . " but the string reports a size of $strBytes!!!\n", __LINE__, __FILE__);
+                    $this->_prot_error('content size is ' . strlen($content) . " but the string reports a size of $strBytes!!!\n", __LINE__, __FILE__);
                 }
                 $content_size = $strBytes;
                 //Advance the string
@@ -1907,10 +1938,10 @@ class Net_IMAPProtocol
             case '"':
                 if ($colonIsToken) {
                     for ($pos=1;$pos<$len;$pos++) {
-                        if ("\"" == $str[$pos]) {
+                        if ('"' == $str[$pos]) {
                             break;
                         }
-                        if ("\\" == $str[$pos] && "\"" == $str[$pos + 1 ]) {
+                        if ("\\" == $str[$pos] && '"' == $str[$pos + 1 ]) {
                             $pos++;
                         }
                         if ("\\" == $str[$pos] && "\\" == $str[$pos + 1 ]) {
@@ -1926,10 +1957,10 @@ class Net_IMAPProtocol
                     $str = substr($str, $pos + 1);
                 } else {
                     for ($pos=1;$pos<$len;$pos++) {
-                        if ("\"" == $str[$pos]) {
+                        if ('"' == $str[$pos]) {
                             break;
                         }
-                        if ("\\" == $str[$pos] && "\"" == $str[$pos + 1 ]) {
+                        if ("\\" == $str[$pos] && '"' == $str[$pos + 1 ]) {
                             $pos++;
                         }
                         if ("\\" == $str[$pos] && "\\" == $str[$pos + 1 ]) {
@@ -2022,10 +2053,10 @@ class Net_IMAPProtocol
     /**
      * Utility funcion to display to console the protocol errors
      *
-     * @param string the error
-     * @param int the line producing the error
-     * @param string file where the error was produced
-     *
+     * @param      $str
+     * @param      $line
+     * @param      $file
+     * @param bool $printError
      * @return string containing  the error
      * @access private
      * @since  1.0
@@ -2074,7 +2105,7 @@ class Net_IMAPProtocol
 
         //echo "\n\nTOKEN:$token\r\n";
         switch ($token) {
-            case "RFC822.SIZE":
+            case 'RFC822.SIZE':
                 return [$token =>$this->_parseOneStringResponse($str, __LINE__, __FILE__)];
                 break;
                 //        case "RFC822.TEXT" :
@@ -2082,49 +2113,49 @@ class Net_IMAPProtocol
                 //        case "RFC822.HEADER" :
 
 
-            case "RFC822":
+            case 'RFC822':
                 return [$token =>$this->_parseContentresponse($str, $token)];
                 break;
-            case "FLAGS":
+            case 'FLAGS':
 
-            case "PERMANENTFLAGS":
+            case 'PERMANENTFLAGS':
                 return [$token =>$this->_parseFLAGSresponse($str)];
                 break;
 
-            case "ENVELOPE":
+            case 'ENVELOPE':
                 return [$token =>$this->_parseENVELOPEresponse($str)];
                 break;
-            case "EXPUNGE":
+            case 'EXPUNGE':
                 return false;
                 break;
 
-            case "UID":
+            case 'UID':
 
-            case "UIDNEXT":
+            case 'UIDNEXT':
 
-            case "UIDVALIDITY":
+            case 'UIDVALIDITY':
 
-            case "UNSEEN":
+            case 'UNSEEN':
 
-            case "MESSAGES":
+            case 'MESSAGES':
 
-            case "UIDNEXT":
+            case 'UIDNEXT':
 
-            case "UIDVALIDITY":
+            case 'UIDVALIDITY':
 
-            case "UNSEEN":
+            case 'UNSEEN':
 
-            case "INTERNALDATE":
+            case 'INTERNALDATE':
                 return [$token =>$this->_parseOneStringResponse($str, __LINE__, __FILE__)];
                 break;
-            case "BODY":
+            case 'BODY':
 
-            case "BODYSTRUCTURE":
+            case 'BODYSTRUCTURE':
                 return [$token =>$this->_parseBodyResponse($str, $token)];
                 break;
-            case "RECENT":
+            case 'RECENT':
                 if (null != $previousToken) {
-                    $aux["RECENT"]=$previousToken;
+                    $aux['RECENT'] =$previousToken;
 
                     return $aux;
                 } else {
@@ -2132,15 +2163,15 @@ class Net_IMAPProtocol
                 }
                 break;
 
-            case "EXISTS":
+            case 'EXISTS':
                 return [$token =>$previousToken];
                 break;
-            case "READ-WRITE":
+            case 'READ-WRITE':
 
-            case "READ-ONLY":
+            case 'READ-ONLY':
                 return [$token =>$token];
                 break;
-            case "QUOTA":
+            case 'QUOTA':
                 /*
                  A tipical GETQUOTA DIALOG IS AS FOLLOWS
 
@@ -2153,10 +2184,10 @@ class Net_IMAPProtocol
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_parseString($str, '(', __LINE__, __FILE__);
 
-                $ret_aux = ["MAILBOX" =>$this->utf_7_decode($mailbox)];
+                $ret_aux = ['MAILBOX' =>$this->utf_7_decode($mailbox)];
                 $this->_getNextToken($str, $quota_resp);
                 if (false === ($ext = $this->_retrParsedResponse($str, $quota_resp))) {
-                    $this->_prot_error("bogus response!!!!", __LINE__, __FILE__);
+                    $this->_prot_error('bogus response!!!!', __LINE__, __FILE__);
                 }
                 $ret_aux=array_merge($ret_aux, $ext);
 
@@ -2169,7 +2200,7 @@ class Net_IMAPProtocol
 
                 $this->_getNextToken($str, $quota_resp);
                 if (false === ($ext = $this->_retrParsedResponse($str, $quota_resp))) {
-                    $this->_prot_error("bogus response!!!!", __LINE__, __FILE__);
+                    $this->_prot_error('bogus response!!!!', __LINE__, __FILE__);
                 }
                 $ret_aux=array_merge($ret_aux, $ext);
 
@@ -2178,7 +2209,7 @@ class Net_IMAPProtocol
                 return [$token =>$ret_aux];
                 break;
 
-            case "QUOTAROOT":
+            case 'QUOTAROOT':
                 /*
                  A tipical GETQUOTA DIALOG IS AS FOLLOWS
 
@@ -2191,46 +2222,46 @@ class Net_IMAPProtocol
                 $str_line = rtrim(substr($this->_getToEOL($str, false), 0));
 
                 $quotaroot = $this->_parseOneStringResponse($str_line, __LINE__, __FILE__);
-                $ret = @["MAILBOX" =>$this->utf_7_decode($mailbox), $token =>$quotaroot];
+                $ret = @['MAILBOX' =>$this->utf_7_decode($mailbox), $token =>$quotaroot];
 
                 return [$token =>$ret];
                 break;
-            case "STORAGE":
+            case 'STORAGE':
                 $used = $this->_parseOneStringResponse($str, __LINE__, __FILE__);
                 $qmax = $this->_parseOneStringResponse($str, __LINE__, __FILE__);
 
-                return [$token => ["USED" => $used, "QMAX" => $qmax]];
+                return [$token => ['USED' => $used, 'QMAX' => $qmax]];
                 break;
-            case "MESSAGE":
+            case 'MESSAGE':
                 $mused = $this->_parseOneStringResponse($str, __LINE__, __FILE__);
                 $mmax = $this->_parseOneStringResponse($str, __LINE__, __FILE__);
 
-                return [$token => ["MUSED" => $mused, "MMAX" => $mmax]];
+                return [$token => ['MUSED' => $mused, 'MMAX' => $mmax]];
                 break;
-            case "FETCH":
+            case 'FETCH':
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 // Get the parsed pathenthesis
                 $struct_arr = $this->_getEXTarray($str);
 
                 return $struct_arr;
                 break;
-            case "CAPABILITY":
+            case 'CAPABILITY':
                 $this->_parseSpace($str, __LINE__, __FILE__);
-                $str_line = rtrim(substr($this->_getToEOL($str, false), 0));
-                $struct_arr["CAPABILITIES"] = explode(' ', $str_line);
+                $str_line                   = rtrim(substr($this->_getToEOL($str, false), 0));
+                $struct_arr['CAPABILITIES'] = explode(' ', $str_line);
 
                 return [$token =>$struct_arr];
                 break;
-            case "STATUS":
+            case 'STATUS':
                 $mailbox = $this->_parseOneStringResponse($str, __LINE__, __FILE__);
                 $this->_parseSpace($str, __LINE__, __FILE__);
-                $ext = $this->_getEXTarray($str);
-                $struct_arr["MAILBOX"] = $this->utf_7_decode($mailbox);
-                $struct_arr["ATTRIBUTES"] = $ext;
+                $ext                      = $this->_getEXTarray($str);
+                $struct_arr['MAILBOX']    = $this->utf_7_decode($mailbox);
+                $struct_arr['ATTRIBUTES'] = $ext;
 
                 return [$token =>$struct_arr];
                 break;
-            case "LIST":
+            case 'LIST':
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $params_arr = $this->_arrayfy_content($str);
 
@@ -2240,11 +2271,11 @@ class Net_IMAPProtocol
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_getNextToken($str, $mailbox_name);
 
-                $result_array = ["NAME_ATTRIBUTES" =>$params_arr, "HIERACHY_DELIMITER" =>$hierarchydelim, "MAILBOX_NAME" =>  $this->utf_7_decode($mailbox_name)];
+                $result_array = ['NAME_ATTRIBUTES' =>$params_arr, 'HIERACHY_DELIMITER' =>$hierarchydelim, 'MAILBOX_NAME' =>  $this->utf_7_decode($mailbox_name)];
 
                 return [$token =>$result_array];
                 break;
-            case "LSUB":
+            case 'LSUB':
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $params_arr = $this->_arrayfy_content($str);
 
@@ -2254,21 +2285,21 @@ class Net_IMAPProtocol
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_getNextToken($str, $mailbox_name);
 
-                $result_array = ["NAME_ATTRIBUTES" =>$params_arr, "HIERACHY_DELIMITER" =>$hierarchydelim, "MAILBOX_NAME" => $this->utf_7_decode($mailbox_name)];
+                $result_array = ['NAME_ATTRIBUTES' =>$params_arr, 'HIERACHY_DELIMITER' =>$hierarchydelim, 'MAILBOX_NAME' => $this->utf_7_decode($mailbox_name)];
 
                 return [$token =>$result_array];
                 break;
 
-            case "SEARCH":
-                $str_line = rtrim(substr($this->_getToEOL($str, false), 1));
-                $struct_arr["SEARCH_LIST"] = explode(' ', $str_line);
-                if (1 == count($struct_arr["SEARCH_LIST"]) && '' == $struct_arr["SEARCH_LIST"][0]) {
-                    $struct_arr["SEARCH_LIST"]=null;
+            case 'SEARCH':
+                $str_line                  = rtrim(substr($this->_getToEOL($str, false), 1));
+                $struct_arr['SEARCH_LIST'] = explode(' ', $str_line);
+                if (1 == count($struct_arr['SEARCH_LIST']) && '' == $struct_arr['SEARCH_LIST'][0]) {
+                    $struct_arr['SEARCH_LIST'] =null;
                 }
 
                 return [$token =>$struct_arr];
                 break;
-            case "OK":
+            case 'OK':
                 /* TODO:
                  parse the [ .... ] part of the response, use the method
                  _getEXTarray(&$str,'[',$stopDelim=']')
@@ -2288,7 +2319,7 @@ class Net_IMAPProtocol
 
                 return $result_array;
                 break;
-            case "NO":
+            case 'NO':
                 /* TODO:
                  parse the [ .... ] part of the response, use the method
                  _getEXTarray(&$str,'[',$stopDelim=']')
@@ -2296,11 +2327,11 @@ class Net_IMAPProtocol
                  */
 
                 $str_line = rtrim(substr($this->_getToEOL($str, false), 1));
-                $result_array[] = @["COMMAND" =>$token, "EXT" =>$str_line];
+                $result_array[] = @['COMMAND' =>$token, 'EXT' =>$str_line];
 
                 return $result_array;
                 break;
-            case "BAD":
+            case 'BAD':
                 /* TODO:
                  parse the [ .... ] part of the response, use the method
                  _getEXTarray(&$str,'[',$stopDelim=']')
@@ -2308,11 +2339,11 @@ class Net_IMAPProtocol
                  */
 
                 $str_line = rtrim(substr($this->_getToEOL($str, false), 1));
-                $result_array[] = ["COMMAND" =>$token, "EXT" =>$str_line];
+                $result_array[] = ['COMMAND' =>$token, 'EXT' =>$str_line];
 
                 return $result_array;
                 break;
-            case "BYE":
+            case 'BYE':
                 /* TODO:
                  parse the [ .... ] part of the response, use the method
                  _getEXTarray(&$str,'[',$stopDelim=']')
@@ -2320,12 +2351,12 @@ class Net_IMAPProtocol
                  */
 
                 $str_line = rtrim(substr($this->_getToEOL($str, false), 1));
-                $result_array[] = ["COMMAND" =>$command, "EXT" => $str_line];
+                $result_array[] = ['COMMAND' =>$command, 'EXT' => $str_line];
 
                 return $result_array;
                 break;
 
-            case "LISTRIGHTS":
+            case 'LISTRIGHTS':
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_getNextToken($str, $mailbox);
                 $this->_parseSpace($str, __LINE__, __FILE__);
@@ -2335,38 +2366,38 @@ class Net_IMAPProtocol
 
                 $ungranted = explode(' ', rtrim(substr($this->_getToEOL($str, false), 1)));
 
-                $result_array = @["MAILBOX" =>$this->utf_7_decode($mailbox), "USER" =>$user, "GRANTED" =>$granted, "UNGRANTED" =>$ungranted];
+                $result_array = @['MAILBOX' =>$this->utf_7_decode($mailbox), 'USER' =>$user, 'GRANTED' =>$granted, 'UNGRANTED' =>$ungranted];
 
                 return $result_array;
                 break;
 
-            case "MYRIGHTS":
+            case 'MYRIGHTS':
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_getNextToken($str, $mailbox);
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_getNextToken($str, $granted);
 
-                $result_array = ["MAILBOX" =>$this->utf_7_decode($mailbox), "GRANTED" =>$granted];
+                $result_array = ['MAILBOX' =>$this->utf_7_decode($mailbox), 'GRANTED' =>$granted];
 
                 return $result_array;
                 break;
 
-            case "ACL":
+            case 'ACL':
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_getNextToken($str, $mailbox);
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $acl_arr = explode(' ', rtrim(substr($this->_getToEOL($str, false), 0)));
 
-                for ($i = 0 ; $i < count($acl_arr) ; $i += 2) {
-                    $arr[] = ["USER" => $acl_arr[$i], "RIGHTS" => $acl_arr[$i + 1 ]];
+                for ($i = 0, $iMax = count($acl_arr); $i < $iMax; $i += 2) {
+                    $arr[] = ['USER' => $acl_arr[$i], 'RIGHTS' => $acl_arr[$i + 1 ]];
                 }
 
-                $result_array = ["MAILBOX" =>$this->utf_7_decode($mailbox), "USERS" =>$arr];
+                $result_array = ['MAILBOX' =>$this->utf_7_decode($mailbox), 'USERS' =>$arr];
 
                 return $result_array;
                 break;
 
-            case "ANNOTATION":
+            case 'ANNOTATION':
                 $this->_parseSpace($str, __LINE__, __FILE__);
                 $this->_getNextToken($str, $mailbox);
 
@@ -2381,17 +2412,17 @@ class Net_IMAPProtocol
                 return $result_array;
                 break;
 
-            case "":
-                $this->_prot_error("PROTOCOL ERROR!:str empty!!", __LINE__, __FILE__);
+            case '':
+                $this->_prot_error('PROTOCOL ERROR!:str empty!!', __LINE__, __FILE__);
                 break;
-            case "(":
-                $this->_prot_error("OPENING PARENTHESIS ERROR!!!!!!!!!!!!!!!!!", __LINE__, __FILE__);
+            case '(':
+                $this->_prot_error('OPENING PARENTHESIS ERROR!!!!!!!!!!!!!!!!!', __LINE__, __FILE__);
                 break;
-            case ")":
+            case ')':
                 //"CLOSING PARENTHESIS BREAK!!!!!!!"
                 break;
             case "\r\n":
-                $this->_prot_error("BREAK!!!!!!!!!!!!!!!!!", __LINE__, __FILE__);
+                $this->_prot_error('BREAK!!!!!!!!!!!!!!!!!', __LINE__, __FILE__);
                 break;
             case ' ':
                 // this can happen and we just ignore it
@@ -2459,7 +2490,7 @@ class Net_IMAPProtocol
         $this->_getNextToken($str, $token);
 
         while ($token != $cmdid && '' != $str) {
-            if ("+" == $token) {
+            if ('+' == $token) {
                 //if the token  is + ignore the line
                 // TODO: verify that this is correct!!!
                 $this->_getToEOL($str);
@@ -2484,10 +2515,10 @@ class Net_IMAPProtocol
                     //  if this bogus response cis a FLAGS () or EXPUNGE response
                     // the ignore it
                     if ('FLAGS' != $command && 'EXPUNGE' != $command) {
-                        $this->_prot_error("bogus response!!!!", __LINE__, __FILE__, false);
+                        $this->_prot_error('bogus response!!!!', __LINE__, __FILE__, false);
                     }
                 }
-                $result_array[] = ["COMMAND" =>$command, "NRO" =>$msg_nro, "EXT" =>$ext_arr];
+                $result_array[] = ['COMMAND' =>$command, 'NRO' =>$msg_nro, 'EXT' =>$ext_arr];
             } else {
                 // OK the token is not a NUMBER so it MUST be a COMMAND
                 $command = $token;
@@ -2499,7 +2530,7 @@ class Net_IMAPProtocol
                 if (false === ($ext_arr = $this->_retrParsedResponse($str, $command))) {
                     $this->_prot_error("bogus response!!!! (COMMAND:$command)", __LINE__, __FILE__);
                 }
-                $result_array[] = ["COMMAND" =>$command, "EXT" =>$ext_arr];
+                $result_array[] = ['COMMAND' =>$command, 'EXT' =>$ext_arr];
             }
 
             $this->_getNextToken($str, $token);
@@ -2510,7 +2541,7 @@ class Net_IMAPProtocol
             }
             $this->_getNextToken($str, $token);
 
-            if ("+" == $token) {
+            if ('+' == $token) {
                 //if the token  is + ignore the line
                 // TODO: verify that this is correct!!!
                 $this->_getToEOL($str);
@@ -2526,21 +2557,21 @@ class Net_IMAPProtocol
 
         $str_line = rtrim(substr($this->_getToEOL($str), 1));
 
-        $response["RESPONSE"]= ["CODE" =>$cmd_status, "STR_CODE" =>$str_line, "CMDID" =>$cmdid];
+        $response['RESPONSE'] = ['CODE' =>$cmd_status, 'STR_CODE' =>$str_line, 'CMDID' =>$cmdid];
 
         $ret=$response;
         if (!empty($result_array)) {
-            $ret=array_merge($ret, ["PARSED" =>$result_array]);
+            $ret=array_merge($ret, ['PARSED' =>$result_array]);
         }
 
         if ($this->_unParsedReturn) {
-            $unparsed["UNPARSED"]=$unparsed_str;
-            $ret=array_merge($ret, $unparsed);
+            $unparsed['UNPARSED'] =$unparsed_str;
+            $ret                  =array_merge($ret, $unparsed);
         }
 
         if (isset($status_arr)) {
-            $status["STATUS"]=$status_arr;
-            $ret=array_merge($ret, $status);
+            $status['STATUS'] =$status_arr;
+            $ret              =array_merge($ret, $status);
         }
 
         return $ret;
@@ -2571,30 +2602,30 @@ class Net_IMAPProtocol
             return new PEAR_Error('error');
         }
 
-        for ($i = 0; $i < strlen($str); $i++) {
+        for ($i = 0, $iMax = strlen($str); $i < $iMax; $i++) {
             //those chars should be base64 encoded
             if (((ord($str[$i]) >= 39) and (ord($str[$i]) <= 126)) or ((ord($str[$i]) >= 32) and (ord($str[$i]) <= 37))) {
                 if ($base64_part) {
-                    $encoded_utf7 = sprintf("%s&%s-", $encoded_utf7, str_replace('=', '', base64_encode($base64_part)));
+                    $encoded_utf7 = sprintf('%s&%s-', $encoded_utf7, str_replace('=', '', base64_encode($base64_part)));
                     $base64_part = '';
                 }
-                $encoded_utf7 = sprintf("%s%s", $encoded_utf7, $str[$i]);
+                $encoded_utf7 = sprintf('%s%s', $encoded_utf7, $str[$i]);
             } else {
                 //handle &
                 if (38 == ord($str[$i])) {
                     if ($base64_part) {
-                        $encoded_utf7 = sprintf("%s&%s-", $encoded_utf7, str_replace('=', '', base64_encode($base64_part)));
+                        $encoded_utf7 = sprintf('%s&%s-', $encoded_utf7, str_replace('=', '', base64_encode($base64_part)));
                         $base64_part = '';
                     }
-                    $encoded_utf7 = sprintf("%s&-", $encoded_utf7);
+                    $encoded_utf7 = sprintf('%s&-', $encoded_utf7);
                 } else {
-                    $base64_part = sprintf("%s%s", $base64_part, $str[$i]);
+                    $base64_part = sprintf('%s%s', $base64_part, $str[$i]);
                     //$base64_part = sprintf("%s%s%s",$base64_part , chr(0) , $str[$i]);
                 }
             }
         }
         if ($base64_part) {
-            $encoded_utf7 = sprintf("%s&%s-", $encoded_utf7, str_replace('=', '', base64_encode($base64_part)));
+            $encoded_utf7 = sprintf('%s&%s-', $encoded_utf7, str_replace('=', '', base64_encode($base64_part)));
             $base64_part = '';
         }
 
@@ -2612,24 +2643,24 @@ class Net_IMAPProtocol
         $base64_part = '';
         $decoded_utf7 = '';
 
-        for ($i = 0; $i < strlen($str); $i++) {
+        for ($i = 0, $iMax = strlen($str); $i < $iMax; $i++) {
             if (strlen($base64_part) > 0) {
                 if ('-' == $str[$i]) {
                     if ('&' == $base64_part) {
-                        $decoded_utf7 = sprintf("%s&", $decoded_utf7);
+                        $decoded_utf7 = sprintf('%s&', $decoded_utf7);
                     } else {
                         $next_part_decoded= base64_decode(substr($base64_part, 1)) ;
-                        $decoded_utf7 = sprintf("%s%s", $decoded_utf7, $next_part_decoded);
+                        $decoded_utf7 = sprintf('%s%s', $decoded_utf7, $next_part_decoded);
                     }
                     $base64_part = '';
                 } else {
-                    $base64_part = sprintf("%s%s", $base64_part, $str[$i]);
+                    $base64_part = sprintf('%s%s', $base64_part, $str[$i]);
                 }
             } else {
                 if ('&' == $str[$i]) {
                     $base64_part = '&';
                 } else {
-                    $decoded_utf7 = sprintf("%s%s", $decoded_utf7, $str[$i]);
+                    $decoded_utf7 = sprintf('%s%s', $decoded_utf7, $str[$i]);
                 }
             }
         }

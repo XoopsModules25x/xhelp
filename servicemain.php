@@ -1,4 +1,7 @@
 <?php
+
+use Xoopsmodules\xhelp;
+
 error_reporting(E_ALL); //Enable Error Reporting
 //if (version_compare(PHP_VERSION, '5.3.0', '<')) {
 //    set_magic_quotes_runtime(0);
@@ -31,7 +34,7 @@ $xoopsLogger = XoopsLogger::getInstance();
 $xoopsLogger->startTime();
 
 define('XOOPS_DB_PROXY', 1);
-$xoopsDB = XoopsDatabaseFactory::getDatabaseConnection();
+$xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
 
 //End of Xoops globals include
 
@@ -39,7 +42,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-require_once XHELP_BASE_PATH . '/functions.php';
+//require_once XHELP_BASE_PATH . '/functions.php';
 
 $moduleHandler = xoops_getHandler('module');
 $module        =& $moduleHandler;
@@ -54,7 +57,7 @@ foreach ($myConfigs as $myConf) {
     $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
 }
 
-$xoopsModule       =& xhelpGetModule();
-$xoopsModuleConfig =& xhelpGetModuleConfig();
+$xoopsModule       =& xhelp\Utility::getModule();
+$xoopsModuleConfig =& xhelp\Utility::getModuleConfig();
 
-xhelpIncludeLang('main');
+$helper->loadLanguage('main');
