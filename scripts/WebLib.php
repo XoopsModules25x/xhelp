@@ -52,9 +52,9 @@ class WebLib
         $deptid     = (int)$deptid;
         $hFieldDept = xhelp\Utility::getHandler('TicketFieldDepartment');
         $hTicket    = xhelp\Utility::getHandler('Ticket');
-        $ticket     =& $hTicket->get($ticketid);
-        $custValues =& $ticket->getCustFieldValues();
-        $fields     =& $hFieldDept->fieldsByDepartment($deptid);
+        $ticket     = $hTicket->get($ticketid);
+        $custValues = $ticket->getCustFieldValues();
+        $fields     = $hFieldDept->fieldsByDepartment($deptid);
 
         $aFields = [];
         foreach ($fields as $field) {
@@ -73,12 +73,12 @@ class WebLib
      */
     public function staffByDept($deptid)
     {
-        $mc    =& xhelp\Utility::getModuleConfig();
+        $mc    = xhelp\Utility::getModuleConfig();
         $field = 1 == $mc['xhelp_displayName'] ? 'uname' : 'name';
 
         $deptid      = (int)$deptid;
         $hMembership = xhelp\Utility::getHandler('Membership');
-        $staff       =& $hMembership->xoopsUsersByDept($deptid);
+        $staff       = $hMembership->xoopsUsersByDept($deptid);
 
         $aStaff   = [];
         $aStaff[] = [

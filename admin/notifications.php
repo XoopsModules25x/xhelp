@@ -109,6 +109,10 @@ function edit()
 
     $settings = $hNotification->get($id);
 
+    if (!isset($settings) || false === $settings) {
+        redirect_header(XHELP_ADMIN_URL . '/notifications.php?op=manage', 3, _AM_XHELP_EDIT_ERR);
+    }
+
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manNotify');
     $adminObject = \Xmf\Module\Admin::getInstance();
@@ -236,22 +240,24 @@ function manage()
                   <td>' . _AM_XHELP_TEXT_ACTIONS . '</td>
               </tr>';
         foreach ($aNotifications as $template_id => $template) {
-            $cSettings     = $settings[$template_id];
-            $staff_setting = $cSettings->getVar('staff_setting');
-            $user_setting  = $cSettings->getVar('user_setting');
-
+            if (isset($settings[$template_id])) {
+                $cSettings = $settings[$template_id];
+                //                if (null !== $cSettings) {
+                $staff_setting = $cSettings->getVar('staff_setting');
+                $user_setting  = $cSettings->getVar('user_setting');
+            }
             // Build text of who gets notification
-            if (XHELP_NOTIF_USER_YES == $user_setting) {
+            if (isset($user_setting) && XHELP_NOTIF_USER_YES == $user_setting) {
                 if (XHELP_NOTIF_STAFF_NONE == $staff_setting) {
                     $sSettings = _AM_XHELP_TEXT_SUBMITTER;
                 } else {
                     $sSettings = $aStaffSettings[$staff_setting] . ' ' . _AM_XHELP_TEXT_AND . ' ' . _AM_XHELP_TEXT_SUBMITTER;
                 }
             } else {
-                if (XHELP_NOTIF_STAFF_NONE == $staff_setting) {
+                if (isset($staff_setting) && XHELP_NOTIF_STAFF_NONE == $staff_setting) {
                     $sSettings = '';
                 } else {
-                    $sSettings = $aStaffSettings[$staff_setting];
+                    $sSettings = isset($staff_setting) ? $aStaffSettings[$staff_setting] : '';
                 }
             }
             // End Build text of who gets notification

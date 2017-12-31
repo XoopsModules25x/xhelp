@@ -1,6 +1,8 @@
 <?php
 
+use Xmf\Request;
 use Xoopsmodules\xhelp;
+use Xoopsmodules\xhelp\validation;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -223,12 +225,12 @@ switch ($op) {
         }
 
         //Check if email is valid
-        $validator = new ValidateEmail($_POST['newEmail']);
+        $validator = new validation\ValidateEmail(Request::getString('newEmail', '', 'POST'));
         if (!$validator->isValid()) {
             redirect_header(xhelp\Utility::createURI('ticket.php', ['id' => $xhelp_id], false), 3, _XHELP_MESSAGE_NO_EMAIL);
         }
 
-        if (!$newUser = xhelp\Utility::emailIsXoopsUser($_POST['newEmail'])) {      // If a user doesn't exist with this email
+        if (!$newUser = xhelp\Utility::emailIsXoopsUser(Request::getString('newEmail', '', 'POST'))) {      // If a user doesn't exist with this email
             $user_id = 0;
         } else {
             $user_id = $newUser->getVar('uid');
@@ -442,8 +444,8 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             // require_once XHELP_CLASS_PATH . '/validator.php';
 
             $v                  = [];
-            $v['subject'][]     = new ValidateLength($_POST['subject'], 2, 100);
-            $v['description'][] = new ValidateLength($_POST['description'], 2, 50000);
+            $v['subject'][]     = new validation\ValidateLength(Request::getString('subject', '', 'POST'), 2, 100);
+            $v['description'][] = new validation\ValidateLength(Request::getString('description', '', 'POST'), 2, 50000);
 
             $aFields = [];
 
@@ -466,7 +468,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 }
 
                 if ('' != $field['validation']) {
-                    $v[$fieldname][] = new ValidateRegex($_POST[$fieldname], $field['validation'], $field['required']);
+                    $v[$fieldname][] = new validation\ValidateRegex(Request::getString('$fieldname', '', 'POST'), $field['validation'], $field['required']);
                 }
 
                 $aFields[$field['fieldname']] = [

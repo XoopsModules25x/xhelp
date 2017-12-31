@@ -1,6 +1,8 @@
 <?php
 
+use Xmf\Request;
 use Xoopsmodules\xhelp;
+use Xoopsmodules\xhelp\validation;
 
 if (isset($_GET['deptid'])) {
     $dept_id = (int)$_GET['deptid'];
@@ -51,7 +53,8 @@ if ($xoopsUser) {
         _saveTicket();
     }
 
-    if (!isset($_POST['addTicket'])) {                           // Initial load of page
+    //    if (!isset($_POST['addTicket'])) {                           // Initial load of page
+    if (!Request::hasVar('addTicket', 'POST')) {
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_addTicket.tpl';             // Always set main template before including the header
         include XOOPS_ROOT_PATH . '/header.php';
 
@@ -203,11 +206,11 @@ if ($xoopsUser) {
 function departments_onchange()
 {
     dept = xoopsGetElementById('departments');
-    var wl = new xhelp\WebLib(fieldHandler);
+    var wl = new xhelpweblib(fieldHandler);
     wl.customfieldsbydept(dept.value);\n";
 
         if ($xhelp_isStaff) {
-            $javascript .= "var w = new xhelp\WebLib(staffHandler);
+            $javascript .= "var w = new xhelpweblib(staffHandler);
         w.staffbydept(dept.value);\n";
         }
         $javascript .= '}
@@ -245,6 +248,7 @@ function window_onload()
 window.setTimeout('window_onload()', 1500);
 //-->
 </script>";
+
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
         $xoopsTpl->assign('xhelp_includeURL', XHELP_INCLUDE_URL);
         $xoopsTpl->assign('xoops_module_header', $javascript . $xhelp_module_header);
@@ -265,8 +269,9 @@ window.setTimeout('window_onload()', 1500);
         $xoopsTpl->assign('xhelp_default_priority', XHELP_DEFAULT_PRIORITY);
         $xoopsTpl->assign('xhelp_currentUser', $xoopsUser->getVar('uid'));
         $xoopsTpl->assign('xhelp_numTicketUploads', $xoopsModuleConfig['xhelp_numTicketUploads']);
-        if (isset($_POST['logFor'])) {
-            $uid      = $_POST['logFor'];
+        //        if (isset($_POST['logFor'])) {
+        if (Request::hasVar('logFor', 'POST')) {
+            $uid      = Request::getInt('logFor', '', 'POST');
             $username = $xoopsUser::getUnameFromId($uid);
             $xoopsTpl->assign('xhelp_username', $username);
             $xoopsTpl->assign('xhelp_user_id', $uid);
@@ -367,12 +372,12 @@ window.setTimeout('window_onload()', 1500);
 
         require XOOPS_ROOT_PATH . '/footer.php';                             //Include the page footer
     } else {
-        $dept_id = (int)$_POST['departments'];
+        $dept_id = Request::getInt('departments', 0, 'POST');
 
         // require_once XHELP_CLASS_PATH . '/validator.php';
         $v                  = [];
-        $v['subject'][]     = new ValidateLength($_POST['subject'], 2, 255);
-        $v['description'][] = new ValidateLength($_POST['description'], 2);
+        $v['subject'][]     = new validation\ValidateLength(Request::getString('subject', '', 'POST'), 2, 255);
+        $v['description'][] = new validation\ValidateLength(Request::getString('description', '', 'POST'), 2);
 
         // Get current dept's custom fields
         $fields  = $hFieldDept->fieldsByDepartment($dept_id, true);
@@ -386,12 +391,12 @@ window.setTimeout('window_onload()', 1500);
             $fieldname = $field->getVar('fieldname');
 
             if (XHELP_CONTROL_FILE != $field->getVar('controltype')) {
-                $checkField = $_POST[$fieldname];
+                $checkField = Request::getString('fieldname', '', 'POST'); //array?
             } else {
                 $checkField = $_FILES[$fieldname];
             }
 
-            $v[$fieldname][] = new ValidateRegex($checkField, $field->getVar('validation'), $field->getVar('required'));
+            $v[$fieldname][] = new validation\ValidateRegex($checkField, $field->getVar('validation'), $field->getVar('required'));
 
             $aFields[$field->getVar('id')] = [
                 'name'         => $field->getVar('name'),
@@ -432,22 +437,23 @@ window.setTimeout('window_onload()', 1500);
 
         //$hTicket = xhelp\Utility::getHandler('Ticket');
         $ticket = $hTicket->create();
-        $ticket->setVar('uid', $_POST['user_id']);
-        $ticket->setVar('subject', $_POST['subject']);
-        $ticket->setVar('description', $_POST['description']);
+        $ticket->setVar('uid', Request::getInt('user_id', 0, 'POST'));
+        $ticket->setVar('subject', Request::getString('subject', '', 'POST'));
+        $ticket->setVar('description', Request::getString('description', '', 'POST'));
         $ticket->setVar('department', $dept_id);
-        $ticket->setVar('priority', $_POST['priority']);
+        $ticket->setVar('priority', Request::getInt('priority', 0, 'POST'));
         if ($xhelp_isStaff && 2 == $_COOKIE['xhelp_logMode']) {
-            $ticket->setVar('status', $_POST['status']);    // Set status
-            if (isset($_POST['owner'])) {  //Check if user claimed ownership
-                if ($_POST['owner'] > 0) {
+            $ticket->setVar('status', Request::getInt('status', null, 'POST'));    // Set status
+            //            if (isset($_POST['owner'])) {  //Check if user claimed ownership
+            if (!Request::hasVar('owner', 'POST')) {
+                if (Request::getInt('owner', 0, 'POST') > 0) {
                     $oldOwner = 0;
                     $_xhelpSession->set('xhelp_oldOwner', $oldOwner);
-                    $ticket->setVar('ownership', $_POST['owner']);
+                    $ticket->setVar('ownership', Request::getInt('owner', 0, 'POST'));
                     $_xhelpSession->set('xhelp_changeOwner', true);
                 }
             }
-            $_xhelpSession->set('xhelp_ticket_ownership', $_POST['owner']);  // Store in session
+            $_xhelpSession->set('xhelp_ticket_ownership', Request::getInt('owner', 0, 'POST'));  // Store in session
         } else {
             $ticket->setVar('status', 1);
         }
@@ -507,7 +513,7 @@ window.setTimeout('window_onload()', 1500);
                         }
                     }
                 } else {
-                    $fieldvalue = $_POST[$fieldname];
+                    $fieldvalue = Request::getString($fieldname, '', 'POST');
                     $ticketValues->setVar($fieldname, $fieldvalue);
                 }
             }
@@ -530,17 +536,18 @@ window.setTimeout('window_onload()', 1500);
             // Add response
             if ($xhelp_isStaff
                 && 2 == $_COOKIE['xhelp_logMode']) {     // Make sure user is a staff member and is using advanced form
-                if ('' != $_POST['response']) {                   // Don't run if no value for response
+                // if ('' != $_POST['response']) {                   // Don't run if no value for response
+                if (Request::hasVar('response', 'POST')) {
                     $hResponse   = xhelp\Utility::getHandler('Responses');
                     $newResponse = $hResponse->create();
                     $newResponse->setVar('uid', $xoopsUser->getVar('uid'));
                     $newResponse->setVar('ticketid', $ticket->getVar('id'));
-                    $newResponse->setVar('message', $_POST['response']);
-                    $newResponse->setVar('timeSpent', $_POST['timespent']);
+                    $newResponse->setVar('message', Request::getString('response', '', 'POST'));
+                    $newResponse->setVar('timeSpent', Request::getInt('timespent', 0, 'POST'));
                     $newResponse->setVar('updateTime', $ticket->getVar('posted'));
                     $newResponse->setVar('userIP', $ticket->getVar('userIP'));
-                    if (isset($_POST['private'])) {
-                        $newResponse->setVar('private', $_POST['private']);
+                    if (Request::hasVar('private', 'POST')) {
+                        $newResponse->setVar('private', Request::getInt('private', '', 'POST'));
                     }
                     if ($hResponse->insert($newResponse)) {
                         $_eventsrv->trigger('new_response', [&$ticket, &$newResponse]);
@@ -587,22 +594,22 @@ function _saveTicket($fields = '')
 {
     global $_xhelpSession, $xhelp_isStaff;
     $_xhelpSession->set('xhelp_ticket', [
-        'uid'         => $_POST['user_id'],
-        'subject'     => $_POST['subject'],
-        'description' => htmlspecialchars($_POST['description'], ENT_QUOTES),
-        'department'  => $_POST['departments'],
-        'priority'    => $_POST['priority']
+        'uid'         => Request::getInt('user_id', 0, 'POST'),
+        'subject'     => Request::getString('subject', '', 'POST'),
+        'description' => Request::getText('description', '', 'POST'), //htmlspecialchars($_POST['description'], ENT_QUOTES),
+        'department'  => Request::getInt('departments', 0, 'POST'), //$_POST['departments'],
+        'priority'    => Request::getInt('priority', 0, 'POST')
     ]);
 
     if ($xhelp_isStaff && 2 == $_COOKIE['xhelp_logMode']) {
         $_xhelpSession->set('xhelp_response', [
-            'uid'       => $_POST['user_id'],
-            'message'   => $_POST['response'],
-            'timeSpent' => $_POST['timespent'],
+            'uid'       => Request::getInt('user_id', 0, 'POST'),
+            'message'   => Request::getString('response', '', 'POST'),
+            'timeSpent' => Request::getInt('timespent', 0, 'POST'),
             'userIP'    => getenv('REMOTE_ADDR'),
-            'private'   => isset($_POST['private']) ? 1 : 0,
-            'status'    => $_POST['status'],
-            'owner'     => $_POST['owner']
+            'private'   => Request::hasVar('private', 'POST')? 1 : 0, //isset($_POST['private']) ? 1 : 0,
+            'status'    => Request::getInt('status', 0, 'POST'),
+            'owner'     => Request::getInt('owner', 0, 'POST') //$_POST['owner']
         ]);
     }
 

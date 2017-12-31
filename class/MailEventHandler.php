@@ -65,12 +65,12 @@ class MailEventHandler extends xhelp\BaseObjectHandler
 
     /**
      * Create a "select" SQL query
-     * @param  \CriteriaElement $criteria {@link CriteriaElement} to match
-     * @param bool    $join
+     * @param  null|\CriteriaElement $criteria {@link CriteriaElement} to match
+     * @param null|bool    $join
      * @return string SQL query
      * @access  private
      */
-    public function _selectQuery(\CriteriaElement $criteria = null, $join = false)
+    public function _selectQuery(\CriteriaElement $criteria = null, $join = null)
     {
         if (!$join) {
             $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));

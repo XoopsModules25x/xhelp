@@ -13,7 +13,7 @@ require_once JPSPAN . 'Server/PostOffice.php';      // Load the PostOffice serve
 
 // Create the PostOffice server
 $server = new JPSpan_Server_PostOffice();
-$server->addHandler(new xhelp\WebLib());
+$server->addHandler(new xhelpweblib());
 
 if (isset($_SERVER['QUERY_STRING']) && 0 == strcasecmp($_SERVER['QUERY_STRING'], 'client')) {
 

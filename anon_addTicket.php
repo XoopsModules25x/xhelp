@@ -1,6 +1,8 @@
 <?php
 
+use Xmf\Request;
 use Xoopsmodules\xhelp;
+use Xoopsmodules\xhelp\validation;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -125,7 +127,7 @@ if (!isset($_POST['addTicket'])) {
 function departments_onchange()
 {
     dept = xoopsGetElementById('departments');
-    var wl = new xhelp\WebLib(fieldHandler);
+    var wl = new xhelpweblib(fieldHandler);
     wl.customfieldsbydept(dept.value);
 }
 
@@ -218,9 +220,9 @@ window.setTimeout('window_onload()', 1500);
     // require_once XHELP_CLASS_PATH . '/validator.php';
 
     $v                  = [];
-    $v['subject'][]     = new ValidateLength($_POST['subject'], 2, 255);
-    $v['description'][] = new ValidateLength($_POST['description'], 2);
-    $v['email'][]       = new ValidateEmail($_POST['email']);
+    $v['subject'][]     = new validation\ValidateLength(Request::getString('subject', '', 'POST'), 2, 255);
+    $v['description'][] = new validation\ValidateLength(Request::getString('description', '', 'POST'), 2);
+    $v['email'][]       = new validation\ValidateEmail(Request::getString('email', '', 'POST'));
 
     // Get current dept's custom fields
     $fields  = $hFieldDept->fieldsByDepartment($dept_id, true);
@@ -239,7 +241,7 @@ window.setTimeout('window_onload()', 1500);
             $checkField = $_FILES[$fieldname];
         }
 
-        $v[$fieldname][] = new ValidateRegex($checkField, $field->getVar('validation'), $field->getVar('required'));
+        $v[$fieldname][] = new validation\ValidateRegex($checkField, $field->getVar('validation'), $field->getVar('required'));
 
         $aFields[$field->getVar('id')] = [
             'name'         => $field->getVar('name'),

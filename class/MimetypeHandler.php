@@ -197,7 +197,7 @@ class MimetypeHandler extends xhelp\BaseObjectHandler
      * @return string SQL query
      * @access  private
      */
-    public function _selectQuery($criteria = null, $join = false)
+    public function _selectQuery(\CriteriaElement $criteria = null, $join = false)
     {
         if (!$join) {
             $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));

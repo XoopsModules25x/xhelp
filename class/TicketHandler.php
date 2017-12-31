@@ -24,10 +24,7 @@ if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-$path = dirname(dirname(dirname(__DIR__)));
-require_once $path . '/mainfile.php';
-//require_once $path . '/include/cp_functions.php';
-require_once $path . '/include/cp_header.php';
+//require_once __DIR__ . '/../../../include/cp_header.php';
 
 global $xoopsUser;
 
@@ -469,7 +466,7 @@ class TicketHandler extends xhelp\BaseObjectHandler
      * @return string SQL query
      * @access  private
      */
-    public function _selectQuery($criteria = null, $join = false, $hasCustFields = false)
+    public function _selectQuery(\CriteriaElement $criteria = null, $join = false, $hasCustFields = false)
     {
         global $xoopsUser;
         if (!$join) {

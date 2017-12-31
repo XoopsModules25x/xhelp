@@ -363,8 +363,10 @@ if ($xhelp_isStaff) {
 // Search
 $modversion['hasSearch'] = 0;
 
-// On Install
-$modversion['onInstall'] = 'install.php';
+//Install/Uninstall Functions
+$modversion['onInstall']   = 'include/oninstall.php';
+$modversion['onUpdate']    = 'include/onupdate.php';
+$modversion['onUninstall'] = 'include/onuninstall.php';
 
 // Config
 $modversion['config'][1]['name']        = 'xhelp_allowUpload';     // Allows users to upload files when adding a ticket

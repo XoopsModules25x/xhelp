@@ -1,6 +1,8 @@
 <?php
 
+use Xmf\Request;
 use Xoopsmodules\xhelp;
+use Xoopsmodules\xhelp\validation;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -69,15 +71,15 @@ switch ($op) {
                 //1. Verify Response fields are filled properly
                 // require_once XHELP_CLASS_PATH . '/validator.php';
                 $v                = [];
-                $v['response'][]  = new ValidateLength($_POST['response'], 2, 50000);
-                $v['timespent'][] = new ValidateNumber($_POST['timespent']);
+                $v['response'][]  = new validation\ValidateLength(Request::getString('response', '', 'POST'), 2, 50000);
+                $v['timespent'][] = new validation\ValidateNumber(Request::getString('timespent', '', 'POST'));
 
                 if ($xoopsModuleConfig['xhelp_allowUpload'] && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
                     $hMime = xhelp\Utility::getHandler('Mimetype');
                     //Add File Upload Validation Rules
-                    $v['userfile'][] = new ValidateMimeType($_FILES['userfile']['name'], $_FILES['userfile']['type'], $hMime->getArray());
-                    $v['userfile'][] = new ValidateFileSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadSize']);
-                    $v['userfile'][] = new ValidateImageSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
+                    $v['userfile'][] = new validation\ValidateMimeType($_FILES['userfile']['name'], $_FILES['userfile']['type'], $hMime->getArray());
+                    $v['userfile'][] = new validation\ValidateFileSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadSize']);
+                    $v['userfile'][] = new validation\ValidateImageSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
                     $uploadFile      = true;
                 }
 
@@ -417,8 +419,8 @@ switch ($op) {
 
     case 'staffEditSave':
         // require_once XHELP_CLASS_PATH . '/validator.php';
-        $v['response'][]  = new ValidateLength($_POST['response'], 2, 50000);
-        $v['timespent'][] = new ValidateNumber($_POST['timespent']);
+        $v['response'][]  = new validation\ValidateLength(Request::getString('response', '', 'POST'), 2, 50000);
+        $v['timespent'][] = new validation\ValidateNumber(Request::getString('timespent', '', 'POST'));
 
         $responseStored = false;
 

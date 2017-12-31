@@ -8,7 +8,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-include __DIR__ . '/../preloads/autoloader.php';
+include __DIR__ . '/preloads/autoloader.php';
 
 //require_once XHELP_BASE_PATH . '/functions.php';
 // require_once XHELP_CLASS_PATH . '/session.php';

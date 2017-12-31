@@ -131,7 +131,7 @@ if ($xoopsUser) {
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_NO_ID);
             }
-            $ticketList =& $hTicketList->get($listID);
+            $ticketList = $hTicketList->get($listID);
             if ($hTicketList->delete($ticketList, true)) {
                 header('Location: ' . XHELP_BASE_URL . '/profile.php');
             } else {
@@ -195,11 +195,11 @@ if ($xoopsUser) {
             $xoopsTpl->assign('xhelp_staff_email', $staff->getVar('email'));
             $xoopsTpl->assign('xhelp_savedSearches', $aSavedSearches);
 
-            $myRoles       =& $hStaff->getRoles($xoopsUser->getVar('uid'), true);
-            $hNotification = xhelp\Utility::getHandler('notification');
+            $myRoles       = $hStaff->getRoles($xoopsUser->getVar('uid'), true);
+            $hNotification = xhelp\Utility::getHandler('Notification');
             $settings      = $hNotification->getObjects(null, true);
 
-            $templates         =& $xoopsModule->getInfo('_email_tpl');
+            $templates         = $xoopsModule->getInfo('_email_tpl');
             $has_notifications = count($templates);
 
             // Check that notifications are enabled by admin
@@ -207,21 +207,22 @@ if ($xoopsUser) {
             $staff_enabled = true;
             foreach ($templates as $template_id => $template) {
                 if ('dept' == $template['category']) {
-                    $staff_setting = $settings[$template_id]->getVar('staff_setting');
-                    if (4 == $staff_setting) {
-                        $staff_enabled = false;
-                    } elseif (2 == $staff_setting) {
-                        $staff_options = $settings[$template_id]->getVar('staff_options');
-                        foreach ($staff_options as $role) {
-                            if (array_key_exists($role, $myRoles)) {
-                                $staff_enabled = true;
-                                break;
-                            } else {
-                                $staff_enabled = false;
+                    if (isset($settings[$template_id])) {
+                        $staff_setting = $settings[$template_id]->getVar('staff_setting');
+                        if (4 == $staff_setting) {
+                            $staff_enabled = false;
+                        } elseif (2 == $staff_setting) {
+                            $staff_options = $settings[$template_id]->getVar('staff_options');
+                            foreach ($staff_options as $role) {
+                                if (array_key_exists($role, $myRoles)) {
+                                    $staff_enabled = true;
+                                    break;
+                                } else {
+                                    $staff_enabled = false;
+                                }
                             }
                         }
                     }
-
                     $deptNotification[] = [
                         'id'            => $template_id,
                         'name'          => $template['name'],
@@ -297,10 +298,12 @@ if ($xoopsUser) {
 
             // Take used searches to get unused searches
             $aSearches = [];
-            foreach ($mySavedSearches as $savedSearch) {
-                if (!in_array($savedSearch['id'], $aUsedSearches)) {
-                    if ('' != $savedSearch['id']) {
-                        $aSearches[$savedSearch['id']] = $savedSearch;
+            if(is_array($mySavedSearches) && count($mySavedSearches) > 0) {
+                foreach ($mySavedSearches as $savedSearch) {
+                    if (!in_array($savedSearch['id'], $aUsedSearches)) {
+                        if ('' != $savedSearch['id']) {
+                            $aSearches[$savedSearch['id']] = $savedSearch;
+                        }
                     }
                 }
             }

@@ -24,7 +24,7 @@ if ($xoopsUser) {
     $sort_order   = ['ASC', 'DESC'];
     $sort         = '';
     $order        = '';
-    $displayName  =& $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+    $displayName  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
     $returnPage   = false;
     $aReturnPages = ['profile'];
     if (isset($_GET['return']) && in_array($_GET['return'], $aReturnPages)) {
@@ -91,7 +91,7 @@ if ($xoopsUser) {
             }
             $GLOBALS['xoopsOption']['template_main'] = 'xhelp_editSearch.tpl';   // Set template
             require XOOPS_ROOT_PATH . '/header.php';                     // Include the page header
-            $mySearch =& $hSavedSearch->get($searchid);
+            $mySearch = $hSavedSearch->get($searchid);
             $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
             if (is_object($mySearch)) {   // Go through saved search info, set values on page
                 $vars        = [
@@ -210,13 +210,13 @@ if ($xoopsUser) {
                     $xoopsTpl->assign('xhelp_hasCustFields', false);
                 }
                 $_xhelpSession->set('xhelp_custFields', $aFields);
-                $staff =& xhelp\Utility::getStaff($displayName);
+                $staff = xhelp\Utility::getStaff($displayName);
                 $xoopsTpl->assign('xhelp_staff', $staff);
                 $hMember = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
                 if (1 == $xoopsModuleConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
-                    $depts =& $hMember->getVisibleDepartments($xoopsUser->getVar('uid'));
+                    $depts = $hMember->getVisibleDepartments($xoopsUser->getVar('uid'));
                 } else {
-                    $depts =& $hMember->membershipByStaff($xoopsUser->getVar('uid'));
+                    $depts = $hMember->membershipByStaff($xoopsUser->getVar('uid'));
                 }
                 foreach ($depts as $dept) {
                     $myDepts[$dept->getVar('id')] = $dept->getVar('department');
@@ -325,7 +325,7 @@ if ($xoopsUser) {
                 if (isset($_REQUEST['savedSearch']) && 0 != $_REQUEST['savedSearch']) {     // If this is a saved search
 
                     if (!isset($_POST['delete_savedSearch'])) {   // If not deleting saved search
-                        $mySavedSearch =& $hSavedSearch->get($_REQUEST['savedSearch']);
+                        $mySavedSearch = $hSavedSearch->get($_REQUEST['savedSearch']);
                         $crit          = unserialize($mySavedSearch->getVar('search'));                   // Set $crit object
                         $pagenav_vars  = $mySavedSearch->getVar('pagenav_vars');     // set pagenav vars
 
@@ -334,11 +334,11 @@ if ($xoopsUser) {
                         }
                         $start = $crit->getStart();                         // Set start
 
-                        if ($custFields =& $_xhelpSession->get('xhelp_custFields')) {     // Custom fields
+                        if ($custFields = $_xhelpSession->get('xhelp_custFields')) {     // Custom fields
                             $hasCustFields = true;
                         }
                     } else {        // If deleting saved search
-                        $mySavedSearch =& $aSavedSearches[(int)$_REQUEST['savedSearch']];   // Retrieve saved search
+                        $mySavedSearch = $aSavedSearches[(int)$_REQUEST['savedSearch']];   // Retrieve saved search
                         if (XHELP_GLOBAL_UID == $mySavedSearch['uid']) {
                             redirect_header(XHELP_BASE_URL . '/search.php', 3, _XHELP_MSG_NO_DEL_SEARCH);
                         }
@@ -368,7 +368,7 @@ if ($xoopsUser) {
                     //hack
                     $crit->add($date_criteria);
                     //end of hack
-                    if ($custFields =& $_xhelpSession->get('xhelp_custFields')) {     // Custom fields
+                    if ($custFields = $_xhelpSession->get('xhelp_custFields')) {     // Custom fields
                         $hasCustFields = false;
                         foreach ($custFields as $field) {
                             $fieldname = $field['fieldname'];
@@ -439,9 +439,9 @@ if ($xoopsUser) {
                         if (strlen($submittedBy) > 0) {
                             if (!is_numeric($submittedBy)) {
                                 $hMember = xoops_getHandler('member');
-                                if ($users =& $hMember->getUsers(new \Criteria('uname', $submittedBy))) {
+                                if ($users = $hMember->getUsers(new \Criteria('uname', $submittedBy))) {
                                     $submittedBy = $users[0]->getVar('uid');
-                                } elseif ($users =& $hMember->getUsers(new \Criteria('email', "%$submittedBy%", 'LIKE'))) {
+                                } elseif ($users = $hMember->getUsers(new \Criteria('email', "%$submittedBy%", 'LIKE'))) {
                                     $submittedBy = $users[0]->getVar('uid');
                                 } else {
                                     $submittedBy = -1;
@@ -469,7 +469,7 @@ if ($xoopsUser) {
 
                     if (isset($_POST['save']) && 1 == $_POST['save']) {
                         if (isset($_POST['searchid']) && 0 != $_POST['searchid']) {
-                            $exSearch =& $hSavedSearch->get((int)$_POST['searchid']);
+                            $exSearch = $hSavedSearch->get((int)$_POST['searchid']);
                             $exSearch->setVar('uid', $xoopsUser->getVar('uid'));
                             $exSearch->setVar('name', $_POST['searchName']);
                             $exSearch->setVar('search', serialize($crit));
@@ -517,7 +517,7 @@ if ($xoopsUser) {
                     $user  = $memberHandler->getUser($ticket->getVar('uid'));
                     $owner = $memberHandler->getUser($ticket->getVar('ownership'));
                     //$closer = $memberHandler->getUser($ticket->getVar('closedBy'));
-                    $department =& $hDepartments->get($ticket->getVar('department'));
+                    $department = $hDepartments->get($ticket->getVar('department'));
                     //if ($owner) {
                     $overdue = false;
                     if ($ticket->isOverdue()) {
@@ -600,14 +600,14 @@ if ($xoopsUser) {
                 '2' => _XHELP_PRIORITY2,
                 '1' => _XHELP_PRIORITY1
             ]);
-            $staff =& xhelp\Utility::getStaff($displayName);
+            $staff = xhelp\Utility::getStaff($displayName);
             $xoopsTpl->assign('xhelp_staff', $staff);
             $hMember = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
             if (1 == $xoopsModuleConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
                 $hMembership = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-                $depts       =& $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
+                $depts       = $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
             } else {
-                $depts =& $hMember->membershipByStaff($xoopsUser->getVar('uid'));
+                $depts = $hMember->membershipByStaff($xoopsUser->getVar('uid'));
             }
             foreach ($depts as $dept) {
                 $myDepts[$dept->getVar('id')] = $dept->getVar('department');

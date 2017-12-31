@@ -101,23 +101,23 @@ define('_MI_XHELP_REALNAME', 'Real Name');
 
 // Admin Menu variables
 define('_MI_XHELP_MENU_BLOCKS', 'Manage Blocks');
-define('_MI_XHELP_MENU_MANAGE_DEPARTMENTS', 'Manage Departments');
-define('_MI_XHELP_MENU_MANAGE_STAFF', 'Manage Staff');
+define('_MI_XHELP_MENU_MANAGE_DEPARTMENTS', 'Departments');
+define('_MI_XHELP_MENU_MANAGE_STAFF', 'Staff');
 define('_MI_XHELP_MENU_MODIFY_EMLTPL', 'Modify Email Templates');
 define('_MI_XHELP_MENU_MODIFY_TICKET_FIELDS', 'Modify Ticket Fields');
-define('_MI_XHELP_MENU_GROUP_PERM', 'Group Permissions');
+define('_MI_XHELP_MENU_GROUP_PERM', 'Permissions');
 define('_MI_XHELP_MENU_ADD_STAFF', 'Add Staff');
-define('_MI_XHELP_MENU_MIMETYPES', 'Mimetype Management');
+define('_MI_XHELP_MENU_MIMETYPES', 'Mimetypes');
 define('_MI_XHELP_MENU_CHECK_TABLES', 'Check Tables');
-define('_MI_XHELP_MENU_MANAGE_ROLES', 'Manage Roles');
+define('_MI_XHELP_MENU_MANAGE_ROLES', 'Roles');
 define('_MI_XHELP_MENU_MAIL_EVENTS', 'Mail Events');
 define('_MI_XHELP_MENU_CHECK_EMAIL', 'Check Email');
-define('_MI_XHELP_MENU_MANAGE_FILES', 'Manage Files');
+define('_MI_XHELP_MENU_MANAGE_FILES', 'Files');
 define('_MI_XHELP_ADMIN_ABOUT', 'About');
-define('_MI_XHELP_TEXT_MANAGE_STATUSES', 'Manage Statuses');
+define('_MI_XHELP_TEXT_MANAGE_STATUSES', 'Statuses');
 define('_MI_XHELP_TEXT_MANAGE_FIELDS', 'Custom Fields');
-define('_MI_XHELP_TEXT_NOTIFICATIONS', 'Manage Notifications');
-define('_MI_XHELP_TEXT_MANAGE_FAQ', 'Manage FAQ');
+define('_MI_XHELP_TEXT_NOTIFICATIONS', 'Notifications');
+define('_MI_XHELP_TEXT_MANAGE_FAQ', 'FAQ');
 
 //NOTIFICATION vars
 define('_MI_XHELP_DEPT_NOTIFY', 'Department');

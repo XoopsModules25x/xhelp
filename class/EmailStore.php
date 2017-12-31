@@ -3,6 +3,7 @@
 //
 
 use Xoopsmodules\xhelp;
+use Xoopsmodules\xhelp\validation;
 
 /**
  * class EmailStore
@@ -172,9 +173,9 @@ class EmailStore
                 fwrite($fp, $attach['content']);
                 fclose($fp);
 
-                $validators[] = new ValidateMimeType($dir . $fname, $attach['content-type'], $allowed_mimetypes);
-                $validators[] = new ValidateFileSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadSize']);
-                $validators[] = new ValidateImageSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
+                $validators[] = new validation\ValidateMimeType($dir . $fname, $attach['content-type'], $allowed_mimetypes);
+                $validators[] = new validation\ValidateFileSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadSize']);
+                $validators[] = new validation\ValidateImageSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
 
                 if (!xhelp\Utility::checkRules($validators, $errors)) {
                     //Remove the file

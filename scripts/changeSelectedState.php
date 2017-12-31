@@ -9,11 +9,11 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 }
 require_once XHELP_JPSPAN_PATH . '/JPSpan.php';       // Including this sets up the JPSPAN constants
 require_once JPSPAN . 'Server/PostOffice.php';      // Load the PostOffice server
-//require_once XHELP_BASE_PATH . '/functions.php';
+//require_once XHELP_BASE_PATH . '/functions.php'; //moved functions to /Utility
 
 // Create the PostOffice server
 $server = new JPSpan_Server_PostOffice();
-$server->addHandler(new xhelp\WebLib());
+$server->addHandler(new XHelpWebLib());
 
 if (isset($_SERVER['QUERY_STRING']) && 0 == strcasecmp($_SERVER['QUERY_STRING'], 'client')) {
 
@@ -35,7 +35,7 @@ if (isset($_SERVER['QUERY_STRING']) && 0 == strcasecmp($_SERVER['QUERY_STRING'],
 /**
  * class WebLib
  */
-class WebLib
+class XHelpWebLib
 {
     /**
      * @param $state

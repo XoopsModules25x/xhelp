@@ -60,7 +60,7 @@ function updateDepts()
         $deptid   = $dept->getVar('id');
         $deptname = $dept->getVar('department');
 
-        $hConfigOption = xhelp\Utility::getHandler('configoption');
+        $hConfigOption = xhelp\Utility::getHandler('ConfigOption');
         $newOption     = $hConfigOption->create();
         $newOption->setVar('confop_name', $deptname);
         $newOption->setVar('confop_value', $deptid);
@@ -100,7 +100,7 @@ function removeDepts()
     }
 
     // Remove the config options
-    $hConfigOption = xhelp\Utility::getHandler('configoption');
+    $hConfigOption = xhelp\Utility::getHandler('ConfigOption');
     $crit          = new \Criteria('conf_id', $xhelp_config);
     $configOptions = $hConfigOption->getObjects($crit);
 

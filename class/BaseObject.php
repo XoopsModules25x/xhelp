@@ -48,7 +48,7 @@ class BaseObject extends \XoopsObject
      * @return string SQL query
      * @access private
      */
-    public function _selectQuery($criteria = null)
+    public function _selectQuery(\CriteriaElement $criteria = null)
     {
         $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
         if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
