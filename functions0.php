@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 //Sanity Check: Ensure that /include/constants.php is included
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
@@ -14,7 +14,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
  *
  * @access public
  */
-function xhelp\Utility::formatTime($time)
+function Xhelp\Utility::formatTime($time)
 {
     $values = xhelpGetElapsedTime($time);
 
@@ -163,7 +163,7 @@ function xhelpGetStatus($status)
     static $statuses;
 
     $status  = (int)$status;
-    $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
     //Get Statuses from database if first request
     if (!$statuses) {
@@ -224,7 +224,7 @@ function xhelpGetEventClass($class)
  */
 function xhelpSetDept($tickets, $dept)
 {
-    $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
 
     return $hTicket->updateAll('department', (int)$dept, $crit);
@@ -241,7 +241,7 @@ function xhelpSetDept($tickets, $dept)
  */
 function xhelpSetPriority($tickets, $priority)
 {
-    $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
 
     return $hTicket->updateAll('priority', (int)$priority, $crit);
@@ -258,7 +258,7 @@ function xhelpSetPriority($tickets, $priority)
  */
 function xhelpSetStatus($tickets, $status)
 {
-    $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
 
     return $hTicket->updateAll('status', (int)$status, $crit);
@@ -277,7 +277,7 @@ function xhelpSetStatus($tickets, $status)
  */
 function xhelpSetOwner($tickets, $owner)
 {
-    $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
 
     return $hTicket->updateAll('ownership', (int)$owner, $crit);
@@ -291,7 +291,7 @@ function xhelpSetOwner($tickets, $owner)
  * @param        $sresponse
  * @param  int   $timespent Number of minutes spent on ticket
  * @param  bool  $private   Should this be a private message?
- * @return xhelp\Responses Response information
+ * @return Xhelp\Responses Response information
  *
  * @internal param string $response response text to add
  * @access   public
@@ -299,8 +299,8 @@ function xhelpSetOwner($tickets, $owner)
 function &xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = false)
 {
     global $xoopsUser;
-    $hResponse    = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
-    $hTicket      = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hResponse    = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+    $hTicket      = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $updateTime   = time();
     $uid          = $xoopsUser->getVar('uid');
     $ret          = true;
@@ -345,7 +345,7 @@ function &xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = fals
  */
 function xhelpDeleteTickets($tickets)
 {
-    $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
 
     return $hTicket->deleteAll($crit);
@@ -361,7 +361,7 @@ function xhelpDeleteTickets($tickets)
  */
 function &xhelpGetTickets(&$tickets)
 {
-    $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $crit    = new \Criteria('t.id', '(' . implode($tickets, ',') . ')', 'IN');
 
     return $hTicket->getObjects($crit);
@@ -731,7 +731,7 @@ function xhelpGetMBoxType($type)
  * Retrieve list of all staff members
  *
  * @param $displayName
- * @return array <a href='psi_element://xhelp\Staff'>xhelp\Staff</a> objects
+ * @return array <a href='psi_element://Xhelp\Staff'>Xhelp\Staff</a> objects
  * objects
  * @access public
  */
@@ -770,7 +770,7 @@ function xhelpCreateRoles()
         3 => ['name' => _XHELP_ROLE_NAME3, 'desc' => _XHELP_ROLE_DSC3, 'value' => XHELP_ROLE_PERM_3]
     ];
 
-    $hRole = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
     foreach ($defaultRolePermissions as $key => $aRole) {
         $role = $hRole->create();
@@ -804,7 +804,7 @@ function xhelpCreateStatuses()
         3 => ['description' => _XHELP_STATUS2, 'state' => XHELP_STATE_RESOLVED]
     ];
 
-    $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
     foreach ($statuses as $id => $status) {
         $newStatus = $hStatus->create();
         $newStatus->setVar('id', $id);
@@ -951,7 +951,7 @@ function xhelpRemoveDBField($table, $column)
  */
 function xhelpResetStaffUpdatedTime()
 {
-    $hStaff = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
     return $hStaff->updateAll('permTimestamp', time());
 }
@@ -1020,12 +1020,12 @@ function &xhelpGetHandler($handler)
  * Retrieve all saved searches for the specified user(s)
  *
  * @param  mixed $users Either an integer (UID) or an array of UIDs
- * @return array xhelp\SavedSearch objects
+ * @return array Xhelp\SavedSearch objects
  * @access public
  */
 function xhelpGetSavedSearches($users)
 {
-    $hSavedSearch = new xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+    $hSavedSearch = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
 
     if (is_array($users)) {
         $crit = new \Criteria('uid', '(' . implode($users, ',') . ')', 'IN');
@@ -1058,8 +1058,8 @@ function xhelpGetSavedSearches($users)
  */
 function xhelpCreateNotifications()
 {
-    $hRole         = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
-    $hNotification = new xhelp\NotificationHandler($GLOBALS['xoopsDB']);
+    $hRole         = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $hNotification = new Xhelp\NotificationHandler($GLOBALS['xoopsDB']);
 
     // Get list of all roles
     $roles = $hRole->getObjects();
@@ -1246,9 +1246,9 @@ function xhelpIncludeReportLangFile($reportName)
  */
 function xhelpCreateDefaultTicketLists()
 {
-    $hSavedSearch = new xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
-    $hTicketList  = new xhelp\TicketListHandler($GLOBALS['xoopsDB']);
-    $hStaff       = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hSavedSearch = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+    $hTicketList  = new Xhelp\TicketListHandler($GLOBALS['xoopsDB']);
+    $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
     $ticketLists = [XHELP_QRY_STAFF_HIGHPRIORITY, XHELP_QRY_STAFF_NEW, XHELP_QRY_STAFF_MINE, XHELP_QRY_STAFF_ALL];
     $i           = 1;
@@ -1317,14 +1317,14 @@ function xhelpCreateDefaultTicketLists()
 }
 
 /**
- * @return xhelp\EventService
+ * @return Xhelp\EventService
  */
 function &xhelpNewEventService()
 {
     static $instance;
 
     if (null === $instance) {
-        $instance = new xhelp\EventService();
+        $instance = new Xhelp\EventService();
     }
 
     return $instance;

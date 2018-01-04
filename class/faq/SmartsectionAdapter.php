@@ -1,7 +1,7 @@
 <?php
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 //Sanity Check: make sure that file is not being accessed directly
 if (!defined('XHELP_CLASS_PATH')) {
@@ -33,7 +33,7 @@ define('XHELP_SSECTION_FORCEAPPROVAL', 0); //Should articles be reviewed prior t
 /**
  * class SmartsectionAdapter
  */
-class SmartsectionAdapter extends xhelp\FaqAdapter
+class SmartsectionAdapter extends Xhelp\FaqAdapter
 {
     /**
      * Does application support categories?
@@ -54,7 +54,7 @@ class SmartsectionAdapter extends xhelp\FaqAdapter
      * version - version of this plugin
      * tested_versions - supported application versions
      * url - support url for plugin
-     * module_dir - module directory name (not needed if class overloads the isActive() function from xhelp\FaqAdapter)
+     * module_dir - module directory name (not needed if class overloads the isActive() function from Xhelp\FaqAdapter)
      * @access public
      */
     public $meta = [
@@ -80,20 +80,20 @@ class SmartsectionAdapter extends xhelp\FaqAdapter
 
     /**
      * getCategories: retrieve the categories for the module
-     * @return array Array of xhelp\FaqCategory
+     * @return array Array of Xhelp\FaqCategory
      */
     public function &getCategories()
     {
         $ret = [];
-        // Create an instance of the xhelp\FaqCategoryHandler
-        $hFaqCategory = new xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
+        // Create an instance of the Xhelp\FaqCategoryHandler
+        $hFaqCategory = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
 
         // Get all the categories for the application
         $hSmartCategory = smartsection_gethandler('category');
         $categories     = $hSmartCategory->getCategories(0, 0, -1);
 
         //Convert the module specific category to the
-        //xhelp\FaqCategory object for standarization
+        //Xhelp\FaqCategory object for standarization
         foreach ($categories as $category) {
             $faqcat = $hFaqCategory->create();
             $faqcat->setVar('id', $category->getVar('categoryid'));
@@ -109,7 +109,7 @@ class SmartsectionAdapter extends xhelp\FaqAdapter
 
     /**
      * storeFaq: store the FAQ in the application's specific database (required)
-     * @param  xhelp\Faq $faq The faq to add
+     * @param  Xhelp\Faq $faq The faq to add
      * @return bool     true (success) / false (failure)
      * @access public
      */
@@ -125,7 +125,7 @@ class SmartsectionAdapter extends xhelp\FaqAdapter
 
         $ssConfig = smartsection_getModuleConfig();
 
-        // Create page in smartsection from xhelp\Faq object
+        // Create page in smartsection from Xhelp\Faq object
         $hSSItem = smartsection_gethandler('item');
         $itemObj = $hSSItem->create();
 
@@ -182,7 +182,7 @@ class SmartsectionAdapter extends xhelp\FaqAdapter
     /**
      * Create the url going to the faq article
      *
-     * @param $faq xhelp\Faq object
+     * @param $faq Xhelp\Faq object
      * @return string
      * @access private
      */

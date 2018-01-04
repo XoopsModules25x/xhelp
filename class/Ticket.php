@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -32,12 +32,12 @@ require_once $path . '/include/cp_header.php';
 global $xoopsUser;
 
 /**
- * xhelp\Ticket class
+ * Xhelp\Ticket class
  *
  * Information about an individual ticket
  *
  * <code>
- * $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+ * $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
  * $ticket = $hTicket->get(1);
  * $ticket_id = $ticket->getVar('id');
  * $responses = $ticket->getResponses();
@@ -51,7 +51,7 @@ global $xoopsUser;
 class Ticket extends \XoopsObject
 {
     /**
-     * xhelp\Ticket constructor.
+     * Xhelp\Ticket constructor.
      * @param null $id
      */
     public function __construct($id = null)
@@ -88,13 +88,13 @@ class Ticket extends \XoopsObject
     /**
      * retrieve the department object associated with this ticket
      *
-     * @return object {@link xhelp\Department} object
+     * @return object {@link Xhelp\Department} object
      * @access  public
      */
 
     public function getDepartment()
     {
-        $hDept = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDept = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         return $hDept->get($this->getVar('department'));
     }
@@ -121,7 +121,7 @@ class Ticket extends \XoopsObject
     /**
      * retrieve all emails attached to this ticket object
      * @param bool $activeOnly
-     * @return array of <a href='psi_element://xhelp\TicketEmail'>xhelp\TicketEmail</a> objects
+     * @return array of <a href='psi_element://Xhelp\TicketEmail'>Xhelp\TicketEmail</a> objects
      * objects
      * @access public
      */
@@ -133,7 +133,7 @@ class Ticket extends \XoopsObject
             return $arr;
         }
 
-        $hEmails = new xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $hEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
         $crit    = new \CriteriaCompo(new \Criteria('ticketid', $id));
         if ($activeOnly) {
             $crit->add(new \Criteria('suppress', 0));
@@ -146,7 +146,7 @@ class Ticket extends \XoopsObject
     /**
      * retrieve all files attached to this ticket object
      *
-     * @return array of {@link xhelp\File} objects
+     * @return array of {@link Xhelp\File} objects
      * @access  public
      */
     public function getFiles()
@@ -157,7 +157,7 @@ class Ticket extends \XoopsObject
             return $arr;
         }
 
-        $hFiles = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+        $hFiles = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
         $crit   = new \CriteriaCompo(new \Criteria('ticketid', $id));
         $crit->setSort('responseid');
         $arr = $hFiles->getObjects($crit);
@@ -170,7 +170,7 @@ class Ticket extends \XoopsObject
      *
      * @param int $limit
      * @param int $start
-     * @return array of <a href='psi_element://xhelp\Responses'>xhelp\Responses</a> objects
+     * @return array of <a href='psi_element://Xhelp\Responses'>Xhelp\Responses</a> objects
      * objects
      * @access  public
      */
@@ -181,7 +181,7 @@ class Ticket extends \XoopsObject
         if (!$id) {
             return $arr;
         }
-        $hResponses = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+        $hResponses = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
         $criteria   = new \CriteriaCompo(new \Criteria('ticketid', $id));
         $criteria->setSort('updateTime');
         $criteria->setOrder('DESC');
@@ -199,7 +199,7 @@ class Ticket extends \XoopsObject
      */
     public function getResponseCount()
     {
-        $hResponses = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+        $hResponses = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
         $crit       = new \Criteria('ticketid', $this->getVar('id'));
 
         return $hResponses->getCount($crit);
@@ -209,7 +209,7 @@ class Ticket extends \XoopsObject
      *  Get all reviews for the current ticket
      * @param int $limit
      * @param int $start
-     * @return array of <a href='psi_element://xhelp\StaffReview'>xhelp\StaffReview</a>
+     * @return array of <a href='psi_element://Xhelp\StaffReview'>Xhelp\StaffReview</a>
      */
     public function getReviews($limit = 0, $start = 0)
     {
@@ -218,7 +218,7 @@ class Ticket extends \XoopsObject
         if (!$id) {
             return $arr;
         }
-        $hStaffReview = new xhelp\StaffReviewHandler($GLOBALS['xoopsDB']);
+        $hStaffReview = new Xhelp\StaffReviewHandler($GLOBALS['xoopsDB']);
         $crit         = new \CriteriaCompo(new \Criteria('ticketid', $id));
         $crit->setSort('responseid');
         $crit->setOrder('DESC');
@@ -235,7 +235,7 @@ class Ticket extends \XoopsObject
      *
      * @param int $limit
      * @param int $start
-     * @return array of <a href='psi_element://xhelp\LogMessages'>xhelp\LogMessages</a> objects
+     * @return array of <a href='psi_element://Xhelp\LogMessages'>Xhelp\LogMessages</a> objects
      * objects
      * @access  public
      */
@@ -246,7 +246,7 @@ class Ticket extends \XoopsObject
         if (!$id) {
             return $arr;
         }
-        $hLogMessages = new xhelp\LogMessageHandler($GLOBALS['xoopsDB']);
+        $hLogMessages = new Xhelp\LogMessageHandler($GLOBALS['xoopsDB']);
         $criteria     = new \CriteriaCompo(new \Criteria('ticketid', $id));
         $criteria->setSort('lastUpdated');
         $criteria->setOrder('DESC');
@@ -269,12 +269,12 @@ class Ticket extends \XoopsObject
         global $xoopsUser, $xoopsDB, $xoopsModule;
         // require_once XHELP_CLASS_PATH . '/uploader.php';
 
-        $config = xhelp\Utility::getModuleConfig();
+        $config = Xhelp\Utility::getModuleConfig();
 
         $ticketid = $this->getVar('id');
 
         if (null === $allowed_mimetypes) {
-            $hMime             = new xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+            $hMime             = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
             $allowed_mimetypes = $hMime->checkMimeTypes();
             if (!$allowed_mimetypes) {
                 return false;
@@ -288,7 +288,7 @@ class Ticket extends \XoopsObject
             mkdir(XHELP_UPLOAD_PATH, 0757);
         }
 
-        $uploader = new xhelp\MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
+        $uploader = new Xhelp\MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
         if ($uploader->fetchMedia($post_field)) {
             if (null === $response) {
                 $uploader->setTargetFileName($ticketid . '_' . $uploader->getMediaName());
@@ -300,7 +300,7 @@ class Ticket extends \XoopsObject
                 }
             }
             if ($uploader->upload()) {
-                $hFile = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+                $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
                 $file  = $hFile->create();
                 $file->setVar('filename', $uploader->getSavedFileName());
                 $file->setVar('ticketid', $ticketid);
@@ -327,7 +327,7 @@ class Ticket extends \XoopsObject
     public function checkUpload($post_field, &$allowed_mimetypes, &$errors)
     {
         // require_once XHELP_CLASS_PATH . '/uploader.php';
-        $config = xhelp\Utility::getModuleConfig();
+        $config = Xhelp\Utility::getModuleConfig();
 
         $maxfilesize   = $config['xhelp_uploadSize'];
         $maxfilewidth  = $config['xhelp_uploadWidth'];
@@ -335,7 +335,7 @@ class Ticket extends \XoopsObject
         $errors        = [];
 
         if (null === $allowed_mimetypes) {
-            $hMime             = new xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+            $hMime             = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
             $allowed_mimetypes = $hMime->checkMimeTypes($post_field);
             if (!$allowed_mimetypes) {
                 $errors[] = _XHELP_MESSAGE_WRONG_MIMETYPE;
@@ -343,7 +343,7 @@ class Ticket extends \XoopsObject
                 return false;
             }
         }
-        $uploader = new xhelp\MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
+        $uploader = new Xhelp\MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
 
         if ($uploader->fetchMedia($post_field)) {
             return true;
@@ -383,7 +383,7 @@ class Ticket extends \XoopsObject
      */
     public function elapsed()
     {
-        $tmp = xhelp\Utility::getElapsedTime($this->getVar('elapsed'));
+        $tmp = Xhelp\Utility::getElapsedTime($this->getVar('elapsed'));
 
         return $this->_prettyElapsed($tmp);
     }
@@ -393,7 +393,7 @@ class Ticket extends \XoopsObject
      */
     public function lastUpdate()
     {
-        $tmp = xhelp\Utility::getElapsedTime($this->getVar('lastUpdate'));
+        $tmp = Xhelp\Utility::getElapsedTime($this->getVar('lastUpdate'));
 
         return $this->_prettyElapsed($tmp);
     }
@@ -448,8 +448,8 @@ class Ticket extends \XoopsObject
      */
     public function isOverdue()
     {
-        $config  = xhelp\Utility::getModuleConfig();
-        $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+        $config  = Xhelp\Utility::getModuleConfig();
+        $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
         if (isset($config['xhelp_overdueTime'])) {
             $overdueTime = $config['xhelp_overdueTime'];
 
@@ -477,7 +477,7 @@ class Ticket extends \XoopsObject
         $uid = (int)$uid;
 
         if ('' != $email) {
-            $hTicketEmails = new xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+            $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
             $tEmail        = $hTicketEmails->create();
 
             $tEmail->setVar('ticketid', $this->getVar('id'));
@@ -503,7 +503,7 @@ class Ticket extends \XoopsObject
         $ticket2_id = (int)$ticket2_id;
 
         // Retrieve $ticket2
-        $hTicket     = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $hTicket     = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
         $mergeTicket = $hTicket->get($ticket2_id);
 
         // Figure out which ticket is older
@@ -522,7 +522,7 @@ class Ticket extends \XoopsObject
         $responseid = $keepTicket->addResponse($loseTicket->getVar('uid'), $keep_id, $loseTicket->getVar('subject', 'e') . ' - ' . $loseTicket->getVar('description', 'e'), $loseTicket->getVar('posted'), $loseTicket->getVar('userIP'));
 
         // Copy 2nd ticket file attachments to $this ticket
-        $hFiles = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+        $hFiles = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
         $crit   = new \Criteria('ticketid', $lose_id);
         $files  = $hFiles->getObjects($crit);
         foreach ($files as $file) {
@@ -531,7 +531,7 @@ class Ticket extends \XoopsObject
         $success = $hFiles->updateAll('ticketid', $keep_id, $crit);
 
         // Copy 2nd ticket responses as responses to $this ticket
-        $hResponses = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+        $hResponses = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
         $crit       = new \Criteria('ticketid', $lose_id);
         $success    = $hResponses->updateAll('ticketid', $keep_id, $crit);
 
@@ -541,7 +541,7 @@ class Ticket extends \XoopsObject
         $success = $hFiles->updateAll('responseid', $responseid, $crit);
 
         // Add 2nd ticket submitter to $this ticket via ticketEmails table
-        $hTicketEmails = new xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
         $crit          = new \Criteria('ticketid', $lose_id);
         $success       = $hTicketEmails->updateAll('ticketid', $keep_id, $crit);
 
@@ -567,7 +567,7 @@ class Ticket extends \XoopsObject
         }
 
         //2. Is the user one of the "ticket submitters"
-        $hTicketEmails = new xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
         $crit          = new \CriteriaCompo(new \Criteria('ticketid', $this->getVar('id')));
         $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
         $count = $hTicketEmails->getCount($crit);
@@ -615,7 +615,7 @@ class Ticket extends \XoopsObject
         $private    = (int)$private;
         $timeSpent  = (int)$timeSpent;
 
-        $hResponse   = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+        $hResponse   = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
         $newResponse = $hResponse->create();
         $newResponse->setVar('uid', $uid);
         $newResponse->setVar('ticketid', $ticketid);
@@ -643,10 +643,10 @@ class Ticket extends \XoopsObject
     {
         $ticketid = $this->getVar('id');
 
-        $hFields = new xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+        $hFields = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
         $fields  = $hFields->getObjects(null);                  // Retrieve custom fields
 
-        $hFieldValues = new xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
+        $hFieldValues = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
         $values       = $hFieldValues->get($ticketid);               // Retrieve custom field values
         $aCustFields  = [];
         foreach ($fields as $field) {

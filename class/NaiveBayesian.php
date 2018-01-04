@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  ***** BEGIN LICENSE BLOCK *****
@@ -34,7 +34,7 @@
  ***** END LICENSE BLOCK *****
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * class NaiveBayesian
@@ -55,7 +55,7 @@ class NaiveBayesian
     public $nbs = null;
 
     /**
-     * xhelp\NaiveBayesian constructor.
+     * Xhelp\NaiveBayesian constructor.
      * @param $nbs
      */
     public function __construct($nbs)
@@ -299,7 +299,7 @@ class NaiveBayesianStorage
     public $myts = null;
 
     /**
-     * xhelp\NaiveBayesianStorage constructor.
+     * Xhelp\NaiveBayesianStorage constructor.
      */
     public function __construct()
     {
@@ -471,7 +471,7 @@ class NaiveBayesianStorage
      */
     public function getReference($doc_id)
     {
-        $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
         $ticket  = $hTicket->get($doc_id);
         $ref     = [];
 

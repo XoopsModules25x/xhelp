@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * Manages the retrieval, loading, and unloading of plugins
@@ -22,13 +22,13 @@ class PluginHandler
     public $_plugins;
 
     /**
-     * xhelp\PluginHandler constructor.
+     * Xhelp\PluginHandler constructor.
      * @param \XoopsDatabase $db
      */
     public function __construct(\XoopsDatabase $db)
     {
         $this->_db     = $db;
-        $this->_active = unserialize(xhelp\Utility::getMeta('plugins'));
+        $this->_active = unserialize(Xhelp\Utility::getMeta('plugins'));
     }
 
     /**

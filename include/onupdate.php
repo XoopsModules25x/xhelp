@@ -17,7 +17,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 
 if ((!defined('XOOPS_ROOT_PATH')) || !($GLOBALS['xoopsUser'] instanceof XoopsUser)
@@ -48,10 +48,10 @@ function tableExists($tablename)
 function xoops_module_pre_update_xhelp(\XoopsModule $module)
 {
     $moduleDirName = basename(dirname(__DIR__));
-    /** @var xhelp\Helper $helper */
-    /** @var xhelp\Utility $utility */
-    $helper       = xhelp\Helper::getInstance();
-    $utility      = new xhelp\Utility();
+    /** @var Xhelp\Helper $helper */
+    /** @var Xhelp\Utility $utility */
+    $helper       = Xhelp\Helper::getInstance();
+    $utility      = new Xhelp\Utility();
 
     $xoopsSuccess = $utility::checkVerXoops($module);
     $phpSuccess   = $utility::checkVerPhp($module);
@@ -72,12 +72,12 @@ function xoops_module_update_xhelp(\XoopsModule $module, $previousVersion = null
     $moduleDirName = basename(dirname(__DIR__));
     $capsDirName   = strtoupper($moduleDirName);
 
-    /** @var xhelp\Helper $helper */
-    /** @var xhelp\Utility $utility */
-    /** @var xhelp\Configurator $configurator */
-    $helper  = xhelp\Helper::getInstance();
-    $utility = new xhelp\Utility();
-    $configurator = new xhelp\Configurator();
+    /** @var Xhelp\Helper $helper */
+    /** @var Xhelp\Utility $utility */
+    /** @var Xhelp\Configurator $configurator */
+    $helper  = Xhelp\Helper::getInstance();
+    $utility = new Xhelp\Utility();
+    $configurator = new Xhelp\Configurator();
 
     if ($previousVersion < 240) {
 
@@ -151,6 +151,8 @@ function xoops_module_update_xhelp(\XoopsModule $module, $previousVersion = null
                 $utilityClass::copyFile($file, $dest);
             }
         }
+
+
 
         //delete .html entries from the tpl table
         $sql = 'DELETE FROM ' . $GLOBALS['xoopsDB']->prefix('tplfile') . " WHERE `tpl_module` = '" . $module->getVar('dirname', 'n') . '\' AND `tpl_file` LIKE \'%.html%\'';

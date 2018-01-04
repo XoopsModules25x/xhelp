@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -28,15 +28,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\ResponsesHandler class
+ * Xhelp\ResponsesHandler class
  *
- * Response Handler for xhelp\Responses class
+ * Response Handler for Xhelp\Responses class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class ResponsesHandler extends xhelp\BaseObjectHandler
+class ResponsesHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -122,7 +122,7 @@ class ResponsesHandler extends xhelp\BaseObjectHandler
     {
 
         // Remove file associated with this response
-        $hFiles = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+        $hFiles = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
         $crit   = new \CriteriaCompo(new \Criteria('ticketid', $obj->getVar('ticketid')));
         $crit->add(new \Criteria('responseid', $obj->getVar('responseid')));
         if (!$hFiles->deleteAll($crit)) {

@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -30,7 +30,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 /**
  * class TicketSolutionHandler
  */
-class TicketSolutionHandler extends xhelp\BaseObjectHandler
+class TicketSolutionHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -114,8 +114,8 @@ class TicketSolutionHandler extends xhelp\BaseObjectHandler
     /**
      * Recommend solutions to a ticket based on similarity
      * to previous tickets and their solutions
-     * @param  xhelp\Ticket $ticket ticket to search for solutions
-     * @return array       Value 1 = bayesian likeness probability, Value 2 = xhelp\TicketSolution object
+     * @param  Xhelp\Ticket $ticket ticket to search for solutions
+     * @return array       Value 1 = bayesian likeness probability, Value 2 = Xhelp\TicketSolution object
      * @access public
      */
     public function &recommendSolutions($ticket)
@@ -123,7 +123,7 @@ class TicketSolutionHandler extends xhelp\BaseObjectHandler
         $ret = [];
 
         //1. Get list of bayesian categories(tickets) similar to current ticket
-        $bayes    = new xhelp\NaiveBayesian(new xhelp\NaiveBayesianStorage);
+        $bayes    = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage);
         $document = $ticket->getVar('subject') . "\r\n" . $ticket->getVar('description');
         $cats     = $bayes->categorize($document);
 
@@ -153,7 +153,7 @@ class TicketSolutionHandler extends xhelp\BaseObjectHandler
         //1. Store solution in db for current ticket
         if ($this->insert($solution)) {
             //2. Train Bayesian DB
-            $bayes      = new xhelp\NaiveBayesian(new xhelp\NaiveBayesianStorage);
+            $bayes      = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage);
             $documentid = (string)$ticket->getVar('id');
             $categoryid = (string)$ticket->getVar('id');
             $document   = $ticket->getVar('subject') . "\r\n" . $ticket->getVar('description');

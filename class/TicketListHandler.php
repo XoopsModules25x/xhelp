@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -27,15 +27,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\TicketListHandler class
+ * Xhelp\TicketListHandler class
  *
- * TicketList Handler for xhelp\TicketList class
+ * TicketList Handler for Xhelp\TicketList class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class TicketListHandler extends xhelp\BaseObjectHandler
+class TicketListHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -207,7 +207,7 @@ class TicketListHandler extends xhelp\BaseObjectHandler
      */
     public function createStaffGlobalLists($uid)
     {
-        $hSavedSearches = new xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+        $hSavedSearches = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
         $uid            = (int)$uid;
 
         $crit = new \Criteria('uid', XHELP_GLOBAL_UID);

@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
@@ -65,7 +65,7 @@ switch ($op) {
 
 function deleteFile()
 {
-    $hFile = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+    $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
 
     if (!isset($_GET['fileid'])) {
         redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles', 3, _XHELP_MESSAGE_DELETE_FILE_ERR);
@@ -95,8 +95,8 @@ function deleteResolved()
         xoops_confirm(['op' => 'deleteResolved', 'ok' => 1], XHELP_BASE_URL . '/admin/file.php', _AM_XHELP_MSG_DELETE_RESOLVED);
         xoops_cp_footer();
     } else {
-        $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
-        $hFile   = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $hFile   = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
 
         $tickets = $hTicket->getObjectsByState(1);     // Memory saver - unresolved should be less tickets
 
@@ -128,7 +128,7 @@ function manageFiles()
         $can_upload = xhelp_admin_mkdir($xhelpUploadDir);
     }
 
-    $hFile = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+    $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
 
     if (isset($_POST['deleteFiles'])) {   // Delete all selected files
         $aFiles = $_POST['files'];
@@ -231,7 +231,7 @@ function manageFiles()
                       <td><input type='checkbox' name='files[]' value='" . $file->getVar('id') . "'> " . $file->getVar('id') . "</td>
                       <td><a href='" . $ticketpath . "' target='_BLANK'>" . $file->getVar('ticketid') . "</a></td>
                       <td><a href='" . $filepath . "'>" . $file->getVar('filename') . '</a></td>
-                      <td>' . xhelp\Utility::prettyBytes($filesize) . '</td>
+                      <td>' . Xhelp\Utility::prettyBytes($filesize) . '</td>
                       <td>' . $file->getVar('mimetype') . "</td>
                       <td>
                           <a href='" . XHELP_ADMIN_URL . '/file.php?op=deleteFile&amp;fileid=' . $file->getVar('id') . "'><img src='" . XOOPS_URL . "/modules/xhelp/assets/images/button_delete.png' title='" . _AM_XHELP_TEXT_DELETE . "' name='deleteFile'></a>

@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp\common;
+<?php namespace XoopsModules\Xhelp\Common;
 
 /*
  You may not change or alter any portion of this comment or credits

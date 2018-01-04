@@ -1,8 +1,8 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -44,12 +44,12 @@ class EmailParser
     /**
      * Parses Message
      * @param $msg
-     * @return xhelp\ParsedMessage
+     * @return Xhelp\ParsedMessage
      */
     public function &parseMessage(&$msg)
     {
         $struct = $this->_parseMsg($msg);
-        $newMsg = new xhelp\ParsedMessage($struct);
+        $newMsg = new Xhelp\ParsedMessage($struct);
 
         return $newMsg;
     }

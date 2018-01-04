@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -30,16 +30,16 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\DepartmentMailBoxHandler class
+ * Xhelp\DepartmentMailBoxHandler class
  *
- * Methods to work store / retrieve xhelp\DepartmentMailBoxServer
+ * Methods to work store / retrieve Xhelp\DepartmentMailBoxServer
  * objects from the database
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
  * @access  public
  * @package xhelp
  */
-class DepartmentMailBoxHandler extends xhelp\BaseObjectHandler
+class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -70,7 +70,7 @@ class DepartmentMailBoxHandler extends xhelp\BaseObjectHandler
     /**
      * retrieve server list by department
      * @param  int $depid department id
-     * @return array array of {@link xhelp\DepartmentMailBox}
+     * @return array array of {@link Xhelp\DepartmentMailBox}
      * @access public
      */
     public function &getByDepartment($depid)
@@ -121,7 +121,7 @@ class DepartmentMailBoxHandler extends xhelp\BaseObjectHandler
     /**
      * remove an email server
      *
-     * @param \XoopsObject $obj         {@link xhelp\DepartmentMailbox}
+     * @param \XoopsObject $obj         {@link Xhelp\DepartmentMailbox}
      *                                  Mailbox to delete
      * @param  bool        $force       Should bypass XOOPS delete restrictions
      * @return bool True on Successful delete
@@ -130,7 +130,7 @@ class DepartmentMailBoxHandler extends xhelp\BaseObjectHandler
     public function delete(\XoopsObject $obj, $force = false)
     {
         //Remove all Mail Events for mailbox
-        $hMailEvent = new xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+        $hMailEvent = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
         $crit       = new \Criteria('mbox_id', $obj->getVar('id'));
         $hMailEvent->deleteAll($crit);
 

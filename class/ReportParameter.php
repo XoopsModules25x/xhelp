@@ -1,13 +1,13 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 /**
- * xhelp\ReportParameter class
+ * Xhelp\ReportParameter class
  *
  * Information about an individual report parameter
  *
@@ -27,7 +27,7 @@ class ReportParameter
     public $dbaction;
 
     /**
-     * xhelp\ReportParameter constructor.
+     * Xhelp\ReportParameter constructor.
      */
     public function __construct()
     {
@@ -35,14 +35,14 @@ class ReportParameter
     }
 
     /**
-     * Create a new xhelp\ReportParameter
+     * Create a new Xhelp\ReportParameter
      *
-     * @return xhelp\ReportParameter {@link xhelp\ReportParameter}
+     * @return Xhelp\ReportParameter {@link Xhelp\ReportParameter}
      * @access  public
      */
     public static function create()
     {
-        $ret = new xhelp\ReportParameter();
+        $ret = new Xhelp\ReportParameter();
 
         return $ret;
     }
@@ -59,12 +59,12 @@ class ReportParameter
      * @param string $dbfield
      * @param string $dbaction
      *
-     * @return object {@link xhelp\ReportParameter}
+     * @return object {@link Xhelp\ReportParameter}
      * @access  public
      */
     public static function addParam($controltype, $name, $fieldname, $value, $values, $fieldlength, $dbfield, $dbaction)
     {
-        $param              = xhelp\ReportParameter::create();
+        $param              = Xhelp\ReportParameter::create();
         $param->controltype = $controltype;
         $param->name        = $name;
         $param->fieldname   = $fieldname;

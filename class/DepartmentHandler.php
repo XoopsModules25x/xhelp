@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -28,15 +28,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\DepartmentHandler class
+ * Xhelp\DepartmentHandler class
  *
- * Department Handler for xhelp\Department class
+ * Department Handler for Xhelp\Department class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class DepartmentHandler extends xhelp\BaseObjectHandler
+class DepartmentHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class

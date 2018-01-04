@@ -1,10 +1,10 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once XHELP_JPGRAPH_PATH . '/jpgraph.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
-xhelp\Utility::includeReportLangFile('ticketsByUser');
+Xhelp\Utility::includeReportLangFile('ticketsByUser');
 
 global $xoopsDB, $paramVals;
 
@@ -21,10 +21,10 @@ $paramVals = [
 /**
  * class TicketsByUserReport
  */
-class TicketsByUserReport extends xhelp\Report
+class TicketsByUserReport extends Xhelp\Report
 {
     /**
-     * xhelp\TicketsByUserReport constructor.
+     * Xhelp\TicketsByUserReport constructor.
      */
     public function __construct()
     {

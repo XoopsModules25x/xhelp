@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -22,9 +22,9 @@ if ($xoopsUser) {
         if (isset($_POST['comments'])) {
             $comments = $_POST['comments'];
         }
-        $hStaffReview = xhelp\Utility::getHandler('StaffReview');
-        $hTicket      = xhelp\Utility::getHandler('Ticket');
-        $hResponse    = xhelp\Utility::getHandler('Responses');
+        $hStaffReview = Xhelp\Utility::getHandler('StaffReview');
+        $hTicket      = Xhelp\Utility::getHandler('Ticket');
+        $hResponse    = Xhelp\Utility::getHandler('Responses');
 
         $review = $hStaffReview->create();
         $review->setVar('staffid', $staffid);

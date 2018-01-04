@@ -1,14 +1,14 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
-$hStaff       = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
-$hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-$hTickets     = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
-$hSavedSearch = new xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
-$hFields      = new xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+$hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+$hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+$hTickets     = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$hSavedSearch = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+$hFields      = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
 
 if (!$xoopsUser) {
     redirect_header(XOOPS_URL, 3, _NOPERM);
@@ -210,9 +210,9 @@ if ($xoopsUser) {
                     $xoopsTpl->assign('xhelp_hasCustFields', false);
                 }
                 $_xhelpSession->set('xhelp_custFields', $aFields);
-                $staff = xhelp\Utility::getStaff($displayName);
+                $staff = Xhelp\Utility::getStaff($displayName);
                 $xoopsTpl->assign('xhelp_staff', $staff);
-                $hMember = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+                $hMember = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
                 if (1 == $xoopsModuleConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
                     $depts = $hMember->getVisibleDepartments($xoopsUser->getVar('uid'));
                 } else {
@@ -226,7 +226,7 @@ if ($xoopsUser) {
                 $myDepts[-1] = _XHELP_TEXT_SELECT_ALL;
                 $xoopsTpl->assign('xhelp_depts', $myDepts);
 
-                $hStatus   = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+                $hStatus   = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
                 $crit_stat = new \Criteria('', '');
                 $crit_stat->setSort('description');
                 $crit_stat->setOrder('ASC');
@@ -534,12 +534,12 @@ if ($xoopsUser) {
                         'description'    => $ticket->getVar('description'),
                         'department'     => $department->getVar('department'),
                         'departmentid'   => $department->getVar('id'),
-                        'departmenturl'  => xhelp\Utility::createURI('index.php', [
+                        'departmenturl'  => Xhelp\Utility::createURI('index.php', [
                             'op'   => 'staffViewAll',
                             'dept' => $department->getVar('id')
                         ]),
                         'priority'       => $ticket->getVar('priority'),
-                        'status'         => xhelp\Utility::getStatus($ticket->getVar('status')),
+                        'status'         => Xhelp\Utility::getStatus($ticket->getVar('status')),
                         'posted'         => $ticket->posted(),
                         'totalTimeSpent' => $ticket->getVar('totalTimeSpent'),
                         'ownership'      => ($owner
@@ -600,11 +600,11 @@ if ($xoopsUser) {
                 '2' => _XHELP_PRIORITY2,
                 '1' => _XHELP_PRIORITY1
             ]);
-            $staff = xhelp\Utility::getStaff($displayName);
+            $staff = Xhelp\Utility::getStaff($displayName);
             $xoopsTpl->assign('xhelp_staff', $staff);
-            $hMember = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+            $hMember = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
             if (1 == $xoopsModuleConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
-                $hMembership = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+                $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
                 $depts       = $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
             } else {
                 $depts = $hMember->membershipByStaff($xoopsUser->getVar('uid'));
@@ -619,7 +619,7 @@ if ($xoopsUser) {
             $xoopsTpl->assign('xhelp_batch_form', 'index.php');
             $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
 
-            $hStatus   = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+            $hStatus   = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
             $crit_stat = new \Criteria('', '');
             $crit_stat->setSort('description');
             $crit_stat->setOrder('ASC');

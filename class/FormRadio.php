@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once XOOPS_ROOT_PATH . '/class/xoopsform/formradio.php';
 

@@ -1,8 +1,8 @@
 <?php
 
 use Xmf\Request;
-use Xoopsmodules\xhelp;
-use Xoopsmodules\xhelp\validation;
+use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\validation;
 
 if (isset($_GET['deptid'])) {
     $dept_id = (int)$_GET['deptid'];
@@ -35,18 +35,18 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
  $_eventsrv->advise('update_owner', xhelp_notificationService::getInstance());
  $_eventsrv->advise('update_owner', xhelp_logService::getInstance()); */
 
-$hTicket     = xhelp\Utility::getHandler('Ticket');
-$hStaff      = xhelp\Utility::getHandler('Staff');
+$hTicket     = Xhelp\Utility::getHandler('Ticket');
+$hStaff      = Xhelp\Utility::getHandler('Staff');
 $hGroupPerm  = xoops_getHandler('groupperm');
 $hMember     = xoops_getHandler('member');
-$hMembership = xhelp\Utility::getHandler('Membership');
-$hFieldDept  = xhelp\Utility::getHandler('TicketFieldDepartment');
+$hMembership = Xhelp\Utility::getHandler('Membership');
+$hFieldDept  = Xhelp\Utility::getHandler('TicketFieldDepartment');
 
 $module_id = $xoopsModule->getVar('mid');
 
 if ($xoopsUser) {
     if (!isset($dept_id)) {
-        $dept_id = xhelp\Utility::getMeta('default_department');
+        $dept_id = Xhelp\Utility::getMeta('default_department');
     }
 
     if (isset($_GET['saveTicket']) && 1 == $_GET['saveTicket']) {
@@ -58,7 +58,7 @@ if ($xoopsUser) {
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_addTicket.tpl';             // Always set main template before including the header
         include XOOPS_ROOT_PATH . '/header.php';
 
-        $hDepartments = xhelp\Utility::getHandler('Department');    // Department handler
+        $hDepartments = Xhelp\Utility::getHandler('Department');    // Department handler
         $crit         = new \Criteria('', '');
         $crit->setSort('department');
         $departments = $hDepartments->getObjects($crit);
@@ -128,8 +128,8 @@ if ($xoopsUser) {
         $has_mimes = false;
         if ($xoopsModuleConfig['xhelp_allowUpload']) {
             // Get available mimetypes for file uploading
-            $hMime = xhelp\Utility::getHandler('Mimetype');
-            $xhelp = xhelp\Utility::getModule();
+            $hMime = Xhelp\Utility::getHandler('Mimetype');
+            $xhelp = Xhelp\Utility::getModule();
             $mid   = $xhelp->getVar('mid');
             if (!$xhelp_isStaff) {
                 $crit = new \Criteria('mime_user', 1);
@@ -290,7 +290,7 @@ window.setTimeout('window_onload()', 1500);
 
         if ($xhelp_isStaff) {
             if (isset($_COOKIE['xhelp_logMode']) && 2 == $_COOKIE['xhelp_logMode']) {
-                $hStatus = xhelp\Utility::getHandler('Status');
+                $hStatus = Xhelp\Utility::getHandler('Status');
                 $crit    = new \Criteria('', '');
                 $crit->setSort('description');
                 $crit->setOrder('ASC');
@@ -419,7 +419,7 @@ window.setTimeout('window_onload()', 1500);
         $fields = [];
         $errors = [];
         foreach ($v as $fieldname => $validator) {
-            if (!xhelp\Utility::checkRules($validator, $errors)) {
+            if (!Xhelp\Utility::checkRules($validator, $errors)) {
                 //Mark field with error
                 $fields[$fieldname]['haserrors'] = true;
                 $fields[$fieldname]['errors']    = $errors;
@@ -435,7 +435,7 @@ window.setTimeout('window_onload()', 1500);
             exit();
         }
 
-        //$hTicket = xhelp\Utility::getHandler('Ticket');
+        //$hTicket = Xhelp\Utility::getHandler('Ticket');
         $ticket = $hTicket->create();
         $ticket->setVar('uid', Request::getInt('user_id', 0, 'POST'));
         $ticket->setVar('subject', Request::getString('subject', '', 'POST'));
@@ -491,7 +491,7 @@ window.setTimeout('window_onload()', 1500);
             }
 
             // Add custom field values to db
-            $hTicketValues = xhelp\Utility::getHandler('TicketValues');
+            $hTicketValues = Xhelp\Utility::getHandler('TicketValues');
             $ticketValues  = $hTicketValues->create();
 
             foreach ($aFields as $field) {
@@ -538,7 +538,7 @@ window.setTimeout('window_onload()', 1500);
                 && 2 == $_COOKIE['xhelp_logMode']) {     // Make sure user is a staff member and is using advanced form
                 // if ('' != $_POST['response']) {                   // Don't run if no value for response
                 if (Request::hasVar('response', 'POST')) {
-                    $hResponse   = xhelp\Utility::getHandler('Responses');
+                    $hResponse   = Xhelp\Utility::getHandler('Responses');
                     $newResponse = $hResponse->create();
                     $newResponse->setVar('uid', $xoopsUser->getVar('uid'));
                     $newResponse->setVar('ticketid', $ticket->getVar('id'));

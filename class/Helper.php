@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -40,7 +40,7 @@ class Helper extends \Xmf\Module\Helper
     /**
      * @param bool $debug
      *
-     * @return \Xoopsmodules\xhelp\Helper
+     * @return \XoopsModules\Xhelp\Helper
      */
     public static function getInstance($debug = false)
     {

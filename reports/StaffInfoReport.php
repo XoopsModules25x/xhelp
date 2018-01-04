@@ -1,21 +1,21 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once XHELP_JPGRAPH_PATH . '/jpgraph.php';
 require_once XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
-xhelp\Utility::includeReportLangFile('staffInfo');
+Xhelp\Utility::includeReportLangFile('staffInfo');
 
 global $xoopsDB;
 
 /**
  * class StaffInfoReport
  */
-class StaffInfoReport extends xhelp\Report
+class StaffInfoReport extends Xhelp\Report
 {
     /**
-     * xhelp\StaffInfoReport constructor.
+     * Xhelp\StaffInfoReport constructor.
      */
     public function __construct()
     {

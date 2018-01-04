@@ -1,8 +1,8 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -21,7 +21,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
  * @access  public
  * @package xhelp
  */
-class NotificationService extends xhelp\Service
+class NotificationService extends Xhelp\Service
 {
     /**
      * Instance of the staff object
@@ -82,10 +82,10 @@ class NotificationService extends xhelp\Service
         $db = \XoopsDatabaseFactory::getDatabaseConnection();
         $this->_ts            = \MyTextSanitizer::getInstance();
         $this->_template_dir  = $this->_getTemplateDir($xoopsConfig['language']);
-        $this->_module        = xhelp\Utility::getModule();
-        $this->_hStaff        = new xhelp\StaffHandler($db);
-        $this->_hNotification = new xhelp\NotificationHandler($db);
-        $this->_hStatus       = new xhelp\StatusHandler($db);
+        $this->_module        = Xhelp\Utility::getModule();
+        $this->_hStaff        = new Xhelp\StaffHandler($db);
+        $this->_hNotification = new Xhelp\NotificationHandler($db);
+        $this->_hStatus       = new Xhelp\StatusHandler($db);
         $this->init();
     }
 
@@ -130,7 +130,7 @@ class NotificationService extends xhelp\Service
      */
     public function &_getStaffRoles($dept, $aMembers)
     {
-        $hStaffRole = new xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
+        $hStaffRole = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
 
         // Retrieve roles of all members
         $crit = new \CriteriaCompo(new \Criteria('uid', '(' . implode($aMembers, ',') . ')', 'IN'));
@@ -286,7 +286,7 @@ class NotificationService extends xhelp\Service
         global $xoopsUser;
 
         $arr         = [];
-        $hMembership = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+        $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
         $hMember     = xoops_getHandler('member');
 
         if (is_object($ticket)) {
@@ -304,7 +304,7 @@ class NotificationService extends xhelp\Service
         $staff_options = $settings->getVar('staff_options');
         switch ($staff_setting) {
             case XHELP_NOTIF_STAFF_DEPT:   // Department Staff can receive notification
-                $members    = $hMembership->membershipByDept($dept);  // xhelp\Staff objects
+                $members    = $hMembership->membershipByDept($dept);  // Xhelp\Staff objects
                 $aMembers   = $this->_makeMemberArray($members, $submittedBy, true);
                 $xoopsUsers = $this->_checkStaffSetting($aMembers, $ticket, $settings, $submittedBy);
                 break;
@@ -359,7 +359,7 @@ class NotificationService extends xhelp\Service
 
         $ticketid = (int)$ticketid;
 
-        $hTicketEmails = new xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
         $hMember       = xoops_getHandler('member');
 
         //Get all Subscribed users, except for the current user
@@ -414,7 +414,7 @@ class NotificationService extends xhelp\Service
         if (!is_object($user)) {          //If user is not an object, retrieve a staff object using the uid
             if (is_numeric($user)) {
                 $uid    = $user;
-                $hStaff = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+                $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
                 if (!$user = $hStaff->getByUid($uid)) {
                     return false;
                 }
@@ -689,7 +689,7 @@ class NotificationService extends xhelp\Service
 
     /**
      * Confirm submission to user and notify staff members when new_ticket is triggered
-     * @param  xhelp\Ticket $ticket Ticket that was added
+     * @param  Xhelp\Ticket $ticket Ticket that was added
      * @return void True on success, false on error
      * @access  public
      */
@@ -699,16 +699,16 @@ class NotificationService extends xhelp\Service
 
         global $xoopsUser, $xoopsModuleConfig;
 
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
         $displayName  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
         $tags['TICKET_SUBJECT']     = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         $tags['TICKET_DESCRIPTION'] = $this->_ts->stripslashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_PRIORITY']    = xhelp\Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
         $tags['TICKET_POSTED']      = $ticket->posted();
-        $tags['TICKET_CREATED']     = xhelp\Utility::getUsername($ticket->getVar('uid'), $displayName);
+        $tags['TICKET_CREATED']     = Xhelp\Utility::getUsername($ticket->getVar('uid'), $displayName);
         $tags['TICKET_SUPPORT_KEY'] = ($ticket->getVar('serverid') ? '{' . $ticket->getVar('emailHash') . '}' : '');
         $tags['TICKET_URL']         = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
         $tags['TICKET_DEPARTMENT']  = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
@@ -727,7 +727,7 @@ class NotificationService extends xhelp\Service
             if ($ticket->getVar('serverid') > 0) {
                 //this ticket has been submitted by email
                 //get department email address
-                $hServer = new xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+                $hServer = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
                 $server  = $hServer->get($ticket->getVar('serverid'));
                 //
                 $tags['TICKET_SUPPORT_EMAIL'] = $server->getVar('emailaddress');
@@ -864,8 +864,8 @@ class NotificationService extends xhelp\Service
     /**
      * Event: new_response
      * Triggered after a response has been added to a ticket
-     * @param xhelp\Ticket    $ticket   Ticket containing response
-     * @param xhelp\Responses $response Response that was added
+     * @param Xhelp\Ticket    $ticket   Ticket containing response
+     * @param Xhelp\Responses $response Response that was added
      */
     public function new_response($ticket, $response)
     {
@@ -874,10 +874,10 @@ class NotificationService extends xhelp\Service
         // If response is from submitter, send message to owner, if no owner, send to department
 
         global $xoopsUser, $xoopsConfig, $xoopsModuleConfig;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         if (!is_object($ticket) && 0 == $ticket) {
-            $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+            $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
             $ticket  = $hTicket->get($response->getVar('ticketid'));
         }
 
@@ -890,15 +890,15 @@ class NotificationService extends xhelp\Service
         $tags['TICKET_RESPONSE']      = $this->_ts->stripslashesGPC($response->getVar('message', 'n'));
         $tags['TICKET_SUBJECT']       = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         $tags['TICKET_TIMESPENT']     = $response->getVar('timeSpent');
-        $tags['TICKET_STATUS']        = xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_STATUS']        = Xhelp\Utility::getStatus($ticket->getVar('status'));
         $displayName                  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
-        $tags['TICKET_RESPONDER']     = xhelp\Utility::getUsername($xoopsUser->getVar('uid'), $displayName);
+        $tags['TICKET_RESPONDER']     = Xhelp\Utility::getUsername($xoopsUser->getVar('uid'), $displayName);
         $tags['TICKET_POSTED']        = $response->posted('m');
         $tags['TICKET_SUPPORT_KEY']   = '';
         $tags['TICKET_SUPPORT_EMAIL'] = $xoopsConfig['adminmail'];
 
         if ($ticket->getVar('serverid') > 0) {
-            $hServer = new xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+            $hServer = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
 
             if ($server = $hServer->get($ticket->getVar('serverid'))) {
                 $from                         = $server->getVar('emailaddress');
@@ -910,7 +910,7 @@ class NotificationService extends xhelp\Service
         if (0 == $owner) {
             $tags['TICKET_OWNERSHIP'] = _XHELP_NO_OWNER;
         } else {
-            $tags['TICKET_OWNERSHIP'] = xhelp\Utility::getUsername($owner, $displayName);
+            $tags['TICKET_OWNERSHIP'] = Xhelp\Utility::getUsername($owner, $displayName);
         }
         $tags['TICKET_DEPARTMENT'] = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
 
@@ -957,7 +957,7 @@ class NotificationService extends xhelp\Service
      * Event: update_priority
      * Triggered after a ticket priority is modified
      * Also See: batch_priority
-     * @param xhelp\Ticket $ticket      Ticket that was modified
+     * @param Xhelp\Ticket $ticket      Ticket that was modified
      * @param int         $oldpriority Previous ticket priority
      */
     public function update_priority($ticket, $oldpriority)
@@ -966,7 +966,7 @@ class NotificationService extends xhelp\Service
         //notify submitter
         global $xoopsUser;
 
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags               = [];
         $tags['TICKET_ID']  = $ticket->getVar('id');
@@ -974,8 +974,8 @@ class NotificationService extends xhelp\Service
         // Added by marcan to get the ticket's subject available in the mail template
         $tags['TICKET_SUBJECT'] = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         // End of addition by marcan
-        $tags['TICKET_OLD_PRIORITY'] = xhelp\Utility::getPriority($oldpriority);
-        $tags['TICKET_PRIORITY']     = xhelp\Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_OLD_PRIORITY'] = Xhelp\Utility::getPriority($oldpriority);
+        $tags['TICKET_PRIORITY']     = Xhelp\Utility::getPriority($ticket->getVar('priority'));
         $tags['TICKET_UPDATEDBY']    = $xoopsUser->getVar('uname');
         $tags['TICKET_DEPARTMENT']   = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
 
@@ -997,16 +997,16 @@ class NotificationService extends xhelp\Service
      * Event: update_status
      * Triggered after a ticket status change
      * Also See: batch_status, close_ticket, reopen_ticket
-     * @param xhelp\Ticket $ticket    The ticket that was modified
-     * @param xhelp\Status $oldstatus The previous ticket status
-     * @param xhelp\Status $newstatus The new ticket status
+     * @param Xhelp\Ticket $ticket    The ticket that was modified
+     * @param Xhelp\Status $oldstatus The previous ticket status
+     * @param Xhelp\Status $newstatus The new ticket status
      */
     public function update_status($ticket, $oldstatus, $newstatus)
     {
         //notify staff department of change
         //notify submitter
         global $xoopsUser;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags               = [];
         $tags['TICKET_ID']  = $ticket->getVar('id');
@@ -1015,9 +1015,9 @@ class NotificationService extends xhelp\Service
         $tags['TICKET_SUBJECT'] = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         // End of addition by marcan
         $tags['TICKET_OLD_STATUS'] = $oldstatus->getVar('description');
-        $tags['TICKET_OLD_STATE']  = xhelp\Utility::getState($oldstatus->getVar('state'));
+        $tags['TICKET_OLD_STATE']  = Xhelp\Utility::getState($oldstatus->getVar('state'));
         $tags['TICKET_STATUS']     = $newstatus->getVar('description');
-        $tags['TICKET_STATE']      = xhelp\Utility::getState($newstatus->getVar('state'));
+        $tags['TICKET_STATE']      = Xhelp\Utility::getState($newstatus->getVar('state'));
         $tags['TICKET_UPDATEDBY']  = $xoopsUser->getVar('uname');
         $tags['TICKET_DEPARTMENT'] = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
 
@@ -1040,7 +1040,7 @@ class NotificationService extends xhelp\Service
      * Event: update_owner
      * Triggered after ticket ownership change (Individual)
      * Also See: batch_owner
-     * @param xhelp\Ticket $ticket   Ticket that was changed
+     * @param Xhelp\Ticket $ticket   Ticket that was changed
      * @param int         $oldOwner UID of previous owner
      * @param int         $newOwner UID of new owner
      */
@@ -1050,7 +1050,7 @@ class NotificationService extends xhelp\Service
         //notify new owner
         //notify submitter
         global $xoopsUser, $xoopsModuleConfig;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 
@@ -1059,10 +1059,10 @@ class NotificationService extends xhelp\Service
         $tags['TICKET_URL']         = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
         $tags['TICKET_SUBJECT']     = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         $tags['TICKET_DESCRIPTION'] = $this->_ts->stripslashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_OWNER']       = xhelp\Utility::getUsername($ticket->getVar('ownership'), $displayName);
+        $tags['TICKET_OWNER']       = Xhelp\Utility::getUsername($ticket->getVar('ownership'), $displayName);
         $tags['SUBMITTED_OWNER']    = $xoopsUser->getVar('uname');
-        $tags['TICKET_STATUS']      = xhelp\Utility::getStatus($ticket->getVar('status'));
-        $tags['TICKET_PRIORITY']    = xhelp\Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
         $tags['TICKET_DEPARTMENT']  = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
 
         $settings      = $this->_hNotification->get(XHELP_NOTIF_EDITOWNER);
@@ -1111,18 +1111,18 @@ class NotificationService extends xhelp\Service
      * with a state of XHELP_STATE_UNRESOLVED to a status
      * with a state of XHELP_STATE_RESOLVED
      * Also See: update_status, reopen_ticket
-     * @param xhelp\Ticket $ticket The ticket that was closed
+     * @param Xhelp\Ticket $ticket The ticket that was closed
      */
     public function close_ticket($ticket)
     {
         global $xoopsUser;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
         $tags['TICKET_SUBJECT']     = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         $tags['TICKET_DESCRIPTION'] = $this->_ts->stripslashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_STATUS']      = xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
         $tags['TICKET_CLOSEDBY']    = $xoopsUser->getVar('uname');
         $tags['TICKET_URL']         = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
         $tags['TICKET_DEPARTMENT']  = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
@@ -1153,21 +1153,21 @@ class NotificationService extends xhelp\Service
     /**
      * Event: delete_ticket
      * Triggered after a ticket is deleted
-     * @param xhelp\Ticket $ticket Ticket that was deleted
+     * @param Xhelp\Ticket $ticket Ticket that was deleted
      */
     public function delete_ticket($ticket)
     {
         //notify staff department
         //notify submitter
         global $xoopsUser, $xoopsModule;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
         $tags['TICKET_SUBJECT']     = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         $tags['TICKET_DESCRIPTION'] = $this->_ts->stripslashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_PRIORITY']    = xhelp\Utility::getPriority($ticket->getVar('priority'));
-        $tags['TICKET_STATUS']      = xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
         $tags['TICKET_POSTED']      = $ticket->posted();
         $tags['TICKET_DELETEDBY']   = $xoopsUser->getVar('uname');
         $tags['TICKET_DEPARTMENT']  = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
@@ -1198,21 +1198,21 @@ class NotificationService extends xhelp\Service
     /**
      * Event: edit_ticket
      * Triggered after a ticket is modified
-     * @param xhelp\Ticket $oldTicket  Ticket information before modifications
-     * @param xhelp\Ticket $ticketInfo Ticket information after modifications
+     * @param Xhelp\Ticket $oldTicket  Ticket information before modifications
+     * @param Xhelp\Ticket $ticketInfo Ticket information after modifications
      */
     public function edit_ticket($oldTicket, $ticketInfo)
     {
         //notify staff department of change
         //notify submitter
         global $xoopsUser;
-        $hDept = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDept = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags                           = [];
         $tags['TICKET_URL']             = XHELP_BASE_URL . '/ticket.php?id=' . $ticketInfo->getVar('id');
         $tags['TICKET_OLD_SUBJECT']     = $this->_ts->stripslashesGPC($oldTicket['subject']);
         $tags['TICKET_OLD_DESCRIPTION'] = $this->_ts->stripslashesGPC($oldTicket['description']);
-        $tags['TICKET_OLD_PRIORITY']    = xhelp\Utility::getPriority($oldTicket['priority']);
+        $tags['TICKET_OLD_PRIORITY']    = Xhelp\Utility::getPriority($oldTicket['priority']);
         $tags['TICKET_OLD_STATUS']      = $oldTicket['status'];
         $tags['TICKET_OLD_DEPARTMENT']  = $oldTicket['department'];
         $tags['TICKET_OLD_DEPTID']      = $oldTicket['department_id'];
@@ -1220,8 +1220,8 @@ class NotificationService extends xhelp\Service
         $tags['TICKET_ID']          = $ticketInfo->getVar('id');
         $tags['TICKET_SUBJECT']     = $this->_ts->stripslashesGPC($ticketInfo->getVar('subject', 'n'));
         $tags['TICKET_DESCRIPTION'] = $this->_ts->stripslashesGPC($ticketInfo->getVar('description', 'n'));
-        $tags['TICKET_PRIORITY']    = xhelp\Utility::getPriority($ticketInfo->getVar('priority'));
-        $tags['TICKET_STATUS']      = xhelp\Utility::getStatus($ticketInfo->getVar('status'));
+        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticketInfo->getVar('priority'));
+        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticketInfo->getVar('status'));
         $tags['TICKET_MODIFIED']    = $xoopsUser->getVar('uname');
         if ($tags['TICKET_OLD_DEPTID'] <> $ticketInfo->getVar('department')) {
             $department                = $hDept->get($ticketInfo->getVar('department'));
@@ -1253,10 +1253,10 @@ class NotificationService extends xhelp\Service
      * Triggered after a response has been modified
      * Also See: new_response
      * @param                $ticket
-     * @param xhelp\Responses $response    Modified response
-     * @param xhelp\Ticket    $oldticket   Ticket before modifications
-     * @param xhelp\Responses $oldresponse Response modifications
-     * @internal param xhelp\Ticket $nticket Ticket after modifications
+     * @param Xhelp\Responses $response    Modified response
+     * @param Xhelp\Ticket    $oldticket   Ticket before modifications
+     * @param Xhelp\Responses $oldresponse Response modifications
+     * @internal param Xhelp\Ticket $nticket Ticket after modifications
      */
     public function edit_response($ticket, $response, $oldticket, $oldresponse)
     {
@@ -1264,26 +1264,26 @@ class NotificationService extends xhelp\Service
         //notify ticket submitter
         global $xoopsUser, $xoopsModuleConfig;
 
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
         $displayName  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 
         $tags                         = [];
         $tags['TICKET_URL']           = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
         $tags['TICKET_OLD_RESPONSE']  = $this->_ts->stripslashesGPC($oldresponse->getVar('message', 'n'));
         $tags['TICKET_OLD_TIMESPENT'] = $oldresponse->getVar('timeSpent');
-        $tags['TICKET_OLD_STATUS']    = xhelp\Utility::getStatus($oldticket->getVar('status'));
-        $tags['TICKET_OLD_RESPONDER'] = xhelp\Utility::getUsername($oldresponse->getVar('uid'), $displayName);
+        $tags['TICKET_OLD_STATUS']    = Xhelp\Utility::getStatus($oldticket->getVar('status'));
+        $tags['TICKET_OLD_RESPONDER'] = Xhelp\Utility::getUsername($oldresponse->getVar('uid'), $displayName);
         $owner                        = $oldticket->getVar('ownership');
-        $tags['TICKET_OLD_OWNERSHIP'] = ($owner = 0 ? _XHELP_NO_OWNER : xhelp\Utility::getUsername($owner, $displayName));
+        $tags['TICKET_OLD_OWNERSHIP'] = ($owner = 0 ? _XHELP_NO_OWNER : Xhelp\Utility::getUsername($owner, $displayName));
         $tags['TICKET_ID']            = $ticket->getVar('id');
         $tags['RESPONSE_ID']          = $response->getVar('id');
         $tags['TICKET_RESPONSE']      = $this->_ts->stripslashesGPC($response->getVar('message', 'n'));
         $tags['TICKET_TIMESPENT']     = $response->getVar('timeSpent');
-        $tags['TICKET_STATUS']        = xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_STATUS']        = Xhelp\Utility::getStatus($ticket->getVar('status'));
         $tags['TICKET_RESPONDER']     = $xoopsUser->getVar('uname');
         $tags['TICKET_POSTED']        = $response->posted();
         $owner                        = $ticket->getVar('ownership');
-        $tags['TICKET_OWNERSHIP']     = ($owner = 0 ? _XHELP_NO_OWNER : xhelp\Utility::getUsername($owner, $displayName));
+        $tags['TICKET_OWNERSHIP']     = ($owner = 0 ? _XHELP_NO_OWNER : Xhelp\Utility::getUsername($owner, $displayName));
         $tags['TICKET_DEPARTMENT']    = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
 
         // Added by marcan to get the ticket's subject available in the mail template
@@ -1314,7 +1314,7 @@ class NotificationService extends xhelp\Service
     /**
      * Event: batch_dept
      * Triggered after a batch ticket department change
-     * @param array $oldTickets The xhelp\Ticket objects that were modified
+     * @param array $oldTickets The Xhelp\Ticket objects that were modified
      * @param int   $dept       The new department for the tickets
      * @return bool
      */
@@ -1322,7 +1322,7 @@ class NotificationService extends xhelp\Service
     {
         global $xoopsUser;
 
-        $hDept = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDept = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
         $sDept = $hDept->getNameById($dept);
 
         $settings      = $this->_hNotification->get(XHELP_NOTIF_EDITTICKET);
@@ -1346,8 +1346,8 @@ class NotificationService extends xhelp\Service
             $tags                           = [];
             $tags['TICKET_OLD_SUBJECT']     = $this->_ts->stripslashesGPC($oldTicket->getVar('subject', 'n'));
             $tags['TICKET_OLD_DESCRIPTION'] = $this->_ts->stripslashesGPC($oldTicket->getVar('description', 'n'));
-            $tags['TICKET_OLD_PRIORITY']    = xhelp\Utility::getPriority($oldTicket->getVar('priority'));
-            $tags['TICKET_OLD_STATUS']      = xhelp\Utility::getStatus($oldTicket->getVar('status'));
+            $tags['TICKET_OLD_PRIORITY']    = Xhelp\Utility::getPriority($oldTicket->getVar('priority'));
+            $tags['TICKET_OLD_STATUS']      = Xhelp\Utility::getStatus($oldTicket->getVar('status'));
             $tags['TICKET_OLD_DEPARTMENT']  = $hDept->getNameById($oldTicket->getVar('department'));
             $tags['TICKET_OLD_DEPTID']      = $oldTicket->getVar('department');
 
@@ -1377,7 +1377,7 @@ class NotificationService extends xhelp\Service
     /**
      * Event: batch_priority
      * Triggered after a batch ticket priority change
-     * @param array $tickets  The xhelp\Ticket objects that were modified
+     * @param array $tickets  The Xhelp\Ticket objects that were modified
      * @param int   $priority The new ticket priority
      */
     public function batch_priority($tickets, $priority)
@@ -1385,7 +1385,7 @@ class NotificationService extends xhelp\Service
         global $xoopsUser;
 
         list($tickets, $priority) = $args;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $settings      = $this->_hNotification->get(XHELP_NOTIF_EDITPRIORITY);
         $staff_setting = $settings->getVar('staff_setting');
@@ -1403,12 +1403,12 @@ class NotificationService extends xhelp\Service
         }
         $uname    = $xoopsUser->getVar('uname');
         $uid      = $xoopsUser->getVar('uid');
-        $priority = xhelp\Utility::getPriority($priority);
+        $priority = Xhelp\Utility::getPriority($priority);
 
         foreach ($tickets as $ticket) {
             $tags                        = [];
             $tags['TICKET_ID']           = $ticket->getVar('id');
-            $tags['TICKET_OLD_PRIORITY'] = xhelp\Utility::getPriority($ticket->getVar('priority'));
+            $tags['TICKET_OLD_PRIORITY'] = Xhelp\Utility::getPriority($ticket->getVar('priority'));
             $tags['TICKET_PRIORITY']     = $priority;
             $tags['TICKET_UPDATEDBY']    = $uname;
             $tags['TICKET_URL']          = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
@@ -1434,7 +1434,7 @@ class NotificationService extends xhelp\Service
     /**
      * Event: batch_owner
      * Triggered after a batch ticket ownership change
-     * @param array $tickets The xhelp\Ticket objects that were modified
+     * @param array $tickets The Xhelp\Ticket objects that were modified
      * @param int   $owner   The XOOPS UID of the new owner
      * @return bool
      */
@@ -1444,7 +1444,7 @@ class NotificationService extends xhelp\Service
         //notify new owner
         //notify submitter
         global $xoopsUser, $xoopsModuleConfig;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 
@@ -1463,7 +1463,7 @@ class NotificationService extends xhelp\Service
         } else {
             $user_email_tpl = false;
         }
-        $new_owner    = xhelp\Utility::getUsername($owner, $displayName);
+        $new_owner    = Xhelp\Utility::getUsername($owner, $displayName);
         $submitted_by = $xoopsUser->getVar('uname');
         $uid          = $xoopsUser->getVar('uid');
 
@@ -1474,8 +1474,8 @@ class NotificationService extends xhelp\Service
             $tags['TICKET_DESCRIPTION'] = $this->_ts->stripslashesGPC($ticket->getVar('description', 'n'));
             $tags['TICKET_OWNER']       = $new_owner;
             $tags['SUBMITTED_OWNER']    = $submitted_by;
-            $tags['TICKET_STATUS']      = xhelp\Utility::getStatus($ticket->getVar('status'));
-            $tags['TICKET_PRIORITY']    = xhelp\Utility::getPriority($ticket->getVar('priority'));
+            $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
             $tags['TICKET_URL']         = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
             $tags['TICKET_DEPARTMENT']  = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
 
@@ -1509,8 +1509,8 @@ class NotificationService extends xhelp\Service
     /**
      * Event: batch_status
      * Triggered after a batch ticket status change
-     * @param array       $tickets   The xhelp\Ticket objects that were modified
-     * @param xhelp\Status $newstatus The new ticket status
+     * @param array       $tickets   The Xhelp\Ticket objects that were modified
+     * @param Xhelp\Status $newstatus The new ticket status
      * @return bool
      */
     public function batch_status($tickets, $newstatus)
@@ -1518,7 +1518,7 @@ class NotificationService extends xhelp\Service
         //notify staff department of change
         //notify submitter
         global $xoopsUser;
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $settings      = $this->_hNotification->get(XHELP_NOTIF_EDITSTATUS);
         $staff_setting = $settings->getVar('staff_setting');
@@ -1534,7 +1534,7 @@ class NotificationService extends xhelp\Service
         } else {
             $user_email_tpl = false;
         }
-        $sStatus = xhelp\Utility::getStatus($newstatus);
+        $sStatus = Xhelp\Utility::getStatus($newstatus);
         $uname   = $xoopsUser->getVar('uname');
         $uid     = $xoopsUser->getVar('uid');
 
@@ -1547,7 +1547,7 @@ class NotificationService extends xhelp\Service
             $tags['TICKET_SUBJECT'] = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
             // End of addition by marcan
 
-            $tags['TICKET_OLD_STATUS'] = xhelp\Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_OLD_STATUS'] = Xhelp\Utility::getStatus($ticket->getVar('status'));
             $tags['TICKET_STATUS']     = $sStatus;
             $tags['TICKET_UPDATEDBY']  = $uname;
             $tags['TICKET_DEPARTMENT'] = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
@@ -1568,7 +1568,7 @@ class NotificationService extends xhelp\Service
     /**
      * Event: batch_delete_ticket
      * Triggered after a batch ticket deletion
-     * @param array $tickets The xhelp\Ticket objects that were deleted
+     * @param array $tickets The Xhelp\Ticket objects that were deleted
      * @return bool
      */
     public function batch_delete_ticket($tickets)
@@ -1579,9 +1579,9 @@ class NotificationService extends xhelp\Service
 
         $uname        = $xoopsUser->getVar('uname');
         $uid          = $xoopsUser->getVar('uid');
-        $hStaff       = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
         $isStaff      = $hStaff->isStaff($uid);
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $settings      = $this->_hNotification->get(XHELP_NOTIF_DELTICKET);
         $staff_setting = $settings->getVar('staff_setting');
@@ -1603,8 +1603,8 @@ class NotificationService extends xhelp\Service
             $tags['TICKET_ID']          = $ticket->getVar('id');
             $tags['TICKET_SUBJECT']     = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
             $tags['TICKET_DESCRIPTION'] = $this->_ts->stripslashesGPC($ticket->getVar('description', 'n'));
-            $tags['TICKET_PRIORITY']    = xhelp\Utility::getPriority($ticket->getVar('priority'));
-            $tags['TICKET_STATUS']      = xhelp\Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
+            $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
             $tags['TICKET_POSTED']      = $ticket->posted();
             $tags['TICKET_DELETEDBY']   = $uname;
             $tags['TICKET_DEPARTMENT']  = $this->_ts->stripslashesGPC($hDepartments->getNameById($ticket->getVar('department')));
@@ -1631,8 +1631,8 @@ class NotificationService extends xhelp\Service
      * Event: batch_response
      * Triggered after a batch response addition
      * Note: the $response->getVar('ticketid') field is empty for this function
-     * @param array          $tickets  The xhelp\Ticket objects that were modified
-     * @param xhelp\Responses $response The response added to each ticket
+     * @param array          $tickets  The Xhelp\Ticket objects that were modified
+     * @param Xhelp\Responses $response The response added to each ticket
      */
     public function batch_response($tickets, $response)
     {
@@ -1644,9 +1644,9 @@ class NotificationService extends xhelp\Service
         $uid          = $xoopsUser->getVar('uid');
         $updated      = formatTimestamp(time(), 'm');
         $private      = $response->getVar('private');
-        $hMBoxes      = new xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+        $hMBoxes      = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
         $mBoxes       = $hMBoxes->getObjects(null, true);
-        $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         $settings      = $this->_hNotification->get(XHELP_NOTIF_NEWRESPONSE);
         $staff_setting = $settings->getVar('staff_setting');
@@ -1671,7 +1671,7 @@ class NotificationService extends xhelp\Service
             $tags['TICKET_RESPONSE']   = $responseText;
             $tags['TICKET_SUBJECT']    = $ticket->getVar('subject');
             $tags['TICKET_TIMESPENT']  = $response->getVar('timeSpent');
-            $tags['TICKET_STATUS']     = xhelp\Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_STATUS']     = Xhelp\Utility::getStatus($ticket->getVar('status'));
             $tags['TICKET_RESPONDER']  = $uname;
             $tags['TICKET_POSTED']     = $updated;
             $tags['TICKET_URL']        = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
@@ -1681,7 +1681,7 @@ class NotificationService extends xhelp\Service
             if (0 == $owner) {
                 $tags['TICKET_OWNERSHIP'] = _XHELP_NO_OWNER;
             } else {
-                $tags['TICKET_OWNERSHIP'] = xhelp\Utility::getUsername($owner, $displayName);
+                $tags['TICKET_OWNERSHIP'] = Xhelp\Utility::getUsername($owner, $displayName);
             }
 
             if ($ticket->getVar('serverid') > 0) {
@@ -1743,7 +1743,7 @@ class NotificationService extends xhelp\Service
     public function merge_tickets($ticket1, $ticket2, $newTicket)
     {
         global $xoopsUser;
-        $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
         $ticket  = $hTicket->get($newTicket);
 
         $tags                  = [];
@@ -1775,8 +1775,8 @@ class NotificationService extends xhelp\Service
     /**
      * Event: new_faq
      * Triggered after FAQ addition
-     * @param xhelp\Ticket $ticket Ticket used as base for FAQ
-     * @param xhelp\Faq    $faq    FAQ that was added
+     * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
+     * @param Xhelp\Faq    $faq    FAQ that was added
      */
     public function new_faq($ticket, $faq)
     {

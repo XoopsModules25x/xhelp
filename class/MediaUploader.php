@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * @copyright    XOOPS Project https://xoops.org/
@@ -29,7 +29,7 @@ use Xoopsmodules\xhelp;
  * $maxfilesize = 50000;
  * $maxfilewidth = 120;
  * $maxfileheight = 120;
- * $uploader = new xhelp\MediaUploader('/home/xoops/uploads', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
+ * $uploader = new Xhelp\MediaUploader('/home/xoops/uploads', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
  * if ($uploader->fetchMedia($HTTP_POST_VARS['uploade_file_name'])) {
  * if (!$uploader->upload()) {
  * echo $uploader->getErrors();
@@ -53,7 +53,7 @@ use Xoopsmodules\xhelp;
  * $maxfilesize = 50000;
  * $maxfilewidth = 120;
  * $maxfileheight = 120;
- * $uploader = new xhelp\MediaUploader('/home/xoops/uploads', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
+ * $uploader = new Xhelp\MediaUploader('/home/xoops/uploads', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
  * if ($uploader->fetchMedia($HTTP_POST_VARS['uploade_file_name'])) {
  *            if (!$uploader->upload()) {
  *               echo $uploader->getErrors();

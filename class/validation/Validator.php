@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp\validation;
+<?php namespace XoopsModules\Xhelp\validation;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  *  Validator superclass for form validation

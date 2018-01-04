@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -27,7 +27,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * xhelp\LogMessage class
+ * Xhelp\LogMessage class
  *
  * @author  Eric Juden <ericj@epcusa.com>
  * @access  public
@@ -36,7 +36,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 class LogMessage extends \XoopsObject
 {
     /**
-     * xhelp\LogMessage constructor.
+     * Xhelp\LogMessage constructor.
      * @param null $id
      */
     public function __construct($id = null)

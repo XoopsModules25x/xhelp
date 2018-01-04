@@ -17,8 +17,8 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
-use Xoopsmodules\xhelp\common;
+use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\Common;
 
 /**
  *
@@ -30,8 +30,8 @@ use Xoopsmodules\xhelp\common;
 function xoops_module_pre_install_xhelp(\XoopsModule $module)
 {
     include __DIR__ . '/../preloads/autoloader.php';
-    /** @var xhelp\Utility $utility */
-    $utility = new \Xoopsmodules\xhelp\Utility();
+    /** @var Xhelp\Utility $utility */
+    $utility = new \XoopsModules\Xhelp\Utility();
     $xoopsSuccess = $utility::checkVerXoops($module);
     $phpSuccess   = $utility::checkVerPhp($module);
 
@@ -58,13 +58,12 @@ function xoops_module_install_xhelp(\XoopsModule $module)
 
     $moduleDirName = basename(dirname(__DIR__));
 
-    /** @var xhelp\Helper $helper */
-    /** @var xhelp\Utility $utility */
+    /** @var Xhelp\Helper $helper */
+    /** @var Xhelp\Utility $utility */
     /** @var common\Configurator $configurator */
-    $helper       = xhelp\Helper::getInstance();
-    $utility      = new xhelp\Utility();
+    $helper       = Xhelp\Helper::getInstance();
+    $utility      = new Xhelp\Utility();
     $configurator = new common\Configurator();
-
 
 
     // Load language files

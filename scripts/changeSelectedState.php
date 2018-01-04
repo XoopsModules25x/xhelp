@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../../mainfile.php';
 
@@ -44,7 +44,7 @@ class XHelpWebLib
     public function statusesByState($state)
     {
         $state   = (int)$state;
-        $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+        $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
         if ($state == -1) {   // If select all is chosen
             $statuses = $hStatus->getObjects(null, true);

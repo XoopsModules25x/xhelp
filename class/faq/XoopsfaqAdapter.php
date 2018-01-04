@@ -1,7 +1,7 @@
 <?php
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -15,7 +15,7 @@ define('XHELP_XFAQ_URL', XOOPS_URL . '/modules/xoopsfaq');
 /**
  * class XoopsfaqAdapter
  */
-class XoopsfaqAdapter extends xhelp\FaqAdapter
+class XoopsfaqAdapter extends Xhelp\FaqAdapter
 {
     /**
      * Does application support categories?
@@ -36,7 +36,7 @@ class XoopsfaqAdapter extends xhelp\FaqAdapter
      * version - version of this plugin
      * tested_versions - supported application versions
      * url - support url for plugin
-     * module_dir - module directory name (not needed if class overloads the isActive() function from xhelp\FaqAdapter)
+     * module_dir - module directory name (not needed if class overloads the isActive() function from Xhelp\FaqAdapter)
      * @access public
      */
     public $meta = [
@@ -51,7 +51,7 @@ class XoopsfaqAdapter extends xhelp\FaqAdapter
     ];
 
     /**
-     * xhelp\XoopsfaqAdapter constructor.
+     * Xhelp\XoopsfaqAdapter constructor.
      */
     public function __construct()
     {
@@ -66,8 +66,8 @@ class XoopsfaqAdapter extends xhelp\FaqAdapter
         global $xoopsDB;
 
         $ret = [];
-        // Create an instance of the xhelp\FaqCategoryHandler
-        $hFaqCategory = new xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
+        // Create an instance of the Xhelp\FaqCategoryHandler
+        $hFaqCategory = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
 
         $sql    = sprintf('SELECT category_id, category_title FROM %s ORDER BY category_order', $xoopsDB->prefix('xoopsfaq_categories'));
         $result = $xoopsDB->query($sql);
@@ -77,7 +77,7 @@ class XoopsfaqAdapter extends xhelp\FaqAdapter
         }
 
         //Convert the module specific category to the
-        //xhelp\FaqCategory object for standarization
+        //Xhelp\FaqCategory object for standarization
         while ($myrow = $xoopsDB->fetchArray($result)) {
             $faqcat = $hFaqCategory->create();
             $faqcat->setVar('id', $myrow['category_id']);

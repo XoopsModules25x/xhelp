@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,7 +29,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/mailboxPOP3.php';
 
 /**
- * xhelp\DepartmentMailBox class
+ * Xhelp\DepartmentMailBox class
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
  * @access  public
@@ -79,7 +79,7 @@ class DepartmentMailBox extends \XoopsObject
      */
     public function connect()
     {
-        //Create an instance of the Proper xhelp\MailBox object
+        //Create an instance of the Proper Xhelp\MailBox object
         if (null === $this->_mBox) {
             if (!$this->_mBox = $this->_getMailBox($this->getVar('mboxtype'))) {
                 $this->setErrors(_XHELP_MBOX_INV_BOXTYPE);
@@ -153,16 +153,16 @@ class DepartmentMailBox extends \XoopsObject
 
     /**
      * @param $mboxType
-     * @return bool|xhelp\MailBoxIMAP|xhelp\MailBoxPOP3
+     * @return bool|Xhelp\MailBoxIMAP|Xhelp\MailBoxPOP3
      */
     public function _getMailBox($mboxType)
     {
         switch ($mboxType) {
             case _XHELP_MAILBOXTYPE_IMAP:
-                return new xhelp\MailBoxIMAP;
+                return new Xhelp\MailBoxIMAP;
                 break;
             case _XHELP_MAILBOXTYPE_POP3:
-                return new xhelp\MailBoxPOP3;
+                return new Xhelp\MailBoxPOP3;
                 break;
             default:
                 return false;

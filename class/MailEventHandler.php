@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -27,15 +27,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * xhelp\MailEventHandler class
+ * Xhelp\MailEventHandler class
  *
- * MailEvent Handler for xhelp\MailEvent class
+ * MailEvent Handler for Xhelp\MailEvent class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class MailEventHandler extends xhelp\BaseObjectHandler
+class MailEventHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -94,7 +94,7 @@ class MailEventHandler extends xhelp\BaseObjectHandler
      *
      * @param  object $criteria  {@link CriteriaElement} conditions to be met
      * @param  bool   $id_as_key Should the MailEvent ID be used as array key
-     * @return array  array of {@link xhelp\MailEvent} objects
+     * @return array  array of {@link Xhelp\MailEvent} objects
      * @access  public
      */
     public function &getObjectsJoin($criteria = null, $id_as_key = false)

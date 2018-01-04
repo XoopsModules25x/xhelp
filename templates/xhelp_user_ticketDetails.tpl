@@ -57,7 +57,7 @@
                 <{if $xhelp_hasTicketFiles}>
                     <br>
                     <br>
-                    <div id="xhelp\Files">
+                    <div id="Xhelp\Files">
                         <table border="0" class="outer">
                             <tr class="head">
                                 <td>

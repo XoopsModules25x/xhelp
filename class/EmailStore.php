@@ -1,9 +1,9 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
-use Xoopsmodules\xhelp\validation;
+use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\validation;
 
 /**
  * class EmailStore
@@ -16,13 +16,13 @@ class EmailStore
     public $_errors;
 
     /**
-     * xhelp\EmailStore constructor.
+     * Xhelp\EmailStore constructor.
      */
     public function __construct()
     {
-        $this->_hResponse  = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
-        $this->_hTicket    = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
-        $this->_hMailEvent = new xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+        $this->_hResponse  = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+        $this->_hTicket    = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $this->_hMailEvent = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
         $this->_errors     = [];
     }
 
@@ -65,9 +65,9 @@ class EmailStore
      * @access public
      * @param  object $msg  {@link xhelpParsedMsg} object Message to add
      * @param  object $user {@link xoopsUser} object User that submitted message
-     * @param  object $mbox {@link xhelp\DepartmentMailBox} object. Originating Mailbox for message
+     * @param  object $mbox {@link Xhelp\DepartmentMailBox} object. Originating Mailbox for message
      * @param         $errors
-     * @return mixed Returns <a href='psi_element://xhelp\Ticket'>xhelp\Ticket</a> object if new ticket, <a href='psi_element://xhelp\Responses'>xhelp\Responses</a> object if a response, and false if unable to save.
+     * @return mixed Returns <a href='psi_element://Xhelp\Ticket'>Xhelp\Ticket</a> object if new ticket, <a href='psi_element://Xhelp\Responses'>Xhelp\Responses</a> object if a response, and false if unable to save.
      */
     public function &storeMsg(&$msg, &$user, &$mbox, &$errors)
     {
@@ -87,8 +87,8 @@ class EmailStore
                 $obj->setVar('serverid', $mbox->getVar('id'));
                 $obj->setVar('userIP', 'via Email');
                 $obj->setVar('email', $user->getVar('email'));
-                if (!$status = xhelp\Utility::getMeta('default_status')) {
-                    xhelp\Utility::setMeta('default_status', '1');
+                if (!$status = Xhelp\Utility::getMeta('default_status')) {
+                    Xhelp\Utility::setMeta('default_status', '1');
                     $status = 1;
                 }
                 $obj->setVar('status', $status);
@@ -153,7 +153,7 @@ class EmailStore
         $attachments       = $msg->getAttachments();
         $dir               = XOOPS_UPLOAD_PATH . '/xhelp';
         $prefix            = (0 != $responseid ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
-        $hMime             = new xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+        $hMime             = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
         $allowed_mimetypes = $hMime->getArray();
 
         if (!is_dir($dir)) {
@@ -163,7 +163,7 @@ class EmailStore
         $dir .= '/';
 
         if ($xoopsModuleConfig['xhelp_allowUpload']) {
-            $hFile = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+            $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
             foreach ($attachments as $attach) {
                 $validators = [];
 
@@ -177,7 +177,7 @@ class EmailStore
                 $validators[] = new validation\ValidateFileSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadSize']);
                 $validators[] = new validation\ValidateImageSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
 
-                if (!xhelp\Utility::checkRules($validators, $errors)) {
+                if (!Xhelp\Utility::checkRules($validators, $errors)) {
                     //Remove the file
                     $this->_addAttachmentError($errors, $msg, $fname);
                     unlink($dir . $fname);

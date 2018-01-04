@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -9,7 +9,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 global $xoopsDB;
 
 /**
- * xhelp\Report class
+ * Xhelp\Report class
  *
  * Information about an individual report
  *
@@ -20,7 +20,7 @@ global $xoopsDB;
 class Report extends \XoopsObject
 {
     /**
-     * xhelp\Report constructor.
+     * Xhelp\Report constructor.
      */
     public function __construct()
     {
@@ -134,7 +134,7 @@ class Report extends \XoopsObject
     /**
      * Get report parameters
      *
-     * @return array {@link xhelp\ReportParameter} objects
+     * @return array {@link Xhelp\ReportParameter} objects
      * @access  public
      */
     public function getParams()
@@ -143,7 +143,7 @@ class Report extends \XoopsObject
 
         $params = [];
         foreach ($this->parameters as $name => $param) {
-            $params[] = xhelp\ReportParameter::addParam($param['controltype'], $name, $param['fieldname'], $param['value'], $param['values'], $param['fieldlength'], $param['dbfield'], $param['dbaction']);
+            $params[] = Xhelp\ReportParameter::addParam($param['controltype'], $name, $param['fieldname'], $param['value'], $param['values'], $param['fieldlength'], $param['dbfield'], $param['dbaction']);
         }
 
         return $params;

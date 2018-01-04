@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -14,7 +14,7 @@ class ReportRenderer
     public $report;
 
     /**
-     * xhelp\ReportRenderer constructor.
+     * Xhelp\ReportRenderer constructor.
      * @param $report
      */
     public function __construct($report)

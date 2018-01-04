@@ -17,8 +17,8 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
-use Xoopsmodules\xhelp\common;
+use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\Common;
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';

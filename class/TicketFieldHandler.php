@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -29,7 +29,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 /**
  * class TicketFieldHandler
  */
-class TicketFieldHandler extends xhelp\BaseObjectHandler
+class TicketFieldHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -140,7 +140,7 @@ class TicketFieldHandler extends xhelp\BaseObjectHandler
      */
     public function insert(\XoopsObject $obj, $force = false)
     {
-        $hFDept = new xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+        $hFDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
         if (!$obj->isNew()) {
             $old_obj = $this->get($obj->getVar('id'));
 
@@ -171,9 +171,9 @@ class TicketFieldHandler extends xhelp\BaseObjectHandler
             $mysql = $this->_mysqlDBType($obj);
 
             if ($add_field) {
-                xhelp\Utility::addDBField('xhelp_ticket_values', $fieldname, $mysql['fieldtype'], $mysql['length']);
+                Xhelp\Utility::addDBField('xhelp_ticket_values', $fieldname, $mysql['fieldtype'], $mysql['length']);
             } elseif ($alter_table) {
-                xhelp\Utility::renameDBField('xhelp_ticket_values', $old_name, $new_name, $mysql['fieldtype'], $mysql['length']);
+                Xhelp\Utility::renameDBField('xhelp_ticket_values', $old_name, $new_name, $mysql['fieldtype'], $mysql['length']);
             }
         }
 
@@ -188,13 +188,13 @@ class TicketFieldHandler extends xhelp\BaseObjectHandler
     public function delete(\XoopsObject $obj, $force = false)
     {
         //Remove FieldDepartment Records
-        $hFDept = new xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+        $hFDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
         if (!$ret = $hFDept->removeFieldFromAllDept($obj, $force)) {
             $obj->setErrors('Unable to remove field from departments');
         }
 
         //Remove values from ticket values table
-        if (!$ret = xhelp\Utility::removeDBField('xhelp_ticket_values', $obj->getVar('fieldname'))) {
+        if (!$ret = Xhelp\Utility::removeDBField('xhelp_ticket_values', $obj->getVar('fieldname'))) {
             $obj->setErrors('Unable to remove field from ticket values table');
         }
 
@@ -210,7 +210,7 @@ class TicketFieldHandler extends xhelp\BaseObjectHandler
      */
     public function getByDept($dept)
     {
-        $hFieldDept = new xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+        $hFieldDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
         $ret        = $hFieldDept->fieldsByDepartment($dept);
 
         return $ret;

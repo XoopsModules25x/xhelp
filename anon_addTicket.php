@@ -1,8 +1,8 @@
 <?php
 
 use Xmf\Request;
-use Xoopsmodules\xhelp;
-use Xoopsmodules\xhelp\validation;
+use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\validation;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -24,10 +24,10 @@ if (0 == $xoopsModuleConfig['xhelp_allowAnonymous']) {
     header('Location: ' . XHELP_BASE_URL . '/error.php');
 }
 
-$hTicket    = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$hTicket    = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
 $hGroupPerm = xoops_getHandler('groupperm');
 $hMember    = xoops_getHandler('member');
-$hFieldDept = new xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+$hFieldDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
 $module_id  = $xoopsModule->getVar('mid');
 
 if (0 == $xoopsConfigUser['allow_register']) {    // Use to doublecheck that anonymous users are allowed to register
@@ -36,14 +36,14 @@ if (0 == $xoopsConfigUser['allow_register']) {    // Use to doublecheck that ano
 }
 
 if (!isset($dept_id)) {
-    $dept_id = xhelp\Utility::getMeta('default_department');
+    $dept_id = Xhelp\Utility::getMeta('default_department');
 }
 
 if (!isset($_POST['addTicket'])) {
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_anon_addTicket.tpl';             // Always set main template before including the header
     include XOOPS_ROOT_PATH . '/header.php';
 
-    $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Department handler
+    $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Department handler
     $crit         = new \Criteria('', '');
     $crit->setSort('department');
     $departments = $hDepartments->getObjects($crit);
@@ -64,7 +64,7 @@ if (!isset($_POST['addTicket'])) {
     }
     if ($xoopsModuleConfig['xhelp_allowUpload']) {
         // Get available mimetypes for file uploading
-        $hMime     = new xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+        $hMime     = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
         $crit      = new \Criteria('mime_user', 1);
         $mimetypes = $hMime->getObjects($crit);
         $mimes     = '';
@@ -163,7 +163,7 @@ window.setTimeout('window_onload()', 1500);
         '1' => _XHELP_PRIORITY1
     ]);
     $xoopsTpl->assign('xhelp_default_priority', XHELP_DEFAULT_PRIORITY);
-    $xoopsTpl->assign('xhelp_default_dept', xhelp\Utility::getMeta('default_department'));
+    $xoopsTpl->assign('xhelp_default_dept', Xhelp\Utility::getMeta('default_department'));
     $xoopsTpl->assign('xhelp_includeURL', XHELP_INCLUDE_URL);
     $xoopsTpl->assign('xhelp_numTicketUploads', $xoopsModuleConfig['xhelp_numTicketUploads']);
 
@@ -279,7 +279,7 @@ window.setTimeout('window_onload()', 1500);
     $fields = [];
     $errors = [];
     foreach ($v as $fieldname => $validator) {
-        if (!xhelp\Utility::checkRules($validator, $errors)) {
+        if (!Xhelp\Utility::checkRules($validator, $errors)) {
             //Mark field with error
             $fields[$fieldname]['haserrors'] = true;
             $fields[$fieldname]['errors']    = $errors;
@@ -297,7 +297,7 @@ window.setTimeout('window_onload()', 1500);
 
     //Check email address
     $user_added = false;
-    if (!$xoopsUser = xhelp\Utility::emailIsXoopsUser($_POST['email'])) {      // Email is already used by a member
+    if (!$xoopsUser = Xhelp\Utility::emailIsXoopsUser($_POST['email'])) {      // Email is already used by a member
         switch ($xoopsConfigUser['activation_type']) {
             case 1:
                 $level = 1;
@@ -309,7 +309,7 @@ window.setTimeout('window_onload()', 1500);
                 $level = 0;
         }
 
-        if ($anon_user = xhelp\Utility::getXoopsAccountFromEmail($_POST['email'], '', $password, $level)) { // If new user created
+        if ($anon_user = Xhelp\Utility::getXoopsAccountFromEmail($_POST['email'], '', $password, $level)) { // If new user created
             $memberHandler = xoops_getHandler('member');
             $xoopsUser     = $memberHandler->loginUserMd5($anon_user->getVar('uname'), $anon_user->getVar('pass'));
             $user_added    = true;
@@ -356,7 +356,7 @@ window.setTimeout('window_onload()', 1500);
         }
 
         // Add custom field values to db
-        $hTicketValues = new xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
+        $hTicketValues = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
         $ticketValues  = $hTicketValues->create();
 
         foreach ($aFields as $field) {

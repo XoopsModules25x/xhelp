@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * Plugin Interface
@@ -28,7 +28,7 @@ class Plugin
     public $_events = [];
 
     /**
-     * A reference to a {@link xhelp\EventService} object
+     * A reference to a {@link Xhelp\EventService} object
      * @var EventService
      * @access private
      */
@@ -36,7 +36,7 @@ class Plugin
 
     /**
      * Class Constructor
-     * @param  EventService $event_srv a reference to a {@link xhelp\EventService} object
+     * @param  EventService $event_srv a reference to a {@link Xhelp\EventService} object
      */
     public function __construct($event_srv)
     {
@@ -107,7 +107,7 @@ class Plugin
 
     /**
      * Only have 1 instance of class used
-     * @return Plugin {@link xhelp\Plugin}
+     * @return Plugin {@link Xhelp\Plugin}
      * @access  public
      */
     public function getInstance()

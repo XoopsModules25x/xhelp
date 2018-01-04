@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -27,12 +27,12 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * xhelp\Mimetype class
+ * Xhelp\Mimetype class
  *
  * Information about an individual mimetype
  *
  * <code>
- * $hMime = new xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+ * $hMime = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
  * $mimetype = $hMime->get(1);
  * $mime_id = $mimetype->getVar('id');
  * </code>
@@ -44,7 +44,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 class Mimetype extends \XoopsObject
 {
     /**
-     * xhelp\Mimetype constructor.
+     * Xhelp\Mimetype constructor.
      * @param null $id
      */
     public function __construct($id = null)

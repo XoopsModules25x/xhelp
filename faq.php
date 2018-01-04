@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 
@@ -43,8 +43,8 @@ function addFaq_display()
     }
     $ticketid = (int)$_POST['ticketid'];
 
-    $hTicket    = xhelp\Utility::getHandler('Ticket');
-    $hResponses = xhelp\Utility::getHandler('Responses');
+    $hTicket    = Xhelp\Utility::getHandler('Ticket');
+    $hResponses = Xhelp\Utility::getHandler('Responses');
     $ticket     = $hTicket->get($ticketid);
 
     if (!$hasRights = $xhelp_staff->checkRoleRights(XHELP_SEC_FAQ_ADD, $ticket->getVar('department'))) {
@@ -64,7 +64,7 @@ function addFaq_display()
     }
 
     $crit  = new \Criteria('uid', '(' . implode(array_keys($allUsers), ',') . ')', 'IN');
-    $users =& xhelp\Utility::getUsers($crit, $xoopsModuleConfig['xhelp_displayName']);
+    $users =& Xhelp\Utility::getUsers($crit, $xoopsModuleConfig['xhelp_displayName']);
     unset($allUsers);
 
     foreach ($responses as $response) {
@@ -73,13 +73,13 @@ function addFaq_display()
     }
 
     // Get current faq adapter
-    $oAdapter =& xhelp\FaqAdapterFactory::getFaqAdapter();
+    $oAdapter =& Xhelp\FaqAdapterFactory::getFaqAdapter();
     if (!$oAdapter) {
         redirect_header(XHELP_BASE_URL, 3, _XHELP_MESSAGE_NO_FAQ);
     }
     $categories =& $oAdapter->getCategories();
 
-    $tree = new xhelp\Tree($categories, 'id', 'parent');
+    $tree = new Xhelp\Tree($categories, 'id', 'parent');
 
     $xoopsTpl->assign('xhelp_categories', $tree->makeSelBox('categories', 'name', '--', 0, false, 0, $oAdapter->categoryType));
     $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');
@@ -96,13 +96,13 @@ function addFaq_display()
 function addFaq_action()
 {
     global $xoopsUser, $_eventsrv;
-    $hTicket = xhelp\Utility::getHandler('Ticket');
+    $hTicket = Xhelp\Utility::getHandler('Ticket');
 
     // Retrieve ticket information
     $ticketid = $_POST['ticketid'];
     $ticket   = $hTicket->get($ticketid);
 
-    $adapter = xhelp\FaqAdapterFactory::getFaqAdapter();
+    $adapter = Xhelp\FaqAdapterFactory::getFaqAdapter();
     $faq     = $adapter->createFaq();
 
     // @todo - Make subject user editable

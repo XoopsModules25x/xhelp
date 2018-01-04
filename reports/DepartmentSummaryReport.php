@@ -1,18 +1,18 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once XHELP_JPGRAPH_PATH . '/jpgraph.php';
 require_once XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';// añado para ver si funciona <====================18/03/2010
 // require_once XHELP_CLASS_PATH . '/report.php';
-xhelp\Utility::includeReportLangFile('departmentSummary');
+Xhelp\Utility::includeReportLangFile('departmentSummary');
 
 global $xoopsDB, $paramVals;
 
 $startDate = date('m/d/y h:i:s A', mktime(0, 0, 0, date('m') - 1, date('d'), date('Y')));
 $endDate   = date('m/d/y') . ' 12:00:00 AM';
 
-$hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+$hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 $crit         = new \Criteria('', '');
 $crit->setSort('department');
 $crit->setOrder('ASC');
@@ -40,10 +40,10 @@ $paramVals = [
 /**
  * class DepartmentSummaryReport
  */
-class DepartmentSummaryReport extends xhelp\Report
+class DepartmentSummaryReport extends Xhelp\Report
 {
     /**
-     * xhelp\DepartmentSummaryReport constructor.
+     * Xhelp\DepartmentSummaryReport constructor.
      */
     public function __construct()
     {

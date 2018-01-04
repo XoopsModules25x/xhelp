@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -17,7 +17,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * class WebLib
@@ -31,7 +31,7 @@ class WebLib
     public function customFieldsByDept($deptid)
     {
         $deptid     = (int)$deptid;
-        $hFieldDept = xhelp\Utility::getHandler('TicketFieldDepartment');
+        $hFieldDept = Xhelp\Utility::getHandler('TicketFieldDepartment');
         $fields     =& $hFieldDept->fieldsByDepartment($deptid);
 
         $aFields = [];
@@ -50,8 +50,8 @@ class WebLib
     public function editTicketCustFields($deptid, $ticketid)
     {
         $deptid     = (int)$deptid;
-        $hFieldDept = xhelp\Utility::getHandler('TicketFieldDepartment');
-        $hTicket    = xhelp\Utility::getHandler('Ticket');
+        $hFieldDept = Xhelp\Utility::getHandler('TicketFieldDepartment');
+        $hTicket    = Xhelp\Utility::getHandler('Ticket');
         $ticket     = $hTicket->get($ticketid);
         $custValues = $ticket->getCustFieldValues();
         $fields     = $hFieldDept->fieldsByDepartment($deptid);
@@ -73,11 +73,11 @@ class WebLib
      */
     public function staffByDept($deptid)
     {
-        $mc    = xhelp\Utility::getModuleConfig();
+        $mc    = Xhelp\Utility::getModuleConfig();
         $field = 1 == $mc['xhelp_displayName'] ? 'uname' : 'name';
 
         $deptid      = (int)$deptid;
-        $hMembership = xhelp\Utility::getHandler('Membership');
+        $hMembership = Xhelp\Utility::getHandler('Membership');
         $staff       = $hMembership->xoopsUsersByDept($deptid);
 
         $aStaff   = [];

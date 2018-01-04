@@ -1,7 +1,7 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /**
- * xhelp\TicketMailParser class
+ * Xhelp\TicketMailParser class
  *
  * Part of the email submission subsystem. Converts a parsed email into a ticket
  *
@@ -11,7 +11,7 @@
  * @package xhelp
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 class TicketMailParser
 {
@@ -32,17 +32,17 @@ class TicketMailParser
 
     /**
      * Create a new ticket object
-     * @param object Reference to a {@link xhelp\EmailParser} object
+     * @param object Reference to a {@link Xhelp\EmailParser} object
      * @param object Current {@link xoopsUser} object
-     * @param object {@link xhelp\Department} Ticket Department
-     * @param object {@link xhelp\DepartmentEmailServer} Originating Email Server
+     * @param object {@link Xhelp\Department} Ticket Department
+     * @param object {@link Xhelp\DepartmentEmailServer} Originating Email Server
      * @return bool
      * @access public
      */
     public function createTicket(&$mailParser, &$xoopsUser, &$department, &$server)
     {
         //get ticket handler
-        $hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
         $ticket  = $hTicket->create();
         //
         $ticket->setVar('uid', $xoopsUser->uid());
@@ -66,7 +66,7 @@ class TicketMailParser
 
     /**
      * Returns the ticket object for this email
-     * @return object {@link xhelp\Ticket} Ticket Object
+     * @return object {@link Xhelp\Ticket} Ticket Object
      */
     public function &getTicket()
     {

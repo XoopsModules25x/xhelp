@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
@@ -12,7 +12,7 @@ class PageNav extends \XoopsPageNav
     public $bookmark = '';
 
     /**
-     * xhelp\PageNav constructor.
+     * Xhelp\PageNav constructor.
      * @param int    $total_items
      * @param int    $items_perpage
      * @param int    $current_start

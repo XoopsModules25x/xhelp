@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -27,7 +27,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * xhelp\StaffReview class
+ * Xhelp\StaffReview class
  *
  * @author  Eric Juden <ericj@epcusa.com>
  * @access  public
@@ -36,7 +36,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 class StaffReview extends \XoopsObject
 {
     /**
-     * xhelp\StaffReview constructor.
+     * Xhelp\StaffReview constructor.
      * @param null $id
      */
     public function __construct($id = null)

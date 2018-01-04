@@ -85,7 +85,7 @@ The above line will check all the configured mailboxes, every other minute.
 
 For windows servers you can try using Task Scheduler or runat with
 this variant:
-C:\php\php.exe "<XOOPS_ROOT_PATH>\modules\xhelp\checkemail.php"
+C:\php\php.exe "<XOOPS_ROOT_PATH>\modules\Xhelp\checkemail.php"
 
 If PHP was installed into a different directory from the default you
 will need to adjust the path to php.exe accordingly.

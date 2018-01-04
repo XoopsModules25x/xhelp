@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
@@ -71,10 +71,10 @@ function checkTables()
     $adminObject = \Xmf\Module\Admin::getInstance();
     $adminObject->displayNavigation('upgrade.php?op=checkTables');
     //1. Determine previous release
-    if (!xhelp\Utility::tableExists('xhelp_meta')) {
+    if (!Xhelp\Utility::tableExists('xhelp_meta')) {
         $ver = '0.5';
     } else {
-        if (!$ver = xhelp\Utility::getMeta('version')) {
+        if (!$ver = Xhelp\Utility::getMeta('version')) {
             echo('Unable to determine previous version.');
         }
     }
@@ -112,19 +112,19 @@ function upgradeDB()
     $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
     //1. Determine previous release
     //   *** Update this in sql/mysql.sql for each release **
-    if (!xhelp\Utility::tableExists('xhelp_meta')) {
+    if (!Xhelp\Utility::tableExists('xhelp_meta')) {
         $ver = '0.5';
     } else {
-        if (!$ver = xhelp\Utility::getMeta('version')) {
+        if (!$ver = Xhelp\Utility::getMeta('version')) {
             exit(_AM_XHELP_VERSION_ERR);
         }
     }
 
-    $hStaff       = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    $hMember      = new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-    $hTicket      = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hMember      = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+    $hTicket      = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     $hXoopsMember = xoops_getHandler('member');
-    $hRole        = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $hRole        = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
     $mid = $xoopsModule->getVar('mid');
 
@@ -281,7 +281,7 @@ function upgradeDB()
                                                         )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_staffroles')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_staffroles'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_staffroles'));
 
             // Add default roles to db
-            if (!$hasRoles = xhelp\Utility::createRoles()) {
+            if (!$hasRoles = Xhelp\Utility::createRoles()) {
                 echo '<li>' . _AM_XHELP_MESSAGE_DEF_ROLES_ERROR . '</li>';
             } else {
                 echo '<li>' . _AM_XHELP_MESSAGE_DEF_ROLES . '</li>';
@@ -355,7 +355,7 @@ function upgradeDB()
                                                           )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_status')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_status'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_status'));
 
             // Give default statuses for upgrade
-            $hStatus       = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+            $hStatus       = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
             $startStatuses = [_XHELP_STATUS0 => 1, _XHELP_STATUS1 => 1, _XHELP_STATUS2 => 2];
 
             $count = 1;
@@ -496,7 +496,7 @@ function upgradeDB()
             set_time_limit(60);
             // Add notifications to new table
             set_time_limit(60);
-            $hasNotifications = xhelp\Utility::createNotifications();
+            $hasNotifications = Xhelp\Utility::createNotifications();
 
             // Make all departments visible to all groups
             $hasDeptVisibility = xhelpCreateDepartmentVisibility();
@@ -514,17 +514,17 @@ function upgradeDB()
         case '0.75':
             set_time_limit(60);
             // Set default department
-            $xoopsModuleConfig = xhelp\Utility::getModuleConfig();
+            $xoopsModuleConfig = Xhelp\Utility::getModuleConfig();
             if (isset($xoopsModuleConfig['xhelp_defaultDept']) && 0 != $xoopsModuleConfig['xhelp_defaultDept']) {
-                $ret = xhelp\Utility::setMeta('default_department', $xoopsModuleConfig['xhelp_defaultDept']);
+                $ret = Xhelp\Utility::setMeta('default_department', $xoopsModuleConfig['xhelp_defaultDept']);
             } else {
-                $hDepartments = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+                $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
                 $depts        = $hDepartments->getObjects();
                 $aDepts       = [];
                 foreach ($depts as $dpt) {
                     $aDepts[] = $dpt->getVar('id');
                 }
-                $ret = xhelp\Utility::setMeta('default_department', $aDepts[0]);
+                $ret = Xhelp\Utility::setMeta('default_department', $aDepts[0]);
             }
 
             $qry = $xoopsDB->query(sprintf('ALTER TABLE %s DROP PRIMARY KEY', $xoopsDB->prefix('xhelp_ticket_submit_emails')));
@@ -541,7 +541,7 @@ function upgradeDB()
                    && _runQuery(sprintf("ALTER TABLE %s ADD (hasCustFields INT(11) NOT NULL DEFAULT '0')", $xoopsDB->prefix('xhelp_saved_searches')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_saved_searches'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_saved_searches'));
 
             // Take existing saved searches and add 'query' field
-            $hSavedSearch  = new xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+            $hSavedSearch  = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
             $savedSearches = $hSavedSearch->getObjects();
 
             foreach ($savedSearches as $savedSearch) {
@@ -571,7 +571,7 @@ function upgradeDB()
                                                           )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_ticket_lists')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_lists'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_lists'));
 
             // Add global ticket lists for staff members
-            xhelp\Utility::createDefaultTicketLists();
+            Xhelp\Utility::createDefaultTicketLists();
 
             set_time_limit(60);
             // Update xhelp_roles Admin record with new value (4095)
@@ -600,7 +600,7 @@ function upgradeDB()
     //if successful, update xhelp_meta table with new ver
     if ($ret) {
         printf(_AM_XHELP_UPDATE_OK, $newversion);
-        $ret = xhelp\Utility::setMeta('version', $newversion);
+        $ret = Xhelp\Utility::setMeta('version', $newversion);
     } else {
         printf(_AM_XHELP_UPDATE_ERR, $newversion);
     }

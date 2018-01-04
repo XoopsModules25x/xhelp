@@ -17,7 +17,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 
@@ -27,8 +27,8 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 
 include __DIR__ . '/../preloads/autoloader.php';
 
-/** @var xhelp\Helper $helper */
-$helper = xhelp\Helper::getInstance();
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 /** @var Xmf\Module\Admin $adminObject */
 $adminObject = \Xmf\Module\Admin::getInstance();
 
@@ -90,7 +90,7 @@ $imagearray = [
 
 // Overdue time
 // require_once XHELP_CLASS_PATH . '/session.php';
-$_xhelpSession = new xhelp\Session();
+$_xhelpSession = new Xhelp\Session();
 
 if (!$overdueTime = $_xhelpSession->get('xhelp_overdueTime')) {
     $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);
@@ -101,7 +101,7 @@ if ($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']) {
     $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);   // Set new value for overdueTime
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
-    $hTickets       = xhelp\Utility::getHandler('Ticket');
+    $hTickets       = Xhelp\Utility::getHandler('Ticket');
     $crit           = new \Criteria('status', 2, '<>');
     $tickets        = $hTickets->getObjects($crit);
     $updatedTickets = [];

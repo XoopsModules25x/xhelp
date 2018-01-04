@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -47,7 +47,7 @@ switch ($op) {
         break;
 
     default:        // Display list of reports
-        $reports = xhelp\ReportFactory::getReports();
+        $reports = Xhelp\ReportFactory::getReports();
 
         $rptNames = [];
         foreach ($reports as $rpt => $obj) {
@@ -134,7 +134,7 @@ function runReport($reportName)
 
     generateHeader($report);
 
-    $oRenderer = xhelp\ReportRendererFactory::getRenderer('html', $report);
+    $oRenderer = Xhelp\ReportRendererFactory::getRenderer('html', $report);
     echo $oRenderer->render();
 
     $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');

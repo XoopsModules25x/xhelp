@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * class BaseObject
@@ -9,7 +9,7 @@ class BaseObject extends \XoopsObject
 {
     /**
      * create a new  object
-     * @return object {@link xhelp\BaseObject}
+     * @return object {@link Xhelp\BaseObject}
      * @access public
      */
     public function &create()
@@ -20,7 +20,7 @@ class BaseObject extends \XoopsObject
     /**
      * retrieve an object from the database, based on. use in child classes
      * @param  int $id ID
-     * @return bool <a href='psi_element://xhelp\Departmentemailserver'>xhelp\Departmentemailserver</a>
+     * @return bool <a href='psi_element://Xhelp\Departmentemailserver'>Xhelp\Departmentemailserver</a>
      * @access public
      */
     public function &get($id)

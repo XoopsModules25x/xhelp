@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
@@ -29,8 +29,8 @@ switch ($op) {
 function manage()
 {
     global $imagearray;
-    $faqAdapters = xhelp\FaqAdapterFactory::installedAdapters();
-    $myAdapter   = xhelp\FaqAdapterFactory::getFaqAdapter();
+    $faqAdapters = Xhelp\FaqAdapterFactory::installedAdapters();
+    $myAdapter   = Xhelp\FaqAdapterFactory::getFaqAdapter();
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manFaqAdapters');
     $adminObject = \Xmf\Module\Admin::getInstance();
@@ -49,7 +49,7 @@ function manage()
                   <td>' . _AM_XHELP_TEXT_ACTIVE . '</td>
               </tr>';
 
-        $activeAdapter = xhelp\Utility::getMeta('faq_adapter');
+        $activeAdapter = Xhelp\Utility::getMeta('faq_adapter');
         foreach ($faqAdapters as $name => $oAdapter) {
             $modname     = $name;
             $author      = $oAdapter->meta['author'];
@@ -93,11 +93,11 @@ function updateActive()
         $modname = $_POST['modname'];
     }
 
-    $currentAdapter = xhelp\Utility::getMeta('faq_adapter');
+    $currentAdapter = Xhelp\Utility::getMeta('faq_adapter');
     if ($currentAdapter == $modname) {    // Deactivate current adapter?
-        $ret = xhelp\Utility::deleteMeta('faq_adapter');
+        $ret = Xhelp\Utility::deleteMeta('faq_adapter');
     } else {
-        $ret = xhelp\FaqAdapterFactory::setFaqAdapter($modname);
+        $ret = Xhelp\FaqAdapterFactory::setFaqAdapter($modname);
     }
 
     if ($ret) {

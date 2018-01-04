@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * class TicketFieldDepartmentHandler
@@ -38,8 +38,8 @@ class TicketFieldDepartmentHandler
     public function __construct(\XoopsDatabase $db)
     {
         $this->_db     = $db;
-        $this->_hField = new xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-        $this->_hDept  = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $this->_hField = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+        $this->_hDept  = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
     }
 
     /**
@@ -47,7 +47,7 @@ class TicketFieldDepartmentHandler
      *
      * @param  int  $field     Field ID
      * @param  bool $id_as_key Should object ID be used as array key?
-     * @return array array of {@Link xhelp\Department} objects
+     * @return array array of {@Link Xhelp\Department} objects
      * @access public
      */
     public function departmentsByField($field, $id_as_key = false)
@@ -78,7 +78,7 @@ class TicketFieldDepartmentHandler
      *
      * @param  int  $dept      Department ID
      * @param  bool $id_as_key Should object ID be used as array key?
-     * @return array array of {@Link xhelp\TicketField} objects
+     * @return array array of {@Link Xhelp\TicketField} objects
      * @access public
      */
     public function fieldsByDepartment($dept, $id_as_key = false)
@@ -110,7 +110,7 @@ class TicketFieldDepartmentHandler
      * @param      $field
      * @param  int $deptid Department ID
      * @return bool True if successful, False if not
-     * @internal param mixed $staff single or array of uids or <a href='psi_element://xhelp\TicketField'>xhelp\TicketField</a> objects objects
+     * @internal param mixed $staff single or array of uids or <a href='psi_element://Xhelp\TicketField'>Xhelp\TicketField</a> objects objects
      * @access   public
      */
     public function addFieldToDepartment(&$field, $deptid)
@@ -132,7 +132,7 @@ class TicketFieldDepartmentHandler
     /**
      * Add the given department(s) to the given field
      *
-     * @param mixed $dept  single or array of department id's or {@Link xhelp\Department} objects
+     * @param mixed $dept  single or array of department id's or {@Link Xhelp\Department} objects
      * @param int   $field Field ID
      * @retnr  bool True if successful, False if not
      * @access public
@@ -157,7 +157,7 @@ class TicketFieldDepartmentHandler
     /**
      * Remove the given field(s) from the given department
      *
-     * @param  mixed $field  single or array of field ids or {@link xhelp\TicketField} objects
+     * @param  mixed $field  single or array of field ids or {@link Xhelp\TicketField} objects
      * @param  int   $deptid Department ID
      * @return bool  True if successful, False if not
      * @access public
@@ -181,7 +181,7 @@ class TicketFieldDepartmentHandler
     /**
      * Remove the given department(s) from the given field
      *
-     * @param  mixed $dept  single or array of department id's or {@link xhelp\Department} objects
+     * @param  mixed $dept  single or array of department id's or {@link Xhelp\Department} objects
      * @param  int   $field Field ID
      * @return bool  True if successful, False if not
      * @access public
@@ -261,8 +261,8 @@ class TicketFieldDepartmentHandler
     /**
      * Add a field to a department
      *
-     * @param  mixed $field fieldid or {@Link xhelp\TicketField} object
-     * @param  mixed $dept  deptid or {@Link xhelp\Department} object
+     * @param  mixed $field fieldid or {@Link Xhelp\TicketField} object
+     * @param  mixed $dept  deptid or {@Link Xhelp\Department} object
      * @return bool  True if Successful, False if not
      * @access private
      */

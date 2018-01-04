@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -26,7 +26,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * xhelp\Role class
+ * Xhelp\Role class
  *
  * Information about an individual role
  *
@@ -37,7 +37,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 class Role extends \XoopsObject
 {
     /**
-     * xhelp\Role constructor.
+     * Xhelp\Role constructor.
      * @param null $id
      */
     public function __construct($id = null)

@@ -1,9 +1,9 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
- * xhelp\BaseObjectHandler class
+ * Xhelp\BaseObjectHandler class
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
  * @access  public
@@ -38,7 +38,7 @@ class BaseObjectHandler extends \XoopsObjectHandler
 
     /**
      * create a new  object
-     * @return object {@link xhelp\BaseObject}
+     * @return object {@link Xhelp\BaseObject}
      * @access public
      */
     public function create()

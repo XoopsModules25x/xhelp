@@ -1,13 +1,13 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/Service.php';
 
 /**
- * xhelp\FirnService class
+ * Xhelp\FirnService class
  *
  * Trains the FIRN (Find It Right Now) service
  *
@@ -15,10 +15,10 @@ use Xoopsmodules\xhelp;
  * @access  public
  * @package xhelp
  */
-class FirnService extends xhelp\Service
+class FirnService extends Xhelp\Service
 {
     /**
-     * xhelp\FirnService constructor.
+     * Xhelp\FirnService constructor.
      */
     public function __construct()
     {
@@ -33,15 +33,15 @@ class FirnService extends xhelp\Service
     /**
      * Event: new_faq
      * Triggered after FAQ addition
-     * @param xhelp\Ticket $ticket Ticket used as base for FAQ
-     * @param xhelp\Faq    $faq    FAQ that was added
+     * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
+     * @param Xhelp\Faq    $faq    FAQ that was added
      */
     public function new_faq($ticket, $faq)
     {
         global $xoopsUser;
 
         //Create a new solution from the supplied ticket / faq
-        $hTicketSol = new xhelp\TicketSolutionHandler($GLOBALS['xoopsDB']);
+        $hTicketSol = new Xhelp\TicketSolutionHandler($GLOBALS['xoopsDB']);
         $sol        = $hTicketSol->create();
 
         $sol->setVar('ticketid', $ticket->getVar('id'));

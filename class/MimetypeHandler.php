@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -30,7 +30,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 /**
  * class MimetypeHandler
  */
-class MimetypeHandler extends xhelp\BaseObjectHandler
+class MimetypeHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -61,7 +61,7 @@ class MimetypeHandler extends xhelp\BaseObjectHandler
     /**
      * retrieve a mimetype object from the database
      * @param  int $id ID of mimetype
-     * @return bool <a href='psi_element://xhelp\Mimetype'>xhelp\Mimetype</a>
+     * @return bool <a href='psi_element://Xhelp\Mimetype'>Xhelp\Mimetype</a>
      * @access  public
      */
     public function &get($id)
@@ -89,7 +89,7 @@ class MimetypeHandler extends xhelp\BaseObjectHandler
      *
      * @param  \CriteriaElement $criteria {@link CriteriaElement} conditions to be met
      * @param bool    $id_as_key
-     * @return array array of <a href='psi_element://xhelp\Mimetype'>xhelp\Mimetype</a> objects
+     * @return array array of <a href='psi_element://Xhelp\Mimetype'>Xhelp\Mimetype</a> objects
      *                          objects
      * @access  public
      */

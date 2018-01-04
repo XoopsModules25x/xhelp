@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -31,7 +31,7 @@ $helper->LoadLanguage('admin');
 /**
  * class TicketValuesHandler
  */
-class TicketValuesHandler extends xhelp\BaseObjectHandler
+class TicketValuesHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class

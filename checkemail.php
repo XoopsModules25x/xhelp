@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/servicemain.php';
 
@@ -12,13 +12,13 @@ require_once __DIR__ . '/servicemain.php';
 //require XHELP_CLASS_PATH . '/validator.php';
 
 //Initialize xhelp objects
-$msgParser  = new xhelp\EmailParser();
-$msgStore   = new xhelp\EmailStore();
-$hDeptBoxes = new xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-$hMailEvent = new xhelp\MailEventHandler($GLOBALS['xoopsDB']);
-$hTicket    = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$msgParser  = new Xhelp\EmailParser();
+$msgStore   = new Xhelp\EmailStore();
+$hDeptBoxes = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+$hMailEvent = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+$hTicket    = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
 
-$_eventsrv->advise('new_user_by_email', xhelp\NotificationService::getInstance(), 'new_user_activation' . $xoopsConfigUser['activation_type']);
+$_eventsrv->advise('new_user_by_email', Xhelp\NotificationService::getInstance(), 'new_user_activation' . $xoopsConfigUser['activation_type']);
 
 //Get All Department Mailboxes
 $deptmboxes = $hDeptBoxes->getActiveMailboxes();
@@ -45,7 +45,7 @@ foreach ($deptmboxes as $mbox) {
 
                         //Create new user account if necessary
 
-                        if (!$xoopsUser = xhelp\Utility::emailIsXoopsUser($parsed->getEmail())) {
+                        if (!$xoopsUser = Xhelp\Utility::emailIsXoopsUser($parsed->getEmail())) {
                             if ($xoopsModuleConfig['xhelp_allowAnonymous']) {
                                 switch ($xoopsConfigUser['activation_type']) {
                                     case 1:
@@ -57,7 +57,7 @@ foreach ($deptmboxes as $mbox) {
                                     default:
                                         $level = 0;
                                 }
-                                $xoopsUser = xhelp\Utility::getXoopsAccountFromEmail($parsed->getEmail(), $parsed->getName(), $password, $level);
+                                $xoopsUser = Xhelp\Utility::getXoopsAccountFromEmail($parsed->getEmail(), $parsed->getName(), $password, $level);
                                 $_eventsrv->trigger('new_user_by_email', [$password, $xoopsUser]);
                             } else {
                                 $msg_logs[_XHELP_MAIL_CLASS3][] = sprintf(_XHELP_MESSAGE_NO_ANON, $parsed->getEmail());

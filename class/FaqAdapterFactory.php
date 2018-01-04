@@ -1,8 +1,8 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -16,7 +16,7 @@ class FaqAdapterFactory
     /**
      * Retrieve an array of filenames for all installed adapters
      *
-     * @return array xhelp\FaqAdapter filenames
+     * @return array Xhelp\FaqAdapter filenames
      *
      */
     public static function &installedAdapters()
@@ -60,7 +60,7 @@ class FaqAdapterFactory
         // Step 1 - Retrieve configured faq application
         $ret = false;
         if ('' == $name) {
-            $name = xhelp\Utility::getMeta('faq_adapter');
+            $name = Xhelp\Utility::getMeta('faq_adapter');
             if ('' == $name) {
                 return $ret;
             }
@@ -99,7 +99,7 @@ class FaqAdapterFactory
         // Step 2 - store in xhelp_meta table
         $ret = false;
         if ($isValid) {
-            $ret = xhelp\Utility::setMeta('faq_adapter', $name);
+            $ret = Xhelp\Utility::setMeta('faq_adapter', $name);
         }
 
         // Step 3 - return true/false

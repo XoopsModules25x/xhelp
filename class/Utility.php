@@ -1,8 +1,8 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 use Xmf\Request;
-use Xoopsmodules\xhelp;
-use Xoopsmodules\xhelp\common;
+use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\Common;
 
 //include __DIR__ . '/../preloads/autoloader.php';
 
@@ -304,7 +304,7 @@ class Utility
      * @param        $sresponse
      * @param  int   $timespent Number of minutes spent on ticket
      * @param  bool  $private   Should this be a private message?
-     * @return xhelp\Responses Response information
+     * @return Xhelp\Responses Response information
      *
      * @internal param string $response response text to add
      * @access   public
@@ -744,7 +744,7 @@ class Utility
      * Retrieve list of all staff members
      *
      * @param $displayName
-     * @return array <a href='psi_element://xhelp\Staff'>xhelp\Staff</a> objects
+     * @return array <a href='psi_element://Xhelp\Staff'>Xhelp\Staff</a> objects
      * objects
      * @access public
      */
@@ -1026,7 +1026,7 @@ class Utility
     {
 //        $handler = xoops_getModuleHandler($handler, XHELP_DIR_NAME);
         include __DIR__ . '/../preloads/autoloader.php';
-        $class = '\\Xoopsmodules\\xhelp\\' . $handler . 'Handler';
+        $class = '\\XoopsModules\\Xhelp\\' . $handler . 'Handler';
         $newHandler = new $class($GLOBALS['xoopsDB']);
 
         return $newHandler;
@@ -1036,7 +1036,7 @@ class Utility
      * Retrieve all saved searches for the specified user(s)
      *
      * @param  mixed $users Either an integer (UID) or an array of UIDs
-     * @return array xhelp\SavedSearch objects
+     * @return array Xhelp\SavedSearch objects
      * @access public
      */
     public static function getSavedSearches($users)
@@ -1333,14 +1333,14 @@ class Utility
     }
 
     /**
-     * @return xhelp\EventService
+     * @return Xhelp\EventService
      */
     public static function createNewEventService()
     {
         static $instance;
 
         if (null === $instance) {
-            $instance = new xhelp\EventService();
+            $instance = new Xhelp\EventService();
         }
 
         return $instance;

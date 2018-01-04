@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * Class MembershipHandler
@@ -21,9 +21,9 @@ class MembershipHandler
     {
         //Constructor
         $this->_db      = $db;
-        $this->_hStaff  = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        $this->_hDept   = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $this->_hTicket = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $this->_hStaff  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $this->_hDept   = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $this->_hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
     }
 
     /**
@@ -52,7 +52,7 @@ class MembershipHandler
      *
      * @param  int $uid staff user id
      * @param bool $id_as_key
-     * @return array array of <a href='psi_element://xhelp\Department'>xhelp\Department</a> objects
+     * @return array array of <a href='psi_element://Xhelp\Department'>Xhelp\Department</a> objects
      *                  objects
      * @access public
      */
@@ -85,7 +85,7 @@ class MembershipHandler
     public function &getVisibleDepartments($uid)
     {
         $uid          = (int)$uid;
-        $xoopsModule  = xhelp\Utility::getModule();
+        $xoopsModule  = Xhelp\Utility::getModule();
         $module_id    = $xoopsModule->getVar('mid');
         $hMember      = xoops_getHandler('member');
         $groups       = $hMember->getGroupsByUser($uid);
@@ -125,7 +125,7 @@ class MembershipHandler
      * @param int|array $deptid department id
      * @param int  $limit
      * @param int  $start
-     * @return array array of <a href='psi_element://xhelp\Staff'>xhelp\Staff</a> objects
+     * @return array array of <a href='psi_element://Xhelp\Staff'>Xhelp\Staff</a> objects
      *                     objects
      * @access public
      */
@@ -224,7 +224,7 @@ class MembershipHandler
      */
     public function inAllDepts($staffDepts)
     {
-        $hDept    = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDept    = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
         $allDepts = $hDept->getCount();
 
         $numDepts = 0;
@@ -242,7 +242,7 @@ class MembershipHandler
     /**
      * Add the given staff member(s) to the given department
      *
-     * @param  mixed $staff  single or array of uids or {@link xhelp\Staff} objects
+     * @param  mixed $staff  single or array of uids or {@link Xhelp\Staff} objects
      * @param  int   $deptid Department ID
      * @return bool  True if successful, False if not
      * @access public
@@ -266,7 +266,7 @@ class MembershipHandler
     /**
      * Add the given department(s) to the given user
      *
-     * @param  mixed $dept single or array of department id's or {@link xhelp\Department} objects
+     * @param  mixed $dept single or array of department id's or {@link Xhelp\Department} objects
      * @param  int   $uid  User ID
      * @return bool  True if successful, False if not
      * @access public
@@ -290,7 +290,7 @@ class MembershipHandler
     /**
      * Remove the given staff member(s) to the given department
      *
-     * @param  mixed $staff  single or array of uids or {@link xhelp\Staff} objects
+     * @param  mixed $staff  single or array of uids or {@link Xhelp\Staff} objects
      * @param  int   $deptid Department ID
      * @return bool  True if successful, False if not
      * @access public
@@ -314,7 +314,7 @@ class MembershipHandler
     /**
      * Remove the given user from the given department(s)
      *
-     * @param  mixed $dept single or array of department id's or {@link xhelp\Department} objects
+     * @param  mixed $dept single or array of department id's or {@link Xhelp\Department} objects
      * @param  int   $uid  User ID
      * @return bool  True if successful, False if not
      * @access public
@@ -367,8 +367,8 @@ class MembershipHandler
     /**
      * Add a staff member to a department
      *
-     * @param  mixed $staff uid or {@link xhelp\Staff} object
-     * @param  mixed $dept  department id or {@link xhelp\Department} object
+     * @param  mixed $staff uid or {@link Xhelp\Staff} object
+     * @param  mixed $dept  department id or {@link Xhelp\Department} object
      * @return bool  True if successful, False if not
      * @access private
      */
@@ -410,8 +410,8 @@ class MembershipHandler
     /**
      * Remove a staff member from a department
      *
-     * @param  mixed $staff uid or {@link xhelp\Staff} object
-     * @param  mixed $dept  department id or {@link xhelp\Department} object
+     * @param  mixed $staff uid or {@link Xhelp\Staff} object
+     * @param  mixed $dept  department id or {@link Xhelp\Department} object
      * @return bool  True if successful, False if not
      * @access private
      */
@@ -474,28 +474,28 @@ class MembershipHandler
 
 1. Get all departments for a user
 $uid = 14;
-$hMembership &= new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$hMembership &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 $depts &= $hMembership->membershipByStaff($uid);
 
 2. Get all staff members of a dept
 $deptid = 5;
-$hMembership &= new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$hMembership &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 $staff &= $hMembership->membershipByDept($deptid);
 
 3. Add the current user to a department
 $dept = 5;
-$hMembership &= new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$hMembership &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 $bRet = $hMembership->addStaffToDept($xoopsUser, $dept);
 
 or
 
 $dept = 5;
-$hMembership &= new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$hMembership &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 $bRet = $hMembership->addStaffToDept($xoopsUser->getVar('uid'), $dept);
 
 4. Add an array of users to a department
 $dept = 5;
 $arr = array(5, 14, 18); //Array of uid's to add
-$hMembership &= new xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$hMembership &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 $bRet = $hMembership->addStaffToDept($arr, $dept);
 */

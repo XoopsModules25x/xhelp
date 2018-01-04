@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 define('_XHELP_MAILBOXTYPE_POP3', 1);
 define('_XHELP_MAILBOXTYPE_IMAP', 2);
@@ -8,7 +8,7 @@ define('_XHELP_MAILBOXTYPE_IMAP', 2);
 //
 
 /**
- * xhelp\MailBox class
+ * Xhelp\MailBox class
  *
  * Part of the email submission subsystem. Abstract class defining functions
  * needed to interact with a mailstore

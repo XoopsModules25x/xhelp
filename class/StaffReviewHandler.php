@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -28,15 +28,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\StaffReviewHandler class
+ * Xhelp\StaffReviewHandler class
  *
- * StaffReview Handler for xhelp\StaffReview class
+ * StaffReview Handler for Xhelp\StaffReview class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class StaffReviewHandler extends xhelp\BaseObjectHandler
+class StaffReviewHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -69,7 +69,7 @@ class StaffReviewHandler extends xhelp\BaseObjectHandler
      * @param  int $ticketid    ID of ticket
      * @param  int $responseid  ID of response
      * @param  int $submittedBy UID of ticket submitter
-     * @return array|bool (@link xhelp\StaffReview}
+     * @return array|bool (@link Xhelp\StaffReview}
      * @access public
      */
     public function &getReview($ticketid, $responseid, $submittedBy)

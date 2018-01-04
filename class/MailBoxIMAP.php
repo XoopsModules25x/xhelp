@@ -1,11 +1,11 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
- * xhelp\MailBox class
+ * Xhelp\MailBox class
  *
  * Part of the email submission subsystem. Abstract class defining functions
  * needed to interact with a mailstore
@@ -15,6 +15,6 @@ use Xoopsmodules\xhelp;
  * @package xhelp
  * @todo    Need to write implementation of Mailbox class using PEAR::IMAP
  */
-class MailBoxIMAP extends xhelp\MailBox
+class MailBoxIMAP extends Xhelp\MailBox
 {
 }

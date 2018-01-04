@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * class FaqCategory
@@ -8,7 +8,7 @@ use Xoopsmodules\xhelp;
 class FaqCategory extends \XoopsObject
 {
     /**
-     * xhelp\FaqCategory constructor.
+     * Xhelp\FaqCategory constructor.
      */
     public function __construct()
     {
@@ -18,10 +18,10 @@ class FaqCategory extends \XoopsObject
     }
 
     /**
-     * @return xhelp\FaqCategory
+     * @return Xhelp\FaqCategory
      */
     public function &create()
     {
-        return new xhelp\FaqCategory();
+        return new Xhelp\FaqCategory();
     }
 }

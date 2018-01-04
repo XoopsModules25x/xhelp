@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -26,7 +26,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * xhelp\TicketList class
+ * Xhelp\TicketList class
  *
  * @author  Eric Juden <ericj@epcusa.com>
  * @access  public
@@ -35,7 +35,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 class TicketList extends \XoopsObject
 {
     /**
-     * xhelp\TicketList constructor.
+     * Xhelp\TicketList constructor.
      * @param null $id
      */
     public function __construct($id = null)

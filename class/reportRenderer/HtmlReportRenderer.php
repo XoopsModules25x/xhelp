@@ -1,8 +1,8 @@
-<?php namespace Xoopsmodules\xhelp\reportRenderer;
+<?php namespace XoopsModules\Xhelp\reportRenderer;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -16,10 +16,10 @@ global $paramVals;
 /**
  * class HtmlReportRenderer
  */
-class HtmlReportRenderer extends xhelp\ReportRenderer
+class HtmlReportRenderer extends Xhelp\ReportRenderer
 {
     /**
-     * xhelp\HtmlReportRenderer constructor.
+     * Xhelp\HtmlReportRenderer constructor.
      * @param $report
      */
     public function __construct($report)

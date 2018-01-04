@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 //
 require_once __DIR__ . '/header.php';
@@ -14,7 +14,7 @@ if ($xoopsUser) {
     $uid = $xoopsUser->getVar('uid');
 
     if (isset($_POST['delete_ticket'])) {
-        $hTicket = xhelp\Utility::getHandler('Ticket');
+        $hTicket = Xhelp\Utility::getHandler('Ticket');
         if (isset($_POST['ticketid'])) {
             $xhelp_id = $_POST['ticketid'];
         }
@@ -28,7 +28,7 @@ if ($xoopsUser) {
         redirect_header(XHELP_BASE_URL . '/index.php', 3, $message);
     } elseif (isset($_POST['delete_responseTpl'])) {
         //Should only the owner of a template be able to delete it?
-        $hResponseTpl = xhelp\Utility::getHandler('ResponseTemplates');
+        $hResponseTpl = Xhelp\Utility::getHandler('ResponseTemplates');
         $displayTpl   = $hResponseTpl->get($_POST['tplID']);
         if ($xoopsUser->getVar('uid') != $displayTpl->getVar('uid')) {
             $message = _NOPERM;

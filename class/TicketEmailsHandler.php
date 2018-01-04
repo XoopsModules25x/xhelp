@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,21 +18,21 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 
 /**
- * xhelp\TicketEmailsHandler class
+ * Xhelp\TicketEmailsHandler class
  *
- * Department Handler for xhelp\Department class
+ * Department Handler for Xhelp\Department class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class TicketEmailsHandler extends xhelp\BaseObjectHandler
+class TicketEmailsHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -108,7 +108,7 @@ class TicketEmailsHandler extends xhelp\BaseObjectHandler
      *
      * @param  object $criteria  {@link CriteriaElement} conditions to be met
      * @param  bool   $id_as_key Should the department ID be used as array key
-     * @return array  array of {@link xhelp\Department} objects
+     * @return array  array of {@link Xhelp\Department} objects
      * @access  public
      */
     public function &getObjects($criteria = null, $id_as_key = false)
@@ -141,7 +141,7 @@ class TicketEmailsHandler extends xhelp\BaseObjectHandler
      * retrieve objects from the database
      *
      * @param  \CriteriaElement $criteria {@link CriteriaElement} conditions to be met
-     * @return array array of <a href='psi_element://xhelp\Department'>xhelp\Department</a> objects
+     * @return array array of <a href='psi_element://Xhelp\Department'>Xhelp\Department</a> objects
      * objects
      * @internal param bool $id_as_key Should the department ID be used as array key
      * @access   public

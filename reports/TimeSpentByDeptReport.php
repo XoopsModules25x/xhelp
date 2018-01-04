@@ -1,10 +1,10 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once XHELP_JPGRAPH_PATH . '/jpgraph.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
-xhelp\Utility::includeReportLangFile('timeSpentByDept');
+Xhelp\Utility::includeReportLangFile('timeSpentByDept');
 
 global $xoopsDB, $paramVals;
 
@@ -21,10 +21,10 @@ $paramVals = [
 /**
  * class TimeSpentByDeptReport
  */
-class TimeSpentByDeptReport extends xhelp\Report
+class TimeSpentByDeptReport extends Xhelp\Report
 {
     /**
-     * xhelp\TimeSpentByDeptReport constructor.
+     * Xhelp\TimeSpentByDeptReport constructor.
      */
     public function __construct()
     {

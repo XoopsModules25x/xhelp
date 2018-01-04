@@ -1,8 +1,8 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * CacheService class
@@ -14,7 +14,7 @@ use Xoopsmodules\xhelp;
  * @access  public
  * @package xhelp
  */
-class CacheService extends xhelp\Service
+class CacheService extends Xhelp\Service
 {
     /**
      * Location of Xoops Cache Directory
@@ -47,7 +47,7 @@ class CacheService extends xhelp\Service
 
     /**
      * Reset Performance Images on 'new_ticket' event
-     * @param  xhelp\Ticket $ticket Ticket that was added
+     * @param  Xhelp\Ticket $ticket Ticket that was added
      * @return bool        True on success, false on error
      * @access  public
      */
@@ -58,7 +58,7 @@ class CacheService extends xhelp\Service
 
     /**
      * Reset Performance Images on 'close_ticket' event
-     * @param  xhelp\Ticket $ticket Ticket that was closed
+     * @param  Xhelp\Ticket $ticket Ticket that was closed
      * @return bool        True on success, false on error
      * @access public
      */
@@ -69,13 +69,13 @@ class CacheService extends xhelp\Service
 
     /**
      * Call Backback function for 'delete_ticket'
-     * @param  xhelp\Ticket $ticket Ticket being deleted
+     * @param  Xhelp\Ticket $ticket Ticket being deleted
      * @return bool        True on success, false on error
      * @access  public
      */
     public function delete_ticket($ticket)
     {
-        $hStatus = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+        $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
         $status  = $hStatus->get($ticket->getVar('status'));
 
         if (XHELP_STATE_UNRESOLVED == $status->getVar('state')) {
@@ -85,7 +85,7 @@ class CacheService extends xhelp\Service
 
     /**
      * Reset Performance Images on 'reopen_ticket' event
-     * @param  xhelp\Ticket $ticket Ticket that was re-opened
+     * @param  Xhelp\Ticket $ticket Ticket that was re-opened
      * @return bool        True on success, false on error
      * @access public
      */

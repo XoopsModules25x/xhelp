@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -28,15 +28,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\LogMessageHandler class
+ * Xhelp\LogMessageHandler class
  *
- * LogMessage Handler for xhelp\LogMessage class
+ * LogMessage Handler for Xhelp\LogMessage class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class LogMessageHandler extends xhelp\BaseObjectHandler
+class LogMessageHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class

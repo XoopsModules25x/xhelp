@@ -1,7 +1,7 @@
 <?php
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../mainfile.php';
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
@@ -52,7 +52,7 @@ function updateDepts()
     }
 
     //Retrieve list of departments
-    $hDept = xhelp\Utility::getHandler('Department');
+    $hDept = Xhelp\Utility::getHandler('Department');
     $depts = $hDept->getObjects();
 
     $class = 'odd';
@@ -60,7 +60,7 @@ function updateDepts()
         $deptid   = $dept->getVar('id');
         $deptname = $dept->getVar('department');
 
-        $hConfigOption = xhelp\Utility::getHandler('ConfigOption');
+        $hConfigOption = Xhelp\Utility::getHandler('ConfigOption');
         $newOption     = $hConfigOption->create();
         $newOption->setVar('confop_name', $deptname);
         $newOption->setVar('confop_value', $deptid);
@@ -100,7 +100,7 @@ function removeDepts()
     }
 
     // Remove the config options
-    $hConfigOption = xhelp\Utility::getHandler('ConfigOption');
+    $hConfigOption = Xhelp\Utility::getHandler('ConfigOption');
     $crit          = new \Criteria('conf_id', $xhelp_config);
     $configOptions = $hConfigOption->getObjects($crit);
 
@@ -200,10 +200,10 @@ function removeTopics()
 function xoops_module_install_xhelp(\XoopsModule $module)
 {
     $myTopics         = updateTopics(true);
-    $hasRoles         = xhelp\Utility::createRoles();
-    $hasStatuses      = xhelp\Utility::createStatuses();
-    $hasNotifications = xhelp\Utility::createNotifications();
-    $hasTicketLists   = xhelp\Utility::createDefaultTicketLists();
+    $hasRoles         = Xhelp\Utility::createRoles();
+    $hasStatuses      = Xhelp\Utility::createStatuses();
+    $hasNotifications = Xhelp\Utility::createNotifications();
+    $hasTicketLists   = Xhelp\Utility::createDefaultTicketLists();
 
     return true;
 }

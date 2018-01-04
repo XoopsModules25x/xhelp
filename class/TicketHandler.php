@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -32,7 +32,7 @@ global $xoopsUser;
 /**
  * class TicketHandler
  */
-class TicketHandler extends xhelp\BaseObjectHandler
+class TicketHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -182,7 +182,7 @@ class TicketHandler extends xhelp\BaseObjectHandler
         $uid = (int)$uid;
 
         // Get all ticketEmail objects where $uid is found
-        $hTicketEmails = new xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
         $crit          = new \Criteria('uid', $uid);
         $ticketEmails  = $hTicketEmails->getObjectsSortedByTicket($crit);
 
@@ -194,7 +194,7 @@ class TicketHandler extends xhelp\BaseObjectHandler
         unset($ticketEmails);
 
         // Get unresolved statuses and filter out the resolved statuses
-        $hStatus   = new xhelp\StatusHandler($GLOBALS['xoopsDB']);
+        $hStatus   = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
         $crit      = new \Criteria('state', 1);
         $statuses  = $hStatus->getObjects($crit, true);
         $aStatuses = [];
@@ -282,7 +282,7 @@ class TicketHandler extends xhelp\BaseObjectHandler
      * @param  int    $limit number of records to return
      * @param  string $sort  Sort Field
      * @param  string $order Sort Order
-     * @return array  array of {@link xhelp\Ticket}> objects
+     * @return array  array of {@link Xhelp\Ticket}> objects
      * @access public
      * @todo   Filter by Department, Status
      */
@@ -497,7 +497,7 @@ class TicketHandler extends xhelp\BaseObjectHandler
     /**
      * delete a ticket from the database
      *
-     * @param \XoopsObject $obj       reference to the {@link xhelp\Ticket}
+     * @param \XoopsObject $obj       reference to the {@link Xhelp\Ticket}
      *                                obj to delete
      * @param  bool        $force
      * @return bool FALSE if failed.
@@ -510,19 +510,19 @@ class TicketHandler extends xhelp\BaseObjectHandler
         }
 
         // Remove all ticket responses first
-        $hResponses = new xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+        $hResponses = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
         if (!$hResponses->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
             return false;
         }
 
         // Remove all files associated with this ticket
-        $hFiles = new xhelp\FileHandler($GLOBALS['xoopsDB']);
+        $hFiles = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
         if (!$hFiles->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
             return false;
         }
 
         // Remove custom field values for this ticket
-        $hFieldValues = new xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
+        $hFieldValues = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
         if (!$hFieldValues->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
             return false;
         }

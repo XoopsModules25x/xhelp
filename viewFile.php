@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 //include('header.php');
 require_once __DIR__ . '/../../mainfile.php';
@@ -21,9 +21,9 @@ if (isset($_GET['id'])) {
 
 $viewFile = false;
 
-$hFiles   = new xhelp\FileHandler($GLOBALS['xoopsDB']);
-$hTicket  = new xhelp\TicketHandler($GLOBALS['xoopsDB']);
-$hStaff   = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+$hFiles   = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
+$hTicket  = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$hStaff   = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 $file     =& $hFiles->get($xhelp_id);
 $mimeType = $file->getVar('mimetype');
 $ticket   =& $hTicket->get($file->getVar('ticketid'));

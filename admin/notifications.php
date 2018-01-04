@@ -1,12 +1,12 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 // require_once XHELP_CLASS_PATH . '/session.php';
-$_xhelpSession = new xhelp\Session();
-$hNotification = new xhelp\NotificationHandler($GLOBALS['xoopsDB']);
+$_xhelpSession = new Xhelp\Session();
+$hNotification = new Xhelp\NotificationHandler($GLOBALS['xoopsDB']);
 
 global $xoopsModule;
 if (!$templates = $_xhelpSession->get('xhelp_notifications')) {
@@ -139,9 +139,9 @@ function edit()
     }
     $notification = $aNotifications[$id];
 
-    $staff_settings = xhelp\Utility::getMeta("notify_staff{$id}");
-    $user_settings  = xhelp\Utility::getMeta("notify_user{$id}");
-    $hRoles         = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $staff_settings = Xhelp\Utility::getMeta("notify_staff{$id}");
+    $user_settings  = Xhelp\Utility::getMeta("notify_user{$id}");
+    $hRoles         = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
     if (XHELP_NOTIF_STAFF_DEPT == $settings->getVar('staff_setting')) {
         $selectedRoles = $settings->getVar('staff_options');
     } else {

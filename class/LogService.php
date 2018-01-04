@@ -1,22 +1,22 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/Service.php';
 
 /**
  * xhelp_logService class
  *
- * Part of the Messaging Subsystem.  Uses the xhelp\LogMessageHandler class for logging
+ * Part of the Messaging Subsystem.  Uses the Xhelp\LogMessageHandler class for logging
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
  * @access  public
  * @package xhelp
  */
-class LogService extends xhelp\Service
+class LogService extends Xhelp\Service
 {
     /**
-     * Instance of the xhelp\LogMessageHandler
+     * Instance of the Xhelp\LogMessageHandler
      *
      * @var object
      * @access  private
@@ -30,7 +30,7 @@ class LogService extends xhelp\Service
      */
     public function __construct()
     {
-        $this->_hLog = new xhelp\LogMessage();
+        $this->_hLog = new Xhelp\LogMessage();
         $this->init();
     }
 
@@ -58,7 +58,7 @@ class LogService extends xhelp\Service
 
     /**
      * Callback function for the 'new_ticket' event
-     * @param  xhelp\Ticket $ticket Ticket that was added
+     * @param  Xhelp\Ticket $ticket Ticket that was added
      * @return bool        True on success, false on error
      * @access  public
      */
@@ -84,7 +84,7 @@ class LogService extends xhelp\Service
 
     /**
      * Callback function for the 'update_priority' event
-     * @param  xhelp\Ticket $ticket      Ticket that was modified
+     * @param  Xhelp\Ticket $ticket      Ticket that was modified
      * @param  int         $oldpriority Original ticket priority
      * @return bool        True on success, false on error
      * @access  public
@@ -105,9 +105,9 @@ class LogService extends xhelp\Service
 
     /**
      * Callback function for the 'update_status' event
-     * @param  xhelp\Ticket $ticket    Ticket that was modified
-     * @param  xhelp\Status $oldstatus Original ticket status
-     * @param  xhelp\Status $newstatus New ticket status
+     * @param  Xhelp\Ticket $ticket    Ticket that was modified
+     * @param  Xhelp\Status $oldstatus Original ticket status
+     * @param  Xhelp\Status $newstatus New ticket status
      * @return bool        True on success, false on error
      * @access  public
      */
@@ -129,7 +129,7 @@ class LogService extends xhelp\Service
      * Event: update_owner
      * Triggered after ticket ownership change (Individual)
      * Also See: batch_owner
-     * @param xhelp\Ticket $ticket   Ticket that was changed
+     * @param Xhelp\Ticket $ticket   Ticket that was changed
      * @param int         $oldowner UID of previous owner
      * @param int         $newowner UID of new owner
      */
@@ -154,7 +154,7 @@ class LogService extends xhelp\Service
 
     /**
      * Callback function for the reopen_ticket event
-     * @param  xhelp\Ticket $ticket Ticket that was re-opened
+     * @param  Xhelp\Ticket $ticket Ticket that was re-opened
      * @return bool        True on success, false on error
      * @access public
      */
@@ -173,7 +173,7 @@ class LogService extends xhelp\Service
 
     /**
      * Callback function for the close_ticket event
-     * @param  xhelp\Ticket $ticket Ticket that was closed
+     * @param  Xhelp\Ticket $ticket Ticket that was closed
      * @return bool        True on success, false on error
      * @access public
      */
@@ -192,8 +192,8 @@ class LogService extends xhelp\Service
 
     /**
      * Add Log information for 'new_response' event
-     * @param  xhelp\Ticket    $ticket      Ticket for Response
-     * @param  xhelp\Responses $newResponse Response that was added
+     * @param  Xhelp\Ticket    $ticket      Ticket for Response
+     * @param  Xhelp\Responses $newResponse Response that was added
      * @return bool           True on success, false on error
      * @access public
      */
@@ -212,9 +212,9 @@ class LogService extends xhelp\Service
 
     /**
      * Callback function for the 'new_response_rating' event
-     * @param  xhelp\Rating    $rating   Rating Information
-     * @param  xhelp\Ticket    $ticket   Ticket for Rating
-     * @param  xhelp\Responses $response Response that was rated
+     * @param  Xhelp\Rating    $rating   Rating Information
+     * @param  Xhelp\Ticket    $ticket   Ticket for Rating
+     * @param  Xhelp\Responses $response Response that was rated
      * @return bool           True on success, false on error
      * @access public
      */
@@ -233,8 +233,8 @@ class LogService extends xhelp\Service
 
     /**
      * Callback function for the 'edit_ticket' event
-     * @param  xhelp\Ticket $oldTicket  Original Ticket Information
-     * @param  xhelp\Ticket $ticketInfo New Ticket Information
+     * @param  Xhelp\Ticket $oldTicket  Original Ticket Information
+     * @param  Xhelp\Ticket $ticketInfo New Ticket Information
      * @return bool        True on success, false on error
      * @access  public
      */
@@ -277,8 +277,8 @@ class LogService extends xhelp\Service
 
     /**
      * Add Log Events for 'batch_dept' event
-     * @param  array           $tickets Array of xhelp\Ticket objects
-     * @param  xhelp\Department $dept    New department for tickets
+     * @param  array           $tickets Array of Xhelp\Ticket objects
+     * @param  Xhelp\Department $dept    New department for tickets
      * @return bool            True on success, false on error
      * @access public
      */
@@ -286,7 +286,7 @@ class LogService extends xhelp\Service
     {
         global $xoopsUser;
 
-        $hDept   = new xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $hDept   = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
         $deptObj = $hDept->get($dept);
 
         foreach ($tickets as $ticket) {
@@ -304,7 +304,7 @@ class LogService extends xhelp\Service
 
     /**
      * Add Log Events for 'batch_priority' event
-     * @param  array $tickets  Array of xhelp\Ticket objects
+     * @param  array $tickets  Array of Xhelp\Ticket objects
      * @param  int   $priority New priority level for tickets
      * @return bool  True on success, false on error
      * @access public
@@ -329,7 +329,7 @@ class LogService extends xhelp\Service
 
     /**
      * Add Log Events for 'batch_owner' event
-     * @param  array $tickets Array of xhelp\Ticket objects
+     * @param  array $tickets Array of Xhelp\Ticket objects
      * @param  int   $owner   New owner for tickets
      * @return bool  True on success, false on error
      * @access public
@@ -359,7 +359,7 @@ class LogService extends xhelp\Service
 
     /**
      * Add Log Events for 'batch_status' event
-     * @param  array $tickets   Array of xhelp\Ticket objects
+     * @param  array $tickets   Array of Xhelp\Ticket objects
      * @param  int   $newstatus New status for tickets
      * @return bool  True on success, false on error
      * @access public
@@ -369,14 +369,14 @@ class LogService extends xhelp\Service
         global $xoopsUser;
 
         $updated = time();
-        $sStatus = xhelp\Utility::getStatus($newstatus);
+        $sStatus = Xhelp\Utility::getStatus($newstatus);
         $uid     = $xoopsUser->getVar('uid');
         foreach ($tickets as $ticket) {
             $logMessage = $this->_hLog->create();
             $logMessage->setVar('uid', $uid);
             $logMessage->setVar('ticketid', $ticket->getVar('id'));
             $logMessage->setVar('lastUpdated', $updated);
-            $logMessage->setVar('action', sprintf(_XHELP_LOG_UPDATE_STATUS, xhelp\Utility::getStatus($ticket->getVar('status')), $sStatus));
+            $logMessage->setVar('action', sprintf(_XHELP_LOG_UPDATE_STATUS, Xhelp\Utility::getStatus($ticket->getVar('status')), $sStatus));
             $this->_hLog->insert($logMessage, true);
             unset($logMessage);
         }
@@ -388,8 +388,8 @@ class LogService extends xhelp\Service
      * Event: batch_response
      * Triggered after a batch response addition
      * Note: the $response->getVar('ticketid') field is empty for this function
-     * @param array          $tickets  The xhelp\Ticket objects that were modified
-     * @param xhelp\Responses $response The response added to each ticket
+     * @param array          $tickets  The Xhelp\Ticket objects that were modified
+     * @param Xhelp\Responses $response The response added to each ticket
      * @return bool
      */
     public function batch_response($tickets, $response)
@@ -437,7 +437,7 @@ class LogService extends xhelp\Service
 
     /**
      * Add Log Events for 'delete_file' event
-     * @param  xhelp\File $file File being deleted
+     * @param  Xhelp\File $file File being deleted
      * @return bool      True on success, false on error
      * @access public
      */
@@ -463,8 +463,8 @@ class LogService extends xhelp\Service
     /**
      * Event: new_faq
      * Triggered after FAQ addition
-     * @param xhelp\Ticket $ticket Ticket used as base for FAQ
-     * @param xhelp\Faq    $faq    FAQ that was added
+     * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
+     * @param Xhelp\Faq    $faq    FAQ that was added
      */
     public function new_faq($ticket, $faq)
     {

@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -28,7 +28,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 $helper->LoadLanguage('admin');
 
 /**
- * xhelp\TicketValues class
+ * Xhelp\TicketValues class
  *
  * Metadata that represents a custom value created for xhelp
  *
@@ -51,7 +51,7 @@ class TicketValues extends \XoopsObject
     {
         $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
 
-        $hFields = new xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+        $hFields = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
         $fields  = $hFields->getObjects(null, true);
 
         foreach ($fields as $field) {

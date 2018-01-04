@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 //function xhelpAdminFooter()
 //{
@@ -84,8 +84,8 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     $size = 0;
 
     if ($getResolved) {
-        $hTicket = xhelp\Utility::getHandler('Ticket');
-        $hFile   = xhelp\Utility::getHandler('File');
+        $hTicket = Xhelp\Utility::getHandler('Ticket');
+        $hFile   = Xhelp\Utility::getHandler('File');
 
         $tickets = $hTicket->getObjectsByState(1);
 
@@ -120,7 +120,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     }
     $dir->close();
 
-    return xhelp\Utility::prettyBytes($size);
+    return Xhelp\Utility::prettyBytes($size);
 }
 
 /**
@@ -393,10 +393,10 @@ function sanitizeFieldName($field)
  */
 function xhelpCreateDepartmentVisibility()
 {
-    $hDepartments = xhelp\Utility::getHandler('Department');
+    $hDepartments = Xhelp\Utility::getHandler('Department');
     $hGroups      = xoops_getHandler('group');
     $hGroupPerm   = xoops_getHandler('groupperm');
-    $xoopsModule  = xhelp\Utility::getModule();
+    $xoopsModule  = Xhelp\Utility::getModule();
 
     $module_id = $xoopsModule->getVar('mid');
 

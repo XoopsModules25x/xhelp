@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,12 +18,12 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * xhelp\TicketEmails class
+ * Xhelp\TicketEmails class
  *
  * @author  Eric Juden <ericj@epcusa.com>
  * @access  public
@@ -32,7 +32,7 @@ use Xoopsmodules\xhelp;
 class TicketEmails extends \XoopsObject
 {
     /**
-     * xhelp\TicketEmails constructor.
+     * Xhelp\TicketEmails constructor.
      * @param null $id
      */
     public function __construct($id = null)

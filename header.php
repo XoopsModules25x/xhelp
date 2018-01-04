@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/../../mainfile.php';
 
@@ -14,14 +14,14 @@ include __DIR__ . '/preloads/autoloader.php';
 // require_once XHELP_CLASS_PATH . '/session.php';
 // require_once XHELP_CLASS_PATH . '/eventService.php';
 
-$_xhelpSession = new xhelp\Session();
+$_xhelpSession = new Xhelp\Session();
 
 $roleReset     = false;
 $xhelp_isStaff = false;
 
 // Is the current user a staff member?
 if ($xoopsUser) {
-    $hStaff = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
     if ($xhelp_staff = $hStaff->getByUid($xoopsUser->getVar('uid'))) {
         $xhelp_isStaff = true;
 
@@ -43,7 +43,7 @@ if ($xoopsUser) {
 
         //Retrieve the staff member's saved searches
         if (!$aSavedSearches = $_xhelpSession->get('xhelp_savedSearches')) {
-            $aSavedSearches = xhelp\Utility::getSavedSearches($xoopsUser->getVar('uid'));
+            $aSavedSearches = Xhelp\Utility::getSavedSearches($xoopsUser->getVar('uid'));
             $_xhelpSession->set('xhelp_savedSearches', $aSavedSearches);
         }
     }

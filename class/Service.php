@@ -1,11 +1,11 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
- * xhelp\Service class
+ * Xhelp\Service class
  *
  * Part of the Messaging Subsystem. Provides the base interface for subscribing, unsubcribing from events
  *
@@ -30,7 +30,7 @@ class Service
 
     public function init()
     {
-        $this->_eventSrv = xhelp\Utility::createNewEventService();
+        $this->_eventSrv = Xhelp\Utility::createNewEventService();
         $this->_attachEvents();
     }
 

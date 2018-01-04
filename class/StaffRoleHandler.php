@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -30,7 +30,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 /**
  * class StaffRoleHandler
  */
-class StaffRoleHandler extends xhelp\BaseObjectHandler
+class StaffRoleHandler extends Xhelp\BaseObjectHandler
 {
     public $_idfield = 'roleid';
 

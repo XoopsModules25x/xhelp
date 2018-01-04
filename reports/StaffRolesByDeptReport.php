@@ -1,9 +1,9 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/report.php';
-xhelp\Utility::includeReportLangFile('staffRolesByDept');
+Xhelp\Utility::includeReportLangFile('staffRolesByDept');
 
 require_once XHELP_JPGRAPH_PATH . '/jpgraph.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
@@ -13,10 +13,10 @@ global $xoopsDB;
 /**
  * class StaffRolesByDeptReport
  */
-class StaffRolesByDeptReport extends xhelp\Report
+class StaffRolesByDeptReport extends Xhelp\Report
 {
     /**
-     * xhelp\StaffRolesByDeptReport constructor.
+     * Xhelp\StaffRolesByDeptReport constructor.
      */
     public function __construct()
     {

@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -27,15 +27,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\SavedSearchHandler class
+ * Xhelp\SavedSearchHandler class
  *
- * SavedSearch Handler for xhelp\SavedSearch class
+ * SavedSearch Handler for Xhelp\SavedSearch class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class SavedSearchHandler extends xhelp\BaseObjectHandler
+class SavedSearchHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class

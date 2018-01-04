@@ -1,8 +1,8 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -30,7 +30,7 @@ class FaqAdapter
      * version - version of this plugin
      * tested_versions - supported application versions
      * url - support url for plugin
-     * module_dir - module directory name (not needed if class overloads the isActive() function from xhelp\FaqAdapter)
+     * module_dir - module directory name (not needed if class overloads the isActive() function from Xhelp\FaqAdapter)
      * @access public
      */
     public $meta = [
@@ -52,7 +52,7 @@ class FaqAdapter
 
     /**
      * Stub function (does nothing)
-     * @return array of xhelp\FaqCategory objects
+     * @return array of Xhelp\FaqCategory objects
      */
     public function &getCategories()
     {
@@ -68,12 +68,12 @@ class FaqAdapter
     }
 
     /**
-     * @return xhelp\Faq object
+     * @return Xhelp\Faq object
      */
     public function createFaq()
     {
         // Create an faq
-        $faq = new xhelp\Faq();
+        $faq = new Xhelp\Faq();
 
         return $faq;
     }
@@ -97,7 +97,7 @@ class FaqAdapter
 
         if (is_object($mod)) {
             if ($mod->getVar('isactive')) {   // Module active?
-                $activeAdapter = xhelp\Utility::getMeta('faq_adapter');
+                $activeAdapter = Xhelp\Utility::getMeta('faq_adapter');
                 if ($activeAdapter = $module_name) {
                     return true;
                 } else {

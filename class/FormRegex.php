@@ -1,6 +1,6 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * class FormRegex
@@ -14,7 +14,7 @@ class FormRegex extends \XoopsFormElement
 //    public $_caption;
 
     /**
-     * xhelp\FormRegex constructor.
+     * Xhelp\FormRegex constructor.
      * @param $caption
      * @param $name
      * @param $value

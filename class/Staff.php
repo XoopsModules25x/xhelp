@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -28,7 +28,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/NotificationService.php';
 
 /**
- * xhelp\Staff class
+ * Xhelp\Staff class
  *
  * @author  Eric Juden <ericj@epcusa.com>
  * @access  public
@@ -43,7 +43,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 class Staff extends \XoopsObject
 {
     /**
-     * xhelp\Staff constructor.
+     * Xhelp\Staff constructor.
      * @param null $id
      */
     public function __construct($id = null)
@@ -90,7 +90,7 @@ class Staff extends \XoopsObject
             $depts[] = $dept_id;
         }
 
-        $_xhelpSession = new xhelp\Session();
+        $_xhelpSession = new Xhelp\Session();
 
         if (!$rights = $_xhelpSession->get('xhelp_staffRights')) {
             $rights = $this->getAllRoleRights();
@@ -118,8 +118,8 @@ class Staff extends \XoopsObject
     public function getAllRoleRights()
     {
         $perms      = [];
-        $hStaff     = new xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        $hRole      = new xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        $hStaff     = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $hRole      = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
         $roles      = $hRole->getObjects(null, true);
         $staffRoles = $hStaff->getRoles($this->getVar('uid'));
         foreach ($staffRoles as $role) {
@@ -144,7 +144,7 @@ class Staff extends \XoopsObject
      */
     public function resetRoleRights()
     {
-        $_xhelpSession = new xhelp\Session();
+        $_xhelpSession = new Xhelp\Session();
         $_xhelpSession->del('xhelp_staffRights');
 
         return true;

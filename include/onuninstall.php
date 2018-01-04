@@ -8,7 +8,7 @@
  * @link            https://xoops.org XOOPS
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * Prepares system prior to attempting to uninstall module
@@ -36,11 +36,11 @@ function xoops_module_uninstall_xhelp(\XoopsModule $module)
     $moduleDirName = basename(dirname(__DIR__));
     $moduleDirNameUpper = strtoupper($moduleDirName); //$capsDirName
 
-    /** @var xhelp\Helper $helper */
-    /** @var xhelp\Utility $utility */
-    $helper = xhelp\Helper::getInstance();
-    $utility      = new xhelp\Utility();
-    //    $configurator = new xhelp\common\Configurator();
+    /** @var Xhelp\Helper $helper */
+    /** @var Xhelp\Utility $utility */
+    $helper = Xhelp\Helper::getInstance();
+    $utility      = new Xhelp\Utility();
+    //    $configurator = new Xhelp\Common\Configurator();
 
     // Load language files
     $helper->loadLanguage('admin');

@@ -1,16 +1,16 @@
-<?php namespace Xoopsmodules\xhelp\reportRenderer;
+<?php namespace XoopsModules\Xhelp\reportRenderer;
 
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 /**
  * class PdfReportRenderer
  */
-class PdfReportRenderer extends xhelp\ReportRenderer
+class PdfReportRenderer extends Xhelp\ReportRenderer
 {
     /**
-     * xhelp\PdfReportRenderer constructor.
+     * Xhelp\PdfReportRenderer constructor.
      */
     public function __construct()
     {

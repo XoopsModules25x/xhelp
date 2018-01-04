@@ -1,6 +1,6 @@
 <?php
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 error_reporting(E_ALL); //Enable Error Reporting
 //if (version_compare(PHP_VERSION, '5.3.0', '<')) {
@@ -57,7 +57,7 @@ foreach ($myConfigs as $myConf) {
     $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
 }
 
-$xoopsModule       =& xhelp\Utility::getModule();
-$xoopsModuleConfig =& xhelp\Utility::getModuleConfig();
+$xoopsModule       =& Xhelp\Utility::getModule();
+$xoopsModuleConfig =& Xhelp\Utility::getModuleConfig();
 
 $helper->loadLanguage('main');

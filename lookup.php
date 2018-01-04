@@ -1,11 +1,11 @@
 <?php
 //
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 
-$hStaff = xhelp\Utility::getHandler('Staff');
+$hStaff = Xhelp\Utility::getHandler('Staff');
 
 //Allow only staff members to view this page
 if (!$xoopsUser) {

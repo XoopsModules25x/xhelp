@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -28,15 +28,15 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 
 /**
- * xhelp\NotificationHandler class
+ * Xhelp\NotificationHandler class
  *
- * Notification Handler for xhelp\Notification class
+ * Notification Handler for Xhelp\Notification class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  * @access  public
  * @package xhelp
  */
-class NotificationHandler extends xhelp\BaseObjectHandler
+class NotificationHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class

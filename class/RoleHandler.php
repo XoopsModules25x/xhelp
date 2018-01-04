@@ -1,4 +1,4 @@
-<?php namespace Xoopsmodules\xhelp;
+<?php namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -18,7 +18,7 @@
  * @author       XOOPS Development Team
  */
 
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 
 if (!defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,7 +29,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 /**
  * class RoleHandler
  */
-class RoleHandler extends xhelp\BaseObjectHandler
+class RoleHandler extends Xhelp\BaseObjectHandler
 {
     /**
      * Name of child class
@@ -103,7 +103,7 @@ class RoleHandler extends xhelp\BaseObjectHandler
     /**
      * delete a role from the database
      *
-     * @param \XoopsObject $obj       reference to the {@link xhelp\Role}
+     * @param \XoopsObject $obj       reference to the {@link Xhelp\Role}
      *                                obj to delete
      * @param  bool        $force
      * @return bool FALSE if failed.
@@ -112,7 +112,7 @@ class RoleHandler extends xhelp\BaseObjectHandler
     public function delete(\XoopsObject $obj, $force = false)
     {
         // Remove staff roles from db first
-        $hStaffRole = new xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
+        $hStaffRole = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
         if (!$hStaffRole->deleteAll(new \Criteria('roleid', $obj->getVar('id')))) {
             return false;
         }

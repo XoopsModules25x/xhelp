@@ -16,7 +16,7 @@
  * @since
  * @author     XOOPS Development Team
  */
-use Xoopsmodules\xhelp;
+use XoopsModules\Xhelp;
 include __DIR__ . '/../preloads/autoloader.php';
 
 
@@ -25,19 +25,19 @@ $moduleDirNameUpper = strtoupper($moduleDirName);
 
 
 /** @var \XoopsDatabase $db */
-/** @var xhelp\Helper $helper */
-/** @var xhelp\Utility $utility */
+/** @var Xhelp\Helper $helper */
+/** @var Xhelp\Utility $utility */
 
 $db     = \XoopsDatabaseFactory::getDatabaseConnection();
-$helper = xhelp\Helper::getInstance();
-$utility = new xhelp\Utility();
-//$configurator = new xhelp\common\Configurator();
+$helper = Xhelp\Helper::getInstance();
+$utility = new Xhelp\Utility();
+//$configurator = new Xhelp\Common\Configurator();
 
 $helper->loadLanguage('common');
 
 //handlers
 ///** @var \XoopsPersistableObjectHandler $xhelp_brokenHandler */
-//$xhelp_brokenHandler  = new xhelp\xhelp_brokenHandler($db);
+//$xhelp_brokenHandler  = new Xhelp\Xhelp_brokenHandler($db);
 
 if (!defined($moduleDirNameUpper . '_CONSTANTS_DEFINED')) {
     define($moduleDirNameUpper . '_DIRNAME', basename(dirname(__DIR__)));
