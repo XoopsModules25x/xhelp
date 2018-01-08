@@ -84,8 +84,8 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     $size = 0;
 
     if ($getResolved) {
-        $hTicket = Xhelp\Utility::getHandler('Ticket');
-        $hFile   = Xhelp\Utility::getHandler('File');
+        $hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
+        $hFile   = Xhelp\Helper::getInstance()->getHandler('File');
 
         $tickets = $hTicket->getObjectsByState(1);
 
@@ -393,7 +393,7 @@ function sanitizeFieldName($field)
  */
 function xhelpCreateDepartmentVisibility()
 {
-    $hDepartments = Xhelp\Utility::getHandler('Department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $hGroups      = xoops_getHandler('group');
     $hGroupPerm   = xoops_getHandler('groupperm');
     $xoopsModule  = Xhelp\Utility::getModule();

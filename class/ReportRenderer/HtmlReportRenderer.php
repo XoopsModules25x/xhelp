@@ -1,4 +1,4 @@
-<?php namespace XoopsModules\Xhelp\reportRenderer;
+<?php namespace XoopsModules\Xhelp\ReportRenderer;
 
 //
 

@@ -22,9 +22,9 @@ if ($xoopsUser) {
         if (isset($_POST['comments'])) {
             $comments = $_POST['comments'];
         }
-        $hStaffReview = Xhelp\Utility::getHandler('StaffReview');
-        $hTicket      = Xhelp\Utility::getHandler('Ticket');
-        $hResponse    = Xhelp\Utility::getHandler('Responses');
+        $hStaffReview = Xhelp\Helper::getInstance()->getHandler('StaffReview');
+        $hTicket      = Xhelp\Helper::getInstance()->getHandler('Ticket');
+        $hResponse    = Xhelp\Helper::getInstance()->getHandler('Responses');
 
         $review = $hStaffReview->create();
         $review->setVar('staffid', $staffid);

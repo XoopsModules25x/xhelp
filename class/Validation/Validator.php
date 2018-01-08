@@ -1,4 +1,4 @@
-<?php namespace XoopsModules\Xhelp\validation;
+<?php namespace XoopsModules\Xhelp\Validation;
 
 use XoopsModules\Xhelp;
 

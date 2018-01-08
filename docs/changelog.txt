@@ -26,6 +26,8 @@
     &nbsp;&nbsp;- displayNavigation(basename(__FILE__))  (mamba)
     &nbsp;&nbsp;- changed to ->displayButton('left') (mamba)
 - namespaces conversion (mamba)
+- autoload (mamba)
+* replaced xoops_getModuleHandler() with Helper::getInstance()->getHandler() (geekwright/mamba)
 
 <h5>0.81 Beta 2       [NOT RELEASED]</h5>
 <hr>

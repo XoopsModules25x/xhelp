@@ -2,7 +2,7 @@
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
-use XoopsModules\Xhelp\validation;
+use XoopsModules\Xhelp\Validation;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';

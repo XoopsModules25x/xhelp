@@ -31,7 +31,7 @@ class WebLib
     public function customFieldsByDept($deptid)
     {
         $deptid     = (int)$deptid;
-        $hFieldDept = Xhelp\Utility::getHandler('TicketFieldDepartment');
+        $hFieldDept = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
         $fields     =& $hFieldDept->fieldsByDepartment($deptid);
 
         $aFields = [];
@@ -50,8 +50,8 @@ class WebLib
     public function editTicketCustFields($deptid, $ticketid)
     {
         $deptid     = (int)$deptid;
-        $hFieldDept = Xhelp\Utility::getHandler('TicketFieldDepartment');
-        $hTicket    = Xhelp\Utility::getHandler('Ticket');
+        $hFieldDept = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
+        $hTicket    = Xhelp\Helper::getInstance()->getHandler('Ticket');
         $ticket     = $hTicket->get($ticketid);
         $custValues = $ticket->getCustFieldValues();
         $fields     = $hFieldDept->fieldsByDepartment($deptid);
@@ -77,7 +77,7 @@ class WebLib
         $field = 1 == $mc['xhelp_displayName'] ? 'uname' : 'name';
 
         $deptid      = (int)$deptid;
-        $hMembership = Xhelp\Utility::getHandler('Membership');
+        $hMembership = Xhelp\Helper::getInstance()->getHandler('Membership');
         $staff       = $hMembership->xoopsUsersByDept($deptid);
 
         $aStaff   = [];

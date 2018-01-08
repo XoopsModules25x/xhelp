@@ -2,7 +2,7 @@
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
-use XoopsModules\Xhelp\validation;
+use XoopsModules\Xhelp\Validation;
 
 if (isset($_GET['deptid'])) {
     $dept_id = (int)$_GET['deptid'];
@@ -35,12 +35,12 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
  $_eventsrv->advise('update_owner', xhelp_notificationService::getInstance());
  $_eventsrv->advise('update_owner', xhelp_logService::getInstance()); */
 
-$hTicket     = Xhelp\Utility::getHandler('Ticket');
-$hStaff      = Xhelp\Utility::getHandler('Staff');
+$hTicket     = Xhelp\Helper::getInstance()->getHandler('Ticket');
+$hStaff      = Xhelp\Helper::getInstance()->getHandler('Staff');
 $hGroupPerm  = xoops_getHandler('groupperm');
 $hMember     = xoops_getHandler('member');
-$hMembership = Xhelp\Utility::getHandler('Membership');
-$hFieldDept  = Xhelp\Utility::getHandler('TicketFieldDepartment');
+$hMembership = Xhelp\Helper::getInstance()->getHandler('Membership');
+$hFieldDept  = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
 
 $module_id = $xoopsModule->getVar('mid');
 
@@ -58,7 +58,7 @@ if ($xoopsUser) {
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_addTicket.tpl';             // Always set main template before including the header
         include XOOPS_ROOT_PATH . '/header.php';
 
-        $hDepartments = Xhelp\Utility::getHandler('Department');    // Department handler
+        $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');    // Department handler
         $crit         = new \Criteria('', '');
         $crit->setSort('department');
         $departments = $hDepartments->getObjects($crit);
@@ -128,7 +128,7 @@ if ($xoopsUser) {
         $has_mimes = false;
         if ($xoopsModuleConfig['xhelp_allowUpload']) {
             // Get available mimetypes for file uploading
-            $hMime = Xhelp\Utility::getHandler('Mimetype');
+            $hMime = Xhelp\Helper::getInstance()->getHandler('Mimetype');
             $xhelp = Xhelp\Utility::getModule();
             $mid   = $xhelp->getVar('mid');
             if (!$xhelp_isStaff) {
@@ -290,7 +290,7 @@ window.setTimeout('window_onload()', 1500);
 
         if ($xhelp_isStaff) {
             if (isset($_COOKIE['xhelp_logMode']) && 2 == $_COOKIE['xhelp_logMode']) {
-                $hStatus = Xhelp\Utility::getHandler('Status');
+                $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
                 $crit    = new \Criteria('', '');
                 $crit->setSort('description');
                 $crit->setOrder('ASC');
@@ -435,7 +435,7 @@ window.setTimeout('window_onload()', 1500);
             exit();
         }
 
-        //$hTicket = Xhelp\Utility::getHandler('Ticket');
+        //$hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
         $ticket = $hTicket->create();
         $ticket->setVar('uid', Request::getInt('user_id', 0, 'POST'));
         $ticket->setVar('subject', Request::getString('subject', '', 'POST'));
@@ -491,7 +491,7 @@ window.setTimeout('window_onload()', 1500);
             }
 
             // Add custom field values to db
-            $hTicketValues = Xhelp\Utility::getHandler('TicketValues');
+            $hTicketValues = Xhelp\Helper::getInstance()->getHandler('TicketValues');
             $ticketValues  = $hTicketValues->create();
 
             foreach ($aFields as $field) {
@@ -538,7 +538,7 @@ window.setTimeout('window_onload()', 1500);
                 && 2 == $_COOKIE['xhelp_logMode']) {     // Make sure user is a staff member and is using advanced form
                 // if ('' != $_POST['response']) {                   // Don't run if no value for response
                 if (Request::hasVar('response', 'POST')) {
-                    $hResponse   = Xhelp\Utility::getHandler('Responses');
+                    $hResponse   = Xhelp\Helper::getInstance()->getHandler('Responses');
                     $newResponse = $hResponse->create();
                     $newResponse->setVar('uid', $xoopsUser->getVar('uid'));
                     $newResponse->setVar('ticketid', $ticket->getVar('id'));

@@ -2,7 +2,7 @@
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
-use XoopsModules\Xhelp\validation;
+use XoopsModules\Xhelp\Validation;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -27,11 +27,11 @@ if (isset($_GET['responseid'])) {
     $responseid = (int)$_GET['responseid'];
 }
 
-$hTicket      = Xhelp\Utility::getHandler('Ticket');
-$hResponseTpl = Xhelp\Utility::getHandler('ResponseTemplates');
-$hMembership  = Xhelp\Utility::getHandler('Membership');
-$hResponse    = Xhelp\Utility::getHandler('Responses');
-$hStaff       = Xhelp\Utility::getHandler('Staff');
+$hTicket      = Xhelp\Helper::getInstance()->getHandler('Ticket');
+$hResponseTpl = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');
+$hMembership  = Xhelp\Helper::getInstance()->getHandler('Membership');
+$hResponse    = Xhelp\Helper::getInstance()->getHandler('Responses');
+$hStaff       = Xhelp\Helper::getInstance()->getHandler('Staff');
 
 if (!$ticketInfo =& $hTicket->get($ticketid)) {
     //Invalid ticketID specified
@@ -62,7 +62,7 @@ switch ($op) {
 
         if ($xhelp_isStaff) {
             // Check if staff has permission to respond to the ticket
-            $hTicketEmails = Xhelp\Utility::getHandler('TicketEmails');
+            $hTicketEmails = Xhelp\Helper::getInstance()->getHandler('TicketEmails');
             $crit          = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
             $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
             $ticketEmails = $hTicketEmails->getObjects($crit);
@@ -75,7 +75,7 @@ switch ($op) {
                 $v['timespent'][] = new validation\ValidateNumber(Request::getString('timespent', '', 'POST'));
 
                 if ($xoopsModuleConfig['xhelp_allowUpload'] && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
-                    $hMime = Xhelp\Utility::getHandler('Mimetype');
+                    $hMime = Xhelp\Helper::getInstance()->getHandler('Mimetype');
                     //Add File Upload Validation Rules
                     $v['userfile'][] = new validation\ValidateMimeType($_FILES['userfile']['name'], $_FILES['userfile']['type'], $hMime->getArray());
                     $v['userfile'][] = new validation\ValidateFileSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadSize']);
@@ -108,7 +108,7 @@ switch ($op) {
 
                 //Check if status changed
                 if ($_POST['status'] <> $ticketInfo->getVar('status')) {
-                    $hStatus   = Xhelp\Utility::getHandler('Status');
+                    $hStatus   = Xhelp\Helper::getInstance()->getHandler('Status');
                     $oldStatus = $hStatus->get($ticketInfo->getVar('status'));
                     $newStatus = $hStatus->get((int)$_POST['status']);
 
@@ -205,7 +205,7 @@ switch ($op) {
         $isStaff     = $hMembership->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'));
 
         // Check if staff has permission to respond to the ticket
-        $hTicketEmails = Xhelp\Utility::getHandler('TicketEmails');
+        $hTicketEmails = Xhelp\Helper::getInstance()->getHandler('TicketEmails');
         $crit          = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
         $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
         $ticketEmails = $hTicketEmails->getObjects($crit);
@@ -213,7 +213,7 @@ switch ($op) {
             $isSubmitter = true;
         }
         if ($isSubmitter || $xhelp_staff->checkRoleRights(XHELP_SEC_RESPONSE_ADD, $ticketInfo->getVar('department'))) {
-            $hStatus = Xhelp\Utility::getHandler('Status');
+            $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
             $crit    = new \Criteria('', '');
             $crit->setSort('description');
             $crit->setOrder('ASC');
@@ -334,7 +334,7 @@ switch ($op) {
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_editResponse.tpl';             // Always set main template before including the header
         require XOOPS_ROOT_PATH . '/header.php';
 
-        $hStatus = Xhelp\Utility::getHandler('Status');
+        $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
         $crit    = new \Criteria('', '');
         $crit->setSort('description');
         $crit->setOrder('ASC');
@@ -389,7 +389,7 @@ switch ($op) {
             }
         }
 
-        $hResponseTpl = Xhelp\Utility::getHandler('ResponseTemplates');          // Used to display responseTemplates
+        $hResponseTpl = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');          // Used to display responseTemplates
         $crit         = new \Criteria('uid', $uid);
         $crit->setSort('name');
         $responseTpl = $hResponseTpl->getObjects($crit);

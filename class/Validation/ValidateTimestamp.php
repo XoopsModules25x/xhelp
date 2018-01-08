@@ -1,7 +1,7 @@
-<?php namespace XoopsModules\Xhelp\validation;
+<?php namespace XoopsModules\Xhelp\Validation;
 
 use XoopsModules\Xhelp;
-use XoopsModules\Xhelp\validation;
+use XoopsModules\Xhelp\Validation;
 
 
 /**

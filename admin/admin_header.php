@@ -101,7 +101,7 @@ if ($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']) {
     $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);   // Set new value for overdueTime
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
-    $hTickets       = Xhelp\Utility::getHandler('Ticket');
+    $hTickets       = Xhelp\Helper::getInstance()->getHandler('Ticket');
     $crit           = new \Criteria('status', 2, '<>');
     $tickets        = $hTickets->getObjects($crit);
     $updatedTickets = [];

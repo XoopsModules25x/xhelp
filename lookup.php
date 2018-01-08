@@ -5,7 +5,7 @@ use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 
-$hStaff = Xhelp\Utility::getHandler('Staff');
+$hStaff = Xhelp\Helper::getInstance()->getHandler('Staff');
 
 //Allow only staff members to view this page
 if (!$xoopsUser) {

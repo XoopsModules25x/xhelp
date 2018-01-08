@@ -52,7 +52,7 @@ function updateDepts()
     }
 
     //Retrieve list of departments
-    $hDept = Xhelp\Utility::getHandler('Department');
+    $hDept = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts = $hDept->getObjects();
 
     $class = 'odd';
@@ -60,7 +60,7 @@ function updateDepts()
         $deptid   = $dept->getVar('id');
         $deptname = $dept->getVar('department');
 
-        $hConfigOption = Xhelp\Utility::getHandler('ConfigOption');
+        $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
         $newOption     = $hConfigOption->create();
         $newOption->setVar('confop_name', $deptname);
         $newOption->setVar('confop_value', $deptid);
@@ -100,7 +100,7 @@ function removeDepts()
     }
 
     // Remove the config options
-    $hConfigOption = Xhelp\Utility::getHandler('ConfigOption');
+    $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
     $crit          = new \Criteria('conf_id', $xhelp_config);
     $configOptions = $hConfigOption->getObjects($crit);
 

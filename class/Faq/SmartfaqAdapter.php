@@ -1,5 +1,4 @@
-<?php
-//
+<?php namespace XoopsModules\Xhelp\Faq;
 
 use XoopsModules\Xhelp;
 

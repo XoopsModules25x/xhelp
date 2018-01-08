@@ -43,8 +43,8 @@ function addFaq_display()
     }
     $ticketid = (int)$_POST['ticketid'];
 
-    $hTicket    = Xhelp\Utility::getHandler('Ticket');
-    $hResponses = Xhelp\Utility::getHandler('Responses');
+    $hTicket    = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $hResponses = Xhelp\Helper::getInstance()->getHandler('Responses');
     $ticket     = $hTicket->get($ticketid);
 
     if (!$hasRights = $xhelp_staff->checkRoleRights(XHELP_SEC_FAQ_ADD, $ticket->getVar('department'))) {
@@ -96,7 +96,7 @@ function addFaq_display()
 function addFaq_action()
 {
     global $xoopsUser, $_eventsrv;
-    $hTicket = Xhelp\Utility::getHandler('Ticket');
+    $hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
 
     // Retrieve ticket information
     $ticketid = $_POST['ticketid'];
