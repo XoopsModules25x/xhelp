@@ -249,7 +249,7 @@ class DepartmentSummaryReport extends Xhelp\Report
             if (count($xoopsDB->getRowsNum($dRes) > 0)) {      // Has data?
                 $i        = 0;
                 $dbFields = $this->meta['dbFields'];
-                while ($myrow = $xoopsDB->fetchArray($dRes)) {    // Loop through each db record
+                while (false !== ($myrow = $xoopsDB->fetchArray($dRes))) {    // Loop through each db record
                     foreach ($dbFields as $key => $fieldname) {     // Loop through each dbfield for report
                         if (!isset($myrow[$key]) || null === $myrow[$key]) {
                             $aResults[$myrow['department']][$key] = 0;

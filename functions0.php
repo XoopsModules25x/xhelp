@@ -14,7 +14,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
  *
  * @access public
  */
-function Xhelp\Utility::formatTime($time)
+function formatTime($time)
 {
     $values = xhelpGetElapsedTime($time);
 
@@ -296,7 +296,7 @@ function xhelpSetOwner($tickets, $owner)
  * @internal param string $response response text to add
  * @access   public
  */
-function &xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = false)
+function xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = false)
 {
     global $xoopsUser;
     $hResponse    = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
@@ -429,7 +429,7 @@ function xhelpTableExists($table)
     $dbname   = XOOPS_DB_NAME;
     $sql      = "SHOW TABLES FROM $dbname";
     $ret      = $xoopsDB->queryF($sql);
-    while (list($m_table) = $xoopsDB->fetchRow($ret)) {
+    while (false !== (list($m_table) = $xoopsDB->fetchRow($ret))) {
         if ($m_table == $realname) {
             $bRetVal = true;
             break;
@@ -744,7 +744,7 @@ function &xhelpGetStaff($displayName)
 
     $staff[-1] = _XHELP_TEXT_SELECT_ALL;
     $staff[0]  = _XHELP_NO_OWNER;
-    while ($member = $xoopsDB->fetchArray($ret)) {
+    while (false !== ($member = $xoopsDB->fetchArray($ret))) {
         $staff[$member['uid']] = xhelpGetDisplayName($displayName, $member['name'], $member['uname']);
     }
 

@@ -153,7 +153,7 @@ class Net_POP3
          * Include the Auth_SASL package.  If the package is not available,
          * we disable the authentication methods that depend upon it.
          */
-        if (false === (@include_once 'Auth/SASL.php')) {
+        if (false === (@require_once 'Auth/SASL.php')) {
             if ($this->_debug) {
                 echo "AUTH_SASL NOT PRESENT!\n";
             }
@@ -1005,7 +1005,7 @@ class Net_POP3
 
         if (!PEAR::isError($result) and $result) {
             $data = $this->_recvLn();
-            if (!PEAR::isError($data) and '+OK' == strtoupper(substr($data, 0, 3))) {
+            if (!PEAR::isError($data) and '+OK' === strtoupper(substr($data, 0, 3))) {
                 return $data;
             }
         }
@@ -1022,10 +1022,10 @@ class Net_POP3
     {
         $data = '';
         while (!PEAR::isError($tmp = $this->_recvLn())) {
-            if ('.' == $tmp) {
+            if ('.' === $tmp) {
                 return substr($data, 0, -2);
             }
-            if ('..' == substr($tmp, 0, 2)) {
+            if ('..' === substr($tmp, 0, 2)) {
                 $tmp = substr($tmp, 1);
             }
             $data .= $tmp . "\r\n";
@@ -1102,13 +1102,13 @@ class Net_POP3
 
     public function _checkResponse($response)
     {
-        if ('+OK' == @substr(strtoupper($response), 0, 3)) {
+        if ('+OK' === @substr(strtoupper($response), 0, 3)) {
             return true;
         } else {
-            if ('-ERR' == @substr(strtoupper($response), 0, 4)) {
+            if ('-ERR' === @substr(strtoupper($response), 0, 4)) {
                 return $this->_raiseError($response);
             } else {
-                if ('+ ' == @substr(strtoupper($response), 0, 2)) {
+                if ('+ ' === @substr(strtoupper($response), 0, 2)) {
                     return true;
                 }
             }

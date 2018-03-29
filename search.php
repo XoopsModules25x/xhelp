@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
@@ -24,7 +26,7 @@ if ($xoopsUser) {
     $sort_order   = ['ASC', 'DESC'];
     $sort         = '';
     $order        = '';
-    $displayName  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+    $displayName  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
     $returnPage   = false;
     $aReturnPages = ['profile'];
     if (isset($_GET['return']) && in_array($_GET['return'], $aReturnPages)) {
@@ -59,7 +61,7 @@ if ($xoopsUser) {
 
     // Make sure limit is set
     if (!$limit) {
-        $limit = $xoopsModuleConfig['xhelp_staffTicketCount'];
+        $limit = $helper->getConfig('xhelp_staffTicketCount');
     }
 
     $pagenav_vars = "limit=$limit";
@@ -213,7 +215,7 @@ if ($xoopsUser) {
                 $staff = Xhelp\Utility::getStaff($displayName);
                 $xoopsTpl->assign('xhelp_staff', $staff);
                 $hMember = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-                if (1 == $xoopsModuleConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
+                if (1 == $helper->getConfig('xhelp_deptVisibility')) {    // Apply dept visibility to staff members?
                     $depts = $hMember->getVisibleDepartments($xoopsUser->getVar('uid'));
                 } else {
                     $depts = $hMember->membershipByStaff($xoopsUser->getVar('uid'));
@@ -373,7 +375,7 @@ if ($xoopsUser) {
                         foreach ($custFields as $field) {
                             $fieldname = $field['fieldname'];
                             if (isset($_REQUEST[$fieldname]) && '' != $_REQUEST[$fieldname]
-                                && $_REQUEST[$fieldname] <> -1) {
+                                && -1 <> $_REQUEST[$fieldname]) {
                                 $hasCustFields = true;
                                 $crit->add(new \Criteria($fieldname, '%' . $_REQUEST[$fieldname] . '%', 'LIKE', 'f'));
                             }
@@ -413,7 +415,7 @@ if ($xoopsUser) {
                         $pagenav_vars .= "&amp;subject=$subject";
                     }
 
-                    if (isset($priority) && ($priority <> -1)) {
+                    if (isset($priority) && (-1 <> $priority)) {
                         $priority = (int)$priority;
                         $crit->add(new \Criteria('priority', $priority, '=', 't'));
                         $pagenav_vars .= "&amp;priority=$priority";
@@ -429,7 +431,7 @@ if ($xoopsUser) {
                             $pagenav_vars .= "&amp;status=$status";
                         }
                     } else {        // Only evaluate if status is not set
-                        if (isset($state) && $state != -1) {
+                        if (isset($state) && -1 != $state) {
                             $crit->add(new \Criteria('state', (int)$state, '=', 's'));
                             $pagenav_vars .= "&amp;state=$state";
                         }
@@ -452,12 +454,12 @@ if ($xoopsUser) {
                             $pagenav_vars .= "&amp;submittedBy=$submittedBy";
                         }
                     }
-                    if (isset($ownership) && ($ownership <> -1)) {
+                    if (isset($ownership) && (-1 <> $ownership)) {
                         $ownership = (int)$ownership;
                         $crit->add(new \Criteria('ownership', $ownership, '=', 't'));
                         $pagenav_vars .= "&amp;ownership=$ownership";
                     }
-                    if (isset($closedBy) && ($closedBy <> -1)) {
+                    if (isset($closedBy) && (-1 <> $closedBy)) {
                         $closedBy = (int)$closedBy;
                         $crit->add(new \Criteria('closedBy', $closedBy, '=', 't'));
                         $pagenav_vars .= "&amp;closedBy=$closedBy";
@@ -603,7 +605,7 @@ if ($xoopsUser) {
             $staff = Xhelp\Utility::getStaff($displayName);
             $xoopsTpl->assign('xhelp_staff', $staff);
             $hMember = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-            if (1 == $xoopsModuleConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
+            if (1 == $helper->getConfig('xhelp_deptVisibility')) {    // Apply dept visibility to staff members?
                 $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
                 $depts       = $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
             } else {

@@ -57,10 +57,10 @@ class EventService
         }
 
         //Add Element to notification list
-        $this->_ctx[$context]["$priority"][] = $clbk;
+        $this->_ctx[$context][(string)$priority][] = $clbk;
 
         //Return element # in array
-        return count($this->_ctx[$context]["$priority"]) - 1;
+        return count($this->_ctx[$context][(string)$priority]) - 1;
     }
 
     /**
@@ -72,7 +72,7 @@ class EventService
      */
     public function unadvise($context, $cookie, $priority = 10)
     {
-        $this->_ctx[$context]["$priority"][$cookie] = false;
+        $this->_ctx[$context][(string)$priority][$cookie] = false;
     }
 
     /**

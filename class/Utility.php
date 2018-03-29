@@ -11,11 +11,11 @@ use XoopsModules\Xhelp\Common;
  */
 class Utility
 {
-    use common\VersionChecks; //checkVerXoops, checkVerPhp Traits
+    use Common\VersionChecks; //checkVerXoops, checkVerPhp Traits
 
-    use common\ServerStats; // getServerStats Trait
+    use Common\ServerStats; // getServerStats Trait
 
-    use common\FilesManagement; // Files Management Trait
+    use Common\FilesManagement; // Files Management Trait
 
     //--------------- Custom module methods -----------------------------
 
@@ -442,7 +442,7 @@ class Utility
         $dbname   = XOOPS_DB_NAME;
         $sql      = "SHOW TABLES FROM $dbname";
         $ret      = $xoopsDB->queryF($sql);
-        while (list($m_table) = $xoopsDB->fetchRow($ret)) {
+        while (false !== (list($m_table) = $xoopsDB->fetchRow($ret))) {
             if ($m_table == $realname) {
                 $bRetVal = true;
                 break;
@@ -757,7 +757,7 @@ class Utility
 
         $staff[-1] = _XHELP_TEXT_SELECT_ALL;
         $staff[0]  = _XHELP_NO_OWNER;
-        while ($member = $xoopsDB->fetchArray($ret)) {
+        while (false !== ($member = $xoopsDB->fetchArray($ret))) {
             $staff[$member['uid']] = self::getDisplayName($displayName, $member['name'], $member['uname']);
         }
 

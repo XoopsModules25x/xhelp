@@ -101,7 +101,7 @@ class BaseObjectHandler extends \XoopsObjectHandler
         }
 
         // Add each returned record to the result array
-        while ($myrow = $this->_db->fetchArray($result)) {
+        while (false !== ($myrow = $this->_db->fetchArray($result))) {
             $obj = new $this->classname($myrow);
             if (!$id_as_key) {
                 $ret[] = $obj;

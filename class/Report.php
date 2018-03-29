@@ -109,7 +109,7 @@ class Report extends \XoopsObject
 
             $i        = 0;
             $dbFields = $this->meta['dbFields'];
-            while ($myrow = $xoopsDB->fetchArray($dResult)) {
+            while (false !== ($myrow = $xoopsDB->fetchArray($dResult))) {
                 foreach ($dbFields as $key => $fieldname) {
                     $aResults[$i][$key] = $myrow[$key];
                 }
@@ -162,7 +162,7 @@ class Report extends \XoopsObject
         $where = '';
         $i     = 0;
         foreach ($params as $param) {
-            if ('' != $param->value && $param->value != -999) {   // -999 used for all fields
+            if ('' != $param->value && -999 != $param->value) {   // -999 used for all fields
                 if (0 == $i && true === $includeAnd || $i > 0) {
                     $where .= ' AND ';
                 }

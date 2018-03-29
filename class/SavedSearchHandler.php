@@ -122,7 +122,7 @@ class SavedSearchHandler extends Xhelp\BaseObjectHandler
         }
         $crit->setOrder('ASC');
         $crit->setSort('name');
-        $ret = $this->getObjects($crit);
+        $ret =& $this->getObjects($crit);
 
         return $ret;
     }

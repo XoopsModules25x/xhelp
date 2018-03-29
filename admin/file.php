@@ -124,7 +124,7 @@ function manageFiles()
     $xhelpUploadDir = XHELP_UPLOAD_PATH;
     $dir_status     =& xhelp_admin_getPathStatus($xhelpUploadDir, true);
 
-    if ($dir_status == -1) {
+    if (-1 == $dir_status) {
         $can_upload = xhelp_admin_mkdir($xhelpUploadDir);
     }
 

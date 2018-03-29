@@ -128,7 +128,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
         }
 
         // Add each returned record to the result array
-        while ($myrow = $this->_db->fetchArray($result)) {
+        while (false !== ($myrow = $this->_db->fetchArray($result))) {
             $obj                        = new $this->classname($myrow);
             $ret[$obj->getVar('email')] = $obj;
             unset($obj);
@@ -163,7 +163,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
         }
 
         // Add each returned record to the result array
-        while ($myrow = $this->_db->fetchArray($result)) {
+        while (false !== ($myrow = $this->_db->fetchArray($result))) {
             $obj                           = new $this->classname($myrow);
             $ret[$obj->getVar('ticketid')] = $obj;
             unset($obj);

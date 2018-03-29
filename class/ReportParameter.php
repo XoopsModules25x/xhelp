@@ -64,7 +64,7 @@ class ReportParameter
      */
     public static function addParam($controltype, $name, $fieldname, $value, $values, $fieldlength, $dbfield, $dbaction)
     {
-        $param              = Xhelp\ReportParameter::create();
+        $param              = self::create();
         $param->controltype = $controltype;
         $param->name        = $name;
         $param->fieldname   = $fieldname;

@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/servicemain.php';
 
@@ -46,7 +48,7 @@ foreach ($deptmboxes as $mbox) {
                         //Create new user account if necessary
 
                         if (!$xoopsUser = Xhelp\Utility::emailIsXoopsUser($parsed->getEmail())) {
-                            if ($xoopsModuleConfig['xhelp_allowAnonymous']) {
+                            if ($helper->getConfig('xhelp_allowAnonymous')) {
                                 switch ($xoopsConfigUser['activation_type']) {
                                     case 1:
                                         $level = 1;

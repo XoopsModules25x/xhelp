@@ -3,7 +3,6 @@
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
 
-
 /**
  * Class ValidateNumber
  */

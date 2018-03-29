@@ -1,9 +1,11 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 //
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -148,7 +150,7 @@ function b_xhelp_performance_show($options)
 
     $depts    = [];
     $max_open = 0;
-    while ($myrow = $xoopsDB->fetchArray($ret)) {
+    while (false !== ($myrow = $xoopsDB->fetchArray($ret))) {
         $max_open = max($max_open, $myrow['TicketCount']);
         $url      = Xhelp\Utility::createURI(XHELP_BASE_URL . '/index.php', ['op' => 'staffViewAll', 'dept' => $myrow['id'], 'state' => 1]);
         $depts[]  = [
@@ -272,7 +274,9 @@ function b_xhelp_recent_show($options)
 function b_xhelp_actions_show()
 {
     $_xhelpSession = new Xhelp\Session();
-    global $ticketInfo, $xoopsUser, $xoopsModule, $xoopsModuleConfig, $ticketInfo, $staff, $xoopsConfig;
+    global $ticketInfo, $xoopsUser, $xoopsModule,  $ticketInfo, $staff, $xoopsConfig;
+    /** @var Xhelp\Helper $helper */
+    $helper = Xhelp\Helper::getInstance();
 
     $moduleHandler = xoops_getHandler('module');
     $configHandler = xoops_getHandler('config');
@@ -296,7 +300,7 @@ function b_xhelp_actions_show()
 
     $myPage      = $_SERVER['PHP_SELF'];
     $currentPage = substr(strrchr($myPage, '/'), 1);
-    if (('ticket.php' !== $currentPage) || (2 <> $xoopsModuleConfig['xhelp_staffTicketActions'])) {
+    if (('ticket.php' !== $currentPage) || (2 <> $helper->getConfig('xhelp_staffTicketActions'))) {
         return false;
     }
 
@@ -311,7 +315,7 @@ function b_xhelp_actions_show()
         $ticketInfo = $hTickets->get($block['ticketid']);
     }
 
-    if (2 == $xoopsModuleConfig['xhelp_staffTicketActions']) {
+    if (2 == $helper->getConfig('xhelp_staffTicketActions')) {
         $aOwnership   = [];
         $aOwnership[] = [
             'uid'   => 0,
@@ -337,8 +341,8 @@ function b_xhelp_actions_show()
         //@Todo - why is this query here instead of using a function or the XoopsMemberHandler?
         $sql         = sprintf('SELECT uid, uname, name FROM %s WHERE uid IN (%s)', $xoopsDB->prefix('users'), implode(array_keys($all_users), ','));
         $ret         = $xoopsDB->query($sql);
-        $displayName = $xoopsModuleConfig['xhelp_displayName'];
-        while ($member = $xoopsDB->fetchArray($ret)) {
+        $displayName = $helper->getConfig('xhelp_displayName');
+        while (false !== ($member = $xoopsDB->fetchArray($ret))) {
             if ((2 == $displayName) && ('' <> $member['name'])) {
                 $users[$member['uid']] = $member['name'];
             } else {

@@ -477,4 +477,4 @@ define('_AM_XHELP_ERROR_BAD_XOOPS', 'This module requires XOOPS %s+ (%s installe
 define('_AM_XHELP_ERROR_BAD_PHP', 'This module requires PHP version %s+ (%s installed)');
 define('_AM_XHELP_ERROR_TAG_REMOVAL', 'Could not remove tags from Tag Module');
 //0.90
-define('_AM_XHELP_EDIT_ERR', "Error: Can't find the notification" );
+define('_AM_XHELP_EDIT_ERR', "Error: Can't find the notification");

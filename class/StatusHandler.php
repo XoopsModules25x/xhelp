@@ -116,7 +116,7 @@ class StatusHandler extends Xhelp\BaseObjectHandler
         $aStatuses = [];
         $state     = (int)$state;
         $crit      = new \Criteria('state', $state);
-        $aStatuses = $this->getObjects($crit, true);
+        $aStatuses =& $this->getObjects($crit, true);
 
         return $aStatuses;
     }

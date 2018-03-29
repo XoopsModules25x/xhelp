@@ -3,6 +3,8 @@
 use Xmf\Request;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -20,7 +22,7 @@ foreach ($myConfigs as $myConf) {
     $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
 }
 
-if (0 == $xoopsModuleConfig['xhelp_allowAnonymous']) {
+if (0 == $helper->getConfig('xhelp_allowAnonymous')) {
     header('Location: ' . XHELP_BASE_URL . '/error.php');
 }
 
@@ -62,7 +64,7 @@ if (!isset($_POST['addTicket'])) {
             ];
         }
     }
-    if ($xoopsModuleConfig['xhelp_allowUpload']) {
+    if ($helper->getConfig('xhelp_allowUpload')) {
         // Get available mimetypes for file uploading
         $hMime     = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
         $crit      = new \Criteria('mime_user', 1);
@@ -150,7 +152,7 @@ window.setTimeout('window_onload()', 1500);
 </script>";
 
     $xoopsTpl->assign('xoops_module_header', $javascript . $xhelp_module_header);
-    $xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
+    $xoopsTpl->assign('xhelp_allowUpload', $helper->getConfig('xhelp_allowUpload'));
     $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
     $xoopsTpl->assign('xhelp_departments', $aDept);
     $xoopsTpl->assign('xhelp_current_file', basename(__file__));
@@ -165,7 +167,7 @@ window.setTimeout('window_onload()', 1500);
     $xoopsTpl->assign('xhelp_default_priority', XHELP_DEFAULT_PRIORITY);
     $xoopsTpl->assign('xhelp_default_dept', Xhelp\Utility::getMeta('default_department'));
     $xoopsTpl->assign('xhelp_includeURL', XHELP_INCLUDE_URL);
-    $xoopsTpl->assign('xhelp_numTicketUploads', $xoopsModuleConfig['xhelp_numTicketUploads']);
+    $xoopsTpl->assign('xhelp_numTicketUploads', $helper->getConfig('xhelp_numTicketUploads'));
 
     $errors    = [];
     $aElements = [];
@@ -327,10 +329,10 @@ window.setTimeout('window_onload()', 1500);
     $ticket->setVar('status', 1);
     $ticket->setVar('posted', time());
     $ticket->setVar('userIP', getenv('REMOTE_ADDR'));
-    $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] * 60 * 60));
+    $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));
 
     $aUploadFiles = [];
-    if ($xoopsModuleConfig['xhelp_allowUpload']) {
+    if ($helper->getConfig('xhelp_allowUpload')) {
         foreach ($_FILES as $key => $aFile) {
             $pos = strpos($key, 'userfile');
             if (false !== $pos
@@ -364,7 +366,7 @@ window.setTimeout('window_onload()', 1500);
             $fieldtype = $field['controltype'];
 
             if (XHELP_CONTROL_FILE == $fieldtype) {               // If custom field was a file upload
-                if ($xoopsModuleConfig['xhelp_allowUpload']) {    // If uploading is allowed
+                if ($helper->getConfig('xhelp_allowUpload')) {    // If uploading is allowed
                     if (is_uploaded_file($_FILES[$fieldname]['tmp_name'])) {
                         if (!$ret = $ticket->checkUpload($fieldname, $allowed_mimetypes, $errors)) {
                             $errorstxt = implode('<br>', $errors);

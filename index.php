@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -56,7 +58,7 @@ $start = $start;
 $sort  = strtolower($sort);
 $order = (in_array(strtoupper($order), $sort_order) ? $order : 'ASC');
 
-$displayName =& $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+$displayName =& $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
 switch ($op) {
 
@@ -496,7 +498,9 @@ function setowner_action()
 
 function setowner_display()
 {
-    global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser, $xoopsModuleConfig, $displayName;
+    global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser,  $displayName;
+    /** @var Xhelp\Helper $helper */
+    $helper = Xhelp\Helper::getInstance();
 
     //Make sure that some tickets were selected
     if (!isset($_POST['tickets'])) {
@@ -530,7 +534,7 @@ function setowner_display()
         $aOwners[$uid] = $uid;
     }
     $crit   = new \Criteria('uid', '(' . implode(array_keys($aOwners), ',') . ')', 'IN');
-    $owners =& Xhelp\Utility::getUsers($crit, $xoopsModuleConfig['xhelp_displayName']);
+    $owners =& Xhelp\Utility::getUsers($crit, $helper->getConfig('xhelp_displayName'));
 
     $a_users    = [];
     $a_users[0] = _XHELP_NO_OWNER;
@@ -913,7 +917,7 @@ function staffmain_display()
     //Set Number of items in each section
     if (0 == $limit) {
         $limit = $xhelpConfig['xhelp_staffTicketCount'];
-    } elseif ($limit == -1) {
+    } elseif (-1 == $limit) {
         $limit = 0;
     }
     $uid         = $xoopsUser->getVar('uid');
@@ -1078,10 +1082,10 @@ function staffviewall_display()
     $order        = (in_array(strtoupper($order), $sort_order) ? $order : $sort_columns[$sort]);
 
     $uid       = $xoopsUser->getVar('uid');
-    $dept      = (int)(isset($_REQUEST['dept']) ? $_REQUEST['dept'] : 0);
-    $status    = (int)(isset($_REQUEST['status']) ? $_REQUEST['status'] : -1);
-    $ownership = (int)(isset($_REQUEST['ownership']) ? $_REQUEST['ownership'] : -1);
-    $state     = (int)(isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
+    $dept      = (isset($_REQUEST['dept']) ? $_REQUEST['dept'] : 0);
+    $status    = (isset($_REQUEST['status']) ? $_REQUEST['status'] : -1);
+    $ownership = (isset($_REQUEST['ownership']) ? $_REQUEST['ownership'] : -1);
+    $state     = (isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
 
     $xhelpConfig = Xhelp\Utility::getModuleConfig();
     $hTickets    = Xhelp\Helper::getInstance()->getHandler('Ticket');
@@ -1089,7 +1093,7 @@ function staffviewall_display()
 
     if (0 == $limit) {
         $limit = $xhelpConfig['xhelp_staffTicketCount'];
-    } elseif ($limit == -1) {
+    } elseif (-1 == $limit) {
         $limit = 0;
     }
 
@@ -1105,16 +1109,16 @@ function staffviewall_display()
         $qs['dept'] = $dept;
         $crit->add(new \Criteria('department', $dept, '=', 't'));
     }
-    if ($status != -1) {
+    if (-1 != $status) {
         $qs['status'] = $status;
         $crit->add(new \Criteria('status', $status, '=', 't'));
     }
-    if ($ownership != -1) {
+    if (-1 != $ownership) {
         $qs['ownership'] = $ownership;
         $crit->add(new \Criteria('ownership', $ownership, '=', 't'));
     }
 
-    if ($state != -1) {
+    if (-1 != $state) {
         $qs['state'] = $state;
         $crit->add(new \Criteria('state', $state, '=', 's'));
     }
@@ -1397,14 +1401,14 @@ function userviewall_display()
     $hTickets     = Xhelp\Helper::getInstance()->getHandler('Ticket');
     $hStaff       = Xhelp\Helper::getInstance()->getHandler('Staff');
 
-    $dept   = (int)(isset($_REQUEST['dept']) ? $_REQUEST['dept'] : 0);
-    $status = (int)(isset($_REQUEST['status']) ? $_REQUEST['status'] : -1);
-    $state  = (int)(isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
+    $dept   = (isset($_REQUEST['dept']) ? $_REQUEST['dept'] : 0);
+    $status = (isset($_REQUEST['status']) ? $_REQUEST['status'] : -1);
+    $state  = (isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
     $depts  = $hDepartments->getObjects(null, true);
 
     if (0 == $limit) {
         $limit = 10;
-    } elseif ($limit == -1) {
+    } elseif (-1 == $limit) {
         $limit = 0;
     }
 
@@ -1420,12 +1424,12 @@ function userviewall_display()
         $qs['dept'] = $dept;
         $crit->add(new \Criteria('department', $dept, '=', 't'));
     }
-    if ($status != -1) {
+    if (-1 != $status) {
         $qs['status'] = $status;
         $crit->add(new \Criteria('status', $status, '=', 't'));
     }
 
-    if ($state != -1) {
+    if (-1 != $state) {
         $qs['state'] = $state;
         $crit->add(new \Criteria('state', $state, '=', 's'));
     }

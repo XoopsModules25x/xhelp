@@ -4,7 +4,7 @@ $xhelp_imagePath = XOOPS_URL . '/modules/xhelp/images';
 
 /** @var XoopsModuleHandler $moduleHandler */
 $moduleHandler = xoops_getHandler('module');
-$xhelp_info    =& $moduleHandler->get($xoopsModule->getVar('mid'));
+$xhelp_info    = $moduleHandler->get($xoopsModule->getVar('mid'));
 
 echo "<table border='0'>";
 echo '<tr>';

@@ -220,10 +220,10 @@ function xhelpRenderErrors(&$err_arr, $reseturl = '')
         foreach ($err_arr as $key => $error) {
             if (is_array($error)) {
                 foreach ($error as $err) {
-                    echo '<li><a href="#' . $key . '" onclick="var e = xoopsGetElementById(\'' . $key . '\'); e.focus();">' . htmlspecialchars($err) . '</a></li>';
+                    echo '<li><a href="#' . $key . '" onclick="var e = xoopsGetElementById(\'' . $key . '\'); e.focus();">' . htmlspecialchars($err, ENT_QUOTES | ENT_HTML5) . '</a></li>';
                 }
             } else {
-                echo '<li><a href="#' . $key . '" onclick="var e = xoopsGetElementById(\'' . $key . '\'); e.focus();">' . htmlspecialchars($error) . '</a></li>';
+                echo '<li><a href="#' . $key . '" onclick="var e = xoopsGetElementById(\'' . $key . '\'); e.focus();">' . htmlspecialchars($error, ENT_QUOTES | ENT_HTML5) . '</a></li>';
             }
         }
         echo '</ul></div><br>';

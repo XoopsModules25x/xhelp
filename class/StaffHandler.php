@@ -254,7 +254,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      */
     public function &getByAllDepts()
     {
-        $ret = $this->getObjects(new \Criteria('allDepartments', 1), true);
+        $ret =& $this->getObjects(new \Criteria('allDepartments', 1), true);
 
         return $ret;
     }

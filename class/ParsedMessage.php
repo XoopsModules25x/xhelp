@@ -149,8 +149,8 @@ class ParsedMessage
             if (isset($part->parts)) {
                 $this->_loadAttachments($part->parts);
             } else {
-                if ('text' == $part->ctype_primary && 'plain' == $part->ctype_secondary) {
-                    if (isset($part->disposition) && 'attachment' == $part->disposition) {
+                if ('text' === $part->ctype_primary && 'plain' === $part->ctype_secondary) {
+                    if (isset($part->disposition) && 'attachment' === $part->disposition) {
                         $this->_addAttachment($part);
                     }
                     // Do Nothing

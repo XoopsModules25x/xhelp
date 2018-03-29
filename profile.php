@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 //
 require_once __DIR__ . '/header.php';
@@ -253,7 +255,7 @@ if ($xoopsUser) {
 
             $reviews = $hReview->getObjects($crit);
 
-            $displayName =& $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+            $displayName =& $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
             foreach ($reviews as $review) {
                 $reviewer = $hMembers->getUser($review->getVar('submittedBy'));
@@ -289,7 +291,7 @@ if ($xoopsUser) {
                     'name'          => $mySavedSearches[$ticketList->getVar('searchid')]['name'],
                     'hasWeightUp'   => ($eleNum != $ticketListCount - 1) ? true : false,
                     'hasWeightDown' => (0 != $eleNum) ? true : false,
-                    'hasEdit'       => ($mySavedSearches[$ticketList->getVar('searchid')]['uid'] != -999) ? true : false
+                    'hasEdit'       => (-999 != $mySavedSearches[$ticketList->getVar('searchid')]['uid']) ? true : false
                 ];
                 ++$eleNum;
                 $aUsedSearches[$searchid] = $searchid;
@@ -298,7 +300,7 @@ if ($xoopsUser) {
 
             // Take used searches to get unused searches
             $aSearches = [];
-            if(is_array($mySavedSearches) && count($mySavedSearches) > 0) {
+            if (is_array($mySavedSearches) && count($mySavedSearches) > 0) {
                 foreach ($mySavedSearches as $savedSearch) {
                     if (!in_array($savedSearch['id'], $aUsedSearches)) {
                         if ('' != $savedSearch['id']) {

@@ -135,7 +135,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         $sql = sprintf('SELECT DISTINCT department FROM %s WHERE id IN (%s)', $this->_db->prefix('xhelp_tickets'), implode($a_tickets, ','));
         $ret = $this->_db->query($sql);
 
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $a_depts[] = $temp['department'];
         }
 
@@ -158,7 +158,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
 
         $ret = $this->_db->query($sql, $limit, $start);
         $arr = [];
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $tickets = $this->create();
             $tickets->assignVars($temp);
             if ($id_as_key) {
@@ -207,7 +207,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         // Only want tickets that are unresolved.
         $crit = new \CriteriaCompo(new \Criteria('t.id', '(' . implode(array_keys($aTicketEmails), ',') . ')', 'IN'));
         $crit->add(new \Criteria('t.status', '(' . implode(array_keys($aStatuses), ',') . ')', 'IN'));
-        $tickets = $this->getObjects($crit, $id_as_key);
+        $tickets =& $this->getObjects($crit, $id_as_key);
 
         // Return all tickets
         return $tickets;
@@ -229,7 +229,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
 
         $ret = $this->_db->query($sql, $limit, $start);
         $arr = [];
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $tickets = $this->create();
             $tickets->assignVars($temp);
             if ($id_as_key) {

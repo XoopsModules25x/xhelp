@@ -174,7 +174,7 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
         }
 
         // Add each returned record to the result array
-        while ($myrow = $this->_db->fetchArray($result)) {
+        while (false !== ($myrow = $this->_db->fetchArray($result))) {
             $tickets[$myrow['ticketid']] = $myrow['numresponses'];
         }
 

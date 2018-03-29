@@ -77,7 +77,7 @@ class SmartfaqAdapter extends Xhelp\FaqAdapter
         $hFaqCategory = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
 
         // Get all the categories for the application
-        $hSmartCategory = sf_gethandler('category');
+        $hSmartCategory = \XoopsModules\Smartfaq\Helper::getInstance()->getHandler('Category');
         $categories     = $hSmartCategory->getCategories(0, 0, -1);
 
         //Convert the module specific category to the
@@ -106,8 +106,8 @@ class SmartfaqAdapter extends Xhelp\FaqAdapter
         $uid = $xoopsUser->getVar('uid');
 
         // Take Xhelp\Faq and create faq for smartfaq
-        $hFaq     = sf_gethandler('faq');
-        $hAnswer  = sf_gethandler('answer');
+        $hFaq     = \XoopsModules\Smartfaq\Helper::getInstance()->getHandler('Faq');
+        $hAnswer  = \XoopsModules\Smartfaq\Helper::getInstance()->getHandler('Answer');
         $myFaq    = $hFaq->create();
         $myAnswer = $hAnswer->create();            // Creating the answer object
 

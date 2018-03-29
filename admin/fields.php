@@ -315,7 +315,7 @@ function manageFields()
             foreach ($values as $key => $value) {
                 if (strlen($key) > $length) {
                     $has_errors             = true;
-                    $errors['fld_values'][] = sprintf(_AM_XHELP_VALID_ERR_VALUE_LENGTH, htmlentities($key), $length);
+                    $errors['fld_values'][] = sprintf(_AM_XHELP_VALID_ERR_VALUE_LENGTH, htmlentities($key, ENT_QUOTES | ENT_HTML5), $length);
                 }
             }
 
@@ -664,7 +664,7 @@ function editField()
             foreach ($values as $key => $value) {
                 if (strlen($key) > $length) {
                     $has_errors             = true;
-                    $errors['fld_values'][] = sprintf(_AM_XHELP_VALID_ERR_VALUE_LENGTH, htmlentities($key), $length);
+                    $errors['fld_values'][] = sprintf(_AM_XHELP_VALID_ERR_VALUE_LENGTH, htmlentities($key, ENT_QUOTES | ENT_HTML5), $length);
                 }
             }
         } elseif ($fld_needsvalues) {

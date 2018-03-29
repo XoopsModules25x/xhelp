@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
 
@@ -36,7 +38,9 @@ switch ($op) {
 
 function addFaq_display()
 {
-    global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser, $xoopsLogger, $xoopsUserIsAdmin, $_xhelpSession, $xhelp_staff, $xoopsModuleConfig;
+    global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser, $xoopsLogger, $xoopsUserIsAdmin, $_xhelpSession, $xhelp_staff;
+    /** @var Xhelp\Helper $helper */
+    $helper = Xhelp\Helper::getInstance();
 
     if (!isset($_POST['ticketid']) && 0 == (int)$_POST['ticketid']) {
         redirect_header(XHELP_BASE_URL, 3, _XHELP_MSG_NO_ID);
@@ -64,7 +68,7 @@ function addFaq_display()
     }
 
     $crit  = new \Criteria('uid', '(' . implode(array_keys($allUsers), ',') . ')', 'IN');
-    $users =& Xhelp\Utility::getUsers($crit, $xoopsModuleConfig['xhelp_displayName']);
+    $users =& Xhelp\Utility::getUsers($crit, $helper->getConfig('xhelp_displayName'));
     unset($allUsers);
 
     foreach ($responses as $response) {

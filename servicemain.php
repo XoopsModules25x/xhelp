@@ -3,7 +3,7 @@
 use XoopsModules\Xhelp;
 
 error_reporting(E_ALL); //Enable Error Reporting
-//if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+//if (PHP_VERSION_ID < 50300) {
 //    set_magic_quotes_runtime(0);
 //}
 
@@ -45,7 +45,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 //require_once XHELP_BASE_PATH . '/functions.php';
 
 $moduleHandler = xoops_getHandler('module');
-$module        =& $moduleHandler;
+$module        = $moduleHandler;
 $configHandler = xoops_getHandler('config');
 $xoopsConfig   = $configHandler->getConfigsByCat(XOOPS_CONF);
 

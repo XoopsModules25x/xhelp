@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
@@ -162,14 +164,14 @@ function upgradeDB()
 
             //Get email addresses in user profile
             $staff = [];
-            while ($arr = $xoopsDB->fetchArray($qry)) {
+            while (false !== ($arr = $xoopsDB->fetchArray($qry))) {
                 $staff[$arr['uid']] = '';
             }
             $xoopsDB->freeRecordSet($qry);
 
             $query = 'SELECT uid, email FROM ' . $xoopsDB->prefix('users') . ' WHERE uid IN (' . implode(array_keys($staff), ',') . ')';
             $qry   = $xoopsDB->query($query);
-            while ($arr = $xoopsDB->fetchArray($qry)) {
+            while (false !== ($arr = $xoopsDB->fetchArray($qry))) {
                 $staff[$arr['uid']] = $arr['email'];
             }
             $xoopsDB->freeRecordSet($qry);
@@ -187,7 +189,7 @@ function upgradeDB()
                 //get notifications for current user
                 $usernotif = 0;
                 $qry       = $xoopsDB->query(sprintf("SELECT DISTINCT not_category, not_event FROM %s WHERE not_uid = %u AND not_category='dept' AND not_modid=%u", $notif_tbl, $uid, $mid));
-                while ($arr = $xoopsDB->fetchArray($qry)) {
+                while (false !== ($arr = $xoopsDB->fetchArray($qry))) {
                     //Look for current event information in $email_tpl
                     foreach ($email_tpl as $tpl) {
                         if (($tpl['name'] == $arr['not_event']) && ($tpl['category'] == $arr['not_category'])) {
@@ -514,9 +516,9 @@ function upgradeDB()
         case '0.75':
             set_time_limit(60);
             // Set default department
-            $xoopsModuleConfig = Xhelp\Utility::getModuleConfig();
-            if (isset($xoopsModuleConfig['xhelp_defaultDept']) && 0 != $xoopsModuleConfig['xhelp_defaultDept']) {
-                $ret = Xhelp\Utility::setMeta('default_department', $xoopsModuleConfig['xhelp_defaultDept']);
+//            $xoopsModuleConfig = Xhelp\Utility::getModuleConfig();
+            if  (null !== ($helper->getConfig('xhelp_defaultDept')) && 0 != $helper->getConfig('xhelp_defaultDept')) {
+                $ret = Xhelp\Utility::setMeta('default_department', $helper->getConfig('xhelp_defaultDept'));
             } else {
                 $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
                 $depts        = $hDepartments->getObjects();

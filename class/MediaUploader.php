@@ -30,7 +30,7 @@ use XoopsModules\Xhelp;
  * $maxfilewidth = 120;
  * $maxfileheight = 120;
  * $uploader = new Xhelp\MediaUploader('/home/xoops/uploads', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
- * if ($uploader->fetchMedia($HTTP_POST_VARS['uploade_file_name'])) {
+ * if ($uploader->fetchMedia($_POST['uploade_file_name'])) {
  * if (!$uploader->upload()) {
  * echo $uploader->getErrors();
  * } else {
@@ -54,7 +54,7 @@ use XoopsModules\Xhelp;
  * $maxfilewidth = 120;
  * $maxfileheight = 120;
  * $uploader = new Xhelp\MediaUploader('/home/xoops/uploads', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
- * if ($uploader->fetchMedia($HTTP_POST_VARS['uploade_file_name'])) {
+ * if ($uploader->fetchMedia($_POST['uploade_file_name'])) {
  *            if (!$uploader->upload()) {
  *               echo $uploader->getErrors();
  *            } else {
@@ -183,7 +183,7 @@ class MediaUploader
             return false;
         }
 
-        if ('none' == $this->mediaTmpName) {
+        if ('none' === $this->mediaTmpName) {
             $this->setErrors('No file uploaded, this is a error');
 
             return false;

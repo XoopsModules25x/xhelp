@@ -31,5 +31,3 @@ if (isset($_SERVER['QUERY_STRING']) && 0 == strcasecmp($_SERVER['QUERY_STRING'],
     // Start serving requests...
     $server->serve();
 }
-
-

@@ -386,7 +386,7 @@ class Net_Socket extends PEAR
     {
         if (is_resource($this->fp)) {
             $string = '';
-            while ("\x00" != ($char = $this->read(1))) {
+            while ("\x00" !== ($char = $this->read(1))) {
                 $string .= $char;
             }
 
@@ -441,9 +441,9 @@ class Net_Socket extends PEAR
             while (!$this->eof() && (!$this->timeout || time() < $timeout)) {
                 $line .= $this->gets($this->lineLength);
                 if (strlen($line) >= 2 &&
-                ("\r\n" == substr($line, -2)
+                ("\r\n" === substr($line, -2)
                  ||
-                 "\n" == substr($line, -1))) {
+                 "\n" === substr($line, -1))) {
                     return rtrim($line);
                 }
             }

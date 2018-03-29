@@ -78,7 +78,7 @@ class StockPlot extends Plot
         if (isset($this->coords[1])) {
             if (count($this->coords[1]) != $n) {
                 JpGraphError::RaiseL(2003, count($this->coords[1]), $n);
-                // ("Number of X and Y points are not equal. Number of X-points:".count($this->coords[1])." Number of Y-points:$numpoints");
+            // ("Number of X and Y points are not equal. Number of X-points:".count($this->coords[1])." Number of Y-points:$numpoints");
             } else {
                 $exist_x = true;
             }

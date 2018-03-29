@@ -64,7 +64,7 @@ class MembershipHandler
         $ret = $this->_db->query($sql);
         $arr = [];
 
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $dept = $this->_hDept->create();
             $dept->assignVars($temp);
             if ($id_as_key) {
@@ -95,7 +95,7 @@ class MembershipHandler
         $ret = $this->_db->query($sql);
         $arr = [];
 
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $dept = $this->_hDept->create();
             $dept->assignVars($temp);
             $arr[$dept->getVar('id')] = $dept;
@@ -160,7 +160,7 @@ class MembershipHandler
         $ret = $this->_db->query($sql, $limit, $start);
         $arr = [];
 
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $staff = $this->_hStaff->create();
             $staff->assignVars($temp);
             $arr[$staff->getVar('uid')] = $staff;
@@ -208,7 +208,7 @@ class MembershipHandler
         $ret = $this->_db->query($sql, $limit, $start);
         $arr = [];
 
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $staff = $hUser->create();
             $staff->assignVars($temp);
             $arr[$staff->getVar('uid')] = $staff;
@@ -461,7 +461,7 @@ class MembershipHandler
         $ret = $this->_db->query($sql);
         $arr = [];
 
-        while ($temp = $this->_db->fetchArray($ret)) {
+        while (false !== ($temp = $this->_db->fetchArray($ret))) {
             $arr[] = $temp['uid'];
             unset($temp);
         }

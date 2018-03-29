@@ -3,11 +3,10 @@
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
 
-
 /**
  * Class ValidateLength
  */
-class ValidateLength extends  validation\Validator
+class ValidateLength extends validation\Validator
 {
     /**
      * Private

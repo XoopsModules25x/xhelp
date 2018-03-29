@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
@@ -204,9 +206,12 @@ function deleteStaffDept()
 function editDepartment()
 {
     $_xhelpSession = Xhelp\Session::getInstance();
-    global $imagearray, $xoopsModule, $limit, $start, $xoopsModuleConfig;
+    global $imagearray, $xoopsModule, $limit, $start ;
+    /** @var Xhelp\Helper $helper */
+    $helper = Xhelp\Helper::getInstance();
+
     $module_id   = $xoopsModule->getVar('mid');
-    $displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+    $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
     $_xhelpSession->set('xhelp_return_page', substr(strstr($_SERVER['REQUEST_URI'], 'admin/'), 6));
 

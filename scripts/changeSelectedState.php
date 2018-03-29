@@ -46,7 +46,7 @@ class XHelpWebLib
         $state   = (int)$state;
         $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
-        if ($state == -1) {   // If select all is chosen
+        if (-1 == $state) {   // If select all is chosen
             $statuses = $hStatus->getObjects(null, true);
         } else {
             $statuses =& $hStatus->getStatusesByState($state);

@@ -18,6 +18,8 @@
  */
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 
@@ -93,12 +95,12 @@ $imagearray = [
 $_xhelpSession = new Xhelp\Session();
 
 if (!$overdueTime = $_xhelpSession->get('xhelp_overdueTime')) {
-    $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);
+    $_xhelpSession->set('xhelp_overdueTime', $helper->getConfig('xhelp_overdueTime'));
     $overdueTime = $_xhelpSession->get('xhelp_overdueTime');
 }
 
-if ($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']) {
-    $_xhelpSession->set('xhelp_overdueTime', $xoopsModuleConfig['xhelp_overdueTime']);   // Set new value for overdueTime
+if ($overdueTime != $helper->getConfig('xhelp_overdueTime')) {
+    $_xhelpSession->set('xhelp_overdueTime', $helper->getConfig('xhelp_overdueTime'));   // Set new value for overdueTime
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
     $hTickets       = Xhelp\Helper::getInstance()->getHandler('Ticket');
@@ -106,7 +108,7 @@ if ($overdueTime != $xoopsModuleConfig['xhelp_overdueTime']) {
     $tickets        = $hTickets->getObjects($crit);
     $updatedTickets = [];
     foreach ($tickets as $ticket) {
-        $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] * 60 * 60));
+        $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));
         if (!$hTickets->insert($ticket, true)) {
             $updatedTickets[$ticket->getVar('id')] = false; // Not used anywhere
         } else {

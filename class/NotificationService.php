@@ -1,8 +1,9 @@
 <?php namespace XoopsModules\Xhelp;
 
-//
-
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
+
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -662,7 +663,7 @@ class NotificationService extends Xhelp\Service
         $num       = 0;
         $templates = $this->_module->getInfo('_email_tpl');
         foreach ($templates as $template) {
-            if ('dept' == $template['category']) {
+            if ('dept' === $template['category']) {
                 ++$num;
             }
         }
@@ -696,11 +697,12 @@ class NotificationService extends Xhelp\Service
     public function new_ticket(&$ticket)
     {
         global $xhelp_isStaff;
-
-        global $xoopsUser, $xoopsModuleConfig;
+        global $xoopsUser;
+        /** @var Xhelp\Helper $helper */
+        $helper = Xhelp\Helper::getInstance();
 
         $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $displayName  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+        $displayName  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
@@ -820,8 +822,8 @@ class NotificationService extends Xhelp\Service
         $_POST['pass']  = $password;
 
         // For backward compatibility
-        $HTTP_POST_VARS['uname'] = $user->getVar('uname');
-        $HTTP_POST_VARS['pass']  = $password;
+        $_POST['uname'] = $user->getVar('uname');
+        $_POST['pass']  = $password;
 
         $filename   = XOOPS_ROOT_PATH . '/kernel/authenticationservice.php';
         $foldername = XOOPS_ROOT_PATH . '/include/authenticationservices';
@@ -873,7 +875,10 @@ class NotificationService extends Xhelp\Service
         // If response is from staff member, send message to ticket submitter
         // If response is from submitter, send message to owner, if no owner, send to department
 
-        global $xoopsUser, $xoopsConfig, $xoopsModuleConfig;
+        global $xoopsUser, $xoopsConfig;
+        /** @var Xhelp\Helper $helper */
+        $helper = Xhelp\Helper::getInstance();
+
         $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
         if (!is_object($ticket) && 0 == $ticket) {
@@ -891,7 +896,7 @@ class NotificationService extends Xhelp\Service
         $tags['TICKET_SUBJECT']       = $this->_ts->stripslashesGPC($ticket->getVar('subject', 'n'));
         $tags['TICKET_TIMESPENT']     = $response->getVar('timeSpent');
         $tags['TICKET_STATUS']        = Xhelp\Utility::getStatus($ticket->getVar('status'));
-        $displayName                  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+        $displayName                  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
         $tags['TICKET_RESPONDER']     = Xhelp\Utility::getUsername($xoopsUser->getVar('uid'), $displayName);
         $tags['TICKET_POSTED']        = $response->posted('m');
         $tags['TICKET_SUPPORT_KEY']   = '';
@@ -1049,10 +1054,13 @@ class NotificationService extends Xhelp\Service
         //notify old owner, if assigned
         //notify new owner
         //notify submitter
-        global $xoopsUser, $xoopsModuleConfig;
+        global $xoopsUser;
+        /** @var Xhelp\Helper $helper */
+        $helper = Xhelp\Helper::getInstance();
+
         $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
-        $displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+        $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
@@ -1262,10 +1270,12 @@ class NotificationService extends Xhelp\Service
     {
         //if not modified by response submitter, notify response submitter
         //notify ticket submitter
-        global $xoopsUser, $xoopsModuleConfig;
+        global $xoopsUser;
+        /** @var Xhelp\Helper $helper */
+        $helper = Xhelp\Helper::getInstance();
 
         $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $displayName  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+        $displayName  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
         $tags                         = [];
         $tags['TICKET_URL']           = XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
@@ -1443,10 +1453,13 @@ class NotificationService extends Xhelp\Service
         //notify old owner, if assigned
         //notify new owner
         //notify submitter
-        global $xoopsUser, $xoopsModuleConfig;
+        global $xoopsUser;
+        /** @var Xhelp\Helper $helper */
+        $helper = Xhelp\Helper::getInstance();
+
         $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
-        $displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+        $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
         $settings      = $this->_hNotification->get(XHELP_NOTIF_EDITOWNER);
         $staff_setting = $settings->getVar('staff_setting');
@@ -1636,9 +1649,11 @@ class NotificationService extends Xhelp\Service
      */
     public function batch_response($tickets, $response)
     {
-        global $xoopsUser, $xoopsConfig, $xoopsModuleConfig;
+        global $xoopsUser, $xoopsConfig;
+        /** @var Xhelp\Helper $helper */
+        $helper = Xhelp\Helper::getInstance();
 
-        $displayName  = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+        $displayName  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
         $responseText = $this->_ts->stripslashesGPC($response->getVar('message', 'n'));
         $uname        = $xoopsUser->getVar('uname');
         $uid          = $xoopsUser->getVar('uid');

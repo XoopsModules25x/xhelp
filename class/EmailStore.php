@@ -4,6 +4,8 @@
 
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 /**
  * class EmailStore
@@ -149,7 +151,9 @@ class EmailStore
      */
     public function _saveAttachments($msg, $ticketid, $responseid = 0)
     {
-        global $xoopsModuleConfig;
+        /** @var Xhelp\Helper $helper */
+        $helper = Xhelp\Helper::getInstance();
+
         $attachments       = $msg->getAttachments();
         $dir               = XOOPS_UPLOAD_PATH . '/xhelp';
         $prefix            = (0 != $responseid ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
@@ -162,7 +166,7 @@ class EmailStore
 
         $dir .= '/';
 
-        if ($xoopsModuleConfig['xhelp_allowUpload']) {
+        if ($helper->getConfig('xhelp_allowUpload')) {
             $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
             foreach ($attachments as $attach) {
                 $validators = [];
@@ -174,8 +178,8 @@ class EmailStore
                 fclose($fp);
 
                 $validators[] = new validation\ValidateMimeType($dir . $fname, $attach['content-type'], $allowed_mimetypes);
-                $validators[] = new validation\ValidateFileSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadSize']);
-                $validators[] = new validation\ValidateImageSize($dir . $fname, $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
+                $validators[] = new validation\ValidateFileSize($dir . $fname, $helper->getConfig('xhelp_uploadSize'));
+                $validators[] = new validation\ValidateImageSize($dir . $fname, $helper->getConfig('xhelp_uploadWidth'), $helper->getConfig('xhelp_uploadHeight'));
 
                 if (!Xhelp\Utility::checkRules($validators, $errors)) {
                     //Remove the file

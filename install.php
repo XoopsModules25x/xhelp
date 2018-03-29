@@ -142,7 +142,7 @@ function updateTopics($onInstall = false)
     $ret                                    = $xoopsDB->query('SELECT topic_id, topic_title FROM ' . $xoopsDB->prefix('topics'));
     $myTopics                               = [];
     $myTopics[_MI_XHELP_ANNOUNCEMENTS_NONE] = 0;
-    while ($arr = $xoopsDB->fetchArray($ret)) {
+    while (false !== ($arr = $xoopsDB->fetchArray($ret))) {
         $myTopics[$arr['topic_title']] = $arr['topic_id'];
     }
 

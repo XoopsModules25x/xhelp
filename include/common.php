@@ -17,6 +17,7 @@
  * @author     XOOPS Development Team
  */
 use XoopsModules\Xhelp;
+
 include __DIR__ . '/../preloads/autoloader.php';
 
 

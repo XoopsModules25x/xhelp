@@ -3,6 +3,8 @@
 use Xmf\Request;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -22,7 +24,7 @@ if (isset($_GET['op'])) {
 }
 
 if (!$xoopsUser) {
-    redirect_header(XOOPS_URL . '/user.php?xoops_redirect=' . htmlspecialchars($xoopsRequestUri), 3);
+    redirect_header(XOOPS_URL . '/user.php?xoops_redirect=' . htmlspecialchars($xoopsRequestUri, ENT_QUOTES | ENT_HTML5), 3);
 }
 
 $xoopsVersion = substr(XOOPS_VERSION, 6);
@@ -36,7 +38,7 @@ if (!$ticketInfo = $hTickets->get($xhelp_id)) {
     redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_INV_TICKET);
 }
 
-$displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+$displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
 $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 $departments  = $hDepartments->getObjects(null, true);
@@ -174,7 +176,7 @@ if ($xhelp_isStaff) {
     $aOwnership = [];
     // Only run if actions are set to inline style
 
-    if (1 == $xoopsModuleConfig['xhelp_staffTicketActions']) {
+    if (1 == $helper->getConfig('xhelp_staffTicketActions')) {
         $aOwnership[] = [
             'uid'   => 0,
             'uname' => _XHELP_NO_OWNER
@@ -403,7 +405,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
 
             //** BTW - why do we need xhelp_allowUpload in the template if it will be always set to 0?
-            //$xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
+            //$xoopsTpl->assign('xhelp_allowUpload', $helper->getConfig('xhelp_allowUpload'));
             $xoopsTpl->assign('xhelp_allowUpload', 0);
             $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
             $xoopsTpl->assign('xhelp_departments', $aDept);
@@ -783,7 +785,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                     } elseif (XHELP_STATE_RESOLVED == $oldStatus->getVar('state')
                               && XHELP_STATE_UNRESOLVED == $newStatus->getVar('state')) {
                         //Re-opening the ticket
-                        $ticketInfo->setVar('overdueTime', $ticketInfo->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] * 60 * 60));
+                        $ticketInfo->setVar('overdueTime', $ticketInfo->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));
                         $statusReopened = true;
                     }
                 }
@@ -898,7 +900,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
         }
 
-        if (1 == $xoopsModuleConfig['xhelp_staffTicketActions']) {
+        if (1 == $helper->getConfig('xhelp_staffTicketActions')) {
             for ($i = 0, $iMax = count($aOwnership); $i < $iMax; ++$i) {
                 if (isset($users[$aOwnership[$i]['uid']])) {
                     $aOwnership[$i]['uname'] = $users[$aOwnership[$i]['uid']]['uname'];
@@ -928,7 +930,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
 
         // Smarty variables
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
-        $xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
+        $xoopsTpl->assign('xhelp_allowUpload', $helper->getConfig('xhelp_allowUpload'));
         $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
         $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
         $xoopsTpl->assign('xhelp_ticketID', $xhelp_id);
@@ -998,7 +1000,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_has_lastSubmitted', $has_lastTickets);
         $xoopsTpl->assign('xhelp_lastSubmitted', $aLastTickets);
         $xoopsTpl->assign('xoops_pagetitle', $xoopsModule->getVar('name') . ' - ' . $ticketInfo->getVar('subject'));
-        $xoopsTpl->assign('xhelp_showActions', $xoopsModuleConfig['xhelp_staffTicketActions']);
+        $xoopsTpl->assign('xhelp_showActions', $helper->getConfig('xhelp_staffTicketActions'));
 
         $xoopsTpl->assign('xhelp_has_changeOwner', false);
         if ($ticketInfo->getVar('uid') == $xoopsUser->getVar('uid')) {
@@ -1145,7 +1147,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $_users = $memberHandler->getUsers(new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
         foreach ($_users as $key => $_user) {
             $users[$key] = [
-                'uname'       => Xhelp\Utility::getUsername($_user, $xoopsModuleConfig['xhelp_displayName']),
+                'uname'       => Xhelp\Utility::getUsername($_user, $helper->getConfig('xhelp_displayName')),
                 //Display signature if user is a staff member + has set signature to display
                 //or user with signature set to display
                 'user_sig'    => (isset($staff[$key]) && $staff[$key])
@@ -1177,7 +1179,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
 
         // Smarty variables
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
-        $reopenTicket = $xoopsModuleConfig['xhelp_allowReopen'] && 2 == $myStatus->getVar('state');
+        $reopenTicket = $helper->getConfig('xhelp_allowReopen') && 2 == $myStatus->getVar('state');
         $xoopsTpl->assign('xhelp_reopenTicket', $reopenTicket);
         $xoopsTpl->assign('xhelp_allowResponse', (2 != $myStatus->getVar('state')) || $reopenTicket);
         $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');
@@ -1224,7 +1226,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_hasCustFields', !empty($custFields) ? true : false);
         $xoopsTpl->assign('xhelp_custFields', $custFields);
         $xoopsTpl->assign('xhelp_uploadPath', XHELP_UPLOAD_PATH);
-        $xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
+        $xoopsTpl->assign('xhelp_allowUpload', $helper->getConfig('xhelp_allowUpload'));
 
         require XOOPS_ROOT_PATH . '/footer.php';
         break;
@@ -1249,7 +1251,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 if (2 == $oldStatus->getVar('state')) {     //If the ticket is resolved
                     $ticketInfo->setVar('closedBy', 0);
                     $ticketInfo->setVar('status', 1);
-                    $ticketInfo->setVar('overdueTime', $ticketInfo->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] * 60 * 60));
+                    $ticketInfo->setVar('overdueTime', $ticketInfo->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));
                 } elseif (isset($_POST['closeTicket']) && 1 == $_POST['closeTicket']) { // If the user closes the ticket
                     $ticketInfo->setVar('closedBy', $ticketInfo->getVar('uid'));
                     $ticketInfo->setVar('status', 3);   // Todo: make moduleConfig for default resolved status?
@@ -1279,7 +1281,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                         $_eventsrv->trigger('new_response', [&$ticketInfo, &$newResponse]);
                         $message = _XHELP_MESSAGE_USER_MOREINFO;
 
-                        if ($xoopsModuleConfig['xhelp_allowUpload']) {    // If uploading is allowed
+                        if ($helper->getConfig('xhelp_allowUpload')) {    // If uploading is allowed
                             if (is_uploaded_file($_FILES['userfile']['tmp_name'])) {
                                 if (!$ret = $ticketInfo->checkUpload('userfile', $allowed_mimetypes, $errors)) {
                                     $errorstxt = implode('<br>', $errors);

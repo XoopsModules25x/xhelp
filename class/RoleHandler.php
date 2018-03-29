@@ -131,7 +131,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
         $task = (int)$task;
 
         // Get all roles
-        $roles = $this->getObjects();
+        $roles =& $this->getObjects();
 
         $aRoles = [];
         foreach ($roles as $role) {

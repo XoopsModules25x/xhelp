@@ -68,7 +68,7 @@ class JPSpan_Script
 
                         ++$j;
 
-                        //ignore string markers that are found inside comments
+                    //ignore string markers that are found inside comments
                     } elseif ($d == '//') {
                         $inNormalComment = true;
                         $clean           .= $c;

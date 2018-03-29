@@ -121,7 +121,7 @@ class TicketListHandler extends Xhelp\BaseObjectHandler
         $crit->setSort('weight');
         $crit->setOrder('desc');
         $crit->setLimit(1);
-        $ticketList = $this->getObjects($crit);
+        $ticketList =& $this->getObjects($crit);
         $weight     = (is_object($ticketList[0]) ? $ticketList[0]->getVar('weight') : 0);
 
         return $weight + 1;
@@ -196,7 +196,7 @@ class TicketListHandler extends Xhelp\BaseObjectHandler
         $crit = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
         $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID), 'OR');
         $crit->setSort('weight');
-        $ret = $this->getObjects($crit);
+        $ret =& $this->getObjects($crit);
 
         return $ret;
     }

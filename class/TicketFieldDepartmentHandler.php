@@ -58,7 +58,7 @@ class TicketFieldDepartmentHandler
         $arr   = [];
 
         if ($ret) {
-            while ($temp = $this->_db->fetchArray($ret)) {
+            while (false !== ($temp = $this->_db->fetchArray($ret))) {
                 $dept = $this->_hDept->create();
                 $dept->assignVars($temp);
                 if ($id_as_key) {
@@ -89,7 +89,7 @@ class TicketFieldDepartmentHandler
         $arr  = [];
 
         if ($ret) {
-            while ($temp = $this->_db->fetchArray($ret)) {
+            while (false !== ($temp = $this->_db->fetchArray($ret))) {
                 $field = $this->_hField->create();
                 $field->assignVars($temp);
                 if ($id_as_key) {

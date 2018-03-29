@@ -3,6 +3,8 @@
 use Xmf\Request;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -74,12 +76,12 @@ switch ($op) {
                 $v['response'][]  = new validation\ValidateLength(Request::getString('response', '', 'POST'), 2, 50000);
                 $v['timespent'][] = new validation\ValidateNumber(Request::getString('timespent', '', 'POST'));
 
-                if ($xoopsModuleConfig['xhelp_allowUpload'] && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
+                if ($helper->getConfig('xhelp_allowUpload') && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
                     $hMime = Xhelp\Helper::getInstance()->getHandler('Mimetype');
                     //Add File Upload Validation Rules
                     $v['userfile'][] = new validation\ValidateMimeType($_FILES['userfile']['name'], $_FILES['userfile']['type'], $hMime->getArray());
-                    $v['userfile'][] = new validation\ValidateFileSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadSize']);
-                    $v['userfile'][] = new validation\ValidateImageSize($_FILES['userfile']['tmp_name'], $xoopsModuleConfig['xhelp_uploadWidth'], $xoopsModuleConfig['xhelp_uploadHeight']);
+                    $v['userfile'][] = new validation\ValidateFileSize($_FILES['userfile']['tmp_name'], $helper->getConfig('xhelp_uploadSize'));
+                    $v['userfile'][] = new validation\ValidateImageSize($_FILES['userfile']['tmp_name'], $helper->getConfig('xhelp_uploadWidth'), $helper->getConfig('xhelp_uploadHeight'));
                     $uploadFile      = true;
                 }
 
@@ -230,7 +232,7 @@ switch ($op) {
             $GLOBALS['xoopsOption']['template_main'] = 'xhelp_response.tpl';   // Set template
             require XOOPS_ROOT_PATH . '/header.php';
 
-            $xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
+            $xoopsTpl->assign('xhelp_allowUpload', $helper->getConfig('xhelp_allowUpload'));
             $xoopsTpl->assign('xhelp_has_owner', $has_owner);
             $xoopsTpl->assign('xhelp_currentUser', $xoopsUser->getVar('uid'));
             $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');

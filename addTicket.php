@@ -3,6 +3,8 @@
 use Xmf\Request;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 if (isset($_GET['deptid'])) {
     $dept_id = (int)$_GET['deptid'];
@@ -68,7 +70,7 @@ if ($xoopsUser) {
         }
         $aDept    = [];
         $myGroups = $hMember->getGroupsByUser($xoopsUser->getVar('uid'));
-        if ($xhelp_isStaff && (0 == $xoopsModuleConfig['xhelp_deptVisibility'])) {     // If staff are not applied
+        if ($xhelp_isStaff && (0 == $helper->getConfig('xhelp_deptVisibility'))) {     // If staff are not applied
             foreach ($departments as $dept) {
                 $deptid  = $dept->getVar('id');
                 $aDept[] = [
@@ -126,7 +128,7 @@ if ($xoopsUser) {
         }
 
         $has_mimes = false;
-        if ($xoopsModuleConfig['xhelp_allowUpload']) {
+        if ($helper->getConfig('xhelp_allowUpload')) {
             // Get available mimetypes for file uploading
             $hMime = Xhelp\Helper::getInstance()->getHandler('Mimetype');
             $xhelp = Xhelp\Utility::getModule();
@@ -252,7 +254,7 @@ window.setTimeout('window_onload()', 1500);
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
         $xoopsTpl->assign('xhelp_includeURL', XHELP_INCLUDE_URL);
         $xoopsTpl->assign('xoops_module_header', $javascript . $xhelp_module_header);
-        $xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
+        $xoopsTpl->assign('xhelp_allowUpload', $helper->getConfig('xhelp_allowUpload'));
         $xoopsTpl->assign('xhelp_text_lookup', _XHELP_TEXT_LOOKUP);
         $xoopsTpl->assign('xhelp_text_email', _XHELP_TEXT_EMAIL);
         $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
@@ -268,7 +270,7 @@ window.setTimeout('window_onload()', 1500);
         ]);
         $xoopsTpl->assign('xhelp_default_priority', XHELP_DEFAULT_PRIORITY);
         $xoopsTpl->assign('xhelp_currentUser', $xoopsUser->getVar('uid'));
-        $xoopsTpl->assign('xhelp_numTicketUploads', $xoopsModuleConfig['xhelp_numTicketUploads']);
+        $xoopsTpl->assign('xhelp_numTicketUploads', $helper->getConfig('xhelp_numTicketUploads'));
         //        if (isset($_POST['logFor'])) {
         if (Request::hasVar('logFor', 'POST')) {
             $uid      = Request::getInt('logFor', '', 'POST');
@@ -459,10 +461,10 @@ window.setTimeout('window_onload()', 1500);
         }
         $ticket->setVar('posted', time());
         $ticket->setVar('userIP', getenv('REMOTE_ADDR'));
-        $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] * 60 * 60));
+        $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));
 
         $aUploadFiles = [];
-        if ($xoopsModuleConfig['xhelp_allowUpload']) {
+        if ($helper->getConfig('xhelp_allowUpload')) {
             foreach ($_FILES as $key => $aFile) {
                 $pos = strpos($key, 'userfile');
                 if (false !== $pos
@@ -499,7 +501,7 @@ window.setTimeout('window_onload()', 1500);
                 $fieldtype = $field['controltype'];
 
                 if (XHELP_CONTROL_FILE == $fieldtype) {               // If custom field was a file upload
-                    if ($xoopsModuleConfig['xhelp_allowUpload']) {    // If uploading is allowed
+                    if ($helper->getConfig('xhelp_allowUpload')) {    // If uploading is allowed
                         if (is_uploaded_file($_FILES[$fieldname]['tmp_name'])) {
                             if (!$ret = $ticket->checkUpload($fieldname, $allowed_mimetypes, $errors)) {
                                 $errorstxt = implode('<br>', $errors);

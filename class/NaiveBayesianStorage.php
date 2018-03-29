@@ -36,7 +36,6 @@
 
 use XoopsModules\Xhelp;
 
-
 /** Access to the storage of the data for the filter.
  *
  * To avoid dependency with respect to any database, this class handle all the

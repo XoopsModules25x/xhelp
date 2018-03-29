@@ -84,7 +84,7 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
                     $sqlFields .= ', ';
                 }
                 $sqlFields .= $myField;
-                if ('%s' == $datatype) {                      // If this field is a string
+                if ('%s' === $datatype) {                      // If this field is a string
                     $sqlVars .= $this->_db->quoteString(${$myField});     // Add text to sqlVars string
                 } else {                                    // If this field is a number
                     $sqlVars .= ${$myField};      // Add text to sqlVars string
@@ -117,7 +117,7 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars .= ', ';
                 }
-                if ('%s' == $datatype) {                      // If this field is a string
+                if ('%s' === $datatype) {                      // If this field is a string
                     $sqlVars .= $myField . ' = ' . $this->_db->quoteString(${$myField});     // Add text to sqlVars string
                 } else {                                    // If this field is a number
                     $sqlVars .= $myField . ' = ' . ${$myField};      // Add text to sqlVars string

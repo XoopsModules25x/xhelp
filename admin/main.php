@@ -1,6 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
@@ -8,7 +10,7 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 define('MAX_STAFF_RESPONSETIME', 5);
 define('MAX_STAFF_CALLSCLOSED', 5);
 
-global $HTTP_GET_VARS, $xoopsModule;
+global $_GET, $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
 $op = 'default';
@@ -80,7 +82,7 @@ function displayEvents($mailEvents, $mailboxes)
                       <td>' . $event->getVar('event_desc') . '</td>
                       <td>' . $event->posted() . '</td>
                   </tr>';
-            $class = ('odd' == $class) ? 'even' : 'odd';
+            $class = ('odd' === $class) ? 'even' : 'odd';
         }
     } else {
         echo '<tr><th>' . _AM_XHELP_TEXT_MAIL_EVENTS . '</th></tr>';
@@ -253,7 +255,7 @@ function xhelpDrawMinuteSelect($name)
 function xhelpDrawModeSelect($name, $sSelect = 'AM')
 {
     echo "<select name='" . $name . "'>";
-    if ('AM' == $sSelect) {
+    if ('AM' === $sSelect) {
         echo "<option value='1' selected>AM</option>";
         echo "<option value='2'>PM</option>";
     } else {
@@ -264,13 +266,15 @@ function xhelpDrawModeSelect($name, $sSelect = 'AM')
 
 function xhelp_default()
 {
-    global $xoopsModuleConfig;
+    /** @var Xhelp\Helper $helper */
+    $helper = Xhelp\Helper::getInstance();
+
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('index');
     $adminObject = \Xmf\Module\Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
-    $displayName =& $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+    $displayName =& $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
     $stylePath = XHELP_BASE_URL . '/assets/css/xhelp.css';
     echo '<link rel="stylesheet" type="text/css" media="all" href="' . $stylePath . '"><!--[if if lt IE 7]><script src="iepngfix.js" language="JavaScript" type="text/javascript"></script><![endif]-->';
@@ -297,7 +301,7 @@ function xhelp_default()
         $totalTickets += $numTickets;
 
         echo "<tr class='" . $class . "'><td>" . $status->getVar('description') . '</td><td>' . $numTickets . '</td></tr>';
-        if ('odd' == $class) {
+        if ('odd' === $class) {
             $class = 'even';
         } else {
             $class = 'odd';
@@ -316,7 +320,7 @@ function xhelp_default()
     $sql = sprintf('SELECT u.uid, u.uname, u.name, (s.responseTime / s.ticketsResponded) AS AvgResponseTime FROM %s u INNER JOIN %s s ON u.uid = s.uid WHERE ticketsResponded > 0 ORDER BY AvgResponseTime', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
     $ret = $xoopsDB->query($sql, MAX_STAFF_RESPONSETIME);
     $i   = 0;
-    while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
+    while (false !== (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret))) {
         $class = $table_class[$i % 2];
         echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . Xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
         ++$i;
@@ -335,7 +339,7 @@ function xhelp_default()
             echo "<table border='0' width='95%' cellspacing='1' class='outer'>
                   <tr><th colspan='2'>" . _AM_XHELP_TEXT_TOP_CLOSERS . '</th></tr>';
             $i = 0;
-            while (list($uid, $uname, $name, $callsClosed) = $xoopsDB->fetchRow($ret)) {
+            while (false !== (list($uid, $uname, $name, $callsClosed) = $xoopsDB->fetchRow($ret))) {
                 $class = $table_class[$i % 2];
                 echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . $callsClosed . ' (' . round(($callsClosed / $totalStaffClosed) * 100, 2) . '%)</td></tr>';
                 ++$i;
@@ -349,7 +353,7 @@ function xhelp_default()
             echo "<table border='0' width='100%' cellspacing='1' class='outer'>
                   <tr><th colspan='2'>" . _AM_XHELP_TEXT_RESPONSE_TIME_SLOW . '</th></tr>';
             $i = 0;
-            while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
+            while (false !== (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret))) {
                 $class = $table_class[$i % 2];
                 echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . Xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
                 ++$i;

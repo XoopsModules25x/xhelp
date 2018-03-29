@@ -1,4 +1,5 @@
 <?php namespace XoopsModules\Xhelp\Faq;
+
 //
 
 use XoopsModules\Xhelp;
@@ -78,7 +79,7 @@ class XoopsfaqAdapter extends Xhelp\FaqAdapter
 
         //Convert the module specific category to the
         //Xhelp\FaqCategory object for standarization
-        while ($myrow = $xoopsDB->fetchArray($result)) {
+        while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
             $faqcat = $hFaqCategory->create();
             $faqcat->setVar('id', $myrow['category_id']);
             $faqcat->setVar('name', $myrow['category_title']);

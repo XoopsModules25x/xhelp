@@ -117,7 +117,7 @@ class Net_IMAPProtocol
          * we disable the authentication methods that depend upon it.
          */
 
-        if (false === (@include_once 'Auth/SASL.php')) {
+        if (false === (@require_once 'Auth/SASL.php')) {
             foreach ($this->supportedSASLAuthMethods as $SASLMethod) {
                 $pos = array_search($SASLMethod, $this->supportedAuthMethods);
                 unset($this->supportedAuthMethods[$pos]);
@@ -521,7 +521,7 @@ class Net_IMAPProtocol
 
         $challenge = base64_decode($challenge);
 
-        $auth_str = base64_encode("$uid");
+        $auth_str = base64_encode((string)$uid);
 
         if (PEAR::isError($error = $this->_send($auth_str."\r\n"))) {
             return $error;
@@ -531,7 +531,7 @@ class Net_IMAPProtocol
             return $args;
         }
 
-        $auth_str = base64_encode("$pwd");
+        $auth_str = base64_encode((string)$pwd);
 
         if (PEAR::isError($error = $this->_send($auth_str."\r\n"))) {
             return $error;
@@ -794,7 +794,7 @@ class Net_IMAPProtocol
             $ret['PARSED'] = $ret['PARSED'][0]['EXT']['CAPABILITY'];
             //fill the $this->_serverAuthMethods and $this->_serverSupportedCapabilities arrays
             foreach ($ret['PARSED']['CAPABILITIES'] as $auth_method) {
-                if ('AUTH=' == strtoupper(substr($auth_method, 0, 5))) {
+                if ('AUTH=' === strtoupper(substr($auth_method, 0, 5))) {
                     $this->_serverAuthMethods[] = substr($auth_method, 5);
                 }
             }
@@ -821,10 +821,10 @@ class Net_IMAPProtocol
     {
         $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox));
 
-        if ('MESSAGES' != $request && 'RECENT' != $request && 'UIDNEXT' != $request
+        if ('MESSAGES' !== $request && 'RECENT' !== $request && 'UIDNEXT' !== $request
             &&
-            'UIDVALIDITY' != $request
-            && 'UNSEEN' != $request) {
+            'UIDVALIDITY' !== $request
+            && 'UNSEEN' !== $request) {
             // TODO:  fix this error!
             $this->_prot_error("request '$request' is invalid! see RFC2060!!!!", __LINE__, __FILE__, false);
         }
@@ -950,7 +950,7 @@ class Net_IMAPProtocol
             $parsed= $ret['PARSED'];
             unset($ret['PARSED']);
             foreach ($parsed as $command) {
-                if ('EXPUNGE' == strtoupper($command['COMMAND'])) {
+                if ('EXPUNGE' === strtoupper($command['COMMAND'])) {
                     $ret['PARSED'][$command['COMMAND']][] = $command['NRO'];
                 } else {
                     $ret['PARSED'][$command['COMMAND']] = $command['NRO'];
@@ -1015,11 +1015,11 @@ class Net_IMAPProtocol
          S: * 4 FETCH FLAGS (\Deleted \Flagged \Seen)
          S: A003 OK STORE completed
          */
-        if ('FLAGS' != $dataitem && 'FLAGS.SILENT' != $dataitem && '+FLAGS' != $dataitem
+        if ('FLAGS' !== $dataitem && 'FLAGS.SILENT' !== $dataitem && '+FLAGS' !== $dataitem
             &&
-            '+FLAGS.SILENT' != $dataitem
-            && '-FLAGS' != $dataitem
-            && '-FLAGS.SILENT' != $dataitem) {
+            '+FLAGS.SILENT' !== $dataitem
+            && '-FLAGS' !== $dataitem
+            && '-FLAGS.SILENT' !== $dataitem) {
             $this->_prot_error("dataitem '$dataitem' is invalid! see RFC2060!!!!", __LINE__, __FILE__);
         }
         $param=sprintf('%s %s (%s)', $message_set, $dataitem, $value);
@@ -1087,11 +1087,11 @@ class Net_IMAPProtocol
          S: * 4 FETCH FLAGS (\Deleted \Flagged \Seen)
          S: A003 OK STORE completed
          */
-        if ('FLAGS' != $dataitem && 'FLAGS.SILENT' != $dataitem && '+FLAGS' != $dataitem
+        if ('FLAGS' !== $dataitem && 'FLAGS.SILENT' !== $dataitem && '+FLAGS' !== $dataitem
             &&
-            '+FLAGS.SILENT' != $dataitem
-            && '-FLAGS' != $dataitem
-            && '-FLAGS.SILENT' != $dataitem) {
+            '+FLAGS.SILENT' !== $dataitem
+            && '-FLAGS' !== $dataitem
+            && '-FLAGS.SILENT' !== $dataitem) {
             $this->_prot_error("dataitem '$dataitem' is invalid! see RFC2060!!!!", __LINE__, __FILE__);
         }
 
@@ -1598,7 +1598,7 @@ class Net_IMAPProtocol
     public function _parseBodyResponse(&$str, $command)
     {
         $this->_parseSpace($str, __LINE__, __FILE__);
-        while (')' != $str[0] && '' != $str) {
+        while (')' !== $str[0] && '' != $str) {
             $params_arr[] = $this->_arrayfy_content($str);
         }
 
@@ -1618,23 +1618,23 @@ class Net_IMAPProtocol
     {
         $params_arr= [];
         $this->_getNextToken($str, $params);
-        if ('(' != $params) {
+        if ('(' !== $params) {
             return $params;
         }
         $this->_getNextToken($str, $params, false, false);
-        while ('' != $str && ')' != $params) {
+        while ('' != $str && ')' !== $params) {
             if ('' != $params) {
-                if ('(' == $params[0]) {
+                if ('(' === $params[0]) {
                     $params=$this->_arrayfy_content($params);
                 }
-                if (' ' != $params) {
+                if (' ' !== $params) {
                     //I don't remove the colons (") to handle the case of retriving " "
                     // If I remove the colons the parser will interpret this field as an imap separator (space)
                     // instead of a valid field so I remove the colons here
-                    if ('""' == $params) {
+                    if ('""' === $params) {
                         $params='';
                     } else {
-                        if ('"' == $params[0]) {
+                        if ('"' === $params[0]) {
                             $params=substr($params, 1, strlen($params)-2);
                         }
                     }
@@ -1684,7 +1684,7 @@ class Net_IMAPProtocol
         $this->_parseSpace($str, __LINE__, __FILE__);
 
         $this->_getNextToken($str, $parenthesis);
-        if ('(' != $parenthesis) {
+        if ('(' !== $parenthesis) {
             $this->_prot_error("must be a '(' but is a '$parenthesis' !!!!", __LINE__, __FILE__);
         }
         // Get the email's Date
@@ -1736,7 +1736,7 @@ class Net_IMAPProtocol
 
         $this->_getNextToken($str, $parenthesis);
 
-        if (')' != $parenthesis) {
+        if (')' !== $parenthesis) {
             $this->_prot_error("must be a ')' but is a '$parenthesis' !!!!", __LINE__, __FILE__);
         }
 
@@ -1821,13 +1821,13 @@ class Net_IMAPProtocol
             if ($str_line[$pos] == $stopDelim) {
                 break;
             }
-            if ('"' == $str_line[$pos]) {
+            if ('"' === $str_line[$pos]) {
                 $pos++;
-                while ('"' != $str_line[$pos] && $pos < $len) {
-                    if ("\\" == $str_line[$pos] && '"' == $str_line[$pos + 1 ]) {
+                while ('"' !== $str_line[$pos] && $pos < $len) {
+                    if ("\\" === $str_line[$pos] && '"' === $str_line[$pos + 1 ]) {
                         $pos++;
                     }
-                    if ("\\" == $str_line[$pos] && "\\" == $str_line[$pos + 1 ]) {
+                    if ("\\" === $str_line[$pos] && "\\" === $str_line[$pos + 1 ]) {
                         $pos++;
                     }
                     $pos++;
@@ -1866,7 +1866,7 @@ class Net_IMAPProtocol
         $len = strlen($str);
         if ($including) {
             for ($i=0;$i<$len;$i++) {
-                if ("\n" == $str[$i]) {
+                if ("\n" === $str[$i]) {
                     break;
                 }
             }
@@ -1876,7 +1876,7 @@ class Net_IMAPProtocol
             return $content;
         } else {
             for ($i = 0 ; $i < $len ; $i++) {
-                if ("\n" == $str[$i] || "\r" == $str[$i]) {
+                if ("\n" === $str[$i] || "\r" === $str[$i]) {
                     break;
                 }
             }
@@ -1918,13 +1918,13 @@ class Net_IMAPProtocol
                 if (! is_numeric(($strBytes = substr($str, 1, $posClosingBraces - 1)))) {
                     $this->_prot_error("must be a number but is a '" . $strBytes ."'!!!!", __LINE__, __FILE__);
                 }
-                if ('}' != $str[$posClosingBraces]) {
+                if ('}' !== $str[$posClosingBraces]) {
                     $this->_prot_error("must be a '}'  but is a '" . $str[$posClosingBraces] ."'!!!!", __LINE__, __FILE__);
                 }
-                if ("\r" != $str[$posClosingBraces + 1]) {
+                if ("\r" !== $str[$posClosingBraces + 1]) {
                     $this->_prot_error("must be a '\\r'  but is a '" . $str[$posClosingBraces + 1] ."'!!!!", __LINE__, __FILE__);
                 }
-                if ("\n" != $str[$posClosingBraces + 2]) {
+                if ("\n" !== $str[$posClosingBraces + 2]) {
                     $this->_prot_error("must be a '\\n'  but is a '" . $str[$posClosingBraces + 2] ."'!!!!", __LINE__, __FILE__);
                 }
                 $content = substr($str, $posClosingBraces + 3, $strBytes);
@@ -1938,17 +1938,17 @@ class Net_IMAPProtocol
             case '"':
                 if ($colonIsToken) {
                     for ($pos=1;$pos<$len;$pos++) {
-                        if ('"' == $str[$pos]) {
+                        if ('"' === $str[$pos]) {
                             break;
                         }
-                        if ("\\" == $str[$pos] && '"' == $str[$pos + 1 ]) {
+                        if ("\\" === $str[$pos] && '"' === $str[$pos + 1 ]) {
                             $pos++;
                         }
-                        if ("\\" == $str[$pos] && "\\" == $str[$pos + 1 ]) {
+                        if ("\\" === $str[$pos] && "\\" === $str[$pos + 1 ]) {
                             $pos++;
                         }
                     }
-                    if ('"' != $str[$pos]) {
+                    if ('"' !== $str[$pos]) {
                         $this->_prot_error("must be a '\"'  but is a '" . $str[$pos] ."'!!!!", __LINE__, __FILE__);
                     }
                     $content_size = $pos;
@@ -1957,17 +1957,17 @@ class Net_IMAPProtocol
                     $str = substr($str, $pos + 1);
                 } else {
                     for ($pos=1;$pos<$len;$pos++) {
-                        if ('"' == $str[$pos]) {
+                        if ('"' === $str[$pos]) {
                             break;
                         }
-                        if ("\\" == $str[$pos] && '"' == $str[$pos + 1 ]) {
+                        if ("\\" === $str[$pos] && '"' === $str[$pos + 1 ]) {
                             $pos++;
                         }
-                        if ("\\" == $str[$pos] && "\\" == $str[$pos + 1 ]) {
+                        if ("\\" === $str[$pos] && "\\" === $str[$pos + 1 ]) {
                             $pos++;
                         }
                     }
-                    if ('"' != $str[$pos]) {
+                    if ('"' !== $str[$pos]) {
                         $this->_prot_error("must be a '\"'  but is a '" . $str[$pos] ."'!!!!", __LINE__, __FILE__);
                     }
                     $content_size = $pos;
@@ -1979,7 +1979,7 @@ class Net_IMAPProtocol
 
             case "\r":
                 $pos = 1;
-                if ("\n" == $str[1]) {
+                if ("\n" === $str[1]) {
                     $pos++;
                 }
                 $content_size = $pos;
@@ -2019,13 +2019,13 @@ class Net_IMAPProtocol
                 break;
             default:
                 for ($pos = 0 ; $pos < $len ; $pos++) {
-                    if (' ' == $str[$pos] || "\r" == $str[$pos] || ')' == $str[$pos] || '(' == $str[$pos] || "\n" == $str[$pos]) {
+                    if (' ' === $str[$pos] || "\r" === $str[$pos] || ')' === $str[$pos] || '(' === $str[$pos] || "\n" === $str[$pos]) {
                         break;
                     }
-                    if ("\\" == $str[$pos] && ' ' == $str[$pos + 1 ]) {
+                    if ("\\" === $str[$pos] && ' ' === $str[$pos + 1 ]) {
                         $pos++;
                     }
-                    if ("\\" == $str[$pos] && "\\" == $str[$pos + 1 ]) {
+                    if ("\\" === $str[$pos] && "\\" === $str[$pos + 1 ]) {
                         $pos++;
                     }
                 }
@@ -2192,7 +2192,7 @@ class Net_IMAPProtocol
                 $ret_aux=array_merge($ret_aux, $ext);
 
                 $this->_getNextToken($str, $separator);
-                if (')' == $separator) {
+                if (')' === $separator) {
                     return [$token =>$ret_aux];
                 }
 
@@ -2306,11 +2306,11 @@ class Net_IMAPProtocol
 
                  */
                 $str_line = rtrim(substr($this->_getToEOL($str, false), 1));
-                if ('[' == $str_line[0]) {
+                if ('[' === $str_line[0]) {
                     $braceLen=$this->_getClosingBracesPos($str_line, '[', ']');
                     $str_aux='('. substr($str_line, 1, $braceLen -1). ')';
                     $ext_arr=$this->_getEXTarray($str_aux);
-                    //$ext_arr=array($token=>$this->_getEXTarray($str_aux));
+                //$ext_arr=array($token=>$this->_getEXTarray($str_aux));
                 } else {
                     $ext_arr=$str_line;
                     //$ext_arr=array($token=>$str_line);
@@ -2436,7 +2436,7 @@ class Net_IMAPProtocol
                 $rfc822_token=strtoupper(substr($token, 0, 7));
                 //echo "BODYYYYYYY: $rfc822_token|$token\n";
 
-                if ('BODY[' == $body_token || 'BODY.' == $body_token || 'RFC822.' == $rfc822_token) {
+                if ('BODY[' === $body_token || 'BODY.' === $body_token || 'RFC822.' === $rfc822_token) {
                     //echo "TOKEN:$token\n";
                     //$this->_getNextToken( $str , $mailbox );
                     return [$token =>$this->_parseContentresponse($str, $token)];
@@ -2459,7 +2459,7 @@ class Net_IMAPProtocol
          so i make it a function to make all the code shorter
          */
         $this->_getNextToken($str, $space);
-        if (' ' != $space) {
+        if (' ' !== $space) {
             $this->_prot_error("must be a ' ' but is a '$space' !!!!", $line, $file, $printError);
         }
 
@@ -2514,7 +2514,7 @@ class Net_IMAPProtocol
                 if (false === ($ext_arr = $this->_retrParsedResponse($str, $command, $msg_nro))) {
                     //  if this bogus response cis a FLAGS () or EXPUNGE response
                     // the ignore it
-                    if ('FLAGS' != $command && 'EXPUNGE' != $command) {
+                    if ('FLAGS' !== $command && 'EXPUNGE' !== $command) {
                         $this->_prot_error('bogus response!!!!', __LINE__, __FILE__, false);
                     }
                 }
@@ -2536,7 +2536,7 @@ class Net_IMAPProtocol
             $this->_getNextToken($str, $token);
 
             $token = strtoupper($token);
-            if ("\r\n" != $token && '' != $token) {
+            if ("\r\n" !== $token && '' != $token) {
                 $this->_prot_error("PARSE ERROR!!! must be a '\\r\\n' here  but is a '$token'!!!! (getting the next line)|STR:|$str|", __LINE__, __FILE__);
             }
             $this->_getNextToken($str, $token);
@@ -2646,7 +2646,7 @@ class Net_IMAPProtocol
         for ($i = 0, $iMax = strlen($str); $i < $iMax; $i++) {
             if (strlen($base64_part) > 0) {
                 if ('-' == $str[$i]) {
-                    if ('&' == $base64_part) {
+                    if ('&' === $base64_part) {
                         $decoded_utf7 = sprintf('%s&', $decoded_utf7);
                     } else {
                         $next_part_decoded= base64_decode(substr($base64_part, 1)) ;
@@ -2657,7 +2657,7 @@ class Net_IMAPProtocol
                     $base64_part = sprintf('%s%s', $base64_part, $str[$i]);
                 }
             } else {
-                if ('&' == $str[$i]) {
+                if ('&' === $str[$i]) {
                     $base64_part = '&';
                 } else {
                     $decoded_utf7 = sprintf('%s%s', $decoded_utf7, $str[$i]);

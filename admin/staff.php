@@ -1,14 +1,16 @@
 <?php
 
 use XoopsModules\Xhelp;
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 // require_once XHELP_CLASS_PATH . '/PageNav.php';
 
-global $xoopsModule, $xoopsModuleConfig;
+global $xoopsModule;
 $module_id   = $xoopsModule->getVar('mid');
-$displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+$displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
 $aLimitByS = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' => 100];
 $aLimitByD = ['1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '10' => 10];
@@ -262,7 +264,7 @@ function customDept()
         $bFound = false;
         if ($storedRoles = $_xhelpSession->get("xhelp_dept_$deptid")) {    // If editing previously customized dept
             foreach ($roles as $role) {
-                if ($storedRoles['roles'] != -1) {
+                if (-1 != $storedRoles['roles']) {
                     foreach ($storedRoles['roles'] as $storedRole) {
                         if ($role->getVar('id') == $storedRole) {
                             $bFound = true;
@@ -343,7 +345,7 @@ function customDept()
         $xhelp_has_deptRoles = false;
         if ($hasRoles = $_xhelpSession->get("xhelp_dept_$deptid")) {
             $xhelp_has_deptRoles = true;
-            if ($hasRoles['roles'] == -1) {                   // No perms for this dept
+            if (-1 == $hasRoles['roles']) {                   // No perms for this dept
                 //$_xhelpSession->del("xhelp_dept_$deptid");  // Delete custom roles for dept
                 $xhelp_has_deptRoles = false;
             }
@@ -651,7 +653,7 @@ function editStaff()
             $deptrolenames = '';
 
             if ($sess_roles = $_xhelpSession->get("xhelp_dept_$deptid")) {  //Customized roles stored in session?
-                if ($sess_roles['roles'] != -1) {                           //Is the user assigned to any roles in the dept?
+                if (-1 != $sess_roles['roles']) {                           //Is the user assigned to any roles in the dept?
                     $inDept = true;
                     foreach ($sess_roles['roles'] as $roleid) {   // Check if customized roles match global roles
                         if (in_array($roleid, $global_roles)) {   // If found role in global roles
@@ -1110,7 +1112,7 @@ function manageStaff()
             //Set Department Roles
             foreach ($depts as $dept) {
                 if ($custRoles = $_xhelpSession->get("xhelp_dept_$dept")) {
-                    if ($custRoles['roles'] != -1) {
+                    if (-1 != $custRoles['roles']) {
                         foreach ($custRoles['roles'] as $role) {
                             $hStaff->addStaffRole($uid, $role, $dept);
                         }

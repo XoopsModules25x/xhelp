@@ -110,7 +110,7 @@ class MimetypeHandler extends Xhelp\BaseObjectHandler
         }
 
         // Add each returned record to the result array
-        while ($myrow = $this->_db->fetchArray($result)) {
+        while (false !== ($myrow = $this->_db->fetchArray($result))) {
             $obj   = new $this->classname($myrow);
             $ret[] = $obj;
             unset($obj);
@@ -143,7 +143,7 @@ class MimetypeHandler extends Xhelp\BaseObjectHandler
         if ($mime_ext) {
             $crit->add(new \Criteria('mime_ext', $mime_ext));
         }
-        $result = $this->getObjects($crit);
+        $result =& $this->getObjects($crit);
 
         // If no records from db, return empty array
         if (!$result) {

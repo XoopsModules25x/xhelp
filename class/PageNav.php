@@ -34,7 +34,7 @@ class PageNav extends \XoopsPageNav
         if ('' != $bookmark) {
             $this->bookmark = '#' . $bookmark;
         }
-        if ('' != $extra_arg && ('&amp;' != substr($extra_arg, -5) || '&' != substr($extra_arg, -1))) {
+        if ('' != $extra_arg && ('&amp;' !== substr($extra_arg, -5) || '&' !== substr($extra_arg, -1))) {
             $extra_arg .= '&amp;';
         }
         $this->url = $_SERVER['PHP_SELF'] . '?' . $extra_arg . trim($start_name) . '=';
