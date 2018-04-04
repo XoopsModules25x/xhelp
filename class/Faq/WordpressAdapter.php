@@ -70,7 +70,7 @@ class WordpressAdapter extends Xhelp\FaqAdapter
         // Create an instance of the Xhelp\FaqCategoryHandler
         $hFaqCategory = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
 
-        $sql    = sprintf('SELECT cat_ID, cat_name, category_parent FROM %s', $xoopsDB->prefix('wp_categories'));
+        $sql    = sprintf('SELECT cat_ID, cat_name, category_parent FROM `%s`', $xoopsDB->prefix('wp_categories'));
         $result = $xoopsDB->query($sql);
 
         if (!$result) {

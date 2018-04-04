@@ -104,7 +104,7 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -143,7 +143,7 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
      */
     public function getStaffResponseCount($ticketid)
     {
-        $sql = sprintf('SELECT COUNT(*) FROM %s r INNER JOIN %s s ON r.uid = s.uid WHERE r.ticketid = %u', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_staff'), $ticketid);
+        $sql = sprintf('SELECT COUNT(*) FROM `%s` r INNER JOIN %s s ON r.uid = s.uid WHERE r.ticketid = %u', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_staff'), $ticketid);
 
         $ret = $this->_db->query($sql);
 
@@ -163,7 +163,7 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
     {
         if (is_array($tickets)) {
             //$crit = new \Criteria('ticketid', "(". implode(array_keys($tickets), ',') .")", 'IN');
-            $sql = sprintf('SELECT COUNT(*) AS numresponses, ticketid FROM %s WHERE ticketid IN (%s) GROUP BY ticketid', $this->_db->prefix($this->_dbtable), implode(array_keys($tickets), ','));
+            $sql = sprintf('SELECT COUNT(*) AS numresponses, ticketid FROM `%s` WHERE ticketid IN (%s) GROUP BY ticketid', $this->_db->prefix($this->_dbtable), implode(array_keys($tickets), ','));
         } else {
             return false;
         }

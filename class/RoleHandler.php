@@ -95,7 +95,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -135,7 +135,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
 
         $aRoles = [];
         foreach ($roles as $role) {
-            if (($role->getVar('tasks') & pow(2, $task)) > 0) {
+            if (($role->getVar('tasks') & (2 ** $task)) > 0) {
                 $aRoles[$role->getVar('id')] = $role;
             }
         }

@@ -317,7 +317,7 @@ function xhelp_default()
     echo "<table border='0' width='100%' cellspacing='1' class='outer'>
           <tr><th colspan='2'>" . _AM_XHELP_TEXT_RESPONSE_TIME . '</th></tr>';
 
-    $sql = sprintf('SELECT u.uid, u.uname, u.name, (s.responseTime / s.ticketsResponded) AS AvgResponseTime FROM %s u INNER JOIN %s s ON u.uid = s.uid WHERE ticketsResponded > 0 ORDER BY AvgResponseTime', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
+    $sql = sprintf('SELECT u.uid, u.uname, u.name, (s.responseTime / s.ticketsResponded) AS AvgResponseTime FROM `%s` u INNER JOIN %s s ON u.uid = s.uid WHERE ticketsResponded > 0 ORDER BY AvgResponseTime', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
     $ret = $xoopsDB->query($sql, MAX_STAFF_RESPONSETIME);
     $i   = 0;
     while (false !== (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret))) {
@@ -329,11 +329,11 @@ function xhelp_default()
     echo "</td></tr><tr><td valign='top'>"; // End first, start second cell
 
     //Get Calls Closed block
-    $sql = sprintf('SELECT SUM(callsClosed) FROM %s', $xoopsDB->prefix('xhelp_staff'));
+    $sql = sprintf('SELECT SUM(callsClosed) FROM `%s`', $xoopsDB->prefix('xhelp_staff'));
     $ret = $xoopsDB->query($sql);
     if (list($totalStaffClosed) = $xoopsDB->fetchRow($ret)) {
         if ($totalStaffClosed) {
-            $sql = sprintf('SELECT u.uid, u.uname, u.name, s.callsClosed FROM %s u INNER JOIN %s s ON u.uid = s.uid WHERE s.callsClosed > 0 ORDER BY s.callsClosed DESC', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
+            $sql = sprintf('SELECT u.uid, u.uname, u.name, s.callsClosed FROM `%s` u INNER JOIN %s s ON u.uid = s.uid WHERE s.callsClosed > 0 ORDER BY s.callsClosed DESC', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
             $ret = $xoopsDB->query($sql, MAX_STAFF_CALLSCLOSED);
             echo "<div id='callsClosed'>";
             echo "<table border='0' width='95%' cellspacing='1' class='outer'>
@@ -347,7 +347,7 @@ function xhelp_default()
             echo '</table></div><br>'; // End inner table top row
             echo "</td><td valign='top'>"; // End top row of outer table
 
-            $sql = sprintf('SELECT u.uid, u.uname, u.name, (s.responseTime / s.ticketsResponded) AS AvgResponseTime FROM %s u INNER JOIN %s s ON u.uid = s.uid WHERE ticketsResponded > 0 ORDER BY AvgResponseTime DESC', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
+            $sql = sprintf('SELECT u.uid, u.uname, u.name, (s.responseTime / s.ticketsResponded) AS AvgResponseTime FROM `%s` u INNER JOIN %s s ON u.uid = s.uid WHERE ticketsResponded > 0 ORDER BY AvgResponseTime DESC', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
             $ret = $xoopsDB->query($sql, MAX_STAFF_RESPONSETIME);
             echo "<div id='leastCallsClosed'>";
             echo "<table border='0' width='100%' cellspacing='1' class='outer'>

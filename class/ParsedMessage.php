@@ -30,8 +30,7 @@ class ParsedMessage
     /**
      * Class Constructor
      * @access   public
-     * @param array $msg     Array of message values
-     * @param array $headers of message headers
+     * @param array $msg Array of message values
      */
 
     public function __construct(&$msg)

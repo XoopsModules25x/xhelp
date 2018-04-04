@@ -132,7 +132,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
             }
         }
 
-        $sql = sprintf('SELECT DISTINCT department FROM %s WHERE id IN (%s)', $this->_db->prefix('xhelp_tickets'), implode($a_tickets, ','));
+        $sql = sprintf('SELECT DISTINCT department FROM `%s` WHERE id IN (%s)', $this->_db->prefix('xhelp_tickets'), implode($a_tickets, ','));
         $ret = $this->_db->query($sql);
 
         while (false !== ($temp = $this->_db->fetchArray($ret))) {
@@ -251,10 +251,10 @@ class TicketHandler extends Xhelp\BaseObjectHandler
     public function getCountByStaff($criteria, $hasCustFields = false)
     {
         if (!$hasCustFields) {
-            $sql = sprintf('SELECT COUNT(*) AS TicketCount FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'), $this->_db->prefix('xhelp_status'));
+            $sql = sprintf('SELECT COUNT(*) AS TicketCount FROM `%s` t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'), $this->_db->prefix('xhelp_status'));
         } else {
             $sql = sprintf(
-                'SELECT COUNT(*) AS TicketCount FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id INNER JOIN %s f ON t.id = f.ticketid ',
+                'SELECT COUNT(*) AS TicketCount FROM `%s` t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id INNER JOIN %s f ON t.id = f.ticketid ',
                 $this->_db->prefix('xhelp_tickets'),
                 $this->_db->prefix('xhelp_jstaffdept'),
                            $this->_db->prefix('xhelp_status'),
@@ -453,7 +453,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -471,15 +471,15 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         global $xoopsUser;
         if (!$join) {
             $sql = sprintf('SELECT t.*, (UNIX_TIMESTAMP() - t.posted) AS elapsed, (UNIX_TIMESTAMP() - t.lastUpdated)
-                            AS lastUpdate  FROM %s t INNER JOIN %s s ON t.status = s.id', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_status'));
+                            AS lastUpdate  FROM `%s` t INNER JOIN %s s ON t.status = s.id', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_status'));
         } else {
             if (!$hasCustFields) {
                 $sql = sprintf('SELECT t.*, (UNIX_TIMESTAMP() - t.posted) AS elapsed, (UNIX_TIMESTAMP() - t.lastUpdated)
-                                AS lastUpdate FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s
+                                AS lastUpdate FROM `%s` t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s
                                 ON t.status = s.id', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'), $this->_db->prefix('xhelp_status'));
             } else {
                 $sql = sprintf('SELECT t.*, (UNIX_TIMESTAMP() - t.posted) AS elapsed, (UNIX_TIMESTAMP() - t.lastUpdated)
-                                AS lastUpdate FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s
+                                AS lastUpdate FROM `%s` t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s
                                 ON t.status = s.id INNER JOIN %s f ON t.id = f.ticketid', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'), $this->_db->prefix('xhelp_status'), $this->_db->prefix('xhelp_ticket_values'));
             }
         }

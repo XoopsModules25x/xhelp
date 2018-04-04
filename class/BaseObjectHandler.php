@@ -178,7 +178,7 @@ class BaseObjectHandler extends \XoopsObjectHandler
      */
     public function _selectQuery(\CriteriaElement $criteria = null)
     {
-        $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
+        $sql = sprintf('SELECT * FROM `%s`', $this->_db->prefix($this->_dbtable));
         if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
             $sql .= ' ' . $criteria->renderWhere();
             if ('' != $criteria->getSort()) {

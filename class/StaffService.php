@@ -39,7 +39,7 @@ class StaffService extends Xhelp\Service
      * Update staff response time if first staff response
      * @param  Xhelp\Ticket    $ticket   Ticket for response
      * @param  Xhelp\Responses $response Response
-     * @return bool           True on success, false on error
+     * @return void True on success, false on error
      * @access public
      */
     public function new_response($ticket, $response)
@@ -59,9 +59,9 @@ class StaffService extends Xhelp\Service
 
     /**
      * Update staff response time if first staff response
-     * @param                 $tickets
+     * @param                  $tickets
      * @param  Xhelp\Responses $response Response
-     * @return bool True on success, false on error
+     * @return void True on success, false on error
      * @internal param Xhelp\Ticket $ticket Ticket for response
      * @internal param int $timespent Number of minutes spent on ticket
      * @internal param bool $private Is the response private?
@@ -89,7 +89,7 @@ class StaffService extends Xhelp\Service
      * Handler for the 'batch_status' event
      * @param  array $tickets   Array of Xhelp\Ticket objects
      * @param  int   $newstatus New Status of all tickets
-     * @return bool  True on success, false on error
+     * @return void True on success, false on error
      * @access public
      */
     public function batch_status($tickets, $newstatus)
@@ -158,7 +158,7 @@ class StaffService extends Xhelp\Service
     /**
      * Event Handler for 'view_ticket'
      * @param  Xhelp\Ticket $ticket Ticket being viewd
-     * @return bool        True on success, false on error
+     * @return void True on success, false on error
      * @access public
      */
     public function view_ticket($ticket)

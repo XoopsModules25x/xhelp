@@ -70,7 +70,7 @@ class XoopsfaqAdapter extends Xhelp\FaqAdapter
         // Create an instance of the Xhelp\FaqCategoryHandler
         $hFaqCategory = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
 
-        $sql    = sprintf('SELECT category_id, category_title FROM %s ORDER BY category_order', $xoopsDB->prefix('xoopsfaq_categories'));
+        $sql    = sprintf('SELECT category_id, category_title FROM `%s` ORDER BY category_order', $xoopsDB->prefix('xoopsfaq_categories'));
         $result = $xoopsDB->query($sql);
 
         if (!$result) {

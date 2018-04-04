@@ -35,6 +35,7 @@ class FirnService extends Xhelp\Service
      * Triggered after FAQ addition
      * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
      * @param Xhelp\Faq    $faq    FAQ that was added
+     * @return bool
      */
     public function new_faq($ticket, $faq)
     {

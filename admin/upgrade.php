@@ -188,12 +188,12 @@ function upgradeDB()
 
                 //get notifications for current user
                 $usernotif = 0;
-                $qry       = $xoopsDB->query(sprintf("SELECT DISTINCT not_category, not_event FROM %s WHERE not_uid = %u AND not_category='dept' AND not_modid=%u", $notif_tbl, $uid, $mid));
+                $qry       = $xoopsDB->query(sprintf("SELECT DISTINCT not_category, not_event FROM `%s` WHERE not_uid = %u AND not_category='dept' AND not_modid=%u", $notif_tbl, $uid, $mid));
                 while (false !== ($arr = $xoopsDB->fetchArray($qry))) {
                     //Look for current event information in $email_tpl
                     foreach ($email_tpl as $tpl) {
                         if (($tpl['name'] == $arr['not_event']) && ($tpl['category'] == $arr['not_category'])) {
-                            $usernotif |= pow(2, $tpl['bit_value']);
+                            $usernotif |= 2 ** $tpl['bit_value'];
                             break;
                         }
                     }

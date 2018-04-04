@@ -422,7 +422,7 @@ class NotificationService extends Xhelp\Service
             }
         }
 
-        return ($user->getVar('notify') & pow(2, $event_id)) > 0;
+        return ($user->getVar('notify') & (2 ** $event_id)) > 0;
     }
 
     /**
@@ -675,7 +675,7 @@ class NotificationService extends Xhelp\Service
      * Returns the email address of the person causing the fire of the event
      *
      * @param  int $uid uid of the user
-     * @return string email of user
+     * @return array email of user
      *
      * @access private
      */

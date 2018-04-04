@@ -102,14 +102,14 @@ class FileHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
 
     /**
-     * @param XoopsObject $obj
-     * @param bool        $force
+     * @param \XoopsObject $obj
+     * @param bool         $force
      * @return bool
      */
     public function delete(\XoopsObject $obj, $force = false)

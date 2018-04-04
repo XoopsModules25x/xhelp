@@ -189,7 +189,7 @@ define('_AM_XHELP_TEXT_FILENAME', 'Filename');
 define('_AM_XHELP_TEXT_MIMETYPE', 'Mimetype');
 define('_AM_XHELP_TEXT_TOTAL_USED_SPACE', 'Total Used Space');
 define('_AM_XHELP_TEXT_SIZE', 'Size');
-define('_AM_XHELP_TEXT_DELETE_RESOLVED', 'DELETE attachments FROM resolved tickets?');
+define('_AM_XHELP_TEXT_DELETE_RESOLVED', 'Delet attachments from resolved tickets?');
 define('_AM_XHELP_TEXT_NO_FILES', 'No Files Found');
 define('_AM_XHELP_TEXT_RESOLVED_ATTACH', 'Resolved Attachments');
 define('_AM_XHELP_TEXT_ALL_ATTACH', 'All Attachments');

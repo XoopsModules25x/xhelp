@@ -97,7 +97,7 @@ function addRole()
                      <table border='0'>
                      <tr><td>";
         foreach ($tasks as $bit_value => $task) {
-            echo "<tr><td><input type='checkbox' name='tasks[]' value='" . pow(2, $bit_value) . "'>" . $task . '</td></tr>';
+            echo "<tr><td><input type='checkbox' name='tasks[]' value='" . (2 ** $bit_value) . "'>" . $task . '</td></tr>';
         }
         echo "<tr><td><input type='checkbox' name='allTasks' value='0' onclick='selectAll(this.form,\"tasks[]\",this.checked);'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';
         echo '</table>
@@ -465,10 +465,10 @@ function editRole()
                      <table border='0'>
                      <tr><td>";
         foreach ($tasks as $bit_value => $task) {
-            if (($role->getVar('tasks') & pow(2, $bit_value)) > 0) {
-                echo "<tr><td><input type='checkbox' name='tasks[]' value='" . pow(2, $bit_value) . "' checked>" . $task . '</td></tr>';
+            if (($role->getVar('tasks') & (2 ** $bit_value)) > 0) {
+                echo "<tr><td><input type='checkbox' name='tasks[]' value='" . (2 ** $bit_value) . "' checked>" . $task . '</td></tr>';
             } else {
-                echo "<tr><td><input type='checkbox' name='tasks[]' value='" . pow(2, $bit_value) . "'>" . $task . '</td></tr>';
+                echo "<tr><td><input type='checkbox' name='tasks[]' value='" . (2 ** $bit_value) . "'>" . $task . '</td></tr>';
             }
         }
         echo "<tr><td><input type='checkbox' name='allTasks' value='0' onclick='selectAll(this.form,\"tasks[]\",this.checked);'><b>" . _AM_XHELP_TEXT_SELECT_ALL . '</b></td></tr>';

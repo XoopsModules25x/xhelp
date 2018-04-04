@@ -159,7 +159,7 @@ class TicketsByUserReport extends Xhelp\Report
     {
         global $xoopsDB;
         // AND (t.posted > UNIX_TIMESTAMP(?)) AND (t.posted <= UNIX_TIMESTAMP(?))
-        $sSQL = sprintf('SELECT u.name, COUNT(t.id) AS TicketCount FROM %s u, %s t WHERE (u.uid = t.uid) %s GROUP BY u.name ORDER BY TicketCount DESC', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_tickets'), $this->extraWhere);
+        $sSQL = sprintf('SELECT u.name, COUNT(t.id) AS TicketCount FROM `%s` u, %s t WHERE (u.uid = t.uid) %s GROUP BY u.name ORDER BY TicketCount DESC', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_tickets'), $this->extraWhere);
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

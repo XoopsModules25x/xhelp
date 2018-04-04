@@ -35,7 +35,7 @@ class MembershipHandler
      */
     public function getCount($criteria = null)
     {
-        $sql = sprintf('SELECT COUNT(*) FROM %s s INNER JOIN %s j ON s.uid = j.uid', $this->_db->prefix('xhelp_staff'), $this->_db->prefix('xhelp_jstaffdept'));
+        $sql = sprintf('SELECT COUNT(*) FROM `%s` s INNER JOIN %s j ON s.uid = j.uid', $this->_db->prefix('xhelp_staff'), $this->_db->prefix('xhelp_jstaffdept'));
         if (null !== $criteria && is_subclass_of($criteria, 'CriteriaElement')) {
             $sql .= ' ' . $criteria->renderWhere();
         }
@@ -59,7 +59,7 @@ class MembershipHandler
     public function &membershipByStaff($uid, $id_as_key = false)
     {
         $uid = (int)$uid;
-        $sql = sprintf('SELECT d.* FROM %s d INNER JOIN %s j ON d.id = j.department WHERE j.uid = %u', $this->_db->prefix('xhelp_departments'), $this->_db->prefix('xhelp_jstaffdept'), $uid);
+        $sql = sprintf('SELECT d.* FROM `%s` d INNER JOIN %s j ON d.id = j.department WHERE j.uid = %u', $this->_db->prefix('xhelp_departments'), $this->_db->prefix('xhelp_jstaffdept'), $uid);
 
         $ret = $this->_db->query($sql);
         $arr = [];
@@ -91,7 +91,7 @@ class MembershipHandler
         $groups       = $hMember->getGroupsByUser($uid);
         $group_string = '(' . implode(array_values($groups), ',') . ')';
 
-        $sql = sprintf("SELECT d.* FROM %s d INNER JOIN %s g ON d.id = g.gperm_itemid WHERE g.gperm_name = '%s' AND g.gperm_modid = '%s' AND g.gperm_groupid IN %s", $this->_db->prefix('xhelp_departments'), $this->_db->prefix('group_permission'), _XHELP_GROUP_PERM_DEPT, $module_id, $group_string);
+        $sql = sprintf("SELECT d.* FROM `%s` d INNER JOIN %s g ON d.id = g.gperm_itemid WHERE g.gperm_name = '%s' AND g.gperm_modid = '%s' AND g.gperm_groupid IN %s", $this->_db->prefix('xhelp_departments'), $this->_db->prefix('group_permission'), _XHELP_GROUP_PERM_DEPT, $module_id, $group_string);
         $ret = $this->_db->query($sql);
         $arr = [];
 
@@ -112,7 +112,7 @@ class MembershipHandler
      */
     public function isStaffMember($uid, $deptid)
     {
-        $sql = sprintf('SELECT COUNT(*) AS MemberCount FROM %s WHERE uid = %u AND department = %u', $this->_db->prefix('xhelp_jstaffdept'), $uid, $deptid);
+        $sql = sprintf('SELECT COUNT(*) AS MemberCount FROM `%s` WHERE uid = %u AND department = %u', $this->_db->prefix('xhelp_jstaffdept'), $uid, $deptid);
         $ret = $this->_db->query($sql);
         list($memberCount) = $this->_db->fetchRow($ret);
 
@@ -151,10 +151,10 @@ class MembershipHandler
             }
         }
         if (1 == count($a_depts)) {
-            $sql = sprintf('SELECT s.* FROM %s s INNER JOIN %s j ON s.uid = j.uid WHERE j.department = %u', $this->_db->prefix('xhelp_staff'), $this->_db->prefix('xhelp_jstaffdept'), $a_depts[0]);
+            $sql = sprintf('SELECT s.* FROM `%s` s INNER JOIN %s j ON s.uid = j.uid WHERE j.department = %u', $this->_db->prefix('xhelp_staff'), $this->_db->prefix('xhelp_jstaffdept'), $a_depts[0]);
         } else {
             $uids = $this->_uidsInDepts($a_depts);
-            $sql  = sprintf('SELECT s.* FROM %s s WHERE s.uid IN (%s)', $this->_db->prefix('xhelp_staff'), implode($uids, ','));
+            $sql  = sprintf('SELECT s.* FROM `%s` s WHERE s.uid IN (%s)', $this->_db->prefix('xhelp_staff'), implode($uids, ','));
         }
 
         $ret = $this->_db->query($sql, $limit, $start);
@@ -199,10 +199,10 @@ class MembershipHandler
             }
         }
         if (1 == count($a_depts)) {
-            $sql = sprintf('SELECT u.* FROM %s u INNER JOIN %s j ON u.uid = j.uid WHERE j.department = %u', $this->_db->prefix('users'), $this->_db->prefix('xhelp_jstaffdept'), $a_depts[0]);
+            $sql = sprintf('SELECT u.* FROM `%s` u INNER JOIN %s j ON u.uid = j.uid WHERE j.department = %u', $this->_db->prefix('users'), $this->_db->prefix('xhelp_jstaffdept'), $a_depts[0]);
         } else {
             $uids = $this->_uidsInDepts($a_depts);
-            $sql  = sprintf('SELECT u.* FROM %s u WHERE u.uid IN (%s)', $this->_db->prefix('users'), implode($uids, ','));
+            $sql  = sprintf('SELECT u.* FROM `%s` u WHERE u.uid IN (%s)', $this->_db->prefix('users'), implode($uids, ','));
         }
 
         $ret = $this->_db->query($sql, $limit, $start);
@@ -345,7 +345,7 @@ class MembershipHandler
 
     public function clearStaffMembership($uid)
     {
-        $sql = sprintf('DELETE FROM %s WHERE uid=%u', $this->_db->prefix('xhelp_jstaffdept'), $uid);
+        $sql = sprintf('DELETE FROM `%s` WHERE uid=%u', $this->_db->prefix('xhelp_jstaffdept'), $uid);
 
         return $this->_db->query($sql);
     }
@@ -359,7 +359,7 @@ class MembershipHandler
      */
     public function clearDeptMembership($deptid)
     {
-        $sql = sprintf('DELETE FROM %s WHERE department=%u', $this->_db->prefix('xhelp_jstaffdept'), $deptid);
+        $sql = sprintf('DELETE FROM `%s` WHERE department=%u', $this->_db->prefix('xhelp_jstaffdept'), $deptid);
 
         return $this->_db->query($sql);
     }
@@ -445,7 +445,7 @@ class MembershipHandler
      */
     public function _removeJoinerRecord($staffid, $deptid)
     {
-        $sql = sprintf('DELETE FROM %s WHERE uid=%u AND department=%u', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
+        $sql = sprintf('DELETE FROM `%s` WHERE uid=%u AND department=%u', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
 
         return $this->_db->queryF($sql);
     }
@@ -456,7 +456,7 @@ class MembershipHandler
      */
     public function &_uidsInDepts($depts)
     {
-        $sql = sprintf('SELECT j.uid FROM %s j WHERE j.department IN (%s) GROUP BY j.uid HAVING COUNT(*) = %u', $this->_db->prefix('xhelp_jstaffdept'), implode($depts, ','), count($depts));
+        $sql = sprintf('SELECT j.uid FROM `%s` j WHERE j.department IN (%s) GROUP BY j.uid HAVING COUNT(*) = %u', $this->_db->prefix('xhelp_jstaffdept'), implode($depts, ','), count($depts));
 
         $ret = $this->_db->query($sql);
         $arr = [];

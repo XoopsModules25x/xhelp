@@ -162,7 +162,7 @@ class TimeSpentByDeptReport extends Xhelp\Report
         global $xoopsDB;
 
         $sSQL = sprintf(
-            'SELECT d.department, SUM(r.timeSpent) AS TotalTime FROM %s d, %s t, %s r WHERE (d.id = t.department) AND (t.id = r.ticketid) %s GROUP BY d.department',
+            'SELECT d.department, SUM(r.timeSpent) AS TotalTime FROM `%s` d, %s t, %s r WHERE (d.id = t.department) AND (t.id = r.ticketid) %s GROUP BY d.department',
             $xoopsDB->prefix('xhelp_departments'),
             $xoopsDB->prefix('xhelp_tickets'),
             $xoopsDB->prefix('xhelp_responses'),

@@ -10,6 +10,7 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 /**
  * Format a time as 'x' years, 'x' weeks, 'x' days, 'x' hours, 'x' minutes, 'x' seconds
  *
+ * @param $time
  * @return string formatted time
  *
  * @access public
@@ -451,7 +452,7 @@ function xhelpTableExists($table)
 function xhelpGetMeta($key)
 {
     $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
-    $sql     = sprintf('SELECT metavalue FROM %s WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
+    $sql     = sprintf('SELECT metavalue FROM `%s` WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
     $ret     = $xoopsDB->query($sql);
     if (!$ret) {
         $value = false;
@@ -499,7 +500,7 @@ function xhelpSetMeta($key, $value)
 function xhelpDeleteMeta($key)
 {
     $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
-    $sql     = sprintf('DELETE FROM %s WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
+    $sql     = sprintf('DELETE FROM `%s` WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
     $ret     = $xoopsDB->query($sql);
     if (!$ret) {
         return false;
@@ -739,7 +740,7 @@ function &xhelpGetStaff($displayName)
 {
     $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
 
-    $sql = sprintf('SELECT u.uid, u.uname, u.name FROM %s u INNER JOIN %s s ON u.uid = s.uid ORDER BY u.uname', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
+    $sql = sprintf('SELECT u.uid, u.uname, u.name FROM `%s` u INNER JOIN %s s ON u.uid = s.uid ORDER BY u.uname', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
     $ret = $xoopsDB->query($sql);
 
     $staff[-1] = _XHELP_TEXT_SELECT_ALL;

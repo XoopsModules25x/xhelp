@@ -156,7 +156,7 @@ class TicketsByDeptReport extends Xhelp\Report
     public function _setResults()
     {
         global $xoopsDB;
-        $sSQL = sprintf('SELECT DISTINCT d.department, COUNT(*) AS TicketCount FROM %s t, %s d WHERE t.department = d.id AND (d.id = t.department) %s GROUP BY d.department', $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_departments'), $this->extraWhere);
+        $sSQL = sprintf('SELECT DISTINCT d.department, COUNT(*) AS TicketCount FROM `%s` t, %s d WHERE t.department = d.id AND (d.id = t.department) %s GROUP BY d.department', $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_departments'), $this->extraWhere);
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

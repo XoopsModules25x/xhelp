@@ -130,8 +130,9 @@ class LogService extends Xhelp\Service
      * Triggered after ticket ownership change (Individual)
      * Also See: batch_owner
      * @param Xhelp\Ticket $ticket   Ticket that was changed
-     * @param int         $oldowner UID of previous owner
-     * @param int         $newowner UID of new owner
+     * @param int          $oldowner UID of previous owner
+     * @param int          $newowner UID of new owner
+     * @return
      */
     public function update_owner($ticket, $oldowner, $newowner)
     {
@@ -465,6 +466,7 @@ class LogService extends Xhelp\Service
      * Triggered after FAQ addition
      * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
      * @param Xhelp\Faq    $faq    FAQ that was added
+     * @return
      */
     public function new_faq($ticket, $faq)
     {

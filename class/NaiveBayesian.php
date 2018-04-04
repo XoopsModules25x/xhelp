@@ -102,7 +102,7 @@ class NaiveBayesian
                     } else {
                         $proba = $small_proba;
                     }
-                    $scores[$category] *= pow($proba, $count) * pow($total_words / $ncat, $count);
+                    $scores[$category] *= ($proba ** $count) * (($total_words / $ncat) ** $count);
                     // pow($total_words/$ncat, $count) is here to avoid underflow.
                 }
             }
@@ -180,7 +180,7 @@ class NaiveBayesian
         //        while (list($cat, $score) = each($scores)) {
         foreach ($scores as $cat => $score) {
             $scores[$cat] = exp($score - $max);
-            $total        += (float)pow($scores[$cat], 2);
+            $total        += (float)$scores[$cat] ** 2;
         }
         $total = sqrt($total);
         //        reset($scores);

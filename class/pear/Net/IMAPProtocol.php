@@ -1635,7 +1635,7 @@ class Net_IMAPProtocol
                         $params='';
                     } else {
                         if ('"' === $params[0]) {
-                            $params=substr($params, 1, strlen($params)-2);
+                            $params=substr($params, 1, -2);
                         }
                     }
                     $params_arr[]=$params;

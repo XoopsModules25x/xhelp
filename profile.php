@@ -231,11 +231,11 @@ if ($xoopsUser) {
                         'category'      => $template['category'],
                         'template'      => $template['mail_template'],
                         'subject'       => $template['mail_subject'],
-                        'bitValue'      => pow(2, $template['bit_value']),
+                        'bitValue'      => 2 ** $template['bit_value'],
                         'title'         => $template['title'],
                         'caption'       => $template['caption'],
                         'description'   => $template['description'],
-                        'isChecked'     => ($staff->getVar('notify') & pow(2, $template['bit_value'])) > 0,
+                        'isChecked'     => ($staff->getVar('notify') & (2 ** $template['bit_value'])) > 0,
                         'staff_setting' => $staff_enabled
                     ];
                 }

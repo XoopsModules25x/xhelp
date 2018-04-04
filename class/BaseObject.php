@@ -50,7 +50,7 @@ class BaseObject extends \XoopsObject
      */
     public function _selectQuery(\CriteriaElement $criteria = null)
     {
-        $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
+        $sql = sprintf('SELECT * FROM `%s`', $this->_db->prefix($this->_dbtable));
         if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
             $sql .= ' ' . $criteria->renderWhere();
             if ('' != $criteria->getSort()) {
@@ -98,7 +98,7 @@ class BaseObject extends \XoopsObject
             return false;
         }
 
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
         if (false != $force) {
             $result = $this->_db->queryF($sql);
         } else {

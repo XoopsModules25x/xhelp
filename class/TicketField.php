@@ -74,7 +74,7 @@ class TicketField extends \XoopsObject
      * @param null   $keys
      * @param string $format
      * @param int    $maxDepth
-     * @return array A hash table of name/value pairs for the field
+     * @return void A hash table of name/value pairs for the field
      * @access public
      */
     public function getValues($keys = null, $format = 's', $maxDepth = 1)

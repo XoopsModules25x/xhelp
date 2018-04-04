@@ -82,7 +82,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($criteria = null)
     {
-        $sql = sprintf('DELETE FROM %s WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
+        $sql = sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
 
         return $sql;
     }

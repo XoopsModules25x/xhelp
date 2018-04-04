@@ -130,14 +130,14 @@ function b_xhelp_performance_show($options)
 
     if ($xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
         $sql = sprintf(
-            'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM %s t INNER JOIN %s d ON t.department = d.id  INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 GROUP BY d.department, d.id ORDER BY d.department',
+            'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM `%s` t INNER JOIN %s d ON t.department = d.id  INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 GROUP BY d.department, d.id ORDER BY d.department',
             $xoopsDB->prefix('xhelp_tickets'),
                        $xoopsDB->prefix('xhelp_departments'),
             $xoopsDB->prefix('xhelp_status')
         );
     } else {
         $sql = sprintf(
-            'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM %s t INNER JOIN %s j ON t.department = j.department INNER JOIN %s d ON t.department = d.id INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 AND j.uid = %u GROUP BY d.department, d.id',
+            'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM `%s` t INNER JOIN %s j ON t.department = j.department INNER JOIN %s d ON t.department = d.id INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 AND j.uid = %u GROUP BY d.department, d.id',
                        $xoopsDB->prefix('xhelp_tickets'),
             $xoopsDB->prefix('xhelp_jstaffdept'),
             $xoopsDB->prefix('xhelp_departments'),
@@ -339,7 +339,7 @@ function b_xhelp_actions_show()
         $users   = [];
 
         //@Todo - why is this query here instead of using a function or the XoopsMemberHandler?
-        $sql         = sprintf('SELECT uid, uname, name FROM %s WHERE uid IN (%s)', $xoopsDB->prefix('users'), implode(array_keys($all_users), ','));
+        $sql         = sprintf('SELECT uid, uname, name FROM `%s` WHERE uid IN (%s)', $xoopsDB->prefix('users'), implode(array_keys($all_users), ','));
         $ret         = $xoopsDB->query($sql);
         $displayName = $helper->getConfig('xhelp_displayName');
         while (false !== ($member = $xoopsDB->fetchArray($ret))) {

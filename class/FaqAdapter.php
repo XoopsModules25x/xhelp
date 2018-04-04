@@ -52,7 +52,7 @@ class FaqAdapter
 
     /**
      * Stub function (does nothing)
-     * @return array of Xhelp\FaqCategory objects
+     * @return void of Xhelp\FaqCategory objects
      */
     public function &getCategories()
     {

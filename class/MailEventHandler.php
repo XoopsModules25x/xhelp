@@ -73,9 +73,9 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
     public function _selectQuery(\CriteriaElement $criteria = null, $join = null)
     {
         if (!$join) {
-            $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
+            $sql = sprintf('SELECT * FROM `%s`', $this->_db->prefix($this->_dbtable));
         } else {
-            $sql = sprintf('SELECT e.* FROM %s e INNER JOIN %s d ON d.id = e.mbox_id', $this->_db->prefix('xhelp_mailevent'), $this->_db->prefix('xhelp_department_mailbox'));
+            $sql = sprintf('SELECT e.* FROM `%s` e INNER JOIN %s d ON d.id = e.mbox_id', $this->_db->prefix('xhelp_mailevent'), $this->_db->prefix('xhelp_department_mailbox'));
         }
 
         if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
@@ -186,7 +186,7 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }

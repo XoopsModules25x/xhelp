@@ -169,7 +169,7 @@ class Net_Socket extends PEAR
     {
         if (is_resource($this->fp)) {
             $this->blocking = $mode;
-            socket_set_blocking($this->fp, $this->blocking);
+            stream_set_blocking($this->fp, $this->blocking);
 
             return true;
         }
@@ -191,7 +191,7 @@ class Net_Socket extends PEAR
     public function setTimeout($seconds, $microseconds)
     {
         if (is_resource($this->fp)) {
-            socket_set_timeout($this->fp, $seconds, $microseconds);
+            stream_set_timeout($this->fp, $seconds, $microseconds);
 
             return true;
         }
@@ -218,7 +218,7 @@ class Net_Socket extends PEAR
     public function getStatus()
     {
         if (is_resource($this->fp)) {
-            return socket_get_status($this->fp);
+            return stream_get_meta_data($this->fp);
         }
 
         return $this->raiseError('not connected');

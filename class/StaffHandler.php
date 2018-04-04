@@ -274,7 +274,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
         $staff->setVar('uid', $uid);
         $staff->setVar('email', $email);
         $numNotify = $notify->getNumDeptNotifications();
-        $staff->setVar('notify', pow(2, $numNotify) - 1);
+        $staff->setVar('notify', (2 ** $numNotify) - 1);
         $staff->setVar('permTimestamp', time());
 
         return $this->insert($staff);
@@ -361,7 +361,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }

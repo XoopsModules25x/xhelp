@@ -176,7 +176,7 @@ function removeTopics()
 {
     global $xoopsDB;
     // Select the config from the xoops_config table
-    $sql = sprintf('SELECT * FROM %s WHERE conf_name = %s', $xoopsDB->prefix('config'), "'xhelp_announcements'");
+    $sql = sprintf('SELECT * FROM `%s` WHERE conf_name = %s', $xoopsDB->prefix('config'), "'xhelp_announcements'");
     if (!$ret = $xoopsDB->query($sql)) {
         return false;
     }
@@ -185,7 +185,7 @@ function removeTopics()
     $xhelp_config = $arr['conf_id'];
 
     // Remove the config options
-    $sql = sprintf('DELETE FROM %s WHERE conf_id = %s', $xoopsDB->prefix('configoption'), $xhelp_config);
+    $sql = sprintf('DELETE FROM `%s` WHERE conf_id = %s', $xoopsDB->prefix('configoption'), $xhelp_config);
     if (!$ret = $xoopsDB->queryF($sql)) {
         return false;
     }

@@ -160,7 +160,7 @@ class TimeSpentByStaffReport extends Xhelp\Report
     {
         global $xoopsDB;
 
-        $sSQL = sprintf('SELECT u.name, SUM(r.timeSpent) AS TotalTime FROM %s u, %s r WHERE (u.uid = r.uid) %s GROUP BY u.name HAVING (SUM(r.timeSpent) > 0)', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_responses'), $this->extraWhere);
+        $sSQL = sprintf('SELECT u.name, SUM(r.timeSpent) AS TotalTime FROM `%s` u, %s r WHERE (u.uid = r.uid) %s GROUP BY u.name HAVING (SUM(r.timeSpent) > 0)', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_responses'), $this->extraWhere);
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

@@ -53,7 +53,7 @@ class TicketFieldDepartmentHandler
     public function departmentsByField($field, $id_as_key = false)
     {
         $field = (int)$field;
-        $sql   = sprintf('SELECT d.* FROM %s d INNER JOIN %s j ON d.id = j.deptid WHERE j.fieldid = %u', $this->_db->prefix('xhelp_departments'), $this->_db->prefix('xhelp_ticket_field_departments'), $field);
+        $sql   = sprintf('SELECT d.* FROM `%s` d INNER JOIN %s j ON d.id = j.deptid WHERE j.fieldid = %u', $this->_db->prefix('xhelp_departments'), $this->_db->prefix('xhelp_ticket_field_departments'), $field);
         $ret   = $this->_db->query($sql);
         $arr   = [];
 
@@ -84,7 +84,7 @@ class TicketFieldDepartmentHandler
     public function fieldsByDepartment($dept, $id_as_key = false)
     {
         $dept = (int)$dept;
-        $sql  = sprintf('SELECT f.* FROM %s f INNER JOIN %s j ON f.id = j.fieldid WHERE j.deptid = %u ORDER BY f.weight', $this->_db->prefix('xhelp_ticket_fields'), $this->_db->prefix('xhelp_ticket_field_departments'), $dept);
+        $sql  = sprintf('SELECT f.* FROM `%s` f INNER JOIN %s j ON f.id = j.fieldid WHERE j.deptid = %u ORDER BY f.weight', $this->_db->prefix('xhelp_ticket_fields'), $this->_db->prefix('xhelp_ticket_field_departments'), $dept);
         $ret  = $this->_db->query($sql);
         $arr  = [];
 
@@ -332,7 +332,7 @@ class TicketFieldDepartmentHandler
      */
     public function _removeJoinerRecord($fieldid, $deptid)
     {
-        $sql = sprintf('DELETE FROM %s WHERE fieldid = %u AND deptid = %u', $this->_db->prefix('xhelp_ticket_field_departments'), $fieldid, $deptid);
+        $sql = sprintf('DELETE FROM `%s` WHERE fieldid = %u AND deptid = %u', $this->_db->prefix('xhelp_ticket_field_departments'), $fieldid, $deptid);
         $ret = $this->_db->query($sql);
 
         return $ret;

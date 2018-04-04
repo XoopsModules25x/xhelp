@@ -133,10 +133,10 @@ class MimetypeHandler extends Xhelp\BaseObjectHandler
         $ret = [];
         if ($xoopsUser && !$xhelp_isStaff) {
             // For user uploading
-            $crit = new \CriteriaCompo(new \Criteria('mime_user', 1));   //$sql = sprintf("SELECT * FROM %s WHERE mime_user=1", $xoopsDB->prefix('xhelp_mimetypes'));
+            $crit = new \CriteriaCompo(new \Criteria('mime_user', 1));   //$sql = sprintf("SELECT * FROM `%s` WHERE mime_user=1", $xoopsDB->prefix('xhelp_mimetypes'));
         } elseif ($xoopsUser && $xhelp_isStaff) {
             // For staff uploading
-            $crit = new \CriteriaCompo(new \Criteria('mime_admin', 1));  //$sql = sprintf("SELECT * FROM %s WHERE mime_admin=1", $xoopsDB->prefix('xhelp_mimetypes'));
+            $crit = new \CriteriaCompo(new \Criteria('mime_admin', 1));  //$sql = sprintf("SELECT * FROM `%s` WHERE mime_admin=1", $xoopsDB->prefix('xhelp_mimetypes'));
         } else {
             return $ret;
         }
@@ -200,9 +200,9 @@ class MimetypeHandler extends Xhelp\BaseObjectHandler
     public function _selectQuery(\CriteriaElement $criteria = null, $join = false)
     {
         if (!$join) {
-            $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
+            $sql = sprintf('SELECT * FROM `%s`', $this->_db->prefix($this->_dbtable));
         } else {
-            $sql = sprintf('SELECT t.* FROM %s t INNER JOIN %s j ON t.department = j.department', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jStaffDept'));
+            $sql = sprintf('SELECT t.* FROM `%s` t INNER JOIN %s j ON t.department = j.department', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jStaffDept'));
         }
         if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
             $sql .= ' ' . $criteria->renderWhere();
@@ -254,7 +254,7 @@ class MimetypeHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM %s WHERE mime_id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('mime_id'));
+        $sql = sprintf('DELETE FROM `%s` WHERE mime_id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('mime_id'));
 
         return $sql;
     }

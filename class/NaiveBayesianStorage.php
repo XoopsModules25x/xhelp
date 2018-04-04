@@ -165,7 +165,7 @@ class NaiveBayesianStorage
     {
         $oldword = $this->getWord($word, $category_id);
         if (0 != $oldword['count'] && 0 >= ($oldword['count'] - $count)) {
-            $sql = sprintf('DELETE FROM %s WHERE word = %s AND category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)));
+            $sql = sprintf('DELETE FROM `%s` WHERE word = %s AND category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)));
         } else {
             $sql = sprintf('UPDATE %s SET COUNT-=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
         }

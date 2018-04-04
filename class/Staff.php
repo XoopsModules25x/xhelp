@@ -99,7 +99,7 @@ class Staff extends \XoopsObject
 
         foreach ($depts as $deptid) {
             if (isset($rights[$deptid])) {
-                $hasRights = ($rights[$deptid]['tasks'] & pow(2, $task)) > 0;
+                $hasRights = ($rights[$deptid]['tasks'] & (2 ** $task)) > 0;
                 if (false === $hasRights) {
                     return false;
                 }
