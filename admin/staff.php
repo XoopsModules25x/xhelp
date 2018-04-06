@@ -201,17 +201,13 @@ function customDept()
 
     $lastPage = $_xhelpSession->get('xhelp_return_op');
 
-    if (isset($_REQUEST['uid'])) {
-        $uid = (int)$_REQUEST['uid'];
-    } else {
-        $uid = 0;
-    }
+    $uid = \Xmf\Request::getInt('uid', 0, 'REQUEST');
     if (0 == $uid) {
         redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage", 3, _AM_XHELP_MSG_NEED_UID);
     }
-    if (isset($_REQUEST['deptid'])) {
-        $deptid = (int)$_REQUEST['deptid'];
-    }
+    if (\Xmf\Request::hasVar('deptid', 'REQUEST')) {
+ $deptid = \Xmf\Request::getInt('deptid', 0, 'REQUEST');
+}
 
     if (!isset($_POST['submit'])) {
         if (isset($_POST['addRole'])) {
@@ -406,15 +402,11 @@ function editRole()
 
     $lastPage = $_xhelpSession->get('xhelp_return_op');
 
-    if (isset($_REQUEST['id'])) {
-        $xhelp_id = (int)$_REQUEST['id'];
-    }
+    if (\Xmf\Request::hasVar('id', 'REQUEST')) {
+ $xhelp_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
+}
 
-    if (isset($_REQUEST['uid'])) {
-        $uid = (int)$_REQUEST['uid'];
-    } else {
-        $uid = 0;
-    }
+    $uid = \Xmf\Request::getInt('uid', 0, 'REQUEST');
 
     $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
     $role  = $hRole->get($xhelp_id);
@@ -738,7 +730,7 @@ function editStaff()
 
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $uid       = (int)$_POST['uid'];
+        $uid       = \Xmf\Request::getInt('uid', 0, 'POST');
         $depts     = $_POST['departments'];
         $roles     = $_POST['roles'];
         $custroles = $_POST['custrole'];
@@ -811,13 +803,13 @@ function manageStaff()
         exit();
     }
 
-    if (isset($_REQUEST['limit'])) {
-        $limit = (int)$_REQUEST['limit'];
-    }
+    if (\Xmf\Request::hasVar('limit', 'REQUEST')) {
+ $limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
+}
 
-    if (isset($_REQUEST['start'])) {
-        $start = (int)$_REQUEST['start'];
-    }
+    if (\Xmf\Request::hasVar('start', 'REQUEST')) {
+ $start = \Xmf\Request::getInt('start', 0, 'REQUEST');
+}
     if (isset($_REQUEST['staff_search'])) {
         $staff_search = $_REQUEST['staff_search'];
     }
@@ -830,13 +822,13 @@ function manageStaff()
         $limit = 20;
     }
 
-    if (isset($_REQUEST['dlimit'])) {
-        $dlimit = (int)$_REQUEST['dlimit'];
-    }
+    if (\Xmf\Request::hasVar('dlimit', 'REQUEST')) {
+ $dlimit = \Xmf\Request::getInt('dlimit', 0, 'REQUEST');
+}
 
-    if (isset($_REQUEST['dstart'])) {
-        $dstart = (int)$_REQUEST['dstart'];
-    }
+    if (\Xmf\Request::hasVar('dstart', 'REQUEST')) {
+ $dstart = \Xmf\Request::getInt('dstart', 0, 'REQUEST');
+}
 
     if (!$dlimit) {
         $dlimit = 10;
@@ -863,7 +855,7 @@ function manageStaff()
         $adminObject->displayNavigation('staff.php?op=manageStaff');
 
         if (isset($_GET['uid'])) {
-            $userid = (int)$_GET['uid'];
+            $userid = \Xmf\Request::getInt('uid', 0, 'GET');
             $uname  = $xoopsUser::getUnameFromId($userid);
         } else {
             $userid = 0;
@@ -871,7 +863,7 @@ function manageStaff()
         }
 
         if ($dept_count > 0) {
-            $userid = (isset($_GET['uid']) ? (int)$_GET['uid'] : 0);
+            $userid = \Xmf\Request::getInt('uid', 0, 'GET');
 
             //Get List of staff members
             $crit = new \Criteria('', '');

@@ -304,8 +304,9 @@ function b_xhelp_actions_show()
         return false;
     }
 
-    if (isset($_GET['id'])) {
-        $block['ticketid'] = (int)$_GET['id'];
+
+    if (\Xmf\Request::hasVar('id', 'GET')) {
+        $block['ticketid'] = \Xmf\Request::getInt('id', 0, 'GET');
     } else {
         return false;
     }

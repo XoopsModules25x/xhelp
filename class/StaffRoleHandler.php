@@ -72,7 +72,7 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
         $crit->add(new \Criteria('roleid', $roleid));
         $crit->add(new \Criteria('deptid', $deptid));
 
-        if (!$role =& $this->getObjects($crit)) {
+        if (!$role = $this->getObjects($crit)) {
             return false;
         }
 
@@ -89,7 +89,7 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
         $uid  = (int)$uid;
         $crit = new \Criteria('uid', $uid);
 
-        $arr =& $this->getObjects($crit, $id_as_key);
+        $arr = $this->getObjects($crit, $id_as_key);
 
         if (0 == count($arr)) {
             $arr = false;
@@ -108,7 +108,7 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
         $crit = new \CriteriaCompo('uid', $uid);
         $crit->add(new \Criteria('roleid', $roleid));
 
-        if (!$role =& $this->getObjects($crit)) {
+        if (!$role = $this->getObjects($crit)) {
             return false;
         }
 

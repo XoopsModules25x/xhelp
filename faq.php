@@ -42,10 +42,10 @@ function addFaq_display()
     /** @var Xhelp\Helper $helper */
     $helper = Xhelp\Helper::getInstance();
 
-    if (!isset($_POST['ticketid']) && 0 == (int)$_POST['ticketid']) {
+    if (!isset($_POST['ticketid']) && 0 == \Xmf\Request::getInt('ticketid', 0, 'POST')) {
         redirect_header(XHELP_BASE_URL, 3, _XHELP_MSG_NO_ID);
     }
-    $ticketid = (int)$_POST['ticketid'];
+    $ticketid = \Xmf\Request::getInt('ticketid', 0, 'POST');
 
     $hTicket    = Xhelp\Helper::getInstance()->getHandler('Ticket');
     $hResponses = Xhelp\Helper::getInstance()->getHandler('Responses');

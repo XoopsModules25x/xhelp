@@ -9,13 +9,13 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 $start     = $limit = 0;
-if (isset($_REQUEST['limit'])) {
-    $limit = (int)$_REQUEST['limit'];
+if (\Xmf\Request::hasVar('limit', 'REQUEST')) { 
+ $limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
 } else {
     $limit = 15;
 }
-if (isset($_REQUEST['start'])) {
-    $start = (int)$_REQUEST['start'];
+if (\Xmf\Request::hasVar('start', 'REQUEST')) { 
+ $start = \Xmf\Request::getInt('start', 0, 'REQUEST');
 }
 
 $aSortBy   = [
@@ -170,8 +170,8 @@ function add()
         $mime_ext   = $_POST['mime_ext'];
         $mime_name  = $_POST['mime_name'];
         $mime_types = $_POST['mime_types'];
-        $mime_admin = (int)$_POST['mime_admin'];
-        $mime_user  = (int)$_POST['mime_user'];
+        $mime_admin = \Xmf\Request::getInt('mime_admin', 0, 'POST');
+        $mime_user  = \Xmf\Request::getInt('mime_user', 0, 'POST');
 
         //Validate Mimetype entry
         if ('' == trim($mime_ext)) {
@@ -225,7 +225,7 @@ function delete()
     if (!isset($_REQUEST['id'])) {
         redirect_header(XHELP_ADMIN_URL . '/mimetypes.php', 3, _AM_XHELP_MESSAGE_NO_ID);
     } else {
-        $mime_id = (int)$_REQUEST['id'];
+        $mime_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
     }
     $mimetype =& $hMime->get($mime_id);     // Retrieve mimetype object
     if (!$hMime->delete($mimetype, true)) {
@@ -242,7 +242,7 @@ function edit()
     if (!isset($_REQUEST['id'])) {
         redirect_header(XHELP_ADMIN_URL . '/mimetypes.php', 3, _AM_XHELP_MESSAGE_NO_ID);
     } else {
-        $mime_id = (int)$_REQUEST['id'];
+        $mime_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
     }
     $mimetype =& $hMime->get($mime_id);     // Retrieve mimetype object
 
@@ -697,28 +697,28 @@ function updateMimeValue()
     global $hMime;
     $start = $limit = 0;
 
-    if (isset($_GET['limit'])) {
-        $limit = (int)$_GET['limit'];
+    if (\Xmf\Request::hasVar('limit', 'GET')) {
+        $limit = \Xmf\Request::getInt('limit', 0, 'GET');
     }
-    if (isset($_GET['start'])) {
-        $start = (int)$_GET['start'];
+    if (\Xmf\Request::hasVar('start', 'GET')) {
+        $start = \Xmf\Request::getInt('start', 0, 'GET');
     }
 
     if (!isset($_REQUEST['id'])) {
         redirect_header(XHELP_ADMIN_URL . '/mimetypes.php', 3, _AM_XHELP_MESSAGE_NO_ID);
     } else {
-        $mime_id = (int)$_REQUEST['id'];
+        $mime_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
     }
 
     $mimetype =& $hMime->get($mime_id);
 
     if (isset($_REQUEST['mime_admin'])) {
-        $mime_admin = (int)$_REQUEST['mime_admin'];
+        $mime_admin = \Xmf\Request::getInt('mime_admin', 0, 'REQUEST');
         $mime_admin = _changeMimeValue($mime_admin);
         $mimetype->setVar('mime_admin', $mime_admin);
     }
     if (isset($_REQUEST['mime_user'])) {
-        $mime_user = (int)$_REQUEST['mime_user'];
+        $mime_user = \Xmf\Request::getInt('mime_user', 0, 'REQUEST');
         $mime_user = _changeMimeValue($mime_user);
         $mimetype->setVar('mime_user', $mime_user);
     }

@@ -100,8 +100,8 @@ function edit()
 {
     global $xoopsModule, $_xhelpSession, $aNotifications, $has_notifications, $aStaffSettings, $aUserSettings, $hNotification;
 
-    if (isset($_REQUEST['id'])) {
-        $id = (int)$_REQUEST['id'];
+    if (\Xmf\Request::hasVar('id', 'REQUEST')) {
+        $id = \Xmf\Request::getInt('id', 0, 'REQUEST');
     } else {
         // No id specified, return to manage page
         redirect_header(XHELP_ADMIN_URL . '/notifications.php?op=manage', 3, _AM_XHELP_MESSAGE_NO_ID);
@@ -121,8 +121,8 @@ function edit()
     $_xhelpSession->set('xhelp_return_page', substr(strstr($_SERVER['REQUEST_URI'], 'admin/'), 6));
 
     if (isset($_POST['save_notification'])) {
-        $settings->setVar('staff_setting', (int)$_POST['staff_setting']);
-        $settings->setVar('user_setting', (int)$_POST['user_setting']);
+        $settings->setVar('staff_setting', \Xmf\Request::getInt('staff_setting', 0, 'POST'));
+        $settings->setVar('user_setting', \Xmf\Request::getInt('user_setting', 0, 'POST'));
         if (XHELP_NOTIF_STAFF_DEPT == $_POST['staff_setting']) {
             $settings->setVar('staff_options', $_POST['roles']);
         } else {

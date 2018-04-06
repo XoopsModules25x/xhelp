@@ -14,16 +14,10 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
-$start = $limit = 0;
-if (isset($_REQUEST['limit'])) {
-    $limit = (int)$_REQUEST['limit'];
-}
-if (isset($_REQUEST['start'])) {
-    $start = (int)$_REQUEST['start'];
-}
-if (!$limit) {
-    $limit = 15;
-}
+
+$limit = \Xmf\Request::getInt('limit', 15, 'REQUEST');
+$start = \Xmf\Request::getInt('start', 0, 'REQUEST');
+
 if (isset($_REQUEST['order'])) {
     $order = $_REQUEST['order'];
 } else {
@@ -101,8 +95,8 @@ switch ($op) {
 
 function activateMailbox()
 {
-    $id       = (int)$_GET['id'];
-    $setstate = (int)$_GET['setstate'];
+    $id       = \Xmf\Request::getInt('id', 0, 'GET');
+    $setstate = \Xmf\Request::getInt('setstate', 0, 'GET');
 
     $hMailbox = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
     if ($mailbox = $hMailbox->get($id)) {
@@ -120,9 +114,9 @@ function activateMailbox()
 
 function addDepartmentServer()
 {
-    if (isset($_GET['id'])) {
-        $deptID = (int)$_GET['id'];
-    } else {
+    if (\Xmf\Request::hasVar('id', 'GET')) { 
+ $deptID = \Xmf\Request::getInt('id', 0, 'GET');
+} else {
         redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_NO_ID);
     }
 
@@ -145,9 +139,9 @@ function addDepartmentServer()
 
 function DeleteDepartmentServer()
 {
-    if (isset($_REQUEST['id'])) {
-        $emailID = (int)$_REQUEST['id'];
-    } else {
+    if (\Xmf\Request::hasVar('id', 'REQUEST')) { 
+ $emailID = \Xmf\Request::getInt('id', 0, 'REQUEST');
+} else {
         redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_SERVER_NO_ID);
     }
 
@@ -174,14 +168,14 @@ function DeleteDepartmentServer()
 
 function deleteStaffDept()
 {
-    if (isset($_GET['deptid'])) {
-        $deptID = (int)$_GET['deptid'];
-    } else {
+    if (\Xmf\Request::hasVar('deptid', 'GET')) { 
+ $deptID = \Xmf\Request::getInt('deptid', 0, 'GET');
+} else {
         redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_NO_DEPTID);
     }
-    if (isset($_GET['uid'])) {
-        $staffID = (int)$_GET['uid'];
-    } elseif (isset($_POST['staff'])) {
+    if (\Xmf\Request::hasVar('uid', 'GET')) { 
+ $staffID = \Xmf\Request::getInt('uid', 0, 'GET');
+} elseif (isset($_POST['staff'])) {
         $staffID = $_POST['staff'];
     } else {
         redirect_header(XHELP_ADMIN_URL . "/department.php?op=editDepartment&deptid=$deptID", 3, _AM_XHELP_MSG_NO_UID);
@@ -585,9 +579,9 @@ function editDepartment()
 
 function EditDepartmentServer()
 {
-    if (isset($_GET['id'])) {
-        $id = (int)$_GET['id'];
-    } else {
+    if (\Xmf\Request::hasVar('id', 'GET')) { 
+ $id = \Xmf\Request::getInt('id', 0, 'GET');
+} else {
         redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3);       // TODO: Make message for no mbox_id
     }
 
@@ -1018,7 +1012,7 @@ function _clearEditSessionVars($id)
 
 function updateDefault()
 {
-    $id = (int)$_REQUEST['id'];
+    $id = \Xmf\Request::getInt('id', 0, 'REQUEST');
     Xhelp\Utility::setMeta('default_department', $id);
     header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'manageDepartments'], false));
 }

@@ -76,7 +76,7 @@ if ($xoopsUser) {
     switch ($op) {
         case 'edit':
             if (isset($_REQUEST['id']) && 0 != $_REQUEST['id']) {
-                $searchid = (int)$_REQUEST['id'];
+                $searchid = \Xmf\Request::getInt('id', 0, 'REQUEST');
                 if (!array_key_exists($searchid, $aSavedSearches)) {
                     if (false !== $returnPage) {
                         redirect_header(XHELP_BASE_URL . '/' . $returnPage . '.php', 3, _XHELP_MSG_NO_EDIT_SEARCH);
@@ -340,7 +340,7 @@ if ($xoopsUser) {
                             $hasCustFields = true;
                         }
                     } else {        // If deleting saved search
-                        $mySavedSearch = $aSavedSearches[(int)$_REQUEST['savedSearch']];   // Retrieve saved search
+                        $mySavedSearch = $aSavedSearches[\Xmf\Request::getInt('savedSearch', 0, 'REQUEST')];   // Retrieve saved search
                         if (XHELP_GLOBAL_UID == $mySavedSearch['uid']) {
                             redirect_header(XHELP_BASE_URL . '/search.php', 3, _XHELP_MSG_NO_DEL_SEARCH);
                         }
@@ -471,7 +471,7 @@ if ($xoopsUser) {
 
                     if (isset($_POST['save']) && 1 == $_POST['save']) {
                         if (isset($_POST['searchid']) && 0 != $_POST['searchid']) {
-                            $exSearch = $hSavedSearch->get((int)$_POST['searchid']);
+                            $exSearch = $hSavedSearch->get(\Xmf\Request::getInt('searchid', 0, 'POST'));
                             $exSearch->setVar('uid', $xoopsUser->getVar('uid'));
                             $exSearch->setVar('name', $_POST['searchName']);
                             $exSearch->setVar('search', serialize($crit));

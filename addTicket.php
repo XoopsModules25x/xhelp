@@ -6,12 +6,12 @@ use XoopsModules\Xhelp\Validation;
 /** @var Xhelp\Helper $helper */
 $helper = Xhelp\Helper::getInstance();
 
-if (isset($_GET['deptid'])) {
-    $dept_id = (int)$_GET['deptid'];
+if (\Xmf\Request::hasVar('deptid', 'GET')) { 
+ $dept_id = \Xmf\Request::getInt('deptid', 0, 'GET');
 }
 
 if (isset($_GET['view_id'])) {
-    $view_id = (int)$_GET['view_id'];
+    $view_id = \Xmf\Request::getInt('view_id', 0, 'GET');
     setcookie('xhelp_logMode', $view_id, time() + 60 * 60 * 24 * 30);
     if (isset($dept_id)) {
         header("Location: addTicket.php&deptid=$dept_id");

@@ -82,7 +82,7 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
         $crit->add(new \Criteria('submittedBy', $submittedBy));
         $crit->add(new \Criteria('responseid', $responseid));
         $review = [];
-        if (!$review =& $this->getObjects($crit)) {
+        if (!$review = $this->getObjects($crit)) {
             return false;
         } else {
             return $review;

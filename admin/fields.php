@@ -58,13 +58,13 @@ function manageFields()
 
     $start = $limit = 0;
 
-    if (isset($_GET['limit'])) {
-        $limit = (int)$_GET['limit'];
-    }
+    if (\Xmf\Request::hasVar('limit', 'GET')) {
+ $limit = \Xmf\Request::getInt('limit', 0, 'GET');
+}
 
-    if (isset($_GET['start'])) {
-        $start = (int)$_GET['start'];
-    }
+    if (\Xmf\Request::hasVar('start', 'GET')) {
+ $start = \Xmf\Request::getInt('start', 0, 'GET');
+}
 
     if (!$limit) {
         $limit = 15;
@@ -295,7 +295,7 @@ function manageFields()
         }
 
         //Length filled
-        if (0 == (int)$_POST['fld_length'] && true === $fld_needslength) {
+        if (0 == \Xmf\Request::getInt('fld_length', 0, 'POST') && true === $fld_needslength) {
             $has_errors             = true;
             $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, 2, 16777215);
         }
@@ -311,7 +311,7 @@ function manageFields()
             }
 
             //length larger than longest value?
-            $length = (int)$_POST['fld_length'];
+            $length = \Xmf\Request::getInt('fld_length', 0, 'POST');
             foreach ($values as $key => $value) {
                 if (strlen($key) > $length) {
                     $has_errors             = true;
@@ -443,7 +443,7 @@ function deleteField()
         redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
     }
 
-    $id = (int)$_REQUEST['id'];
+    $id = \Xmf\Request::getInt('id', 0, 'REQUEST');
 
     if (!isset($_POST['ok'])) {
         xoops_cp_header();
@@ -476,7 +476,7 @@ function editField()
         redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
     }
 
-    $fld_id = (int)$_REQUEST['id'];
+    $fld_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
     $hField = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
     if (!$field = $hField->get($fld_id)) {
         redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
@@ -646,7 +646,7 @@ function editField()
         }
 
         //Length filled
-        if (0 == (int)$_POST['fld_length'] && true === $fld_needslength) {
+        if (0 == \Xmf\Request::getInt('fld_length', 0, 'POST') && true === $fld_needslength) {
             $has_errors             = true;
             $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, _XHELP_FIELD_MINLEN, _XHELP_FIELD_MAXLEN);
         }
@@ -660,7 +660,7 @@ function editField()
             }
 
             //length larger than longest value?
-            $length = (int)$_POST['fld_length'];
+            $length = \Xmf\Request::getInt('fld_length', 0, 'POST');
             foreach ($values as $key => $value) {
                 if (strlen($key) > $length) {
                     $has_errors             = true;
@@ -733,8 +733,8 @@ function &_getRegexArray()
 
 function setFieldRequired()
 {
-    $setRequired = (int)$_GET['setrequired'];
-    $id          = (int)$_GET['id'];
+    $setRequired = \Xmf\Request::getInt('setrequired', 0, 'GET');
+    $id          = \Xmf\Request::getInt('id', 0, 'GET');
 
     $setRequired = (0 <> $setRequired ? 1 : 0);
 

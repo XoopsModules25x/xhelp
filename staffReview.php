@@ -7,17 +7,17 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
 
 if ($xoopsUser) {
     if (isset($_POST['submit'])) {
-        if (isset($_POST['staffid'])) {
-            $staffid = (int)$_POST['staffid'];
+        if (\Xmf\Request::hasVar('staffid', 'POST')) {
+            $staffid = \Xmf\Request::getInt('staffid', 0, 'POST');
         }
-        if (isset($_POST['ticketid'])) {
-            $ticketid = (int)$_POST['ticketid'];
+        if (\Xmf\Request::hasVar('ticketid', 'POST')) {
+            $ticketid = \Xmf\Request::getInt('ticketid', 0, 'POST');
         }
-        if (isset($_POST['responseid'])) {
-            $responseid = (int)$_POST['responseid'];
+        if (\Xmf\Request::hasVar('responseid', 'POST')) {
+            $responseid = \Xmf\Request::getInt('responseid', 0, 'POST');
         }
-        if (isset($_POST['rating'])) {
-            $rating = (int)$_POST['rating'];
+        if (\Xmf\Request::hasVar('rating', 'POST')) {
+            $rating = \Xmf\Request::getInt('rating', 0, 'POST');
         }
         if (isset($_POST['comments'])) {
             $comments = $_POST['comments'];
@@ -48,13 +48,13 @@ if ($xoopsUser) {
         require XOOPS_ROOT_PATH . '/header.php';                     // Include
 
         if (isset($_GET['staff'])) {
-            $xoopsTpl->assign('xhelp_staffid', (int)$_GET['staff']);
+            $xoopsTpl->assign('xhelp_staffid', \Xmf\Request::getInt('staff', 0, 'GET'));
         }
         if (isset($_GET['ticketid'])) {
-            $xoopsTpl->assign('xhelp_ticketid', (int)$_GET['ticketid']);
+            $xoopsTpl->assign('xhelp_ticketid', \Xmf\Request::getInt('ticketid', 0, 'GET'));
         }
         if (isset($_GET['responseid'])) {
-            $xoopsTpl->assign('xhelp_responseid', (int)$_GET['responseid']);
+            $xoopsTpl->assign('xhelp_responseid', \Xmf\Request::getInt('responseid', 0, 'GET'));
         }
 
         $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');

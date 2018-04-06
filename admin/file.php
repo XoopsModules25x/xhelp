@@ -9,16 +9,11 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
-$start = $limit = 0;
-if (isset($_REQUEST['limit'])) {
-    $limit = (int)$_REQUEST['limit'];
-}
-if (isset($_REQUEST['start'])) {
-    $start = (int)$_REQUEST['start'];
-}
-if (!$limit) {
-    $limit = 15;
-}
+
+ $limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
+
+ $start = \Xmf\Request::getInt('start', 15, 'REQUEST');
+
 if (isset($_REQUEST['order'])) {
     $order = $_REQUEST['order'];
 } else {
@@ -70,7 +65,7 @@ function deleteFile()
     if (!isset($_GET['fileid'])) {
         redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles', 3, _XHELP_MESSAGE_DELETE_FILE_ERR);
     }
-    $fileid = (int)$_GET['fileid'];
+    $fileid = \Xmf\Request::getInt('fileid', 0, 'GET');
     if (!isset($_POST['ok'])) {
         xoops_cp_header();
         xoops_confirm(['op' => 'deleteFile', 'ok' => 1], XHELP_ADMIN_URL . '/file.php?fileid=' . $fileid, _AM_XHELP_MSG_DELETE_FILE);

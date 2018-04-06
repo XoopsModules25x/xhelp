@@ -13,8 +13,8 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
 $op = 'user';
 
 // Get the id of the ticket
-if (isset($_REQUEST['id'])) {
-    $xhelp_id = (int)$_REQUEST['id'];
+if (\Xmf\Request::hasVar('id', 'REQUEST')) { 
+ $xhelp_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
 } else {
     redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_INV_TICKET);
 }
@@ -576,7 +576,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
 
-        $ticket2_id = (int)$_POST['ticket2'];
+        $ticket2_id = \Xmf\Request::getInt('ticket2', 0, 'POST');
         if ($newTicket = $ticketInfo->merge($ticket2_id)) {
             $returnTicket = $newTicket;
             $message      = _XHELP_MESSAGE_MERGE;
@@ -595,9 +595,9 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
 
-        if (isset($_POST['uid'])) {
-            $uid = (int)$_POST['uid'];
-        } else {
+        if (\Xmf\Request::hasVar('uid', 'POST')) { 
+ $uid = \Xmf\Request::getInt('uid', 0, 'POST');
+} else {
             $message = _XHELP_MESSAGE_NO_UID;
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
@@ -774,7 +774,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                     $hStaff  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
                     $oldStatus = $hStatus->get($ticketInfo->getVar('status'));
-                    $newStatus = $hStatus->get((int)$_POST['status']);
+                    $newStatus = $hStatus->get(\Xmf\Request::getInt('status', 0, 'POST'));
                     $ticketInfo->setVar('status', $_POST['status']);
 
                     if (XHELP_STATE_RESOLVED == $newStatus->getVar('state')
@@ -1330,7 +1330,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         }
 
         $hFile  = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
-        $fileid = (int)$_GET['fileid'];
+        $fileid = \Xmf\Request::getInt('fileid', 0, 'GET');
         $file   = $hFile->get($fileid);
 
         if (!$hFile->delete($file, true)) {

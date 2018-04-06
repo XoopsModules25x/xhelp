@@ -207,7 +207,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         // Only want tickets that are unresolved.
         $crit = new \CriteriaCompo(new \Criteria('t.id', '(' . implode(array_keys($aTicketEmails), ',') . ')', 'IN'));
         $crit->add(new \Criteria('t.status', '(' . implode(array_keys($aStatuses), ',') . ')', 'IN'));
-        $tickets =& $this->getObjects($crit, $id_as_key);
+        $tickets = $this->getObjects($crit, $id_as_key);
 
         // Return all tickets
         return $tickets;

@@ -15,8 +15,8 @@ if (!$xoopsUser) {
     redirect_header(XOOPS_URL . '/user.php?xoops_redirect=' . htmlencode($xoopsRequestUri), 3);
 }
 
-if (isset($_GET['id'])) {
-    $xhelp_id = (int)$_GET['id'];
+if (\Xmf\Request::hasVar('id', 'GET')) {
+ $xhelp_id = \Xmf\Request::getInt('id', 0, 'GET');
 }
 
 $viewFile = false;

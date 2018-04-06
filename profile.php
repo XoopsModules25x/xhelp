@@ -19,8 +19,8 @@ if ($xoopsUser) {
         $op = $_REQUEST['op'];
     }
 
-    if (isset($_GET['responseTplID'])) {
-        $responseTplID = (int)$_GET['responseTplID'];
+    if (\Xmf\Request::hasVar('responseTplID', 'GET')) {
+        $responseTplID = \Xmf\Request::getInt('responseTplID', 0, 'GET');
     }
 
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_staff_profile.tpl';   // Set template
@@ -105,7 +105,7 @@ if ($xoopsUser) {
 
         case 'addTicketList':
             if (isset($_POST['savedSearch']) && (0 != $_POST['savedSearch'])) {
-                $searchid   = (int)$_POST['savedSearch'];
+                $searchid   = \Xmf\Request::getInt('savedSearch', 0, 'POST');
                 $ticketList = $hTicketList->create();
                 $ticketList->setVar('uid', $xoopsUser->getVar('uid'));
                 $ticketList->setVar('searchid', $searchid);
@@ -121,7 +121,7 @@ if ($xoopsUser) {
 
         case 'editTicketList':
             if (isset($_REQUEST['id']) && 0 != $_REQUEST['id']) {
-                $listID = (int)$_REQUEST['id'];
+                $listID = \Xmf\Request::getInt('id', 0, 'REQUEST');
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_NO_ID);
             }
@@ -129,7 +129,7 @@ if ($xoopsUser) {
 
         case 'deleteTicketList':
             if (isset($_REQUEST['id']) && 0 != $_REQUEST['id']) {
-                $listID = (int)$_REQUEST['id'];
+                $listID = \Xmf\Request::getInt('id', 0, 'REQUEST');
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_NO_ID);
             }
@@ -143,7 +143,7 @@ if ($xoopsUser) {
 
         case 'changeListWeight':
             if (isset($_REQUEST['id']) && 0 != $_REQUEST['id']) {
-                $listID = (int)$_REQUEST['id'];
+                $listID = \Xmf\Request::getInt('id', 0, 'REQUEST');
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_NO_ID);
             }

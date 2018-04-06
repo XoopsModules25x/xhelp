@@ -13,20 +13,18 @@ if (!$xoopsUser) {
     redirect_header(XOOPS_URL . '/user.php', 3);
 }
 
-$refresh = 0;
-if (isset($_GET['refresh'])) {
-    $refresh = (int)$_GET['refresh'];
-}
+$refresh = \Xmf\Request::getInt('refresh', 0, 'GET');
+
 
 $uid = $xoopsUser->getVar('uid');
 
 // Get the id of the ticket
-if (isset($_GET['id'])) {
-    $ticketid = (int)$_GET['id'];
+if (\Xmf\Request::hasVar('id', 'GET')) { 
+ $ticketid = \Xmf\Request::getInt('id', 0, 'GET');
 }
 
-if (isset($_GET['responseid'])) {
-    $responseid = (int)$_GET['responseid'];
+if (\Xmf\Request::hasVar('responseid', 'GET')) { 
+ $responseid = \Xmf\Request::getInt('responseid', 0, 'GET');
 }
 
 $hTicket      = Xhelp\Helper::getInstance()->getHandler('Ticket');
@@ -112,20 +110,20 @@ switch ($op) {
                 if ($_POST['status'] <> $ticketInfo->getVar('status')) {
                     $hStatus   = Xhelp\Helper::getInstance()->getHandler('Status');
                     $oldStatus = $hStatus->get($ticketInfo->getVar('status'));
-                    $newStatus = $hStatus->get((int)$_POST['status']);
+                    $newStatus = $hStatus->get(\Xmf\Request::getInt('status', 0, 'POST'));
 
                     if (1 == $oldStatus->getVar('state') && 2 == $newStatus->getVar('state')) {
                         $ticketClosed = true;
                     } elseif (2 == $oldStatus->getVar('state') && 1 == $newStatus->getVar('state')) {
                         $ticketReopen = true;
                     }
-                    $ticketInfo->setVar('status', (int)$_POST['status']);
+                    $ticketInfo->setVar('status', \Xmf\Request::getInt('status', 0, 'POST'));
                 }
 
                 //Check if user claimed ownership
                 if (isset($_POST['claimOwner'])
                     && $xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_TAKE_OWNERSHIP, $ticketInfo->getVar('department'))) {
-                    $ownerid = (int)$_POST['claimOwner'];
+                    $ownerid = \Xmf\Request::getInt('claimOwner', 0, 'POST');
                     if ($ownerid > 0) {
                         $oldOwner = $ticketInfo->getVar('ownership');
                         $ticketInfo->setVar('ownership', $ownerid);
@@ -158,7 +156,7 @@ switch ($op) {
                 //4. Update Ticket object
                 if (isset($_POST['timespent'])) {
                     $oldspent = $ticketInfo->getVar('totalTimeSpent');
-                    $ticketInfo->setVar('totalTimeSpent', $oldspent + (int)$_POST['timespent']);
+                    $ticketInfo->setVar('totalTimeSpent', $oldspent + \Xmf\Request::getInt('timespent', 0, 'POST'));
                 }
                 if ($ticketClosed) {
                     $ticketInfo->setVar('closedBy', $xoopsUser->getVar('uid'));
@@ -477,7 +475,7 @@ switch ($op) {
 
         // Check the timespent
         if (isset($_POST['timespent'])) {
-            $timespent = (int)$_POST['timespent'];
+            $timespent = \Xmf\Request::getInt('timespent', 0, 'POST');
             $totaltime = $oldticket->getVar('totalTimeSpent') - $oldresponse->getVar('timeSpent') + $timespent;
             $ticketInfo->setVar('totalTimeSpent', $totaltime);
             $response->setVar('timeSpent', $timespent);
@@ -527,7 +525,7 @@ switch ($op) {
 
             $response->setVar('message', $message);
             if (isset($_POST['timespent'])) {
-                $response->setVar('timeSpent', (int)$_POST['timespent']);
+                $response->setVar('timeSpent', \Xmf\Request::getInt('timespent', 0, 'POST'));
             }
             $response->setVar('updateTime', $ticketInfo->getVar('lastUpdated'));
 
@@ -563,7 +561,7 @@ function _setResponseToSession(&$ticket, &$errors)
     $_xhelpSession->set('xhelp_response_message', (isset($_POST['response']) ? $_POST['response'] : ''));
     $_xhelpSession->set('xhelp_response_private', (isset($_POST['private']) ? $_POST['private'] : 0));
     $_xhelpSession->set('xhelp_response_timespent', (isset($_POST['timespent']) ? $_POST['timespent'] : 0));
-    $_xhelpSession->set('xhelp_response_ownership', (isset($_POST['claimOwner']) && (int)$_POST['claimOwner'] > 0 ? $_POST['claimOwner'] : 0));
+    $_xhelpSession->set('xhelp_response_ownership', (isset($_POST['claimOwner']) && \Xmf\Request::getInt('claimOwner', 0, 'POST') > 0 ? $_POST['claimOwner'] : 0));
     $_xhelpSession->set('xhelp_response_status', $_POST['status']);
     $_xhelpSession->set('xhelp_response_private', $_POST['private']);
     $_xhelpSession->set('xhelp_validateError', $errors);

@@ -10,13 +10,10 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
-$start = $limit = 0;
-if (isset($_REQUEST['limit'])) {
-    $limit = (int)$_REQUEST['limit'];
-}
-if (isset($_REQUEST['start'])) {
-    $start = (int)$_REQUEST['start'];
-}
+
+$limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
+$start = \Xmf\Request::getInt('start', 0, 'REQUEST');
+
 if (!$limit) {
     $limit = 15;
 }
@@ -65,9 +62,9 @@ switch ($op) {
 
 function deleteStatus()
 {
-    if (isset($_GET['statusid'])) {
-        $statusid = (int)$_GET['statusid'];
-    } else {
+    if (\Xmf\Request::hasVar('statusid', 'GET')) {
+ $statusid = \Xmf\Request::getInt('statusid', 0, 'GET');
+} else {
         header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
@@ -93,9 +90,9 @@ function deleteStatus()
 
 function editStatus()
 {
-    if (isset($_REQUEST['statusid'])) {
-        $statusid = (int)$_REQUEST['statusid'];
-    } else {
+    if (\Xmf\Request::hasVar('statusid', 'REQUEST')) {
+ $statusid = \Xmf\Request::getInt('statusid', 0, 'REQUEST');
+} else {
         header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
@@ -163,7 +160,7 @@ function manageStatus()
         }
         $newStatus = $hStatus->create();
 
-        $newStatus->setVar('state', (int)$_POST['state']);
+        $newStatus->setVar('state', \Xmf\Request::getInt('state', 0, 'POST'));
         $newStatus->setVar('description', $_POST['desc']);
         if ($hStatus->insert($newStatus)) {
             header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
