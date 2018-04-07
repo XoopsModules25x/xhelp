@@ -402,7 +402,7 @@ class MembershipHandler
      */
     public function _addJoinerRecord($staffid, $deptid)
     {
-        $sql = sprintf('INSERT INTO %s (uid, department) VALUES(%u, %u)', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
+        $sql = sprintf('INSERT INTO `%s` (uid, department) VALUES(%u, %u)', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
 
         return $this->_db->query($sql);
     }

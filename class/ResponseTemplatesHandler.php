@@ -74,7 +74,7 @@ class ResponseTemplatesHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, NAME, response)
+        $sql = sprintf('INSERT INTO `%s` (id, uid, NAME, response)
                 VALUES (%u, %u, %s, %s)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name), $this->_db->quoteString($response));
 
         return $sql;
@@ -91,7 +91,7 @@ class ResponseTemplatesHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET uid = %u, NAME = %s, response = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($response), $id);
+        $sql = sprintf('UPDATE `%s` SET uid = %u, NAME = %s, response = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($response), $id);
 
         return $sql;
     }

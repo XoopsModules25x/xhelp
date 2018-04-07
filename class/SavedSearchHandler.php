@@ -74,7 +74,7 @@ class SavedSearchHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, NAME, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields);
+        $sql = sprintf('INSERT INTO `%s` (id, uid, NAME, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields);
 
         return $sql;
     }
@@ -90,7 +90,7 @@ class SavedSearchHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET uid = %d, NAME = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields, $id);
+        $sql = sprintf('UPDATE `%s` SET uid = %d, NAME = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields, $id);
 
         return $sql;
     }

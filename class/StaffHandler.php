@@ -305,7 +305,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'INSERT INTO %s (id, uid, email, responseTime, numReviews, callsClosed, attachSig, rating, allDepartments, ticketsResponded, notify, permTimestamp) VALUES (%u, %u, %s, %u, %u, %u, %u, %u, %u, %u, %u, %u)',
+            'INSERT INTO `%s` (id, uid, email, responseTime, numReviews, callsClosed, attachSig, rating, allDepartments, ticketsResponded, notify, permTimestamp) VALUES (%u, %u, %s, %u, %u, %u, %u, %u, %u, %u, %u, %u)',
             $this->_db->prefix($this->_dbtable),
             $id,
             $uid,
@@ -336,7 +336,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'UPDATE %s SET uid = %u, email = %s, responseTime = %u, numReviews = %u, callsClosed = %u, attachSig = %u, rating = %u, allDepartments = %u, ticketsResponded = %u, notify = %u, permTimestamp = %u WHERE id = %u',
+            'UPDATE `%s` SET uid = %u, email = %s, responseTime = %u, numReviews = %u, callsClosed = %u, attachSig = %u, rating = %u, allDepartments = %u, ticketsResponded = %u, notify = %u, permTimestamp = %u WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $uid,
                        $this->_db->quoteString($email),
@@ -423,9 +423,9 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     public function increaseCallsClosed($uid, $offset = 1)
     {
         if ($offset < 0) {
-            $sql = sprintf('UPDATE %s SET callsClosed = callsClosed - %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), abs($offset), $uid);
+            $sql = sprintf('UPDATE `%s` SET callsClosed = callsClosed - %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), abs($offset), $uid);
         } else {
-            $sql = sprintf('UPDATE %s SET callsClosed = callsClosed + %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $offset, $uid);
+            $sql = sprintf('UPDATE `%s` SET callsClosed = callsClosed + %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $offset, $uid);
         }
         if (!$result = $this->_db->query($sql)) {
             return false;
@@ -447,10 +447,10 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     {
         if (0 == $ticketCount) {
             //Incrementing responseTime
-            $sql = sprintf('UPDATE %s SET responseTime = responseTime + %u, ticketsResponded = ticketsResponded + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $uid);
+            $sql = sprintf('UPDATE `%s` SET responseTime = responseTime + %u, ticketsResponded = ticketsResponded + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $uid);
         } else {
             //Setting responseTime, ticketsResponded
-            $sql = sprintf('UPDATE %s SET responseTime = %u, ticketsResponded = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $ticketCount, $uid);
+            $sql = sprintf('UPDATE `%s` SET responseTime = %u, ticketsResponded = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $ticketCount, $uid);
         }
         if (!$result = $this->_db->query($sql)) {
             return false;
@@ -472,10 +472,10 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     {
         if (0 == $numReviews) {
             //Add New Review
-            $sql = sprintf('UPDATE %s SET rating = rating + %u, numReviews = numReviews + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $uid);
+            $sql = sprintf('UPDATE `%s` SET rating = rating + %u, numReviews = numReviews + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $uid);
         } else {
             //Set rating, numReviews to supplied values
-            $sql = sprintf('UPDATE %s SET rating = %u, numReviews = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $numReviews, $uid);
+            $sql = sprintf('UPDATE `%s` SET rating = %u, numReviews = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $numReviews, $uid);
         }
         if (!$result = $this->_db->query($sql)) {
             return false;

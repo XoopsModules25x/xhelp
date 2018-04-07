@@ -70,7 +70,7 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'INSERT INTO %s (id, NAME, description, fieldname, controltype, datatype, required, fieldlength, weight, fieldvalues, defaultvalue, VALIDATION)
+            'INSERT INTO `%s` (id, NAME, description, fieldname, controltype, datatype, required, fieldlength, weight, fieldvalues, defaultvalue, VALIDATION)
             VALUES (%u, %s, %s, %s, %u, %s, %u, %u, %s, %s, %s, %s)',
             $this->_db->prefix($this->_dbtable),
             $id,
@@ -102,7 +102,7 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'UPDATE %s SET NAME = %s, description = %s, fieldname = %s, controltype = %u, datatype = %s, required = %u, fieldlength = %u, weight = %u, fieldvalues = %s,
+            'UPDATE `%s` SET NAME = %s, description = %s, fieldname = %s, controltype = %u, datatype = %s, required = %u, fieldlength = %u, weight = %u, fieldvalues = %s,
             defaultvalue = %s, VALIDATION = %s WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $this->_db->quoteString($name),

@@ -74,7 +74,7 @@ class TicketListHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, searchid, weight) VALUES (%u, %d, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $searchid, $weight);
+        $sql = sprintf('INSERT INTO `%s` (id, uid, searchid, weight) VALUES (%u, %d, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $searchid, $weight);
 
         return $sql;
     }
@@ -90,7 +90,7 @@ class TicketListHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET uid = %d, searchid = %u, weight = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $searchid, $weight, $id);
+        $sql = sprintf('UPDATE `%s` SET uid = %d, searchid = %u, weight = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $searchid, $weight, $id);
 
         return $sql;
     }

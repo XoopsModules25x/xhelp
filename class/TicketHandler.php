@@ -387,7 +387,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'INSERT INTO %s (id, uid, SUBJECT, description, department, priority, STATUS, lastUpdated, ownership, closedBy, totalTimeSpent, posted, userIP, emailHash, email, serverid, overdueTime)
+            'INSERT INTO `%s` (id, uid, SUBJECT, description, department, priority, STATUS, lastUpdated, ownership, closedBy, totalTimeSpent, posted, userIP, emailHash, email, serverid, overdueTime)
             VALUES (%u, %u, %s, %s, %u, %u, %u, %u, %u, %u, %u, %u, %s, %s, %s, %u, %u)',
             $this->_db->prefix($this->_dbtable),
             $id,
@@ -424,7 +424,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'UPDATE %s SET SUBJECT = %s, description = %s, department = %u, priority = %u, STATUS = %u, lastUpdated = %u, ownership = %u,
+            'UPDATE `%s` SET SUBJECT = %s, description = %s, department = %u, priority = %u, STATUS = %u, lastUpdated = %u, ownership = %u,
             closedBy = %u, totalTimeSpent = %u, userIP = %s, emailHash = %s, email = %s, serverid = %u, overdueTime = %u WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $this->_db->quoteString($subject),

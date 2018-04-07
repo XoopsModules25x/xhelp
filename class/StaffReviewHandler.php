@@ -100,7 +100,7 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, staffid, rating, ticketid, responseid, comments, submittedBy, userIP)
+        $sql = sprintf('INSERT INTO `%s` (id, staffid, rating, ticketid, responseid, comments, submittedBy, userIP)
             VALUES (%u, %u, %u, %u, %u, %s, %u, %s)', $this->_db->prefix($this->_dbtable), $id, $staffid, $rating, $ticketid, $responseid, $this->_db->quoteString($comments), $submittedBy, $this->_db->quoteString($userIP));
 
         return $sql;
@@ -117,7 +117,7 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET staffid = %u, rating = %u, ticketid = %u, responseid = %u, comments = %s, submittedBy = %u, userIP = %s
+        $sql = sprintf('UPDATE `%s` SET staffid = %u, rating = %u, ticketid = %u, responseid = %u, comments = %s, submittedBy = %u, userIP = %s
                 WHERE id = %u', $this->_db->prefix($this->_dbtable), $staffid, $rating, $ticketid, $responseid, $this->_db->quoteString($comments), $submittedBy, $this->_db->quoteString($userIP), $id);
 
         return $sql;

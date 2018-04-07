@@ -149,7 +149,7 @@ function updateTopics($onInstall = false)
     $class = 'odd';
     foreach ($myTopics as $topic => $value) {
         $xhelp_id = $xoopsDB->genId($xoopsDB->prefix('configoption') . '_uid_seq');
-        $sql      = sprintf('INSERT INTO %s (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)', $xoopsDB->prefix('configoption'), $xhelp_id, $xoopsDB->quoteString($topic), $xoopsDB->quoteString($value), $xhelp_config);
+        $sql      = sprintf('INSERT INTO `%s` (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)', $xoopsDB->prefix('configoption'), $xhelp_id, $xoopsDB->quoteString($topic), $xoopsDB->quoteString($value), $xhelp_config);
 
         if (!$result = $xoopsDB->queryF($sql)) {
             return false;

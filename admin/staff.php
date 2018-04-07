@@ -324,7 +324,7 @@ function customDept()
     } else {
         $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
-        if (!empty($_POST['roles'])) {
+       if (\Xmf\Request::hasVar('roles', 'POST')) {
             foreach ($_POST['roles'] as $role) {
                 $thisRole     = $hRole->get($role);
                 $aRoleNames[] = $thisRole->getVar('name');

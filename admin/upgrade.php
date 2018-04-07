@@ -153,7 +153,7 @@ function upgradeDB()
                    );
 
             //Insert Current Version into table
-            $qry = $xoopsDB->query(sprintf("INSERT INTO %s VALUES('version', %s)", $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($ver)));
+            $qry = $xoopsDB->query(sprintf("INSERT INTO `%s` VALUES('version', %s)", $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($ver)));
 
             //Update xhelp_responses table
             $ret = $ret
@@ -201,7 +201,7 @@ function upgradeDB()
 
                 //Update xhelp_staff with user notifications & email address
                 $ret = $ret
-                       && _runQuery(sprintf('UPDATE %s SET email = %s, notify = %u WHERE uid = %u', $staff_tbl, $xoopsDB->quoteString($email), $usernotif, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid));
+                       && _runQuery(sprintf('UPDATE `%s` SET email = %s, notify = %u WHERE uid = %u', $staff_tbl, $xoopsDB->quoteString($email), $usernotif, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid));
             }
             echo '</ul>';
             // no break

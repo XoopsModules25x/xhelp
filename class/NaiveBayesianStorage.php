@@ -140,9 +140,9 @@ class NaiveBayesianStorage
     {
         $oldword = $this->getWord($word, $category_id);
         if (0 == $oldword['count']) {
-            $sql = sprintf('INSERT INTO %s (word, category_id, COUNT) VALUES (%s, %s, %d)', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)), (int)$count);
+            $sql = sprintf('INSERT INTO `%s` (word, category_id, COUNT) VALUES (%s, %s, %d)', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)), (int)$count);
         } else {
-            $sql = sprintf('UPDATE %s SET COUNT+=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
+            $sql = sprintf('UPDATE `%s` SET COUNT+=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
         }
 
         $ret = $this->con->query($sql);
@@ -167,7 +167,7 @@ class NaiveBayesianStorage
         if (0 != $oldword['count'] && 0 >= ($oldword['count'] - $count)) {
             $sql = sprintf('DELETE FROM `%s` WHERE word = %s AND category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)));
         } else {
-            $sql = sprintf('UPDATE %s SET COUNT-=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
+            $sql = sprintf('UPDATE `%s` SET COUNT-=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
         }
         $ret = $this->con->query($sql);
 
@@ -200,7 +200,7 @@ class NaiveBayesianStorage
         foreach ($cat as $cat_id => $cat_total) {
             //Calculate each category's probability
             $proba = $cat_total / $total_words;
-            $this->con->query(sprintf('UPDATE %s SET word_count = %d, probability = %f WHERE category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $cat_total, $proba, $this->con->quoteString($this->_cleanVar($cat_id))));
+            $this->con->query(sprintf('UPDATE `%s` SET word_count = %d, probability = %f WHERE category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $cat_total, $proba, $this->con->quoteString($this->_cleanVar($cat_id))));
         }
 
         return true;

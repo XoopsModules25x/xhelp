@@ -159,7 +159,7 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, mbox_id, event_desc, event_class, posted) VALUES (%u, %u, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $mbox_id, $this->_db->quoteString($event_desc), $event_class, $posted);
+        $sql = sprintf('INSERT INTO `%s` (id, mbox_id, event_desc, event_class, posted) VALUES (%u, %u, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $mbox_id, $this->_db->quoteString($event_desc), $event_class, $posted);
 
         return $sql;
     }
@@ -175,7 +175,7 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET mbox_id = %u, event_desc = %s, event_class = %u, posted = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $mbox_id, $this->_db->quoteString($event_desc), $event_class, $posted, $id);
+        $sql = sprintf('UPDATE `%s` SET mbox_id = %u, event_desc = %s, event_class = %u, posted = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $mbox_id, $this->_db->quoteString($event_desc), $event_class, $posted, $id);
 
         return $sql;
     }

@@ -151,7 +151,7 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'INSERT INTO %s (id, departmentid, SERVER, serverport, username, PASSWORD, priority, emailaddress, mboxtype, active) VALUES (%u, %u, %s, %u, %s, %s, %u, %s, %u, %u)',
+            'INSERT INTO `%s` (id, departmentid, SERVER, serverport, username, PASSWORD, priority, emailaddress, mboxtype, active) VALUES (%u, %u, %s, %u, %s, %s, %u, %s, %u, %u)',
             $this->_db->prefix($this->_dbtable),
             $id,
             $departmentid,
@@ -180,7 +180,7 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'UPDATE %s SET departmentid = %u, SERVER = %s, serverport = %u, username = %s, PASSWORD = %s, priority = %u, emailaddress = %s, mboxtype = %u, active = %u WHERE id = %u',
+            'UPDATE `%s` SET departmentid = %u, SERVER = %s, serverport = %u, username = %s, PASSWORD = %s, priority = %u, emailaddress = %s, mboxtype = %u, active = %u WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $departmentid,
             $this->_db->quoteString($server),

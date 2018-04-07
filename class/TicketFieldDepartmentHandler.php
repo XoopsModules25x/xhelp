@@ -294,7 +294,7 @@ class TicketFieldDepartmentHandler
      */
     public function _addJoinerRecord($fieldid, $deptid)
     {
-        $sql = sprintf('INSERT INTO %s (fieldid, deptid) VALUES (%u, %u)', $this->_db->prefix('xhelp_ticket_field_departments'), $fieldid, $deptid);
+        $sql = sprintf('INSERT INTO `%s` (fieldid, deptid) VALUES (%u, %u)', $this->_db->prefix('xhelp_ticket_field_departments'), $fieldid, $deptid);
         $ret = $this->_db->query($sql);
 
         return $ret;

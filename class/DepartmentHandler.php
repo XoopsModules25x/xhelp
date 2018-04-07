@@ -89,7 +89,7 @@ class DepartmentHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, department) VALUES (%u, %s)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($department));
+        $sql = sprintf('INSERT INTO `%s` (id, department) VALUES (%u, %s)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($department));
 
         return $sql;
     }
@@ -105,7 +105,7 @@ class DepartmentHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET department = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($department), $id);
+        $sql = sprintf('UPDATE `%s` SET department = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($department), $id);
 
         return $sql;
     }

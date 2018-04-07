@@ -77,7 +77,7 @@ class NotificationHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (notif_id, staff_setting, user_setting, staff_options) VALUES (%u, %u, %u, %s)', $this->_db->prefix($this->_dbtable), $notif_id, $staff_setting, $user_setting, $this->_db->quoteString($staff_options));
+        $sql = sprintf('INSERT INTO `%s` (notif_id, staff_setting, user_setting, staff_options) VALUES (%u, %u, %u, %s)', $this->_db->prefix($this->_dbtable), $notif_id, $staff_setting, $user_setting, $this->_db->quoteString($staff_options));
 
         return $sql;
     }
@@ -93,7 +93,7 @@ class NotificationHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET staff_setting = %u, user_setting = %u, staff_options = %s WHERE notif_id = %u', $this->_db->prefix($this->_dbtable), $staff_setting, $user_setting, $this->_db->quoteString($staff_options), $notif_id);
+        $sql = sprintf('UPDATE `%s` SET staff_setting = %u, user_setting = %u, staff_options = %s WHERE notif_id = %u', $this->_db->prefix($this->_dbtable), $staff_setting, $user_setting, $this->_db->quoteString($staff_options), $notif_id);
 
         return $sql;
     }

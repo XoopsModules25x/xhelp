@@ -75,7 +75,7 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, ticketid, message, timeSpent, updateTime, userIP, private)
+        $sql = sprintf('INSERT INTO `%s` (id, uid, ticketid, message, timeSpent, updateTime, userIP, private)
             VALUES (%u, %u, %u, %s, %u, %u, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $ticketid, $this->_db->quoteString($message), $timeSpent, time(), $this->_db->quoteString($userIP), $private);
 
         return $sql;
@@ -92,7 +92,7 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET uid = %u, ticketid = %u, message = %s, timeSpent = %u,
+        $sql = sprintf('UPDATE `%s` SET uid = %u, ticketid = %u, message = %s, timeSpent = %u,
             updateTime = %u, userIP = %s, private = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $ticketid, $this->_db->quoteString($message), $timeSpent, time(), $this->_db->quoteString($userIP), $private, $id);
 
         return $sql;

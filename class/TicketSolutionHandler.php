@@ -69,7 +69,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, ticketid, url, title, description, uid, posted) VALUES (%u, %u, %s, %s, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $ticketid, $this->_db->quoteString($url), $this->_db->quoteString($title), $this->_db->quoteString($description), $uid, time());
+        $sql = sprintf('INSERT INTO `%s` (id, ticketid, url, title, description, uid, posted) VALUES (%u, %u, %s, %s, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $ticketid, $this->_db->quoteString($url), $this->_db->quoteString($title), $this->_db->quoteString($description), $uid, time());
 
         return $sql;
     }
@@ -86,7 +86,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = sprintf(
-            'UPDATE %s SET ticketid = %u, url = %s, title = %s, description = %s, uid = %u, posted = %u WHERE id = %u',
+            'UPDATE `%s` SET ticketid = %u, url = %s, title = %s, description = %s, uid = %u, posted = %u WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $ticketid,
             $this->_db->quoteString($url),
