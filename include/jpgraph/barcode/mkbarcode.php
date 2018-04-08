@@ -248,16 +248,16 @@ class Driver
         switch ($aParams['output']) {
             case 0:
                 $e = BackendFactory::Create(BACKEND_IMAGE, $encoder);
-                set_exceptionHandler(array('Driver', 'ErrHandlerImg'));
+                set_exception_handler(array('Driver', 'ErrHandlerImg'));
                 break;
             case 1:
                 $e = BackendFactory::Create(BACKEND_PS, $encoder);
-                set_exceptionHandler(array('Driver', 'ErrHandlerPS'));
+                set_exception_handler(array('Driver', 'ErrHandlerPS'));
                 break;
             case 2:
                 $e = BackendFactory::Create(BACKEND_PS, $encoder);
                 $e->SetEPS();
-                set_exceptionHandler(array('Driver', 'ErrHandlerPS'));
+                set_exception_handler(array('Driver', 'ErrHandlerPS'));
                 break;
         }
         $e->SetHeight($aParams['height']);

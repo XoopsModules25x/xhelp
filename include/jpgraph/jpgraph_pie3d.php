@@ -852,7 +852,7 @@ class PiePlot3D extends PiePlot
         $n = count($this->data);
 
         // If user hasn't set the colors use the theme array
-        if ($this->setslicecolors == null) {
+        if ($this->setslicecolors === null) {
             $colors = array_keys($img->rgb->rgb_table);
             sort($colors);
             $idx_a = $this->themearr[$this->theme];

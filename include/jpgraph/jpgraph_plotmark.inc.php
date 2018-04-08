@@ -264,7 +264,7 @@ class PlotMark
                 case MARK_IMG_PUSHPIN:
                 case MARK_IMG_SPUSHPIN:
                 case MARK_IMG_LPUSHPIN:
-                    if ($this->imgdata_pushpins == null) {
+                    if ($this->imgdata_pushpins === null) {
                         require_once __DIR__ . '/imgdata_pushpins.inc.php';
                         $this->imgdata_pushpins = new ImgData_PushPins();
                     }
@@ -273,7 +273,7 @@ class PlotMark
                     break;
 
                 case MARK_IMG_SQUARE:
-                    if ($this->imgdata_squares == null) {
+                    if ($this->imgdata_squares === null) {
                         require_once __DIR__ . '/imgdata_squares.inc.php';
                         $this->imgdata_squares = new ImgData_Squares();
                     }
@@ -282,7 +282,7 @@ class PlotMark
                     break;
 
                 case MARK_IMG_STAR:
-                    if ($this->imgdata_stars == null) {
+                    if ($this->imgdata_stars === null) {
                         require_once __DIR__ . '/imgdata_stars.inc.php';
                         $this->imgdata_stars = new ImgData_Stars();
                     }
@@ -291,7 +291,7 @@ class PlotMark
                     break;
 
                 case MARK_IMG_BEVEL:
-                    if ($this->imgdata_bevels == null) {
+                    if ($this->imgdata_bevels === null) {
                         require_once __DIR__ . '/imgdata_bevels.inc.php';
                         $this->imgdata_bevels = new ImgData_Bevels();
                     }
@@ -300,7 +300,7 @@ class PlotMark
                     break;
 
                 case MARK_IMG_DIAMOND:
-                    if ($this->imgdata_diamonds == null) {
+                    if ($this->imgdata_diamonds === null) {
                         require_once __DIR__ . '/imgdata_diamonds.inc.php';
                         $this->imgdata_diamonds = new ImgData_Diamonds();
                     }
@@ -312,7 +312,7 @@ class PlotMark
                 case MARK_IMG_SBALL:
                 case MARK_IMG_MBALL:
                 case MARK_IMG_LBALL:
-                    if ($this->imgdata_balls == null) {
+                    if ($this->imgdata_balls === null) {
                         require_once __DIR__ . '/imgdata_balls.inc.php';
                         $this->imgdata_balls = new ImgData_Balls();
                     }

@@ -117,7 +117,7 @@ class Net_IMAPProtocol
          * we disable the authentication methods that depend upon it.
          */
 
-        if (false === (@require_once 'Auth/SASL.php')) {
+        if (false === (@require_once __DIR__ . '/Auth/SASL.php')) {
             foreach ($this->supportedSASLAuthMethods as $SASLMethod) {
                 $pos = array_search($SASLMethod, $this->supportedAuthMethods);
                 unset($this->supportedAuthMethods[$pos]);
@@ -1218,7 +1218,7 @@ class Net_IMAPProtocol
             return new PEAR_Error("This IMAP server does not support QUOTA's! ");
         }
 
-        if ((null == $messagesQuota) && (null == $storageQuota)) {
+        if ((null === $messagesQuota) && (null === $storageQuota)) {
             return new PEAR_Error('$storageQuota and $messagesQuota parameters can\'t be both null if you want to use quota');
         }
         $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
@@ -1258,7 +1258,7 @@ class Net_IMAPProtocol
             return new PEAR_Error("This IMAP server does not support QUOTA's! ");
         }
 
-        if ((null == $messagesQuota) && (null == $storageQuota)) {
+        if ((null === $messagesQuota) && (null === $storageQuota)) {
             return new PEAR_Error('$storageQuota and $messagesQuota parameters can\'t be both null if you want to use quota');
         }
         $mailbox_name=sprintf('"%s"', $this->utf_7_encode($mailbox_name));
@@ -1474,7 +1474,7 @@ class Net_IMAPProtocol
      */
     public function getServerAuthMethods()
     {
-        if (null == $this->_serverAuthMethods) {
+        if (null === $this->_serverAuthMethods) {
             $this->cmdCapability();
 
             return $this->_serverAuthMethods;
@@ -1494,7 +1494,7 @@ class Net_IMAPProtocol
      */
     public function hasCapability($capability)
     {
-        if (null == $this->_serverSupportedCapabilities) {
+        if (null === $this->_serverSupportedCapabilities) {
             $this->cmdCapability();
         }
         if (null != $this->_serverSupportedCapabilities) {
@@ -1773,7 +1773,7 @@ class Net_IMAPProtocol
             } else {
                 $email=false;
             }
-            if (false == $email) {
+            if (false === $email) {
                 $rfc822_email=false;
             } else {
                 if (!isset($personal_name)) {
@@ -2085,7 +2085,7 @@ class Net_IMAPProtocol
             $this->_getNextToken($str, $token);
             $token = strtoupper($token);
 
-            if (false != ($ret = $this->_retrParsedResponse($str, $token))) {
+            if (false !== ($ret = $this->_retrParsedResponse($str, $token))) {
                 //$struct_arr[$token] = $ret;
                 $struct_arr=array_merge($struct_arr, $ret);
             }

@@ -111,7 +111,7 @@ class Net_IMAP extends Net_IMAPProtocol
                 } else {
                     $this->_serverAuthMethods=null;
                 }
-                if (null == $this->_serverAuthMethods || 0 == count($commonMethods) || null == $this->supportedAuthMethods) {
+                if (null === $this->_serverAuthMethods || 0 == count($commonMethods) || null === $this->supportedAuthMethods) {
                     // The server does not have any auth method, so I try LOGIN
                     if (PEAR::isError($ret = $this->cmdLogin($user, $pass))) {
                         return $ret;
@@ -384,7 +384,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function getNumberOfMessages($mailbox = '')
     {
-        if ('' == $mailbox || null == $mailbox) {
+        if ('' == $mailbox || null === $mailbox) {
             $mailbox=$this->getCurrentMailbox();
         }
         $ret=$this->cmdStatus($mailbox, 'MESSAGES');
@@ -599,7 +599,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function copyMessages($dest_mailbox, $msg_id = null, $source_mailbox = null)
     {
-        if (null == $source_mailbox) {
+        if (null === $source_mailbox) {
             $source_mailbox = $this->getCurrentMailbox();
         } else {
             if (PEAR::isError($ret = $this->selectMailbox($source_mailbox))) {
@@ -636,7 +636,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function appendMessage($rfc_message, $mailbox = null)
     {
-        if (null == $mailbox) {
+        if (null === $mailbox) {
             $mailbox = $this->getCurrentMailbox();
         }
         $ret=$this->cmdAppend($mailbox, $rfc_message);
@@ -853,7 +853,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function subscribeMailbox($mailbox = null)
     {
-        if (null == $mailbox) {
+        if (null === $mailbox) {
             $mailbox = $this->getCurrentMailbox();
         }
         $ret=$this->cmdSubscribe($mailbox);
@@ -874,7 +874,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function unsubscribeMailbox($mailbox = null)
     {
-        if (null == $mailbox) {
+        if (null === $mailbox) {
             $mailbox = $this->getCurrentMailbox();
         }
         $ret=$this->cmdUnsubscribe($mailbox);
@@ -1135,7 +1135,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function getStorageQuota($mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
 
@@ -1170,7 +1170,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function getMessagesQuota($mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
 
@@ -1253,7 +1253,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function getACL($mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
         if (PEAR::isError($ret = $this->cmdGetACL($mailbox_name))) {
@@ -1328,7 +1328,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function getMyRights($mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
 
@@ -1359,7 +1359,7 @@ class Net_IMAP extends Net_IMAPProtocol
      */
     public function getACLRights($user, $mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
 
@@ -1390,7 +1390,7 @@ class Net_IMAP extends Net_IMAPProtocol
 
     public function setAnnotation($entry, $values, $mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
 
@@ -1406,7 +1406,7 @@ class Net_IMAP extends Net_IMAPProtocol
 
     public function deleteAnnotation($entry, $values, $mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
 
@@ -1422,7 +1422,7 @@ class Net_IMAP extends Net_IMAPProtocol
 
     public function getAnnotation($entries, $values, $mailbox_name = null)
     {
-        if (null == $mailbox_name) {
+        if (null === $mailbox_name) {
             $mailbox_name = $this->getCurrentMailbox();
         }
         if (!is_array($entries)) {

@@ -704,7 +704,7 @@ class GanttGraph extends Graph
     // also added to make it better looking.
     public function AutoSize()
     {
-        if ($this->img->img == null) {
+        if ($this->img->img === null) {
             // The predefined left, right, top, bottom margins.
             // Note that the top margin might incease depending on
             // the title.

@@ -449,7 +449,7 @@ class Legend
                 // Patterns have a p[3] value of < -100
                 if ($p[3] < -100) {
                     // p[1][0] == iPattern, p[1][1] == iPatternColor, p[1][2] == iPatternDensity
-                    if ($patternFactory == null) {
+                    if ($patternFactory === null) {
                         $patternFactory = new RectPatternFactory();
                     }
                     $prect = $patternFactory->Create($p[1][0], $p[1][1], 1);

@@ -89,7 +89,7 @@ class RectPattern
 
     public function Stroke($aImg)
     {
-        if ($this->rect == null) {
+        if ($this->rect === null) {
             JpGraphError::RaiseL(16002);
         }
         //(" No positions specified for pattern.");

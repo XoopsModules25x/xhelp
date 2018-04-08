@@ -100,7 +100,7 @@ class JPSpan_LexerParallelRegex
      */
     public function _getCompoundedRegex()
     {
-        if ($this->_regex == null) {
+        if ($this->_regex === null) {
             for ($i = 0, $iMax = count($this->_patterns); $i < $iMax; ++$i) {
                 $this->_patterns[$i] = '(' . str_replace(['/', '(', ')'], ['\/', '\(', '\)'], $this->_patterns[$i]) . ')';
             }

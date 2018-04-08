@@ -29,7 +29,7 @@ class Tree extends \XoopsObjectTree
         $selectMulti = false
     ) {
         $ret = '<select name="' . $name . '[]" id="' . $name . '" ' . ($selectMulti ? 'multiple="multiple" size="6"' : '') . '>';
-        if (false != $addEmptyOption) {
+        if (false !== $addEmptyOption) {
             $ret .= '<option value="0"></option>';
         }
         $this->_makeSelBoxOptions($fieldName, $selected, $key, $ret, $prefix);

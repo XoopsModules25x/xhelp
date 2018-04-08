@@ -206,7 +206,7 @@ class Shape
         list($x1, $y1) = $this->scale->Translate($x1, $y1);
         list($x2, $y2) = $this->scale->Translate($x2, $y2);
 
-        if ($r == null) {
+        if ($r === null) {
             $r = 5;
         } elseif ($r >= 0) {
             $r = $this->scale->TranslateX($r);
@@ -221,7 +221,7 @@ class Shape
         list($x1, $y1) = $this->scale->Translate($x1, $y1);
         list($x2, $y2) = $this->scale->Translate($x2, $y2);
 
-        if ($r == null) {
+        if ($r === null) {
             $r = 5;
         } elseif ($r > 0) {
             $r = $this->scale->TranslateX($r);
@@ -242,7 +242,7 @@ class Shape
     ) {
         list($x1, $y1) = $this->scale->Translate($x1, $y1);
         list($x2, $y2) = $this->scale->Translate($x2, $y2);
-        if ($shadow_width == null) {
+        if ($shadow_width === null) {
             $shadow_width = 4;
         } else {
             $shadow_width = $this->scale->TranslateX($shadow_width);

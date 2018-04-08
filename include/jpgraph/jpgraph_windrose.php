@@ -108,7 +108,7 @@ class WindrosePlotScale
     // Set step size for circular grid
     public function Set($aMax, $aDelta = null)
     {
-        if ($aDelta == null) {
+        if ($aDelta === null) {
             $this->SetMaxValue($aMax);
 
             return;

@@ -716,7 +716,7 @@ class RadarGraph extends Graph
 
     public function Add($aPlot)
     {
-        if ($aPlot == null) {
+        if ($aPlot === null) {
             JpGraphError::RaiseL(25010);//("Graph::Add() You tried to add a null plot to the graph.");
         }
         if (is_array($aPlot) && count($aPlot) > 0) {
@@ -813,7 +813,7 @@ class RadarGraph extends Graph
         $nbrpnts = $this->plots[0]->GetCount();
 
         // If we have no titles just number the axis 1,2,3,...
-        if ($this->axis_title == null) {
+        if ($this->axis_title === null) {
             for ($i = 0; $i < $nbrpnts; ++$i) {
                 $this->axis_title[$i] = $i + 1;
             }

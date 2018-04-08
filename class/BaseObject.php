@@ -99,7 +99,7 @@ class BaseObject extends \XoopsObject
         }
 
         $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
-        if (false != $force) {
+        if (false !== $force) {
             $result = $this->_db->queryF($sql);
         } else {
             $result = $this->_db->query($sql);

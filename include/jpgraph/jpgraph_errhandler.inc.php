@@ -193,7 +193,7 @@ class JpGraphException extends Exception
         } else {
             // Restore old handler
             if ($__jpg_OldHandler !== null) {
-                set_exceptionHandler($__jpg_OldHandler);
+                set_exception_handler($__jpg_OldHandler);
             }
             throw $exception;
         }

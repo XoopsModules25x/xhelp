@@ -275,7 +275,7 @@ function _phpErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 }
 
 if (INSTALL_PHP_ERRHandler) {
-    set_errorHandler('_phpErrorHandler');
+    set_error_handler('_phpErrorHandler');
 }
 
 //
@@ -870,7 +870,7 @@ class Graph
     // Add a plot object to the graph
     public function Add($aPlot)
     {
-        if ($aPlot == null) {
+        if ($aPlot === null) {
             JpGraphError::RaiseL(25010);//("Graph::Add() You tried to add a null plot to the graph.");
         }
         if (is_array($aPlot) && count($aPlot) > 0) {
@@ -927,7 +927,7 @@ class Graph
     // Add plot to second Y-scale
     public function AddY2($aPlot)
     {
-        if ($aPlot == null) {
+        if ($aPlot === null) {
             JpGraphError::RaiseL(25011);//("Graph::AddY2() You tried to add a null plot to the graph.");
         }
 
@@ -955,7 +955,7 @@ class Graph
     // Add plot to the extra Y-axises
     public function AddY($aN, $aPlot)
     {
-        if ($aPlot == null) {
+        if ($aPlot === null) {
             JpGraphError::RaiseL(25012);//("Graph::AddYN() You tried to add a null plot to the graph.");
         }
 
@@ -980,7 +980,7 @@ class Graph
     // Add text object to the graph
     public function AddText($aTxt, $aToY2 = false)
     {
-        if ($aTxt == null) {
+        if ($aTxt === null) {
             JpGraphError::RaiseL(25014);//("Graph::AddText() You tried to add a null text to the graph.");
         }
         if ($aToY2) {
@@ -1005,7 +1005,7 @@ class Graph
     // Add a line object (class PlotLine) to the graph
     public function AddLine($aLine, $aToY2 = false)
     {
-        if ($aLine == null) {
+        if ($aLine === null) {
             JpGraphError::RaiseL(25015);//("Graph::AddLine() You tried to add a null line to the graph.");
         }
 
@@ -1035,7 +1035,7 @@ class Graph
     // Add vertical or horizontal band
     public function AddBand($aBand, $aToY2 = false)
     {
-        if ($aBand == null) {
+        if ($aBand === null) {
             JpGraphError::RaiseL(25016);//(" Graph::AddBand() You tried to add a null band to the graph.");
         }
 
@@ -2051,7 +2051,7 @@ class Graph
         // Any plots on the extra Y axises?
         $n = count($this->ynaxis);
         for ($i = 0; $i < $n; ++$i) {
-            if ($this->ynplots == null || $this->ynplots[$i] == null) {
+            if ($this->ynplots === null || $this->ynplots[$i] === null) {
                 JpGraphError::RaiseL(25032, $i);//("No plots for Y-axis nbr:$i");
             }
             $m = count($this->ynplots[$i]);

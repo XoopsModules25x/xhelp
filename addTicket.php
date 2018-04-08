@@ -84,7 +84,7 @@ if ($xoopsUser) {
                 foreach ($myGroups as $group) {   // Check for user to be in multiple groups
                     if ($hGroupPerm->checkRight(_XHELP_GROUP_PERM_DEPT, $deptid, $group, $module_id)) {
                         //Assign the first value to $dept_id incase the default department property not set
-                        if (null == $dept_id) {
+                        if (null === $dept_id) {
                             $dept_id = $deptid;
                         }
                         $aDept[] = [

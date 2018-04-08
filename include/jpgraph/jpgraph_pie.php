@@ -340,7 +340,7 @@ class PiePlot
         $ta = $this->themearr[$this->theme];
         $n  = count($this->data);
 
-        if ($this->setslicecolors == null) {
+        if ($this->setslicecolors === null) {
             $numcolors = count($ta);
             if (class_exists('PiePlot3D', false) && ($this instanceof PiePlot3D)) {
                 $ta = array_reverse(array_slice($ta, 0, $n));
@@ -394,7 +394,7 @@ class PiePlot
                 $wintarg = $this->csimwintargets[$i];
             }
 
-            if ($this->setslicecolors == null) {
+            if ($this->setslicecolors === null) {
                 $graph->legend->Add($l, $colors[$ta[$i % $numcolors]], '', 0, $this->csimtargets[$i], $alt, $wintarg);
             } else {
                 $graph->legend->Add($l, $this->setslicecolors[$i % $numcolors], '', 0, $this->csimtargets[$i], $alt, $wintarg);
@@ -480,7 +480,7 @@ class PiePlot
         $ta = $this->themearr[$this->theme];
         $n  = count($this->data);
 
-        if ($this->setslicecolors == null) {
+        if ($this->setslicecolors === null) {
             $numcolors = count($ta);
         } else {
             // We need to create an array of colors as long as the data
@@ -628,7 +628,7 @@ class PiePlot
 
             // If the user has specified an array of colors for each slice then use
             // that a color otherwise use the theme array (ta) of colors
-            if ($this->setslicecolors == null) {
+            if ($this->setslicecolors === null) {
                 $slicecolor = $colors[$ta[$i % $numcolors]];
             } else {
                 $slicecolor = $this->setslicecolors[$i % $numcolors];
