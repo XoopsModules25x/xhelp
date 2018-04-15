@@ -1,8 +1,7 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
+use XoopsModules\News;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
@@ -10,6 +9,7 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 // Setup event handlers for page
 
+/** @var Xhelp\Helper $helper */
 $helper = Xhelp\Helper::getInstance();
 
 //Initialise Necessary Data Handler Classes
@@ -58,7 +58,7 @@ $start = $start;
 $sort  = strtolower($sort);
 $order = (in_array(strtoupper($order), $sort_order) ? $order : 'ASC');
 
-$displayName =& $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
+$displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
 switch ($op) {
 
@@ -778,7 +778,6 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
 
         return false;
     }
-    require_once XOOPS_ROOT_PATH . '/modules/news/class/class.newsstory.php';
     //    $news_version = round($count->getVar('version') / 100, 2);
     //
     //    switch ($news_version) {
@@ -788,7 +787,7 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
     //
     //        case '1.21':
     //        default:
-    $sarray = NewsStory::getAllPublished($limit, $start, false, $topicid);
+    $sarray = News\NewsStory::getAllPublished($limit, $start, false, $topicid);
     //    }
 
     $scount = count($sarray);

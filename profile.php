@@ -1,12 +1,13 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 //
 require_once __DIR__ . '/header.php';
 //require_once XHELP_BASE_PATH . '/functions.php';
+
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 // Disable module caching in smarty
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
@@ -255,7 +256,7 @@ if ($xoopsUser) {
 
             $reviews = $hReview->getObjects($crit);
 
-            $displayName =& $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
+            $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
             foreach ($reviews as $review) {
                 $reviewer = $hMembers->getUser($review->getVar('submittedBy'));

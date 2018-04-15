@@ -1,8 +1,6 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/servicemain.php';
 
@@ -12,6 +10,9 @@ require_once __DIR__ . '/servicemain.php';
 //require XHELP_CLASS_PATH . '/EmailParser.php';
 //require XHELP_CLASS_PATH . '/EmailStore.php';
 //require XHELP_CLASS_PATH . '/validator.php';
+
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 //Initialize xhelp objects
 $msgParser  = new Xhelp\EmailParser();

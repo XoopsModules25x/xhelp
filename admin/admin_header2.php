@@ -1,8 +1,6 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -17,6 +15,9 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopstree.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopslists.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
+
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 $helper->loadLanguage('main');
 $helper->loadLanguage('modinfo');

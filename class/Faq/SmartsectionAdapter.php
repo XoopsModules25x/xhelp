@@ -169,6 +169,7 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
             } else {
                 if (XHELP_SSECTION_NOTIFYPUB) {
                     require_once XOOPS_ROOT_PATH . '/include/notification_constants.php';
+                    /** @var \XoopsNotificationHandler $notificationHandler */
                     $notificationHandler = xoops_getHandler('notification');
                     $notificationHandler->subscribe('item', $itemObj->itemid(), 'approved', XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
                 }

@@ -1,11 +1,13 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
+
 $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 $hTickets     = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);

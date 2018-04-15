@@ -4,7 +4,7 @@ use Xmf\Request;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Common;
 
-//include __DIR__ . '/../preloads/autoloader.php';
+//include  dirname(__DIR__) . '/preloads/autoloader.php';
 
 /**
  * Class Utility
@@ -1025,7 +1025,7 @@ class Utility
     public static function getHandler($handler)
     {
 //        $handler = xoops_getModuleHandler($handler, XHELP_DIR_NAME);
-        include __DIR__ . '/../preloads/autoloader.php';
+        include  dirname(__DIR__) . '/preloads/autoloader.php';
         $class = '\\XoopsModules\\Xhelp\\' . $handler . 'Handler';
         $newHandler = new $class($GLOBALS['xoopsDB']);
 

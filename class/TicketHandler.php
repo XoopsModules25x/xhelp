@@ -24,7 +24,7 @@ if (!defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-//require_once __DIR__ . '/../../../include/cp_header.php';
+//require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 
 global $xoopsUser;
 

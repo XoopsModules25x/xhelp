@@ -3,8 +3,6 @@
 use Xmf\Request;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 if (\Xmf\Request::hasVar('deptid', 'GET')) { 
  $dept_id = \Xmf\Request::getInt('deptid', 0, 'GET');
@@ -28,6 +26,9 @@ if (isset($_GET['view_id'])) {
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
+
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 /* $_eventsrv->advise('new_ticket', xhelp_notificationService::getInstance());
  $_eventsrv->advise('new_ticket', xhelp_logService::getInstance());

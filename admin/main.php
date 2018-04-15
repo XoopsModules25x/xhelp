@@ -1,10 +1,8 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
-require_once __DIR__ . '/../../../include/cp_header.php';
+require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 define('MAX_STAFF_RESPONSETIME', 5);
@@ -12,6 +10,9 @@ define('MAX_STAFF_CALLSCLOSED', 5);
 
 global $_GET, $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
+
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 $op = 'default';
 
@@ -274,7 +275,7 @@ function xhelp_default()
     $adminObject = \Xmf\Module\Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
-    $displayName =& $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
+    $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
     $stylePath = XHELP_BASE_URL . '/assets/css/xhelp.css';
     echo '<link rel="stylesheet" type="text/css" media="all" href="' . $stylePath . '"><!--[if if lt IE 7]><script src="iepngfix.js" language="JavaScript" type="text/javascript"></script><![endif]-->';

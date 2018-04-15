@@ -1,8 +1,6 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 //
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
@@ -11,6 +9,8 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 //require_once XHELP_BASE_PATH . '/functions.php';
 // require_once XHELP_CLASS_PATH . '/session.php';
 $helper->loadLanguage('main');

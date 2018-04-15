@@ -215,7 +215,7 @@ function new_ticket($ticket)
  * Event: new_user_by_email
  * Triggered after new user account is created during ticket submission
  * @param string $password Password for new account
- * @param XoopsUser $xoopsUser XOOPS user object for new account
+ * @param \XoopsUser $xoopsUser XOOPS user object for new account
  */
 function new_user_by_email($password, $xoopsUser)
 {}

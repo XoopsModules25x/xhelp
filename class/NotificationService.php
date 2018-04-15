@@ -1,9 +1,6 @@
 <?php namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
-
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();

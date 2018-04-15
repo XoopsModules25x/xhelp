@@ -4,8 +4,6 @@
 
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 /**
  * class EmailStore

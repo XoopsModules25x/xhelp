@@ -1,10 +1,11 @@
 <?php
 
 use XoopsModules\Xhelp;
-/** @var Xhelp\Helper $helper */
-$helper = Xhelp\Helper::getInstance();
 
 require_once __DIR__ . '/header.php';
+
+/** @var Xhelp\Helper $helper */
+$helper = Xhelp\Helper::getInstance();
 
 $op = 'default';
 require_once XHELP_INCLUDE_PATH . '/events.php';

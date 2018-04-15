@@ -11,7 +11,7 @@ if (function_exists('mb_http_output')) {
     mb_http_output('pass');
 }
 $xoopsOption['nocommon'] = 1;
-require_once __DIR__ . '/../../mainfile.php';
+require_once  dirname(dirname(__DIR__)) . '/mainfile.php';
 
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('NWLINE') or define('NWLINE', "\n");

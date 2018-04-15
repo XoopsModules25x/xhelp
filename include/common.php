@@ -18,7 +18,7 @@
  */
 use XoopsModules\Xhelp;
 
-include __DIR__ . '/../preloads/autoloader.php';
+include  dirname(__DIR__) . '/preloads/autoloader.php';
 
 
 $moduleDirName = basename(dirname(__DIR__));
