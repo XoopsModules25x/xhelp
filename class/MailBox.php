@@ -1,11 +1,11 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-define('_XHELP_MAILBOXTYPE_POP3', 1);
-define('_XHELP_MAILBOXTYPE_IMAP', 2);
-
-//
+\define('_XHELP_MAILBOXTYPE_POP3', 1);
+\define('_XHELP_MAILBOXTYPE_IMAP', 2);
 
 /**
  * Xhelp\MailBox class
@@ -28,8 +28,6 @@ class MailBox
     {
     }
 
-    //
-
     /**
      * @param $username
      * @param $password
@@ -38,12 +36,9 @@ class MailBox
     {
     }
 
-    //
     public function messageCount()
     {
     }
-
-    //
 
     /**
      * @param $i
@@ -51,8 +46,6 @@ class MailBox
     public function getHeaders($i)
     {
     }
-
-    //
 
     /**
      * @param $i
@@ -68,8 +61,6 @@ class MailBox
     {
     }
 
-    //
-
     /**
      * @param $i
      */
@@ -77,7 +68,6 @@ class MailBox
     {
     }
 
-    //
     public function disconnect()
     {
     }

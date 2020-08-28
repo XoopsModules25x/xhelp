@@ -1,5 +1,4 @@
 <?php
-//
 
 define('_XHELP_UTBO_NAME', 'Unresolved Tickets By Owner');
 define('_XHELP_UTBO_DESC', 'Retrieve unresolved tickets by owner.');

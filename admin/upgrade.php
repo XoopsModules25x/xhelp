@@ -2,7 +2,6 @@
 
 use XoopsModules\Xhelp;
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
@@ -14,7 +13,7 @@ $module_id = $xoopsModule->getVar('mid');
 
 $op = 'default';
 
-if (isset($_REQUEST['op'])) {
+if (\Xmf\Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -22,13 +21,11 @@ switch ($op) {
     case 'checkTables':
         checkTables();
         break;
-
     case 'upgradeDB':
         upgradeDB();
         break;
-
     default:
-        header('Location: ' . XHELP_BASE_URL . '/admin/index.php');
+        redirect_header(XHELP_BASE_URL . '/admin/index.php');
         break;
 }
 
@@ -59,11 +56,11 @@ function _runQuery($query, $goodmsg, $badmsg)
         echo "<li class='err'>$badmsg</li>";
 
         return false;
-    } else {
-        echo "<li class='ok'>$goodmsg</li>";
-
-        return true;
     }
+
+    echo "<li class='ok'>$goodmsg</li>";
+
+    return true;
 }
 
 function checkTables()
@@ -123,11 +120,11 @@ function upgradeDB()
         }
     }
 
-    $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    $hMember      = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-    $hTicket      = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $hXoopsMember = xoops_getHandler('member');
-    $hRole        = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $memberHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $hXoopsMember  = xoops_getHandler('member');
+    $hRole         = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
     $mid = $xoopsModule->getVar('mid');
 
@@ -148,9 +145,9 @@ function upgradeDB()
             //Create meta table
             $ret = $ret
                    && _runQuery(
-                       sprintf("CREATE TABLE %s (metakey varchar(50) NOT NULL default '', metavalue varchar(255) NOT NULL default '', PRIMARY KEY (metakey)) ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_meta')),
+                       sprintf("CREATE TABLE %s (metakey VARCHAR(50) NOT NULL DEFAULT '', metavalue VARCHAR(255) NOT NULL DEFAULT '', PRIMARY KEY (metakey)) ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_meta')),
                        sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_meta'),
-                                sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_meta')
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_meta')
                    );
 
             //Insert Current Version into table
@@ -186,7 +183,6 @@ function upgradeDB()
             $notif_tbl = $xoopsDB->prefix('xoopsnotifications');
             $email_tpl = $xoopsModule->getInfo('_email_tpl');
             foreach ($staff as $uid => $email) {
-
                 //get notifications for current user
                 $usernotif = 0;
                 $qry       = $xoopsDB->query(sprintf("SELECT DISTINCT not_category, not_event FROM `%s` WHERE not_uid = %u AND not_category='dept' AND not_modid=%u", $notif_tbl, $uid, $mid));
@@ -205,7 +201,7 @@ function upgradeDB()
                        && _runQuery(sprintf('UPDATE `%s` SET email = %s, notify = %u WHERE uid = %u', $staff_tbl, $xoopsDB->quoteString($email), $usernotif, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid));
             }
             echo '</ul>';
-            // no break
+        // no break
         case '0.6':
             set_time_limit(60);
             //Do DB updates to make 0.7
@@ -232,15 +228,24 @@ function upgradeDB()
                    && _runQuery(sprintf("ALTER TABLE %s MODIFY SUBJECT VARCHAR(100) NOT NULL DEFAULT ''", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
 
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s ADD (serverid INT(11) DEFAULT NULL,
+                   && _runQuery(
+                       sprintf(
+                           "ALTER TABLE %s ADD (serverid INT(11) DEFAULT NULL,
                                                              emailHash VARCHAR(100) DEFAULT NULL,
                                                              email VARCHAR(100) DEFAULT NULL,
                                                              overdueTime INT(11) NOT NULL DEFAULT '0',
-                                                             KEY emailHash (emailHash))", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
+                                                             KEY emailHash (emailHash))",
+                           $xoopsDB->prefix('xhelp_tickets')
+                       ),
+                       sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'),
+                       sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets')
+                   );
 
             // Create xhelp_department_mailbox table
             $ret = $ret
-                   && _runQuery(sprintf('CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
+                   && _runQuery(
+                       sprintf(
+                           'CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                           departmentid INT(11) DEFAULT NULL,
                                                           emailaddress VARCHAR(255) DEFAULT NULL,
                                                           SERVER VARCHAR(50) DEFAULT NULL,
@@ -254,34 +259,60 @@ function upgradeDB()
                                                           KEY departmentid (departmentid),
                                                           KEY emailaddress (emailaddress),
                                                           KEY mboxtype (mboxtype)
-                                                         )ENGINE=MyISAM;', $xoopsDB->prefix('xhelp_department_mailbox')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_department_mailbox'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_department_mailbox'));
+                                                         )ENGINE=MyISAM;',
+                           $xoopsDB->prefix('xhelp_department_mailbox')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_department_mailbox'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_department_mailbox')
+                   );
 
             // Create xhelp_mailevent table
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (id int(11) NOT NULL auto_increment,
-                                                           mbox_id int(11) NOT NULL default '0',
-                                                           event_desc text,
-                                                           event_class int(11) NOT NULL default '0',
-                                                           posted int(11) NOT NULL default '0',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
+                                                           mbox_id INT(11) NOT NULL DEFAULT '0',
+                                                           event_desc TEXT,
+                                                           event_class INT(11) NOT NULL DEFAULT '0',
+                                                           posted INT(11) NOT NULL DEFAULT '0',
                                                            PRIMARY KEY(id)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_mailevent')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_mailevent'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_mailevent'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_mailevent')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_mailevent'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_mailevent')
+                   );
 
             // Create xhelp_roles table
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (id int(11) NOT NULL auto_increment,
-                                                          name varchar(35) NOT NULL default '',
-                                                          description mediumtext,
-                                                          tasks int(11) NOT NULL default '0',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
+                                                          name VARCHAR(35) NOT NULL DEFAULT '',
+                                                          description MEDIUMTEXT,
+                                                          tasks INT(11) NOT NULL DEFAULT '0',
                                                           PRIMARY KEY(id)
-                                                         )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_roles')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_roles'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_roles'));
+                                                         )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_roles')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_roles'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_roles')
+                   );
 
             // Create xhelp_staffroles table
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (uid int(11) NOT NULL default '0',
-                                                         roleid int(11) NOT NULL default '0',
-                                                         deptid int(11) NOT NULL default '0',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (uid INT(11) NOT NULL DEFAULT '0',
+                                                         roleid INT(11) NOT NULL DEFAULT '0',
+                                                         deptid INT(11) NOT NULL DEFAULT '0',
                                                          PRIMARY KEY(uid, roleid, deptid)
-                                                        )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_staffroles')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_staffroles'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_staffroles'));
+                                                        )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_staffroles')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_staffroles'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_staffroles')
+                   );
 
             // Add default roles to db
             if (!$hasRoles = Xhelp\Utility::createRoles()) {
@@ -291,23 +322,24 @@ function upgradeDB()
             }
 
             // Set all staff members to have admin permission role
-            if ($staff = $hStaff->getObjects()) {
+            $staff = $staffHandler->getObjects();
+            if ($staff) {
                 foreach ($staff as $stf) {
                     $uid   = $stf->getVar('uid');
-                    $depts = $hMember->membershipByStaff($uid, true);
-                    if ($hStaff->addStaffRole($uid, 1, 0)) {
+                    $depts = $memberHandler->membershipByStaff($uid, true);
+                    if ($staffHandler->addStaffRole($uid, 1, 0)) {
                         echo '<li>' . sprintf(_AM_XHELP_MSG_GLOBAL_PERMS, $uid) . '</li>';
                     }
 
                     foreach ($depts as $dept) {
                         $deptid = $dept->getVar('id');
-                        if ($hStaff->addStaffRole($uid, 1, $deptid)) {    // Departmental permissions
+                        if ($staffHandler->addStaffRole($uid, 1, $deptid)) {    // Departmental permissions
                             echo '<li>' . sprintf(_AM_XHELP_MSG_UPD_PERMS, $uid, $dept->getVar('department')) . '</li>';
                         }
                     }
 
                     $stf->setVar('permTimestamp', time());        // Set initial value for permTimestamp field
-                    if (!$hStaff->insert($stf)) {
+                    if (!$staffHandler->insert($stf)) {
                         echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid) . '</li>';
                     } else {
                         echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid) . '</li>';
@@ -316,7 +348,7 @@ function upgradeDB()
             }
             echo '</ul>';
 
-            // no break
+        // no break
         case '0.7':
             set_time_limit(60);
             //Do DB updates to make 0.71
@@ -325,7 +357,7 @@ function upgradeDB()
             echo '<ul>';
             echo '</ul>';
 
-            // no break
+        // no break
         case '0.71':
             set_time_limit(60);
             //Do DB updates to make 0.75
@@ -341,21 +373,35 @@ function upgradeDB()
 
             // Create table for email template information
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (notif_id int(11) NOT NULL default '0',
-                                                           staff_setting int(11) NOT NULL default '0',
-                                                           user_setting int(11) NOT NULL default '0',
-                                                           staff_options mediumtext NOT NULL,
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (notif_id INT(11) NOT NULL DEFAULT '0',
+                                                           staff_setting INT(11) NOT NULL DEFAULT '0',
+                                                           user_setting INT(11) NOT NULL DEFAULT '0',
+                                                           staff_options MEDIUMTEXT NOT NULL,
                                                            PRIMARY KEY (notif_id)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_notifications')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_notifications'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_notifications'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_notifications')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_notifications'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_notifications')
+                   );
 
             // Add xhelp_status table
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (id int(11) NOT NULL auto_increment,
-                                                           state int(11) NOT NULL default '0',
-                                                           description varchar(50) NOT NULL default '',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
+                                                           state INT(11) NOT NULL DEFAULT '0',
+                                                           description VARCHAR(50) NOT NULL DEFAULT '',
                                                            PRIMARY KEY(id),
                                                            KEY state (state)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_status')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_status'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_status'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_status')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_status'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_status')
+                   );
 
             // Give default statuses for upgrade
             $hStatus       = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
@@ -381,7 +427,7 @@ function upgradeDB()
 
             foreach ($oldStatuses as $cStatus => $newStatus) {
                 $crit    = new \Criteria('status', $cStatus);
-                $success = $hTicket->updateAll('status', $newStatus, $crit);
+                $success = $ticketHandler->updateAll('status', $newStatus, $crit);
             }
             if ($success) {
                 echo '<li>' . _AM_XHELP_MSG_CHANGED_STATUS . '</li>';
@@ -391,15 +437,22 @@ function upgradeDB()
 
             // Add xhelp_ticket_submit_emails table
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (ticketid int(11) NOT NULL default '0',
-                                                           uid int(11) NOT NULL default '0',
-                                                           email varchar(100) NOT NULL default '',
-                                                           suppress int(11) NOT NULL default '0',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (ticketid INT(11) NOT NULL DEFAULT '0',
+                                                           uid INT(11) NOT NULL DEFAULT '0',
+                                                           email VARCHAR(100) NOT NULL DEFAULT '',
+                                                           suppress INT(11) NOT NULL DEFAULT '0',
                                                            PRIMARY KEY(ticketid, email)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_ticket_submit_emails')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_submit_emails'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_submit_emails'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_ticket_submit_emails')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_submit_emails'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_submit_emails')
+                   );
 
             // Add records to xhelp_ticket_submit_emails for existing tickets
-            $count     = $hTicket->getCount();
+            $count     = $ticketHandler->getCount();
             $batchsize = 100;
 
             $crit = new \Criteria('', '');
@@ -409,7 +462,7 @@ function upgradeDB()
             while ($i <= $count) {
                 set_time_limit(60);
                 $crit->setStart($i);
-                $tickets = $hTicket->getObjects($crit);
+                $tickets = $ticketHandler->getObjects($crit);
 
                 $all_users = [];
                 foreach ($tickets as $ticket) {
@@ -453,34 +506,64 @@ function upgradeDB()
 
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(sprintf('ALTER TABLE %s ADD (active INT(11) NOT NULL DEFAULT 1,
-                                                          KEY active (active))', $xoopsDB->prefix('xhelp_department_mailbox')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_department_mailbox'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_department_mailbox'));
+                   && _runQuery(
+                       sprintf(
+                           'ALTER TABLE %s ADD (active INT(11) NOT NULL DEFAULT 1,
+                                                          KEY ACTIVE (ACTIVE))',
+                           $xoopsDB->prefix('xhelp_department_mailbox')
+                       ),
+                       sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_department_mailbox'),
+                       sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_department_mailbox')
+                   );
 
             // Add xhelp_saved_searches table
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (id int(11) NOT NULL auto_increment,
-                                                           uid int(11) NOT NULL default '0',
-                                                           name varchar(50) NOT NULL default '',
-                                                           search mediumtext NOT NULL,
-                                                           pagenav_vars mediumtext NOT NULL,
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
+                                                           uid INT(11) NOT NULL DEFAULT '0',
+                                                           name VARCHAR(50) NOT NULL DEFAULT '',
+                                                           search MEDIUMTEXT NOT NULL,
+                                                           pagenav_vars MEDIUMTEXT NOT NULL,
                                                            PRIMARY KEY(id)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_saved_searches')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_saved_searches'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_saved_searches'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_saved_searches')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_saved_searches'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_saved_searches')
+                   );
 
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (fieldid int(11) NOT NULL default '0',
-                                                           deptid int(11) NOT NULL default '0',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (fieldid INT(11) NOT NULL DEFAULT '0',
+                                                           deptid INT(11) NOT NULL DEFAULT '0',
                                                            PRIMARY KEY  (fieldid, deptid)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_ticket_field_departments')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_field_departments'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_field_departments'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_ticket_field_departments')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_field_departments'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_field_departments')
+                   );
 
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (ticketid int(11) NOT NULL default '0',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (ticketid INT(11) NOT NULL DEFAULT '0',
                                                            PRIMARY KEY  (ticketid)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_ticket_values')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_values'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_values'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_ticket_values')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_values'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_values')
+                   );
 
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                            NAME VARCHAR(64) NOT NULL DEFAULT '',
                                                            description TINYTEXT NOT NULL,
                                                            fieldname VARCHAR(64) NOT NULL DEFAULT '',
@@ -494,7 +577,12 @@ function upgradeDB()
                                                            VALIDATION MEDIUMTEXT NOT NULL,
                                                            PRIMARY KEY (id),
                                                            KEY weight (weight)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_ticket_fields')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_fields'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_fields'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_ticket_fields')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_fields'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_fields')
+                   );
 
             set_time_limit(60);
             // Add notifications to new table
@@ -505,7 +593,7 @@ function upgradeDB()
             $hasDeptVisibility = xhelpCreateDepartmentVisibility();
 
             // Update staff permTimestamp
-            $hStaff->updateAll('permTimestamp', time());
+            $staffHandler->updateAll('permTimestamp', time());
 
             set_time_limit(60);
             //Update xhelp_tickets table
@@ -513,12 +601,12 @@ function upgradeDB()
             $ret = $ret
                    && _runQuery(sprintf("ALTER TABLE %s MODIFY SUBJECT VARCHAR(255) NOT NULL DEFAULT ''", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
 
-                   // no break
+        // no break
         case '0.75':
             set_time_limit(60);
             // Set default department
-//            $xoopsModuleConfig = Xhelp\Utility::getModuleConfig();
-            if  (null !== ($helper->getConfig('xhelp_defaultDept')) && 0 != $helper->getConfig('xhelp_defaultDept')) {
+            //            $xoopsModuleConfig = Xhelp\Utility::getModuleConfig();
+            if (null !== $helper->getConfig('xhelp_defaultDept') && 0 != $helper->getConfig('xhelp_defaultDept')) {
                 $ret = Xhelp\Utility::setMeta('default_department', $helper->getConfig('xhelp_defaultDept'));
             } else {
                 $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
@@ -565,13 +653,20 @@ function upgradeDB()
             // Add ticket list table
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(sprintf("CREATE TABLE %s (id int(11) NOT NULL auto_increment,
-                                                           uid int(11) NOT NULL default '0',
-                                                           searchid int(11) NOT NULL default '0',
-                                                           weight int(11) NOT NULL default '0',
+                   && _runQuery(
+                       sprintf(
+                           "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
+                                                           uid INT(11) NOT NULL DEFAULT '0',
+                                                           searchid INT(11) NOT NULL DEFAULT '0',
+                                                           weight INT(11) NOT NULL DEFAULT '0',
                                                            PRIMARY KEY (id),
                                                            KEY ticketList (uid, searchid)
-                                                          )ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_ticket_lists')), sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_lists'), sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_lists'));
+                                                          )ENGINE=MyISAM;",
+                           $xoopsDB->prefix('xhelp_ticket_lists')
+                       ),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_ticket_lists'),
+                       sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_ticket_lists')
+                   );
 
             // Add global ticket lists for staff members
             Xhelp\Utility::createDefaultTicketLists();
@@ -590,7 +685,7 @@ function upgradeDB()
                 }
             }
 
-            // no break
+        // no break
         case '0.77':
             // No schema changes for 0.78
 

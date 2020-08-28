@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,7 +22,7 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CONSTANTS_INCLUDED')) {
+if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
@@ -42,26 +44,26 @@ class TicketField extends \XoopsObject
     /**
      * Class Constructor
      *
-     * @param  mixed $id null for a new object, hash table for an existing object
+     * @param mixed $id null for a new object, hash table for an existing object
      * @access public
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('name', XOBJ_DTYPE_TXTBOX, null, true, 64);
-        $this->initVar('description', XOBJ_DTYPE_TXTBOX, '', false, 255);
-        $this->initVar('fieldname', XOBJ_DTYPE_TXTBOX, null, true, 64);
-        $this->initVar('controltype', XOBJ_DTYPE_INT, XHELP_CONTROL_TXTBOX, true);
-        $this->initVar('datatype', XOBJ_DTYPE_TXTBOX, null, true, 64);
-        $this->initVar('required', XOBJ_DTYPE_INT, false, true);
-        $this->initVar('fieldlength', XOBJ_DTYPE_INT, 255, true);
-        $this->initVar('weight', XOBJ_DTYPE_INT, 0, true);
-        $this->initVar('fieldvalues', XOBJ_DTYPE_ARRAY, null, false);
-        $this->initVar('defaultvalue', XOBJ_DTYPE_TXTBOX, null, false, 100);
-        $this->initVar('validation', XOBJ_DTYPE_TXTBOX, null, false);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('name', \XOBJ_DTYPE_TXTBOX, null, true, 64);
+        $this->initVar('description', \XOBJ_DTYPE_TXTBOX, '', false, 255);
+        $this->initVar('fieldname', \XOBJ_DTYPE_TXTBOX, null, true, 64);
+        $this->initVar('controltype', \XOBJ_DTYPE_INT, \XHELP_CONTROL_TXTBOX, true);
+        $this->initVar('datatype', \XOBJ_DTYPE_TXTBOX, null, true, 64);
+        $this->initVar('required', \XOBJ_DTYPE_INT, false, true);
+        $this->initVar('fieldlength', \XOBJ_DTYPE_INT, 255, true);
+        $this->initVar('weight', \XOBJ_DTYPE_INT, 0, true);
+        $this->initVar('fieldvalues', \XOBJ_DTYPE_ARRAY, null, false);
+        $this->initVar('defaultvalue', \XOBJ_DTYPE_TXTBOX, null, false, 100);
+        $this->initVar('validation', \XOBJ_DTYPE_TXTBOX, null, false);
 
-        if (isset($id)) {
-            if (is_array($id)) {
+        if (null !== $id) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -74,7 +76,6 @@ class TicketField extends \XoopsObject
      * @param null   $keys
      * @param string $format
      * @param int    $maxDepth
-     * @return void A hash table of name/value pairs for the field
      * @access public
      */
     public function getValues($keys = null, $format = 's', $maxDepth = 1)
@@ -102,9 +103,9 @@ class TicketField extends \XoopsObject
      */
     public function addValues($val_arr)
     {
-        if (is_array($val_arr)) {
+        if (\is_array($val_arr)) {
             $values = @$this->getVar('fieldvalues');
-            if (!is_array($values)) {
+            if (!\is_array($values)) {
                 $values = [];
             }
             foreach ($val_arr as $value => $desc) {
@@ -139,9 +140,9 @@ class TicketField extends \XoopsObject
      * @param $dept_arr
      * @return bool
      */
-    public function addDepartments(&$dept_arr)
+    public function addDepartments($dept_arr)
     {
-        if (!is_array($dept_arr) || 0 == count($dept_arr)) {
+        if (!\is_array($dept_arr) || 0 == \count($dept_arr)) {
             return false;
         }
         foreach ($dept_arr as $dept) {
@@ -175,7 +176,7 @@ class TicketField extends \XoopsObject
         $arr = [];
 
         $values = $this->getVar('fieldvalues');
-        if (XHELP_CONTROL_YESNO == $this->getVar('controltype')) {
+        if (\XHELP_CONTROL_YESNO == $this->getVar('controltype')) {
             $values = [1 => _YES, 0 => _NO];
         }
 
@@ -197,7 +198,7 @@ class TicketField extends \XoopsObject
             'weight'       => $this->getVar('weight'),
             'fieldvalues'  => $aValues,
             'datatype'     => $this->getVar('datatype'),
-            'validation'   => $this->getVar('validation')
+            'validation'   => $this->getVar('validation'),
         ];
 
         return $arr;

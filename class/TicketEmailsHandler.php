@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -21,7 +23,6 @@
 use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * Xhelp\TicketEmailsHandler class
@@ -53,9 +54,9 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -71,7 +72,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (ticketid, uid, email, suppress) VALUES (%u, %u, %s, %u)', $this->_db->prefix($this->_dbtable), $ticketid, $uid, $this->_db->quoteString($email), $suppress);
+        $sql = \sprintf('INSERT INTO `%s` (ticketid, uid, email, suppress) VALUES (%u, %u, %s, %u)', $this->_db->prefix($this->_dbtable), $ticketid, $uid, $this->_db->quoteString($email), $suppress);
 
         return $sql;
     }
@@ -82,7 +83,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($criteria = null)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
 
         return $sql;
     }
@@ -98,7 +99,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE `%s` SET suppress = %u WHERE ticketid = %u AND uid = %u AND email = %s', $this->_db->prefix($this->_dbtable), $suppress, $ticketid, $uid, $this->_db->quotestring($email));
+        $sql = \sprintf('UPDATE `%s` SET suppress = %u WHERE ticketid = %u AND uid = %u AND email = %s', $this->_db->prefix($this->_dbtable), $suppress, $ticketid, $uid, $this->_db->quotestring($email));
 
         return $sql;
     }
@@ -106,8 +107,8 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     /**
      * retrieve objects from the database
      *
-     * @param  object $criteria  {@link CriteriaElement} conditions to be met
-     * @param  bool   $id_as_key Should the department ID be used as array key
+     * @param null $criteria  {@link CriteriaElement} conditions to be met
+     * @param bool $id_as_key Should the department ID be used as array key
      * @return array  array of {@link Xhelp\Department} objects
      * @access  public
      */
@@ -116,7 +117,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
         $ret   = [];
         $limit = $start = 0;
         $sql   = $this->_selectQuery($criteria);
-        if (isset($criteria)) {
+        if (null !== $criteria) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
         }
@@ -140,9 +141,9 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     /**
      * retrieve objects from the database
      *
-     * @param  \CriteriaElement $criteria {@link CriteriaElement} conditions to be met
+     * @param null $criteria             {@link CriteriaElement} conditions to be met
      * @return array array of <a href='psi_element://Xhelp\Department'>Xhelp\Department</a> objects
-     * objects
+     *                                   objects
      * @internal param bool $id_as_key Should the department ID be used as array key
      * @access   public
      */
@@ -151,7 +152,7 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
         $ret   = [];
         $limit = $start = 0;
         $sql   = $this->_selectQuery($criteria);
-        if (isset($criteria)) {
+        if (null !== $criteria) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
         }

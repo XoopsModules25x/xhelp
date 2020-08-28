@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,12 +22,11 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * class StaffRoleHandler
@@ -53,9 +54,9 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -91,7 +92,7 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
 
         $arr = $this->getObjects($crit, $id_as_key);
 
-        if (0 == count($arr)) {
+        if (0 == \count($arr)) {
             $arr = false;
         }
 
@@ -126,7 +127,7 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (uid, roleid, deptid) VALUES (%u, %u, %u)', $this->_db->prefix($this->_dbtable), $uid, $roleid, $deptid);
+        $sql = \sprintf('INSERT INTO `%s` (uid, roleid, deptid) VALUES (%u, %u, %u)', $this->_db->prefix($this->_dbtable), $uid, $roleid, $deptid);
 
         return $sql;
     }
@@ -137,7 +138,7 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE uid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('uid'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE uid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('uid'));
 
         return $sql;
     }

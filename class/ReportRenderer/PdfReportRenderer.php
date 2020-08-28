@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp\ReportRenderer;
+<?php
 
-//
+namespace XoopsModules\Xhelp\ReportRenderer;
 
 use XoopsModules\Xhelp;
 

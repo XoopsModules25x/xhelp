@@ -1,8 +1,10 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 

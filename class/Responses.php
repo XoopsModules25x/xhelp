@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,7 +22,7 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -41,17 +43,17 @@ class Responses extends \XoopsObject
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('message', XOBJ_DTYPE_TXTAREA, null, false, 1000000);
-        $this->initVar('timeSpent', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('updateTime', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('userIP', XOBJ_DTYPE_TXTBOX, null, true, 35);
-        $this->initVar('private', XOBJ_DTYPE_INT, null, false);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('uid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('message', \XOBJ_DTYPE_TXTAREA, null, false, 1000000);
+        $this->initVar('timeSpent', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('updateTime', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('userIP', \XOBJ_DTYPE_TXTBOX, null, true, 35);
+        $this->initVar('private', \XOBJ_DTYPE_INT, null, false);
 
         if (null !== $id) {
-            if (is_array($id)) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -68,7 +70,7 @@ class Responses extends \XoopsObject
      */
     public function posted($format = 'l')
     {
-        return formatTimestamp($this->getVar('updateTime'), $format);
+        return \formatTimestamp($this->getVar('updateTime'), $format);
     }
 
     /**
@@ -96,8 +98,10 @@ class Responses extends \XoopsObject
         $maxfilesize   = $config['xhelp_uploadSize'];
         $maxfilewidth  = $config['xhelp_uploadWidth'];
         $maxfileheight = $config['xhelp_uploadHeight'];
-        if (!is_dir(XHELP_UPLOAD_PATH)) {
-            mkdir(XHELP_UPLOAD_PATH, 0757);
+        if (!\is_dir(XHELP_UPLOAD_PATH)) {
+            if (!\mkdir($concurrentDirectory = XHELP_UPLOAD_PATH, 0757) && !\is_dir($concurrentDirectory)) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
 
         $uploader = new Xhelp\MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
@@ -117,12 +121,12 @@ class Responses extends \XoopsObject
 
                 if ($hFile->insert($file)) {
                     return $file;
-                } else {
-                    return $uploader->getErrors();
                 }
-            } else {
+
                 return $uploader->getErrors();
             }
+
+            return $uploader->getErrors();
         }
     }
 
@@ -155,11 +159,11 @@ class Responses extends \XoopsObject
 
         if ($uploader->fetchMedia($post_field)) {
             return true;
-        } else {
-            $errors = array_merge($errors, $uploader->getErrors(false));
-
-            return false;
         }
+
+        $errors = \array_merge($errors, $uploader->getErrors(false));
+
+        return false;
     }
 
     /**
@@ -167,10 +171,10 @@ class Responses extends \XoopsObject
      * @return Xhelp\Ticket The ticket
      * @access public
      */
-    public function &getTicket()
+    public function getTicket()
     {
-        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
 
-        return $hTicket->get($this->getVar('ticketid'));
+        return $ticketHandler->get($this->getVar('ticketid'));
     }
 }

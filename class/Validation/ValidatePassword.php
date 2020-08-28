@@ -1,13 +1,14 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
 use XoopsModules\Xhelp\Validation;
 
 /**
  *  ValidatorPassword subclass of Validator
  *  Validates a password
  */
-class ValidatePassword extends validation\Validator
+class ValidatePassword extends Validator
 {
     /**
      * Private
@@ -24,26 +25,25 @@ class ValidatePassword extends validation\Validator
     //! A constructor.
 
     /**
-     * Constucts a new ValidatePassword object subclass or Validator
+     * Constructs a new ValidatePassword object subclass or Validator
      * @param string $pass the string to validate
-     * @param $vpass
+     * @param        $vpass
      */
     public function __construct($pass, $vpass)
     {
         $this->pass  = $pass;
         $this->vpass = $vpass;
-        Validator::Validator();
+        parent::__construct();
     }
 
     //! A manipulator
 
     /**
      * Validates a password
-     * @return void
      */
     public function validate()
     {
-        $hConfig = xoops_getHandler('config');
+        $hConfig = \xoops_getHandler('config');
         //$xoopsConfigUser = $hConfig->getConfigsByCat(XOOPS_CONF_USER);
         $xoopsConfigUser = [];
         $crit            = new \Criteria('conf_catid', 2);
@@ -52,15 +52,15 @@ class ValidatePassword extends validation\Validator
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
         }
 
-        if (!isset($this->pass) || '' == $this->pass || !isset($this->vpass) || '' == $this->vpass) {
+        if (null === $this->pass || '' == $this->pass || null === $this->vpass || '' == $this->vpass) {
             $this->setError(_XHELP_MESSAGE_NOT_SUPPLIED);
             //$stop .= _US_ENTERPWD.'<br>';
         }
-        if (isset($this->pass) && ($this->pass != $this->vpass)) {
+        if (null !== $this->pass && ($this->pass != $this->vpass)) {
             $this->setError(_XHELP_MESSAGE_NOT_SAME);
-        //$stop .= _US_PASSNOTSAME.'<br>';
-        } elseif (('' != $this->pass) && (strlen($this->pass) < $xoopsConfigUser['minpass'])) {
-            $this->setError(sprintf(_XHELP_MESSAGE_SHORT, $xoopsConfigUser['minpass']));
+            //$stop .= _US_PASSNOTSAME.'<br>';
+        } elseif (('' != $this->pass) && (mb_strlen($this->pass) < $xoopsConfigUser['minpass'])) {
+            $this->setError(\sprintf(_XHELP_MESSAGE_SHORT, $xoopsConfigUser['minpass']));
             //$stop .= sprintf(_US_PWDTOOSHORT,$xoopsConfigUser['minpass'])."<br>";
         }
     }

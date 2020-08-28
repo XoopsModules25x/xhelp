@@ -1,5 +1,4 @@
 <?php
-//
 
 define('_XHELP_DS_NAME', 'Department Summary');
 define('_XHELP_DS_DESC', 'Retrieves department related information.');

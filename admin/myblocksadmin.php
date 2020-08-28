@@ -1,8 +1,7 @@
 <?php
 
-use XoopsModules\Xhelp;
+use Xmf\Module\Admin;
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopsblock.php';
 //require_once XOOPS_ROOT_PATH."/modules/".$xoopsModule->dirname()."/include/functions.php";
@@ -25,7 +24,7 @@ error_reporting($error_reporting_level);
 
 $group_defs = file("$xoops_system_path/language/$language/admin/groups.php");
 foreach ($group_defs as $def) {
-    if (false !== strpos($def, '_AM_ACCESSRIGHTS') || false !== strpos($def, '_AM_ACTIVERIGHTS')) {
+    if (false !== mb_strpos($def, '_AM_ACCESSRIGHTS') || false !== mb_strpos($def, '_AM_ACTIVERIGHTS')) {
         eval($def);
     }
 }
@@ -36,8 +35,9 @@ if (!is_object($xoopsModule)) {
 }
 
 // check access right (needs system_admin of BLOCK)
-$syspermHandler = xoops_getHandler('groupperm');
-if (!$syspermHandler->checkRight('system_admin', XOOPS_SYSTEM_BLOCK, $xoopsUser->getGroups())) {
+/** @var \XoopsGroupPermHandler $grouppermHandler */
+$grouppermHandler = xoops_getHandler('groupperm');
+if (!$grouppermHandler->checkRight('system_admin', XOOPS_SYSTEM_BLOCK, $xoopsUser->getGroups())) {
     redirect_header(XOOPS_URL . '/user.php', 1, _NOPERM);
 }
 
@@ -60,7 +60,7 @@ function list_blocks()
         '86400'   => _DAY,
         '259200'  => sprintf(_DAYS, 3),
         '604800'  => _WEEK,
-        '2592000' => _MONTH
+        '2592000' => _MONTH,
     ];
 
     // displaying TH
@@ -82,9 +82,11 @@ function list_blocks()
         </tr>\n";
 
     // blocks displaying loop
-    $class = 'even';
+    $class         = 'even';
+    $block_configs = get_block_configs();
     foreach (array_keys($block_arr) as $i) {
-        $sseln = $ssel0 = $ssel1 = $ssel2 = $ssel3 = $ssel4 = '';
+        $sseln = $ssel0 = $ssel1 = $ssel2 = $ssel3 = $ssel4 = $ssel5 = $ssel6 = $ssel7 = '';
+        $scoln = $scol0 = $scol1 = $scol2 = $scol3 = $scol4 = $ssel5 = $ssel6 = $ssel7 = '';
 
         $weight     = $block_arr[$i]->getVar('weight');
         $title      = $block_arr[$i]->getVar('title');
@@ -94,24 +96,42 @@ function list_blocks()
 
         // visible and side
         if (1 != $block_arr[$i]->getVar('visible')) {
-            $sseln = " checked style='background-color:#FF0000;'";
+            $sseln = ' checked';
+            $scoln = '#FF9966';
         } else {
             switch ($block_arr[$i]->getVar('side')) {
                 default:
                 case XOOPS_SIDEBLOCK_LEFT:
-                    $ssel0 = " checked style='background-color:#00FF00;'";
+                    $ssel0 = ' checked';
+                    $scol0 = '#00FF00';
                     break;
                 case XOOPS_SIDEBLOCK_RIGHT:
-                    $ssel1 = " checked style='background-color:#00FF00;'";
+                    $ssel1 = ' checked';
+                    $scol1 = '#00FF00';
                     break;
                 case XOOPS_CENTERBLOCK_LEFT:
-                    $ssel2 = " checked style='background-color:#00FF00;'";
+                    $ssel2 = ' checked';
+                    $scol2 = '#00FF00';
                     break;
                 case XOOPS_CENTERBLOCK_RIGHT:
-                    $ssel4 = " checked style='background-color:#00FF00;'";
+                    $ssel4 = ' checked';
+                    $scol4 = '#00FF00';
                     break;
                 case XOOPS_CENTERBLOCK_CENTER:
-                    $ssel3 = " checked style='background-color:#00FF00;'";
+                    $ssel3 = ' checked';
+                    $scol3 = '#00FF00';
+                    break;
+                case XOOPS_CENTERBLOCK_BOTTOMLEFT:
+                    $ssel5 = ' checked';
+                    $scol5 = '#00FF00';
+                    break;
+                case XOOPS_CENTERBLOCK_BOTTOMRIGHT:
+                    $ssel6 = ' checked';
+                    $scol6 = '#00FF00';
+                    break;
+                case XOOPS_CENTERBLOCK_BOTTOM:
+                    $ssel7 = ' checked';
+                    $scol7 = '#00FF00';
                     break;
             }
         }
@@ -130,11 +150,11 @@ function list_blocks()
         $db            = \XoopsDatabaseFactory::getDatabaseConnection();
         $result        = $db->query('SELECT module_id FROM ' . $db->prefix('block_module_link') . " WHERE block_id='$bid'");
         $selected_mids = [];
-        while (false !== (list($selected_mid) = $db->fetchRow($result))) {
+        while (list($selected_mid) = $db->fetchRow($result)) {
             $selected_mids[] = (int)$selected_mid;
         }
-        /** @var XoopsModuleHandler $moduleHandler */
-        $moduleHandler = xoops_getHandler('module');
+        /** @var \XoopsModuleHandler $moduleHandler */
+$moduleHandler = xoops_getHandler('module');
         $criteria      = new \CriteriaCompo(new \Criteria('hasmain', 1));
         $criteria->add(new \Criteria('isactive', 1));
         $module_list     = $moduleHandler->getList($criteria);
@@ -226,15 +246,20 @@ function list_groups()
         $item_list[$block_arr[$i]->getVar('bid')] = $block_arr[$i]->getVar('title');
     }
 
-    $form = new MyXoopsGroupPermForm('', 1, 'block_read', "<img id='bottomtableicon' src="
-                                                          . XOOPS_URL
-                                                          . '/modules/'
-                                                          . $xoopsModule->dirname()
-                                                          . "/assets/images/icon/close12.gif alt=''></a>&nbsp;"
-                                                          . _AM_SCLIENT_GROUPS
-                                                          . "</h3><div id='bottomtable'><span style=\"color: #567; margin: 3px 0 0 0; font-size: small; display: block; \">"
-                                                          . _AM_SCLIENT_GROUPSINFO
-                                                          . '</span>');
+    $form = new MyXoopsGroupPermForm(
+        '',
+        1,
+        'block_read',
+        "<img id='bottomtableicon' src="
+        . XOOPS_URL
+        . '/modules/'
+        . $xoopsModule->dirname()
+        . "/assets/images/icon/close12.gif alt=''></a>&nbsp;"
+        . _AM_SCLIENT_GROUPS
+        . "</h3><div id='bottomtable'><span style=\"color: #567; margin: 3px 0 0 0; font-size: small; display: block; \">"
+        . _AM_SCLIENT_GROUPSINFO
+        . '</span>'
+    );
     $form->addAppendix('module_admin', $xoopsModule->mid(), $myts->displayTarea($xoopsModule->name()) . ' ' . _AM_ACTIVERIGHTS);
     $form->addAppendix('module_read', $xoopsModule->mid(), $myts->displayTarea($xoopsModule->name()) . ' ' . _AM_ACCESSRIGHTS);
     foreach ($item_list as $item_id => $item_name) {
@@ -252,7 +277,7 @@ if (!ob_get_length()) {
     xoops_cp_header();
 }
 //echo $oAdminButton->renderButtons();
-$adminObject = \Xmf\Module\Admin::getInstance();
+$adminObject = Admin::getInstance();
 $adminObject->displayNavigation(basename(__FILE__));
 
 list_blocks();

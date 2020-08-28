@@ -1,5 +1,4 @@
 <?php
-//
 
 define('_XHELP_TSBS_NAME', 'Time Spent By Staff');
 define('_XHELP_TSBS_DESC', 'Retrieves staff name and amount of time spent working on tickets.');

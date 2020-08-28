@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 require_once XOOPS_ROOT_PATH . '/class/xoopsform/form.php';
 
@@ -36,13 +36,14 @@ class Form extends \XoopsForm
     {
         $ret = "<form name='" . $this->getName() . "' id='" . $this->getName() . "' action='" . $this->getAction() . "' method='" . $this->getMethod() . "' " . $this->getExtra() . ">\n<table width='100%' class='outer' cellspacing='1'><tr><th colspan='2'>" . $this->getTitle() . '</th></tr>';
 
-        if ($width = $this->getLabelWidth()) {
+        $width = $this->getLabelWidth();
+        if ($width) {
             $labelWidth = ' width="' . $width . '"';
         } else {
             $labelWidth = '';
         }
         foreach ($this->getElements() as $ele) {
-            if (!is_object($ele)) {
+            if (!\is_object($ele)) {
                 $ret .= $ele;
             } elseif (!$ele->isHidden()) {
                 $class = 'even';

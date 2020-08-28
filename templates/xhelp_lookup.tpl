@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC '//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<{$xoops_langcode}>" lang="<{$xoops_langcode}>">
+<!DOCTYPE html>
+<html xml:lang="<{$xoops_langcode}>" lang="<{$xoops_langcode}>">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=<{$xoops_charset}>">
     <meta http-equiv="content-language" content="<{$xoops_langcode}>">
@@ -68,7 +68,7 @@
         }
 
         table td {
-            background-color: white;
+            background-color: #ffffff;
             font-size: 12px;
             padding: 0;
             border-width: 0;
@@ -82,8 +82,8 @@
         }
 
         table#imagemain td {
-            border-right: 1px solid silver;
-            border-bottom: 1px solid silver;
+            border-right: 1px solid #c0c0c0;
+            border-bottom: 1px solid #c0c0c0;
             padding: 5px;
             vertical-align: middle;
         }
@@ -91,7 +91,7 @@
         table#imagemain th {
             border: 0;
             background-color: #2F5376;
-            color: white;
+            color: #ffffff;
             font-size: 12px;
             padding: 5px;
             vertical-align: top;
@@ -106,7 +106,7 @@
         }
 
         table#header td#headerbar {
-            border-bottom: 1px solid silver;
+            border-bottom: 1px solid #c0c0c0;
             background-color: #dddddd;
         }
 

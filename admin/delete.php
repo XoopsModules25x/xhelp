@@ -1,16 +1,15 @@
 <?php
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-//require_once('header.php');
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 
 global $xoopsUser;
 $uid = $xoopsUser->getVar('uid');
 
-if (isset($_REQUEST['deleteDept'])) {
-    if (isset($_REQUEST['deptid'])) {
+if (Request::hasVar('deleteDept', 'REQUEST')) {
+    if (Request::hasVar('deptid', 'REQUEST')) {
         $deptID = $_REQUEST['deptid'];
     } else {
         redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_MESSAGE_NO_DEPT);
@@ -22,13 +21,14 @@ if (isset($_REQUEST['deleteDept'])) {
         xoops_confirm(['deleteDept' => 1, 'deptid' => $deptID, 'ok' => 1], XHELP_BASE_URL . '/admin/delete.php', sprintf(_AM_XHELP_MSG_DEPT_DEL_CFRM, $deptID));
         xoops_cp_footer();
     } else {
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $hGroupPerm   = xoops_getHandler('groupperm');
-        $dept         =& $hDepartments->get($deptID);
+        $hDepartments     = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        /** @var \XoopsGroupPermHandler $grouppermHandler */
+$grouppermHandler = xoops_getHandler('groupperm');
+        $dept             = $hDepartments->get($deptID);
 
         $crit = new \CriteriaCompo(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
         $crit->add(new \Criteria('gperm_itemid', $deptID));
-        $hGroupPerm->deleteAll($crit);
+        $grouppermHandler->deleteAll($crit);
 
         $deptCopy = $dept;
 
@@ -63,8 +63,8 @@ if (isset($_REQUEST['deleteDept'])) {
         }
         redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, $message);
     }
-} elseif (isset($_REQUEST['deleteStaff'])) {
-    if (isset($_REQUEST['uid'])) {
+} elseif (Request::hasVar('deleteStaff', 'REQUEST')) {
+    if (Request::hasVar('uid', 'REQUEST')) {
         $staffid = $_REQUEST['uid'];
 
         if (!isset($_POST['ok'])) {
@@ -73,10 +73,10 @@ if (isset($_REQUEST['deleteDept'])) {
             xoops_confirm(['deleteStaff' => 1, 'uid' => $staffid, 'ok' => 1], XHELP_BASE_URL . '/admin/delete.php', sprintf(_AM_XHELP_MSG_STAFF_DEL_CFRM, $staffid));
             xoops_cp_footer();
         } else {
-            $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-            $staff  = $hStaff->getByUid($staffid);
+            $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+            $staff        = $staffHandler->getByUid($staffid);
 
-            if ($hStaff->delete($staff)) {
+            if ($staffHandler->delete($staff)) {
                 $_eventsrv->trigger('delete_staff', [&$staff]);
                 $message = _XHELP_MESSAGE_STAFF_DELETE;
             } else {

@@ -1,7 +1,6 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
-use XoopsModules\Xhelp\Validation;
+namespace XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidateNumber
@@ -14,12 +13,12 @@ class ValidateNumber extends Validator
      */
     public $text;
 
-    public $forceeentry;
+    public $forceentry;
 
     //! A constructor.
 
     /**
-     * Constucts a new ValidateNumber object subclass or Validator
+     * Constructs a new ValidateNumber object subclass or Validator
      * @param      $text
      * @param bool $forceentry
      */
@@ -27,18 +26,17 @@ class ValidateNumber extends Validator
     {
         $this->text       = $text;
         $this->forceentry = $forceentry;
-        Validator::Validator();
+        parent::__construct();
     }
 
     //! A manipulator
 
     /**
      * Validates a number
-     * @return void
      */
     public function validate()
     {
-        if (!is_numeric($this->text) && (strlen($this->text) > 0 && !$this->forceentry)) {
+        if (!\is_numeric($this->text) && (mb_strlen($this->text) > 0 && !$this->forceentry)) {
             $this->setError(_XHELP_MESSAGE_NOT_NUMERIC);
         }
     }

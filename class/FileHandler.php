@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,12 +22,11 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * Xhelp\FileHandler class
@@ -57,9 +58,9 @@ class FileHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -75,7 +76,7 @@ class FileHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (id, filename, ticketid, responseid, mimetype) VALUES (%u, %s, %u, %d, %s)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype));
+        $sql = \sprintf('INSERT INTO `%s` (id, filename, ticketid, responseid, mimetype) VALUES (%u, %s, %u, %d, %s)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype));
 
         return $sql;
     }
@@ -91,7 +92,7 @@ class FileHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE `%s` SET filename = %s, ticketid = %u, responseid = %d, mimetype = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype), $id);
+        $sql = \sprintf('UPDATE `%s` SET filename = %s, ticketid = %u, responseid = %d, mimetype = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype), $id);
 
         return $sql;
     }
@@ -102,7 +103,7 @@ class FileHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -125,7 +126,7 @@ class FileHandler extends Xhelp\BaseObjectHandler
     /**
      * delete file matching a set of conditions
      *
-     * @param  \CriteriaElement $criteria {@link CriteriaElement}
+     * @param null $criteria {@link CriteriaElement}
      * @return bool   FALSE if deletion failed
      * @access  public
      */
@@ -137,7 +138,7 @@ class FileHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = 'DELETE FROM ' . $this->_db->prefix($this->_dbtable);
-        if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
+        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
             $sql .= ' ' . $criteria->renderWhere();
         }
         if (!$result = $this->_db->queryF($sql)) {
@@ -154,8 +155,8 @@ class FileHandler extends Xhelp\BaseObjectHandler
     public function unlinkFile($file)
     {
         $ret = false;
-        if (is_file($file)) {
-            $ret = unlink($file);
+        if (\is_file($file)) {
+            $ret = \unlink($file);
         }
 
         return $ret;

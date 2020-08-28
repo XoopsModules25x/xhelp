@@ -1,10 +1,10 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -17,28 +17,27 @@ class FaqAdapterFactory
      * Retrieve an array of filenames for all installed adapters
      *
      * @return array Xhelp\FaqAdapter filenames
-     *
      */
     public static function &installedAdapters()
     {
         $aAdapters = [];
 
         // Step 1 - directory listing of all files in class/faq/ directory
-        $adapters_dir = @ dir(XHELP_FAQ_ADAPTER_PATH);
+        $adapters_dir = @\dir(\XHELP_FAQ_ADAPTER_PATH);
         if ($adapters_dir) {
             while (false !== ($file = $adapters_dir->read())) {
-                if (preg_match('|^\.+$|', $file)) {
+                if (\preg_match('|^\.+$|', $file)) {
                     continue;
                 }
-                if (preg_match('|\.php$|', $file)) {
-                    $modname = basename($file, '.php'); // Get name without file extension
+                if (\preg_match('|\.php$|', $file)) {
+                    $modname = \basename($file, '.php'); // Get name without file extension
 
                     // Check that class exists in file
                     //                    $adapter_data = implode('', file(XHELP_FAQ_ADAPTER_PATH . '/' . $file));
-                    $adapter_data = file_get_contents(XHELP_FAQ_ADAPTER_PATH . '/' . $file);
-                    $classname    = 'xhelp' . ucfirst($modname) . 'Adapter';
-                    if (preg_match("|class $classname(.*)|i", $adapter_data) > 0) {
-                        require_once XHELP_FAQ_ADAPTER_PATH . "/$file";
+                    $adapter_data = file_get_contents(\XHELP_FAQ_ADAPTER_PATH . '/' . $file);
+                    $classname    = 'xhelp' . \ucfirst($modname) . 'Adapter';
+                    if (\preg_match("|class $classname(.*)|i", $adapter_data) > 0) {
+                        require_once \XHELP_FAQ_ADAPTER_PATH . "/$file";
                         $aAdapters[$modname] = new $classname();
                     }
                     unset($adapter_data);
@@ -67,11 +66,11 @@ class FaqAdapterFactory
         }
 
         // Check adapterValid function
-        $isValid = self::_adapterValid($name);
+        $isValid = self::isAdapterValid($name);
 
         if ($isValid) {
             // Step 2 - include script with faq adapter class
-            require_once XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php';
+            require_once \XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php';
 
             // Step 3 - create instance of adapter class
             $classname = 'xhelp' . $name . 'Adapter';
@@ -80,9 +79,9 @@ class FaqAdapterFactory
             $ret = new $classname();
 
             return $ret;
-        } else {
-            return $ret;
         }
+
+        return $ret;
     }
 
     /**
@@ -91,10 +90,10 @@ class FaqAdapterFactory
      * @param $name
      * @return bool true (success) / false (failure)
      */
-    public function setFaqAdapter($name)
+    public static function setFaqAdapter($name)
     {
         // Step 1 - check that $name is a valid adapter
-        $isValid = self::_adapterValid($name);
+        $isValid = self::isAdapterValid($name);
 
         // Step 2 - store in xhelp_meta table
         $ret = false;
@@ -112,13 +111,13 @@ class FaqAdapterFactory
      * @param $name
      * @return bool true (success) / false (failure)
      */
-    public function _adapterValid($name)
+    public static function isAdapterValid($name)
     {
         $ret = false;
         // Step 0 - Make sure this is a valid file
-        if (is_file(XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php')) {
+        if (\is_file(\XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php')) {
             // Step 1 - create instance of faq adapter class
-            if (require_once XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php') {
+            if (require_once \XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php') {
                 $classname = 'xhelp' . $name . 'Adapter';
                 $oAdapter  = new $classname();
 

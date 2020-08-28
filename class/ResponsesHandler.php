@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,12 +22,11 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * Xhelp\ResponsesHandler class
@@ -57,9 +58,9 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -75,8 +76,19 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (id, uid, ticketid, message, timeSpent, updateTime, userIP, private)
-            VALUES (%u, %u, %u, %s, %u, %u, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $ticketid, $this->_db->quoteString($message), $timeSpent, time(), $this->_db->quoteString($userIP), $private);
+        $sql = \sprintf(
+            'INSERT INTO `%s` (id, uid, ticketid, message, timeSpent, updateTime, userIP, private)
+            VALUES (%u, %u, %u, %s, %u, %u, %s, %u)',
+            $this->_db->prefix($this->_dbtable),
+            $id,
+            $uid,
+            $ticketid,
+            $this->_db->quoteString($message),
+            $timeSpent,
+            \time(),
+            $this->_db->quoteString($userIP),
+            $private
+        );
 
         return $sql;
     }
@@ -92,8 +104,19 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE `%s` SET uid = %u, ticketid = %u, message = %s, timeSpent = %u,
-            updateTime = %u, userIP = %s, private = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $ticketid, $this->_db->quoteString($message), $timeSpent, time(), $this->_db->quoteString($userIP), $private, $id);
+        $sql = \sprintf(
+            'UPDATE `%s` SET uid = %u, ticketid = %u, message = %s, timeSpent = %u,
+            updateTime = %u, userIP = %s, private = %u WHERE id = %u',
+            $this->_db->prefix($this->_dbtable),
+            $uid,
+            $ticketid,
+            $this->_db->quoteString($message),
+            $timeSpent,
+            \time(),
+            $this->_db->quoteString($userIP),
+            $private,
+            $id
+        );
 
         return $sql;
     }
@@ -104,7 +127,7 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -114,13 +137,12 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
      *
      * @param \XoopsObject $obj       reference to the {@link xhelpResponse}
      *                                obj to delete
-     * @param  bool        $force
+     * @param bool         $force
      * @return bool FALSE if failed.
      * @access  public
      */
     public function delete(\XoopsObject $obj, $force = false)
     {
-
         // Remove file associated with this response
         $hFiles = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
         $crit   = new \CriteriaCompo(new \Criteria('ticketid', $obj->getVar('ticketid')));
@@ -137,17 +159,17 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
     /**
      * Get number of responses by staff members
      *
-     * @param  int $ticketid ticket to get count
+     * @param int $ticketid ticket to get count
      * @return int Number of staff responses
      * @access  public
      */
     public function getStaffResponseCount($ticketid)
     {
-        $sql = sprintf('SELECT COUNT(*) FROM `%s` r INNER JOIN %s s ON r.uid = s.uid WHERE r.ticketid = %u', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_staff'), $ticketid);
+        $sql = \sprintf('SELECT COUNT(*) FROM `%s` r INNER JOIN %s s ON r.uid = s.uid WHERE r.ticketid = %u', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_staff'), $ticketid);
 
         $ret = $this->_db->query($sql);
 
-        list($count) = $this->_db->fetchRow($ret);
+        [$count] = $this->_db->fetchRow($ret);
 
         return $count;
     }
@@ -155,15 +177,15 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
     /**
      * Get number of responses by ticketid
      *
-     * @param  array $tickets where ticketid is key
+     * @param array $tickets where ticketid is key
      * @return array key = ticketid, value = response count
      * @access public
      */
     public function getResponseCounts($tickets)
     {
-        if (is_array($tickets)) {
+        if (\is_array($tickets)) {
             //$crit = new \Criteria('ticketid', "(". implode(array_keys($tickets), ',') .")", 'IN');
-            $sql = sprintf('SELECT COUNT(*) AS numresponses, ticketid FROM `%s` WHERE ticketid IN (%s) GROUP BY ticketid', $this->_db->prefix($this->_dbtable), implode(array_keys($tickets), ','));
+            $sql = \sprintf('SELECT COUNT(*) AS numresponses, ticketid FROM `%s` WHERE ticketid IN (%s) GROUP BY ticketid', $this->_db->prefix($this->_dbtable), \implode(',', \array_keys($tickets)));
         } else {
             return false;
         }

@@ -1,11 +1,11 @@
 <?php
-//
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 
-$hStaff = Xhelp\Helper::getInstance()->getHandler('Staff');
+$staffHandler = Xhelp\Helper::getInstance()->getHandler('Staff');
 
 //Allow only staff members to view this page
 if (!$xoopsUser) {
@@ -13,12 +13,12 @@ if (!$xoopsUser) {
 }
 
 $inadmin = 0;
-if (isset($_REQUEST['admin']) && 1 == $_REQUEST['admin']) {
+if (Request::hasVar('admin', 'REQUEST') && 1 == $_REQUEST['admin']) {
     $inadmin = 1;
 }
 
 if (!$inadmin && !$xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
-    if (!$hStaff->isStaff($xoopsUser->getVar('uid'))) {
+    if (!$staffHandler->isStaff($xoopsUser->getVar('uid'))) {
         redirect_header(XOOPS_URL . '/modules/xhelp/index.php', 3, _NOPERM);
     }
 }
@@ -33,11 +33,11 @@ $xoopsTpl->assign('xoops_url', XOOPS_URL);
 $xoopsTpl->assign('xhelp_inadmin', $inadmin);
 $xoopsTpl->assign('xhelp_adminURL', XHELP_ADMIN_URL);
 
-if (isset($_POST['search'])) {
-    if (isset($_POST['searchText'])) {
+if (Request::hasVar('search', 'POST')) {
+    if (Request::hasVar('searchText', 'POST')) {
         $text = $_POST['searchText'];
     }
-    if (isset($_POST['subject'])) {
+    if (Request::hasVar('subject', 'POST')) {
         $subject = $_POST['subject'];
     }
     $xoopsTpl->assign('xhelp_viewResults', true);
@@ -51,7 +51,7 @@ if (isset($_POST['search'])) {
             'uid'   => $user->getVar('uid'),
             'uname' => $user->getVar('uname'),
             'name'  => $user->getVar('name'),
-            'email' => $user->getVar('email')
+            'email' => $user->getVar('email'),
         ];
     }
 

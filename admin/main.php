@@ -1,8 +1,9 @@
 <?php
 
+use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 define('MAX_STAFF_RESPONSETIME', 5);
@@ -16,7 +17,7 @@ $helper = Xhelp\Helper::getInstance();
 
 $op = 'default';
 
-if (isset($_REQUEST['op'])) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -24,31 +25,24 @@ switch ($op) {
     case 'about':
         about();
         break;
-
     case 'mailEvents':
         mailEvents();
         break;
-
     case 'searchMailEvents':
         searchMailEvents();
         break;
-
     case 'blocks':
         require_once __DIR__ . '/myblocksadmin.php';
         break;
-
     case 'createdir':
         createdir();
         break;
-
     case 'setperm':
         setperm();
         break;
-
     case 'manageFields':
         manageFields();
         break;
-
     default:
         xhelp_default();
         break;
@@ -108,7 +102,7 @@ function mailEvents()
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('mailEvents');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
     displayEvents($mailEvents, $mailboxes);
@@ -120,11 +114,11 @@ function searchMailEvents()
 {
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('mailEvents');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
     if (!isset($_POST['searchEvents'])) {
-        $stylePath = require_once XHELP_INCLUDE_PATH . '/calendar/calendarjs.php';
+        $stylePath = require_once XHELP_ASSETS_PATH . '/js/calendar/calendarjs.php';
         echo '<link rel="stylesheet" type="text/css" media="all" href="' . $stylePath . '"><!--[if lt IE 7]><script src="iepngfix.js" language="JavaScript" type="text/javascript"></script><![endif]-->';
 
         echo "<form method='post' action='" . XHELP_ADMIN_URL . "/main.php?op=searchMailEvents'>";
@@ -178,7 +172,7 @@ function searchMailEvents()
         }
         $crit->setOrder('DESC');
         $crit->setSort('posted');
-        if (isset($email)) {
+        if (null !== $email) {
             $mailEvents = $hMailEvent->getObjectsJoin($crit);
         } else {
             $mailEvents = $hMailEvent->getObjects($crit);
@@ -272,7 +266,7 @@ function xhelp_default()
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('index');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
     $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
@@ -311,8 +305,8 @@ function xhelp_default()
     echo "<tr class='foot'><td>" . _AM_XHELP_TEXT_TOTAL_TICKETS . '</td><td>' . $totalTickets . '</td></tr>';
     echo '</table></div><br>';
 
-    $hStaff     = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    $hResponses = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+    $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hResponses   = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
     echo "</td><td valign='top'>";    // Outer table
     echo "<div id='timeSpent'>";    // Start inner top-left cell
     echo "<table border='0' width='100%' cellspacing='1' class='outer'>
@@ -321,7 +315,7 @@ function xhelp_default()
     $sql = sprintf('SELECT u.uid, u.uname, u.name, (s.responseTime / s.ticketsResponded) AS AvgResponseTime FROM `%s` u INNER JOIN %s s ON u.uid = s.uid WHERE ticketsResponded > 0 ORDER BY AvgResponseTime', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
     $ret = $xoopsDB->query($sql, MAX_STAFF_RESPONSETIME);
     $i   = 0;
-    while (false !== (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret))) {
+    while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
         $class = $table_class[$i % 2];
         echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . Xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
         ++$i;
@@ -340,7 +334,7 @@ function xhelp_default()
             echo "<table border='0' width='95%' cellspacing='1' class='outer'>
                   <tr><th colspan='2'>" . _AM_XHELP_TEXT_TOP_CLOSERS . '</th></tr>';
             $i = 0;
-            while (false !== (list($uid, $uname, $name, $callsClosed) = $xoopsDB->fetchRow($ret))) {
+            while (list($uid, $uname, $name, $callsClosed) = $xoopsDB->fetchRow($ret)) {
                 $class = $table_class[$i % 2];
                 echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . $callsClosed . ' (' . round(($callsClosed / $totalStaffClosed) * 100, 2) . '%)</td></tr>';
                 ++$i;
@@ -354,7 +348,7 @@ function xhelp_default()
             echo "<table border='0' width='100%' cellspacing='1' class='outer'>
                   <tr><th colspan='2'>" . _AM_XHELP_TEXT_RESPONSE_TIME_SLOW . '</th></tr>';
             $i = 0;
-            while (false !== (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret))) {
+            while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
                 $class = $table_class[$i % 2];
                 echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . Xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
                 ++$i;
@@ -400,12 +394,13 @@ function xhelp_default()
             }
             $priority_url = "<img src='" . XHELP_IMAGE_URL . '/priority' . $ticket->getVar('priority') . ".png' alt='" . $ticket->getVar('priority') . "'>";
             $subject_url  = sprintf("<a href='" . XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id') . "' target='_BLANK'>%s</a>", $ticket->getVar('subject'));
-            if ($dept = $ticket->getDepartment()) {
+            $dept         = $ticket->getDepartment();
+            if ($dept) {
                 $dept_url = sprintf("<a href='" . XHELP_BASE_URL . '/index.php?op=staffViewAll&amp;dept=' . $dept->getVar('id') . "' target='_BLANK'>%s</a>", $dept->getVar('department'));
             } else {
                 $dept_url = _AM_XHELP_TEXT_NO_DEPT;
             }
-            if (0 <> $ticket->getVar('ownership')) {
+            if (0 != $ticket->getVar('ownership')) {
                 $owner_url = sprintf("<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid') . "' target='_BLANK'>%s</a>", Xhelp\Utility::getUsername($ticket->getVar('ownership'), $displayName));
             } else {
                 $owner_url = _AM_XHELP_TEXT_NO_OWNER;
@@ -462,7 +457,7 @@ function about()
 {
     xoops_cp_header();
     //echo $oAdminButton->renderButtons();
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
     require_once XHELP_ADMIN_PATH . '/about.php';

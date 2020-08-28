@@ -15,25 +15,24 @@ if (!$xoopsUser) {
 
 $refresh = \Xmf\Request::getInt('refresh', 0, 'GET');
 
-
 $uid = $xoopsUser->getVar('uid');
 
 // Get the id of the ticket
-if (\Xmf\Request::hasVar('id', 'GET')) { 
- $ticketid = \Xmf\Request::getInt('id', 0, 'GET');
+if (\Xmf\Request::hasVar('id', 'GET')) {
+    $ticketid = \Xmf\Request::getInt('id', 0, 'GET');
 }
 
-if (\Xmf\Request::hasVar('responseid', 'GET')) { 
- $responseid = \Xmf\Request::getInt('responseid', 0, 'GET');
+if (\Xmf\Request::hasVar('responseid', 'GET')) {
+    $responseid = \Xmf\Request::getInt('responseid', 0, 'GET');
 }
 
-$hTicket      = Xhelp\Helper::getInstance()->getHandler('Ticket');
-$hResponseTpl = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');
-$hMembership  = Xhelp\Helper::getInstance()->getHandler('Membership');
-$hResponse    = Xhelp\Helper::getInstance()->getHandler('Responses');
-$hStaff       = Xhelp\Helper::getInstance()->getHandler('Staff');
+$ticketHandler     = Xhelp\Helper::getInstance()->getHandler('Ticket');
+$hResponseTpl      = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');
+$membershipHandler = Xhelp\Helper::getInstance()->getHandler('Membership');
+$hResponse         = Xhelp\Helper::getInstance()->getHandler('Responses');
+$staffHandler      = Xhelp\Helper::getInstance()->getHandler('Staff');
 
-if (!$ticketInfo =& $hTicket->get($ticketid)) {
+if (!$ticketInfo = $ticketHandler->get($ticketid)) {
     //Invalid ticketID specified
     redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_INV_TICKET);
 }
@@ -42,16 +41,15 @@ $has_owner = $ticketInfo->getVar('ownership');
 
 $op = 'staffFrm'; //Default Action for page
 
-if (isset($_GET['op'])) {
+if (\Xmf\Request::hasVar('op', 'GET')) {
     $op = $_GET['op'];
 }
 
-if (isset($_POST['op'])) {
+if (\Xmf\Request::hasVar('op', 'POST')) {
     $op = $_POST['op'];
 }
 
 switch ($op) {
-
     case 'staffAdd':
         //0. Check that the user can perform this action
         $message    = '';
@@ -102,8 +100,7 @@ switch ($op) {
                     //Store error messages in session
                     _setResponseToSession($ticketInfo, $fields);
                     //redirect to response.php?op=staffFrm
-                    header('Location: ' . XHELP_BASE_URL . "/response.php?op=staffFrm&id=$ticketid");
-                    exit();
+                    redirect_header(XHELP_BASE_URL . "/response.php?op=staffFrm&id=$ticketid");
                 }
 
                 //Check if status changed
@@ -121,7 +118,7 @@ switch ($op) {
                 }
 
                 //Check if user claimed ownership
-                if (isset($_POST['claimOwner'])
+                if (\Xmf\Request::hasVar('claimOwner', 'POST'))
                     && $xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_TAKE_OWNERSHIP, $ticketInfo->getVar('department'))) {
                     $ownerid = \Xmf\Request::getInt('claimOwner', 0, 'POST');
                     if ($ownerid > 0) {
@@ -139,7 +136,7 @@ switch ($op) {
                 $response->setVar('timeSpent', $_POST['timespent']);
                 $response->setVar('updateTime', $ticketInfo->getVar('lastUpdated'));
                 $response->setVar('userIP', getenv('REMOTE_ADDR'));
-                if (isset($_POST['private'])) {
+                if (\Xmf\Request::hasVar('private', 'POST')) {
                     $response->setVar('private', $_POST['private']);
                 }
 
@@ -154,7 +151,7 @@ switch ($op) {
                 }
 
                 //4. Update Ticket object
-                if (isset($_POST['timespent'])) {
+                if (\Xmf\Request::hasVar('timespent', 'POST')) {
                     $oldspent = $ticketInfo->getVar('totalTimeSpent');
                     $ticketInfo->setVar('totalTimeSpent', $oldspent + \Xmf\Request::getInt('timespent', 0, 'POST'));
                 }
@@ -164,7 +161,7 @@ switch ($op) {
                 $ticketInfo->setVar('lastUpdated', time());
 
                 //5. Store Ticket Object
-                if ($hTicket->insert($ticketInfo)) {
+                if ($ticketHandler->insert($ticketInfo)) {
                     if ($newStatus) {
                         $_eventsrv->trigger('update_status', [&$ticketInfo, &$oldStatus, &$newStatus]);
                     }
@@ -202,7 +199,7 @@ switch ($op) {
 
     case 'staffFrm':
         $isSubmitter = false;
-        $isStaff     = $hMembership->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'));
+        $isStaff     = $membershipHandler->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'));
 
         // Check if staff has permission to respond to the ticket
         $hTicketEmails = Xhelp\Helper::getInstance()->getHandler('TicketEmails');
@@ -223,12 +220,12 @@ switch ($op) {
                 $aStatuses[$status->getVar('id')] = [
                     'id'    => $status->getVar('id'),
                     'desc'  => $status->getVar('description'),
-                    'state' => $status->getVar('state')
+                    'state' => $status->getVar('state'),
                 ];
             }
 
             $GLOBALS['xoopsOption']['template_main'] = 'xhelp_response.tpl';   // Set template
-            require XOOPS_ROOT_PATH . '/header.php';
+            require_once XOOPS_ROOT_PATH . '/header.php';
 
             $xoopsTpl->assign('xhelp_allowUpload', $helper->getConfig('xhelp_allowUpload'));
             $xoopsTpl->assign('xhelp_has_owner', $has_owner);
@@ -244,8 +241,9 @@ switch ($op) {
             $xoopsTpl->assign('xhelp_savedSearches', $aSavedSearches);
             $xoopsTpl->assign('xhelp_has_takeOwnership', $xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_TAKE_OWNERSHIP, $ticketInfo->getVar('department')));
 
-            $aElements = [];
-            if ($validateErrors =& $_xhelpSession->get('xhelp_validateError')) {
+            $aElements      = [];
+            $validateErrors = $_xhelpSession->get('xhelp_validateError');
+            if ($validateErrors) {
                 $errors = [];
                 foreach ($validateErrors as $fieldname => $error) {
                     if (!empty($error['errors'])) {
@@ -290,11 +288,13 @@ switch ($op) {
             //Format Response Message Var
             $message = '';
             if ($refresh) {
-                if ($displayTpl = $responseTpl[$refresh]) {
+                $displayTpl = $responseTpl[$refresh];
+                if ($displayTpl) {
                     $message = $displayTpl->getVar('response', 'e');
                 }
             }
-            if ($temp = $_xhelpSession->get('xhelp_response_message')) {
+            $temp = $_xhelpSession->get('xhelp_response_message');
+            if ($temp) {
                 $message = $temp;
             }
 
@@ -312,17 +312,17 @@ switch ($op) {
             }
             $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
             $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
-            require XOOPS_ROOT_PATH . '/footer.php';
+            require_once XOOPS_ROOT_PATH . '/footer.php';
         }
         break;
 
     case 'staffEdit':
         //Is current user staff member?
-        if (!$hMembership->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'))) {
+        if (!$membershipHandler->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'))) {
             redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_NODEPTPERM);
         }
 
-        if (!$response =& $hResponse->get($responseid)) {
+        if (!$response = $hResponse->get($responseid)) {
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$ticketid", 3, _XHELP_ERROR_INV_RESPONSE);
         }
 
@@ -332,7 +332,7 @@ switch ($op) {
         }
 
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_editResponse.tpl';             // Always set main template before including the header
-        require XOOPS_ROOT_PATH . '/header.php';
+        require_once XOOPS_ROOT_PATH . '/header.php';
 
         $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
         $crit    = new \Criteria('', '');
@@ -344,7 +344,7 @@ switch ($op) {
             $aStatuses[$status->getVar('id')] = [
                 'id'    => $status->getVar('id'),
                 'desc'  => $status->getVar('description'),
-                'state' => $status->getVar('state')
+                'state' => $status->getVar('state'),
             ];
         }
         $xoopsTpl->assign('xhelp_statuses', $aStatuses);
@@ -362,9 +362,10 @@ switch ($op) {
         //$xoopsTpl->assign('xhelp_text_subject', _XHELP_TEXT_SUBJECT);
         //$xoopsTpl->assign('xhelp_text_description', _XHELP_TEXT_DESCRIPTION);
 
-        $aElements = [];
-        $errors    = [];
-        if ($validateErrors =& $_xhelpSession->get('xhelp_validateError')) {
+        $aElements      = [];
+        $errors         = [];
+        $validateErrors = $_xhelpSession->get('xhelp_validateError');
+        if ($validateErrors) {
             foreach ($validateErrors as $fieldname => $error) {
                 if (!empty($error['errors'])) {
                     $aElements[] = $fieldname;
@@ -400,7 +401,7 @@ switch ($op) {
                 'id'       => $response->getVar('id'),
                 'uid'      => $response->getVar('uid'),
                 'name'     => $response->getVar('name'),
-                'response' => $response->getVar('response')
+                'response' => $response->getVar('response'),
             ];
         }
         $has_responseTpl = count($responseTpl) > 0;
@@ -414,7 +415,7 @@ switch ($op) {
         $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
 
-        require XOOPS_ROOT_PATH . '/footer.php';                             //Include the page footer
+        require_once XOOPS_ROOT_PATH . '/footer.php';                             //Include the page footer
         break;
 
     case 'staffEditSave':
@@ -425,12 +426,12 @@ switch ($op) {
         $responseStored = false;
 
         //Is current user staff member?
-        if (!$hMembership->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'))) {
+        if (!$membershipHandler->isStaffMember($xoopsUser->getVar('uid'), $ticketInfo->getVar('department'))) {
             redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_NODEPTPERM);
         }
 
         //Retrieve the original response
-        if (!$response =& $hResponse->get($responseid)) {
+        if (!$response = $hResponse->get($responseid)) {
             redirect_header(XHELP_BASE_URL . '/ticket.php?id=' . $ticketInfo->getVar('id'), 3, _XHELP_ERROR_INV_RESPONSE);
         }
 
@@ -463,7 +464,7 @@ switch ($op) {
         $_xhelpSession->set('xhelp_response_status', $ticketInfo->getVar('status'));        // Store in session
 
         //Check if the current user is claiming the ticket
-        if (isset($_POST['claimOwner']) && $_POST['claimOwner'] > 0
+        if (\Xmf\Request::hasVar('claimOwner', 'POST') && $_POST['claimOwner'] > 0
             && $xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_TAKE_OWNERSHIP, $ticketInfo->getVar('department'))) {
             if ($_POST['claimOwner'] != $oldticket->getVar('ownership')) {
                 $oldOwner = $oldticket->getVar('ownership');
@@ -474,7 +475,7 @@ switch ($op) {
         $_xhelpSession->set('xhelp_response_ownership', $ticketInfo->getVar('ownership'));  // Store in session
 
         // Check the timespent
-        if (isset($_POST['timespent'])) {
+        if (\Xmf\Request::hasVar('timespent', 'POST')) {
             $timespent = \Xmf\Request::getInt('timespent', 0, 'POST');
             $totaltime = $oldticket->getVar('totalTimeSpent') - $oldresponse->getVar('timeSpent') + $timespent;
             $ticketInfo->setVar('totalTimeSpent', $totaltime);
@@ -499,13 +500,12 @@ switch ($op) {
         if (!empty($errors)) {
             $_xhelpSession->set('xhelp_validateError', $fields);
             $message = _XHELP_MESSAGE_VALIDATE_ERROR;
-            header('Location: ' . XHELP_BASE_URL . "/response.php?id=$ticketid&responseid=" . $response->getVar('id') . '&op=staffEdit');
-            exit();
+            redirect_header(XHELP_BASE_URL . "/response.php?id=$ticketid&responseid=" . $response->getVar('id') . '&op=staffEdit');
         }
 
         $ticketInfo->setVar('lastUpdated', time());
 
-        if ($hTicket->insert($ticketInfo)) {
+        if ($ticketHandler->insert($ticketInfo)) {
             if ($newStatus) {
                 // @todo - 'update_status' should also supply $newStatus
                 $_eventsrv->trigger('update_status', [&$ticketInfo, $oldStatus]);
@@ -524,7 +524,7 @@ switch ($op) {
             $message .= "\n" . sprintf(_XHELP_RESPONSE_EDIT, $xoopsUser->getVar('uname'), $ticketInfo->lastUpdated());
 
             $response->setVar('message', $message);
-            if (isset($_POST['timespent'])) {
+            if (\Xmf\Request::hasVar('timespent', 'POST')) {
                 $response->setVar('timeSpent', \Xmf\Request::getInt('timespent', 0, 'POST'));
             }
             $response->setVar('updateTime', $ticketInfo->getVar('lastUpdated'));
@@ -553,14 +553,14 @@ switch ($op) {
  * @param $ticket
  * @param $errors
  */
-function _setResponseToSession(&$ticket, &$errors)
+function _setResponseToSession($ticket, $errors)
 {
     global $xoopsUser, $_xhelpSession;
     $_xhelpSession->set('xhelp_response_ticketid', $ticket->getVar('id'));
     $_xhelpSession->set('xhelp_response_uid', $xoopsUser->getVar('uid'));
-    $_xhelpSession->set('xhelp_response_message', (isset($_POST['response']) ? $_POST['response'] : ''));
-    $_xhelpSession->set('xhelp_response_private', (isset($_POST['private']) ? $_POST['private'] : 0));
-    $_xhelpSession->set('xhelp_response_timespent', (isset($_POST['timespent']) ? $_POST['timespent'] : 0));
+    $_xhelpSession->set('xhelp_response_message', ($_POST['response'] ?? ''));
+    $_xhelpSession->set('xhelp_response_private', ($_POST['private'] ?? 0));
+    $_xhelpSession->set('xhelp_response_timespent', ($_POST['timespent'] ?? 0));
     $_xhelpSession->set('xhelp_response_ownership', (isset($_POST['claimOwner']) && \Xmf\Request::getInt('claimOwner', 0, 'POST') > 0 ? $_POST['claimOwner'] : 0));
     $_xhelpSession->set('xhelp_response_status', $_POST['status']);
     $_xhelpSession->set('xhelp_response_private', $_POST['private']);

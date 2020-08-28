@@ -52,7 +52,7 @@ function formatTime($time)
 /**
  * Changes UNIX timestamp into array of time units of measure
  *
- * @param  int $time UNIX timestamp
+ * @param int $time UNIX timestamp
  * @return array $elapsed_time
  *
  * @access public
@@ -66,7 +66,7 @@ function xhelpGetElapsedTime($time)
         'days'    => 60 * 60 * 24,
         'hours'   => 60 * 60,
         'minutes' => 60,
-        'seconds' => 1
+        'seconds' => 1,
     ];
 
     $local_time   = $time;
@@ -111,7 +111,7 @@ function xhelpMakeURI($page, $vars = [], $encodeAmp = true)
 /**
  * Changes a ticket priority (int) into its string equivalent
  *
- * @param  int $priority
+ * @param int $priority
  * @return string $priority
  *
  * @access public
@@ -123,18 +123,18 @@ function xhelpGetPriority($priority)
         2 => _XHELP_TEXT_PRIORITY2,
         3 => _XHELP_TEXT_PRIORITY3,
         4 => _XHELP_TEXT_PRIORITY4,
-        5 => _XHELP_TEXT_PRIORITY5
+        5 => _XHELP_TEXT_PRIORITY5,
     ];
 
     $priority = (int)$priority;
 
-    return (isset($priorities[$priority]) ? $priorities[$priority] : $priority);
+    return ($priorities[$priority] ?? $priority);
 }
 
 /**
  * Gets a tickets state (unresolved/resolved)
  *
- * @param  int $state
+ * @param int $state
  * @return string $state
  *
  * @access public
@@ -144,17 +144,17 @@ function xhelpGetState($state)
     $state       = (int)$state;
     $stateValues = [
         1 => _XHELP_STATE1,
-        2 => _XHELP_STATE2
+        2 => _XHELP_STATE2,
     ];
 
-    return (isset($stateValues[$state]) ? $stateValues[$state] : $state);
+    return ($stateValues[$state] ?? $state);
 }
 
 /**
  * Changes a ticket status (int) into its string equivalent
  * Do not use this function in loops
  *
- * @param  int $status
+ * @param int $status
  * @return string Status Description
  *
  * @access public
@@ -177,7 +177,7 @@ function xhelpGetStatus($status)
 /**
  * Changes a response rating (int) into its string equivalent
  *
- * @param  int $rating
+ * @param int $rating
  * @return string $rating
  *
  * @access public
@@ -190,11 +190,11 @@ function xhelpGetRating($rating)
         2 => _XHELP_RATING2,
         3 => _XHELP_RATING3,
         4 => _XHELP_RATING4,
-        5 => _XHELP_RATING5
+        5 => _XHELP_RATING5,
     ];
     $rating  = (int)$rating;
 
-    return (isset($ratings[$rating]) ? $ratings[$rating] : $rating);
+    return ($ratings[$rating] ?? $rating);
 }
 
 /**
@@ -207,62 +207,62 @@ function xhelpGetEventClass($class)
         0 => _XHELP_MAIL_CLASS0,
         1 => _XHELP_MAIL_CLASS1,
         2 => _XHELP_MAIL_CLASS2,
-        3 => _XHELP_MAIL_CLASS3
+        3 => _XHELP_MAIL_CLASS3,
     ];
     $class   = (int)$class;
 
-    return (isset($classes[$class]) ? $classes[$class] : $class);
+    return ($classes[$class] ?? $class);
 }
 
 /**
  * Move specified tickets into department
  *
- * @param  array $tickets array of ticket ids (int)
- * @param  int   $dept    department ID
+ * @param array $tickets array of ticket ids (int)
+ * @param int   $dept    department ID
  * @return bool  True on success, False on error
  *
  * @access public
  */
 function xhelpSetDept($tickets, $dept)
 {
-    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $crit          = new \Criteria('id', '(' . implode(',', $tickets) . ')', 'IN');
 
-    return $hTicket->updateAll('department', (int)$dept, $crit);
+    return $ticketHandler->updateAll('department', (int)$dept, $crit);
 }
 
 /**
  * Set specified tickets to a priority
  *
- * @param  array $tickets  array of ticket ids (int)
- * @param  int   $priority priority value
+ * @param array $tickets  array of ticket ids (int)
+ * @param int   $priority priority value
  * @return bool  True on success, False on error
  *
  * @access public
  */
 function xhelpSetPriority($tickets, $priority)
 {
-    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $crit          = new \Criteria('id', '(' . implode(',', $tickets) . ')', 'IN');
 
-    return $hTicket->updateAll('priority', (int)$priority, $crit);
+    return $ticketHandler->updateAll('priority', (int)$priority, $crit);
 }
 
 /**
  * Set specified tickets to a status
  *
- * @param  array $tickets array of ticket ids (int)
- * @param  int   $status  status value
+ * @param array $tickets array of ticket ids (int)
+ * @param int   $status  status value
  * @return bool  True on success, False on error
  *
  * @access public
  */
 function xhelpSetStatus($tickets, $status)
 {
-    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $crit          = new \Criteria('id', '(' . implode(',', $tickets) . ')', 'IN');
 
-    return $hTicket->updateAll('status', (int)$status, $crit);
+    return $ticketHandler->updateAll('status', (int)$status, $crit);
 }
 
 /**
@@ -270,28 +270,28 @@ function xhelpSetStatus($tickets, $status)
  *
  * Assumes that owner is a member of all departments in specified tickets
  *
- * @param  array $tickets array of ticket ids (int)
- * @param  int   $owner   uid of new owner
+ * @param array $tickets array of ticket ids (int)
+ * @param int   $owner   uid of new owner
  * @return bool  True on success, False on error
  *
  * @access public
  */
 function xhelpSetOwner($tickets, $owner)
 {
-    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $crit          = new \Criteria('id', '(' . implode(',', $tickets) . ')', 'IN');
 
-    return $hTicket->updateAll('ownership', (int)$owner, $crit);
+    return $ticketHandler->updateAll('ownership', (int)$owner, $crit);
 }
 
 /**
  * Add the response to each ticket
  *
  *
- * @param  array $tickets   array of ticket ids (int)
+ * @param array  $tickets   array of ticket ids (int)
  * @param        $sresponse
- * @param  int   $timespent Number of minutes spent on ticket
- * @param  bool  $private   Should this be a private message?
+ * @param int    $timespent Number of minutes spent on ticket
+ * @param bool   $private   Should this be a private message?
  * @return Xhelp\Responses Response information
  *
  * @internal param string $response response text to add
@@ -300,14 +300,14 @@ function xhelpSetOwner($tickets, $owner)
 function xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = false)
 {
     global $xoopsUser;
-    $hResponse    = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
-    $hTicket      = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $updateTime   = time();
-    $uid          = $xoopsUser->getVar('uid');
-    $ret          = true;
-    $userIP       = getenv('REMOTE_ADDR');
-    $ticket_count = count($tickets);
-    $i            = 1;
+    $hResponse     = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $updateTime    = time();
+    $uid           = $xoopsUser->getVar('uid');
+    $ret           = true;
+    $userIP        = getenv('REMOTE_ADDR');
+    $ticket_count  = count($tickets);
+    $i             = 1;
     foreach ($tickets as $ticketid) {
         $response = $hResponse->create();
         $response->setVar('uid', $uid);
@@ -324,9 +324,9 @@ function xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = false
         ++$i;
     }
     if ($ret) {
-        $crit = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
-        $ret  = $hTicket->incrementAll('totalTimeSpent', $timespent, $crit);
-        $ret  = $hTicket->updateAll('lastUpdated', $updateTime, $crit);
+        $crit = new \Criteria('id', '(' . implode(',', $tickets) . ')', 'IN');
+        $ret  = $ticketHandler->incrementAll('totalTimeSpent', $timespent, $crit);
+        $ret  = $ticketHandler->updateAll('lastUpdated', $updateTime, $crit);
         $response->setVar('ticketid', 0);
         $response->setVar('id', 0);
 
@@ -339,45 +339,45 @@ function xhelpAddResponse($tickets, $sresponse, $timespent = 0, $private = false
 /**
  * Remove the specified tickets
  *
- * @param  array $tickets array of ticket ids (int)
+ * @param array $tickets array of ticket ids (int)
  * @return bool  True on success, False on error
  *
  * @access public
  */
 function xhelpDeleteTickets($tickets)
 {
-    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $crit          = new \Criteria('id', '(' . implode(',', $tickets) . ')', 'IN');
 
-    return $hTicket->deleteAll($crit);
+    return $ticketHandler->deleteAll($crit);
 }
 
 /**
  * Retrieves an array of tickets in one query
  *
- * @param  array $tickets array of ticket ids (int)
+ * @param array $tickets array of ticket ids (int)
  * @return array Array of ticket objects
  *
  * @access public
  */
-function &xhelpGetTickets(&$tickets)
+function &xhelpGetTickets($tickets)
 {
-    $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $crit    = new \Criteria('t.id', '(' . implode($tickets, ',') . ')', 'IN');
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $crit          = new \Criteria('t.id', '(' . implode(',', $tickets) . ')', 'IN');
 
-    return $hTicket->getObjects($crit);
+    return $ticketHandler->getObjects($crit);
 }
 
 /**
  * Check if all supplied rules pass, and return any errors
  *
- * @param  array $rules  array of {@link Validator} classes
- * @param  array $errors array of errors found (if any)
+ * @param array $rules  array of {@link Validator} classes
+ * @param array $errors array of errors found (if any)
  * @return bool  True if all rules pass, false if any fail
  *
  * @access public
  */
-function xhelpCheckRules(&$rules, &$errors)
+function xhelpCheckRules($rules, &$errors)
 {
     $ret = true;
     if (is_array($rules)) {
@@ -401,12 +401,11 @@ function xhelpCheckRules(&$rules, &$errors)
 /**
  * Output the specified variable (for debugging)
  *
- * @param  mixed $var Variable to output
- * @return void
+ * @param mixed $var Variable to output
  *
  * @access public
  */
-function xhelpDebug(&$var)
+function xhelpDebug($var)
 {
     echo '<pre>';
     print_r($var);
@@ -416,7 +415,7 @@ function xhelpDebug(&$var)
 /**
  * Detemines if a table exists in the current db
  *
- * @param  string $table the table name (without XOOPS prefix)
+ * @param string $table the table name (without XOOPS prefix)
  * @return bool   True if table exists, false if not
  *
  * @access public
@@ -430,7 +429,7 @@ function xhelpTableExists($table)
     $dbname   = XOOPS_DB_NAME;
     $sql      = "SHOW TABLES FROM $dbname";
     $ret      = $xoopsDB->queryF($sql);
-    while (false !== (list($m_table) = $xoopsDB->fetchRow($ret))) {
+    while (list($m_table) = $xoopsDB->fetchRow($ret)) {
         if ($m_table == $realname) {
             $bRetVal = true;
             break;
@@ -444,7 +443,7 @@ function xhelpTableExists($table)
 /**
  * Gets a value from a key in the xhelp_meta table
  *
- * @param  string $key
+ * @param string $key
  * @return string $value
  *
  * @access public
@@ -457,7 +456,7 @@ function xhelpGetMeta($key)
     if (!$ret) {
         $value = false;
     } else {
-        list($value) = $xoopsDB->fetchRow($ret);
+        [$value] = $xoopsDB->fetchRow($ret);
     }
 
     return $value;
@@ -466,8 +465,8 @@ function xhelpGetMeta($key)
 /**
  * Sets a value for a key in the xhelp_meta table
  *
- * @param  string $key
- * @param  string $value
+ * @param string $key
+ * @param string $value
  * @return bool   TRUE if success, FALSE if failure
  *
  * @access public
@@ -492,7 +491,7 @@ function xhelpSetMeta($key, $value)
 /**
  * Deletes a record from the xhelp_meta table
  *
- * @param  string $key
+ * @param string $key
  * @return bool   TRUE if success, FALSE if failure
  *
  * @access public
@@ -504,38 +503,38 @@ function xhelpDeleteMeta($key)
     $ret     = $xoopsDB->query($sql);
     if (!$ret) {
         return false;
-    } else {
-        return $ret;
     }
+
+    return $ret;
 }
 
 /**
  * Does the supplied email belong to an existing xoops user
  *
- * @param  string $email
+ * @param string $email
  * @return bool <a href='psi_element://xoopsUser'>xoopsUser</a> object if success, FALSE if failure
  * object if success, FALSE if failure
  * @access public
  */
-function &xhelpEmailIsXoopsUser($email)
+function xhelpEmailIsXoopsUser($email)
 {
     $hXoopsMember = xoops_getHandler('member');
     $crit         = new \Criteria('email', $email);
     $crit->setLimit(1);
 
-    $users =& $hXoopsMember->getUsers($crit);
+    $users = &$hXoopsMember->getUsers($crit);
     if (count($users) > 0) {
         return $users[0];
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 /**
  * Detemines if a field exists in the current db
  *
- * @param  string $table the table name (without XOOPS prefix)
- * @param  string $field the field name
+ * @param string $table the table name (without XOOPS prefix)
+ * @param string $field the field name
  * @return mixed  false if field does not exist, array containing field info if does
  *
  * @access public
@@ -548,11 +547,11 @@ function xhelpFieldExists($table, $field)
 
     if (!$ret) {
         return false;
-    }
-
-    while ($row = $xoopsDB->fetchRow($ret)) {
-        if (0 == strcasecmp($row['Field'], $field)) {
-            return $row;
+    } else {
+        while (false !== ($row = $xoopsDB->fetchRow($ret))) {
+            if (0 == strcasecmp($row['Field'], $field)) {
+                return $row;
+            }
         }
     }
 
@@ -562,21 +561,22 @@ function xhelpFieldExists($table, $field)
 /**
  * Creates a xoops account from an email address and password
  *
- * @param  string $email
+ * @param string  $email
  * @param         $name
- * @param  string $password
+ * @param string  $password
  * @param         $level
  * @return bool <a href='psi_element://xoopsUser'>xoopsUser</a> object if success, FALSE if failure
  * object if success, FALSE if failure
  * @access public
  */
-function &xhelpXoopsAccountFromEmail($email, $name, &$password, $level)
+function xhelpXoopsAccountFromEmail($email, $name, &$password, $level)
 {
+    /** @var \XoopsMemberHandler $memberHandler */
     $memberHandler = xoops_getHandler('member');
 
     $unamecount = 10;
     if ('' == $password) {
-        $password = substr(md5(uniqid(mt_rand(), 1)), 0, 6);
+        $password = mb_substr(md5(uniqid(mt_rand(), 1)), 0, 6);
     }
 
     $usernames = xhelpGenUserNames($email, $name, $unamecount);
@@ -604,7 +604,7 @@ function &xhelpXoopsAccountFromEmail($email, $name, &$password, $level)
     $xuser->setVar('user_avatar', 'blank.gif');
     $xuser->setVar('user_regdate', time());
     $xuser->setVar('timezone_offset', 0);
-    $xuser->setVar('actkey', substr(md5(uniqid(mt_rand(), 1)), 0, 8));
+    $xuser->setVar('actkey', mb_substr(md5(uniqid(mt_rand(), 1)), 0, 8));
     $xuser->setVar('email', $email);
     $xuser->setVar('name', $name);
     $xuser->setVar('pass', md5($password));
@@ -624,9 +624,9 @@ function &xhelpXoopsAccountFromEmail($email, $name, &$password, $level)
 /**
  * Generates an array of usernames
  *
- * @param  string $email email of user
- * @param  string $name  name of user
- * @param  int    $count number of names to generate
+ * @param string $email email of user
+ * @param string $name  name of user
+ * @param int    $count number of names to generate
  * @return array  $names
  *
  * @access public
@@ -642,12 +642,12 @@ function xhelpGenUserNames($email, $name, $count = 20)
 
     $names[] = $emailname;
 
-    if (strlen($name) > 0) {
+    if (mb_strlen($name) > 0) {
         $name = explode(' ', trim($name));
         if (count($name) > 1) {
-            $basename = strtolower(substr($name[0], 0, 1) . $name[count($name) - 1]);
+            $basename = mb_strtolower(mb_substr($name[0], 0, 1) . $name[count($name) - 1]);
         } else {
-            $basename = strtolower($name[0]);
+            $basename = mb_strtolower($name[0]);
         }
         $basename = xoops_substr($basename, 0, 60, '');
         //Prevent Duplication of Email Username and Name
@@ -675,35 +675,18 @@ function xhelpGenUserNames($email, $name, $count = 20)
 }
 
 /**
- * Gives the random number generator a seed to start from
- *
- * @return void
- *
- * @access public
- */
-function xhelpInitRand()
-{
-    static $randCalled = false;
-    if (!$randCalled) {
-        mt_srand((double)microtime() * 1000000);
-        $randCalled = true;
-    }
-}
-
-/**
  * Creates a random number with a specified number of $digits
  *
- * @param  int $digits number of digits
- * @return return int random number
+ * @param int $digits number of digits
+ * @return int random number
  *
  * @access public
  */
 function xhelpGenRandNumber($digits = 2)
 {
-    xhelpInitRand();
     $tmp = [];
 
-    for ($i = 0; $i < $digits; ++$i) {
+    foreach ($tmp as $i => $iValue) {
         $tmp[$i] = (mt_rand() % 9);
     }
 
@@ -713,7 +696,7 @@ function xhelpGenRandNumber($digits = 2)
 /**
  * Converts int $type into its string equivalent
  *
- * @param  int $type
+ * @param int $type
  * @return string $type
  *
  * @access public
@@ -722,10 +705,10 @@ function xhelpGetMBoxType($type)
 {
     $mboxTypes = [
         _XHELP_MAILBOXTYPE_POP3 => 'POP3',
-        _XHELP_MAILBOXTYPE_IMAP => 'IMAP'
+        _XHELP_MAILBOXTYPE_IMAP => 'IMAP',
     ];
 
-    return (isset($mboxTypes[$type]) ? $mboxTypes[$type] : 'NA');
+    return ($mboxTypes[$type] ?? 'NA');
 }
 
 /**
@@ -755,7 +738,7 @@ function &xhelpGetStaff($displayName)
 /**
  * Create default staff roles for a new installation
  *
- * @return TRUE if success, FALSE if failure
+ * @return true if success, FALSE if failure
  *
  * @access public
  */
@@ -768,7 +751,7 @@ function xhelpCreateRoles()
     $defaultRolePermissions = [
         1 => ['name' => _XHELP_ROLE_NAME1, 'desc' => _XHELP_ROLE_DSC1, 'value' => XHELP_ROLE_PERM_1],
         2 => ['name' => _XHELP_ROLE_NAME2, 'desc' => _XHELP_ROLE_DSC2, 'value' => XHELP_ROLE_PERM_2],
-        3 => ['name' => _XHELP_ROLE_NAME3, 'desc' => _XHELP_ROLE_DSC3, 'value' => XHELP_ROLE_PERM_3]
+        3 => ['name' => _XHELP_ROLE_NAME3, 'desc' => _XHELP_ROLE_DSC3, 'value' => XHELP_ROLE_PERM_3],
     ];
 
     $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
@@ -790,7 +773,7 @@ function xhelpCreateRoles()
 /**
  * Create ticket statuses for a new installation
  *
- * @return TRUE if success, FALSE if failure
+ * @return true if success, FALSE if failure
  * @access public
  */
 function xhelpCreateStatuses()
@@ -802,7 +785,7 @@ function xhelpCreateStatuses()
     $statuses = [
         1 => ['description' => _XHELP_STATUS0, 'state' => XHELP_STATE_UNRESOLVED],
         2 => ['description' => _XHELP_STATUS1, 'state' => XHELP_STATE_UNRESOLVED],
-        3 => ['description' => _XHELP_STATUS2, 'state' => XHELP_STATE_RESOLVED]
+        3 => ['description' => _XHELP_STATUS2, 'state' => XHELP_STATE_RESOLVED],
     ];
 
     $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
@@ -860,7 +843,7 @@ function xhelpPrettyBytes($bytes)
  * @param string $fieldtype
  * @param int    $size
  * @param null   $attr
- * @return RESOURCE SQL query resource
+ * @return resource SQL query resource
  * @access public
  */
 function xhelpAddDBField($table, $fieldname, $fieldtype = 'VARCHAR', $size = 0, $attr = null)
@@ -912,7 +895,7 @@ function xhelpAddDBField($table, $fieldname, $fieldtype = 'VARCHAR', $size = 0, 
  * @param        $newcol
  * @param string $fieldtype
  * @param int    $size
- * @return RESOURCE SQL query resource
+ * @return resource SQL query resource
  * @access public
  */
 function xhelpRenameDBField($table, $oldcol, $newcol, $fieldtype = 'VARCHAR', $size = 0)
@@ -932,7 +915,7 @@ function xhelpRenameDBField($table, $oldcol, $newcol, $fieldtype = 'VARCHAR', $s
  *
  * @param $table
  * @param $column
- * @return RESOURCE SQL query resource
+ * @return resource SQL query resource
  * @access public
  */
 function xhelpRemoveDBField($table, $column)
@@ -947,14 +930,14 @@ function xhelpRemoveDBField($table, $column)
 /**
  * Mark all staff accounts as being updated
  *
- * @return BOOL True on success, False on Error
+ * @return bool True on success, False on Error
  * @access public
  */
 function xhelpResetStaffUpdatedTime()
 {
-    $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
-    return $hStaff->updateAll('permTimestamp', time());
+    return $staffHandler->updateAll('permTimestamp', time());
 }
 
 /**
@@ -968,15 +951,16 @@ function &xhelpGetModule()
     global $xoopsModule;
     static $_module;
 
-    if (isset($_module)) {
+    if (null !== $_module) {
         return $_module;
     }
 
-    if (isset($xoopsModule) && is_object($xoopsModule) && XHELP_DIR_NAME == $xoopsModule->getVar('dirname')) {
-        $_module =& $xoopsModule;
+    if (null !== $xoopsModule && is_object($xoopsModule) && XHELP_DIR_NAME == $xoopsModule->getVar('dirname')) {
+        $_module = &$xoopsModule;
     } else {
-        $hModule = xoops_getHandler('module');
-        $_module =& $hModule->getByDirname('xhelp');
+        /** @var \XoopsModuleHandler $moduleHandler */
+        $moduleHandler = xoops_getHandler('module');
+        $_module       = $moduleHandler->getByDirname('xhelp');
     }
 
     return $_module;
@@ -985,19 +969,18 @@ function &xhelpGetModule()
 /**
  * Retrieve this modules configuration variables
  *
- * @return ARRAY Key = config variable name, Value = current value
+ * @return array Key = config variable name, Value = current value
  * @access public
  */
-
 function &xhelpGetModuleConfig()
 {
     static $_config;
 
-    if (!isset($_config)) {
+    if (null === $_config) {
         $hModConfig = xoops_getHandler('config');
-        $_module    =& xhelpGetModule();
+        $_module    = &xhelpGetModule();
 
-        $_config =& $hModConfig->getConfigsByCat(0, $_module->getVar('mid'));
+        $_config = &$hModConfig->getConfigsByCat(0, $_module->getVar('mid'));
     }
 
     return $_config;
@@ -1006,7 +989,7 @@ function &xhelpGetModuleConfig()
 /**
  * Wrapper for the xoops_getModuleHandler function
  *
- * @param  string $handler Name of the handler to return
+ * @param string $handler Name of the handler to return
  * @return XoopsObjectHandler The object handler requested
  * @access public
  */
@@ -1020,7 +1003,7 @@ function &xhelpGetHandler($handler)
 /**
  * Retrieve all saved searches for the specified user(s)
  *
- * @param  mixed $users Either an integer (UID) or an array of UIDs
+ * @param mixed $users Either an integer (UID) or an array of UIDs
  * @return array Xhelp\SavedSearch objects
  * @access public
  */
@@ -1029,7 +1012,7 @@ function xhelpGetSavedSearches($users)
     $hSavedSearch = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
 
     if (is_array($users)) {
-        $crit = new \Criteria('uid', '(' . implode($users, ',') . ')', 'IN');
+        $crit = new \Criteria('uid', '(' . implode(',', $users) . ')', 'IN');
     } else {
         $crit = new \Criteria('uid', (int)$users);
     }
@@ -1044,7 +1027,7 @@ function xhelpGetSavedSearches($users)
             'name'          => $obj->getVar('name'),
             'search'        => unserialize($obj->getVar('search')),
             'pagenav_vars'  => $obj->getVar('pagenav_vars'),
-            'hasCustFields' => $obj->getVar('hasCustFields')
+            'hasCustFields' => $obj->getVar('hasCustFields'),
         ];
     }
 
@@ -1054,7 +1037,7 @@ function xhelpGetSavedSearches($users)
 /**
  * Set default notification settings for all xhelp events
  *
- * @return BOOL True on success, False on failure
+ * @return bool True on success, False on failure
  * @access public
  */
 function xhelpCreateNotifications()
@@ -1080,7 +1063,7 @@ function xhelpCreateNotifications()
         ['id' => 7, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
         ['id' => 8, 'staff' => XHELP_NOTIF_STAFF_OWNER, 'user' => XHELP_NOTIF_USER_NO],
         ['id' => 9, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
-        ['id' => 10, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES]
+        ['id' => 10, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
     ];
 
     foreach ($notifications as $notif) {
@@ -1103,8 +1086,8 @@ function xhelpCreateNotifications()
 /**
  * Get the XOOPS username or realname for the specified users
  *
- * @param  CriteriaElement $criteria    Which users to retrieve
- * @param  INTEGER         $displayName XHELP_DISPLAYNAME_UNAME for username XHELP_DISPLAYNAME_REALNAME for realname
+ * @param null $criteria    Which users to retrieve
+ * @param int  $displayName XHELP_DISPLAYNAME_UNAME for username XHELP_DISPLAYNAME_REALNAME for realname
  * @return array True on success, False on failure
  * @access public
  */
@@ -1133,15 +1116,16 @@ function &xhelpGetUsers($criteria = null, $displayName = XHELP_DISPLAYNAME_UNAME
 function xhelpGetUsername($xUser, $displayName = XHELP_DISPLAYNAME_UNAME)
 {
     global $xoopsUser, $xoopsConfig;
-    $user    = false;
-    $hMember = xoops_getHandler('member');
+    $user = false;
+    /** @var \XoopsMemberHandler $memberHandler */
+    $memberHandler = xoops_getHandler('member');
 
     if (is_numeric($xUser)) {
-        if ($xUser <> $xoopsUser->getVar('uid')) {
+        if ($xUser != $xoopsUser->getVar('uid')) {
             if (0 == $xUser) {
                 return $xoopsConfig['anonymous'];
             }
-            $user =& $hMember->getUser($xUser);
+            $user = $memberHandler->getUser($xUser);
         } else {
             $user = $xoopsUser;
         }
@@ -1159,15 +1143,15 @@ function xhelpGetUsername($xUser, $displayName = XHELP_DISPLAYNAME_UNAME)
 /**
  * Retrieve the Displayname for the user
  *
- * @param  int    $displayName {xhelp_displayName preference value}
- * @param  string $name        {user's real name}
- * @param  string $uname       {user's username}
+ * @param int    $displayName {xhelp_displayName preference value}
+ * @param string $name        {user's real name}
+ * @param string $uname       {user's username}
  * @return string {username or real name}
  * @access public
  */
 function xhelpGetDisplayName($displayName, $name = '', $uname = '')
 {
-    return ((XHELP_DISPLAYNAME_REALNAME == $displayName && '' <> $name) ? $name : $uname);
+    return ((XHELP_DISPLAYNAME_REALNAME == $displayName && '' != $name) ? $name : $uname);
 }
 
 /**
@@ -1179,9 +1163,10 @@ function xhelpGetDisplayName($displayName, $name = '', $uname = '')
 function xhelpGetSiteLanguage()
 {
     global $xoopsConfig;
-    if (isset($xoopsConfig) && isset($xoopsConfig['language'])) {
+    if (null !== $xoopsConfig && isset($xoopsConfig['language'])) {
         $language = $xoopsConfig['language'];
     } else {
+        /** @var \XoopsConfigHandler $configHandler */
         $configHandler = xoops_getHandler('config');
         $xoopsConfig   = $configHandler->getConfigsByCat(XOOPS_CONF);
         $language      = $xoopsConfig['language'];
@@ -1193,9 +1178,8 @@ function xhelpGetSiteLanguage()
 /**
  * Include the specified language translation
  *
- * @param  string $filename file to include
- * @param  string $language translation to use
- * @return null
+ * @param string $filename file to include
+ * @param null   $language translation to use
  * @access public
  */
 function xhelpIncludeLang($filename, $language = null)
@@ -1210,10 +1194,10 @@ function xhelpIncludeLang($filename, $language = null)
         $language = xhelpGetSiteLanguage();
     }
 
-    if (file_exists(XHELP_BASE_PATH . "/language/$language/$filename.php")) {
+    if (is_file(XHELP_BASE_PATH . "/language/$language/$filename.php")) {
         require_once XHELP_BASE_PATH . "/language/$language/$filename.php";
     } else {
-        if (file_exists(XHELP_BASE_PATH . "/language/english/$filename.php")) {
+        if (is_file(XHELP_BASE_PATH . "/language/english/$filename.php")) {
             require_once XHELP_BASE_PATH . "/language/english/$filename.php";
         } else {
             trigger_error("Unable to load language file $filename", E_USER_NOTICE);
@@ -1228,10 +1212,10 @@ function xhelpIncludeReportLangFile($reportName)
 {
     $language = xhelpGetSiteLanguage();
 
-    if (file_exists(XHELP_BASE_PATH . "/language/$language/reports/$reportName.php")) {
+    if (is_file(XHELP_BASE_PATH . "/language/$language/reports/$reportName.php")) {
         require_once XHELP_BASE_PATH . "/language/$language/reports/$reportName.php";
     } else {
-        if (file_exists(XHELP_BASE_PATH . "/language/english/reports/$reportName.php")) {
+        if (is_file(XHELP_BASE_PATH . "/language/english/reports/$reportName.php")) {
             require_once XHELP_BASE_PATH . "/language/english/reports/$reportName.php";
         }
     }
@@ -1249,7 +1233,7 @@ function xhelpCreateDefaultTicketLists()
 {
     $hSavedSearch = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
     $hTicketList  = new Xhelp\TicketListHandler($GLOBALS['xoopsDB']);
-    $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
     $ticketLists = [XHELP_QRY_STAFF_HIGHPRIORITY, XHELP_QRY_STAFF_NEW, XHELP_QRY_STAFF_MINE, XHELP_QRY_STAFF_ALL];
     $i           = 1;
@@ -1265,7 +1249,6 @@ function xhelpCreateDefaultTicketLists()
                 $newSearch->setVar('name', _XHELP_TEXT_HIGH_PRIORITY);
                 $newSearch->setVar('pagenav_vars', 'limit=50&state=1');
                 break;
-
             case XHELP_QRY_STAFF_NEW:
                 $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 'j'));
                 $crit->add(new \Criteria('ownership', 0, '=', 't'));
@@ -1275,7 +1258,6 @@ function xhelpCreateDefaultTicketLists()
                 $newSearch->setVar('name', _XHELP_TEXT_NEW_TICKETS);
                 $newSearch->setVar('pagenav_vars', 'limit=50&state=1');
                 break;
-
             case XHELP_QRY_STAFF_MINE:
                 $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 'j'));
                 $crit->add(new \Criteria('ownership', XHELP_GLOBAL_UID, '=', 't'));
@@ -1284,7 +1266,6 @@ function xhelpCreateDefaultTicketLists()
                 $newSearch->setVar('name', _XHELP_TEXT_MY_TICKETS);
                 $newSearch->setVar('pagenav_vars', 'limit=50&state=1&ownership=' . XHELP_GLOBAL_UID);
                 break;
-
             case XHELP_QRY_STAFF_ALL:
                 $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 'j'));
                 $crit->add(new \Criteria('state', 1, '=', 's'));
@@ -1292,7 +1273,6 @@ function xhelpCreateDefaultTicketLists()
                 $newSearch->setVar('name', _XHELP_TEXT_SUBMITTED_TICKETS);
                 $newSearch->setVar('pagenav_vars', 'limit=50&state=1&submittedBy=' . XHELP_GLOBAL_UID);
                 break;
-
             default:
                 return false;
                 break;
@@ -1303,7 +1283,7 @@ function xhelpCreateDefaultTicketLists()
         $newSearch->setVar('hasCustFields', 0);
         $ret = $hSavedSearch->insert($newSearch, true);
 
-        $staff = $hStaff->getObjects(null, true);
+        $staff = $staffHandler->getObjects(null, true);
         foreach ($staff as $stf) {
             $list = $hTicketList->create();
             $list->setVar('uid', $stf->getVar('uid'));

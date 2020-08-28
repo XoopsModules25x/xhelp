@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,12 +22,11 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * Xhelp\StaffReviewHandler class
@@ -57,22 +58,22 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
 
     /**
      * retrieve a StaffReview object meeting certain criteria
-     * @param  int $ticketid    ID of ticket
-     * @param  int $responseid  ID of response
-     * @param  int $submittedBy UID of ticket submitter
+     * @param int $ticketid    ID of ticket
+     * @param int $responseid  ID of response
+     * @param int $submittedBy UID of ticket submitter
      * @return array|bool (@link Xhelp\StaffReview}
      * @access public
      */
-    public function &getReview($ticketid, $responseid, $submittedBy)
+    public function getReview($ticketid, $responseid, $submittedBy)
     {
         $ticketid    = (int)$ticketid;
         $responseid  = (int)$responseid;
@@ -84,9 +85,9 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
         $review = [];
         if (!$review = $this->getObjects($crit)) {
             return false;
-        } else {
-            return $review;
         }
+
+        return $review;
     }
 
     /**
@@ -100,8 +101,19 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (id, staffid, rating, ticketid, responseid, comments, submittedBy, userIP)
-            VALUES (%u, %u, %u, %u, %u, %s, %u, %s)', $this->_db->prefix($this->_dbtable), $id, $staffid, $rating, $ticketid, $responseid, $this->_db->quoteString($comments), $submittedBy, $this->_db->quoteString($userIP));
+        $sql = \sprintf(
+            'INSERT INTO `%s` (id, staffid, rating, ticketid, responseid, comments, submittedBy, userIP)
+            VALUES (%u, %u, %u, %u, %u, %s, %u, %s)',
+            $this->_db->prefix($this->_dbtable),
+            $id,
+            $staffid,
+            $rating,
+            $ticketid,
+            $responseid,
+            $this->_db->quoteString($comments),
+            $submittedBy,
+            $this->_db->quoteString($userIP)
+        );
 
         return $sql;
     }
@@ -117,8 +129,19 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE `%s` SET staffid = %u, rating = %u, ticketid = %u, responseid = %u, comments = %s, submittedBy = %u, userIP = %s
-                WHERE id = %u', $this->_db->prefix($this->_dbtable), $staffid, $rating, $ticketid, $responseid, $this->_db->quoteString($comments), $submittedBy, $this->_db->quoteString($userIP), $id);
+        $sql = \sprintf(
+            'UPDATE `%s` SET staffid = %u, rating = %u, ticketid = %u, responseid = %u, comments = %s, submittedBy = %u, userIP = %s
+                WHERE id = %u',
+            $this->_db->prefix($this->_dbtable),
+            $staffid,
+            $rating,
+            $ticketid,
+            $responseid,
+            $this->_db->quoteString($comments),
+            $submittedBy,
+            $this->_db->quoteString($userIP),
+            $id
+        );
 
         return $sql;
     }
@@ -129,7 +152,7 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }

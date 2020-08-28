@@ -1,8 +1,10 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -24,7 +26,7 @@ class ReportRendererFactory
      * @param $report
      * @return bool
      */
-    public static function getRenderer($type, &$report)
+    public static function getRenderer($type, $report)
     {
         $ret = false;
         if ('' == $type) {
@@ -36,7 +38,7 @@ class ReportRendererFactory
 
         if ($isValid) {
             // Step 2 - include script with faq adapter class
-            require_once XHELP_RPT_RENDERER_PATH . '/' . $type . 'ReportRenderer.php';
+            require_once \XHELP_RPT_RENDERER_PATH . '/' . $type . 'ReportRenderer.php';
 
             // Step 3 - create instance of adapter class
             $classname = 'xhelp' . $type . 'ReportRenderer';
@@ -45,9 +47,9 @@ class ReportRendererFactory
             $ret = new $classname($report);
 
             return $ret;
-        } else {
-            return $ret;
         }
+
+        return $ret;
         //XHELP_RPT_RENDERER_PATH
     }
 
@@ -58,10 +60,10 @@ class ReportRendererFactory
     public static function _rendererValid($type)
     {
         // Make sure this is a valid file
-        if (is_file(XHELP_RPT_RENDERER_PATH . '/' . $type . 'ReportRenderer.php')) {
+        if (\is_file(\XHELP_RPT_RENDERER_PATH . '/' . $type . 'ReportRenderer.php')) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

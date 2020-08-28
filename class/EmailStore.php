@@ -1,9 +1,8 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
-use XoopsModules\Xhelp\Validation;
 
 /**
  * class EmailStore
@@ -31,7 +30,7 @@ class EmailStore
      */
     public function _setError($desc)
     {
-        if (is_array($desc)) {
+        if (\is_array($desc)) {
             foreach ($desc as $d) {
                 $this->_errors[] = $d;
             }
@@ -44,11 +43,11 @@ class EmailStore
      */
     public function _getErrors()
     {
-        if (count($this->_errors) > 0) {
+        if (\count($this->_errors) > 0) {
             return $this->_errors;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public function clearErrors()
@@ -63,13 +62,13 @@ class EmailStore
     /**
      * Store the parsed message in database
      * @access public
-     * @param  object $msg  {@link xhelpParsedMsg} object Message to add
-     * @param  object $user {@link xoopsUser} object User that submitted message
-     * @param  object $mbox {@link Xhelp\DepartmentMailBox} object. Originating Mailbox for message
+     * @param object  $msg  {@link xhelpParsedMsg} object Message to add
+     * @param object  $user {@link xoopsUser} object User that submitted message
+     * @param object  $mbox {@link Xhelp\DepartmentMailBox} object. Originating Mailbox for message
      * @param         $errors
      * @return mixed Returns <a href='psi_element://Xhelp\Ticket'>Xhelp\Ticket</a> object if new ticket, <a href='psi_element://Xhelp\Responses'>Xhelp\Responses</a> object if a response, and false if unable to save.
      */
-    public function &storeMsg(&$msg, &$user, &$mbox, &$errors)
+    public function storeMsg($msg, $user, $mbox, &$errors)
     {
         //Remove any previous error messages
         $this->clearErrors();
@@ -83,7 +82,7 @@ class EmailStore
                 $obj->setVar('description', $msg->getMsg());
                 $obj->setVar('department', $mbox->getVar('departmentid'));
                 $obj->setVar('priority', $mbox->getVar('priority'));
-                $obj->setVar('posted', time());
+                $obj->setVar('posted', \time());
                 $obj->setVar('serverid', $mbox->getVar('id'));
                 $obj->setVar('userIP', 'via Email');
                 $obj->setVar('email', $user->getVar('email'));
@@ -102,7 +101,6 @@ class EmailStore
                     return [$obj];
                 }
                 break;
-
             case _XHELP_MSGTYPE_RESPONSE:
                 if (!$ticket = $this->_hTicket->getTicketByHash($msg->getHash())) {
                     $this->_setError(_XHELP_RESPONSE_NO_TICKET);
@@ -111,7 +109,7 @@ class EmailStore
                 }
 
                 if ($msg->getEmail() != $ticket->getVar('email')) {
-                    $this->_setError(sprintf(_XHELP_MISMATCH_EMAIL, $msg->getEmail(), $ticket->getVar('email')));
+                    $this->_setError(\sprintf(_XHELP_MISMATCH_EMAIL, $msg->getEmail(), $ticket->getVar('email')));
 
                     return false;
                 }
@@ -120,12 +118,12 @@ class EmailStore
                 $obj->setVar('ticketid', $ticket->getVar('id'));
                 $obj->setVar('uid', $user->getVar('uid'));
                 $obj->setVar('message', $msg->getMsg());
-                $obj->setVar('updateTime', time());
+                $obj->setVar('updateTime', \time());
                 $obj->setVar('userIP', 'via Email');
 
                 if ($this->_hResponse->insert($obj)) {
                     $this->_saveAttachments($msg, $ticket->getVar('id'), $obj->getVar('id'));
-                    $ticket->setVar('lastUpdated', time());
+                    $ticket->setVar('lastUpdated', \time());
                     $this->_hTicket->insert($ticket);
 
                     $errors = $this->_getErrors();
@@ -133,10 +131,8 @@ class EmailStore
                     return [$ticket, $obj];
                 }
                 break;
-
             default:
                 //Sanity Check, should never get here
-
         }
 
         return false;
@@ -158,8 +154,10 @@ class EmailStore
         $hMime             = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
         $allowed_mimetypes = $hMime->getArray();
 
-        if (!is_dir($dir)) {
-            mkdir($dir, 0757);
+        if (!\is_dir($dir)) {
+            if (!\mkdir($dir, 0757) && !\is_dir($dir)) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dir));
+            }
         }
 
         $dir .= '/';
@@ -171,9 +169,9 @@ class EmailStore
 
                 //Create Temporary File
                 $fname = $prefix . $attach['filename'];
-                $fp    = fopen($dir . $fname, 'wb');
-                fwrite($fp, $attach['content']);
-                fclose($fp);
+                $fp    = \fopen($dir . $fname, 'wb');
+                \fwrite($fp, $attach['content']);
+                \fclose($fp);
 
                 $validators[] = new validation\ValidateMimeType($dir . $fname, $attach['content-type'], $allowed_mimetypes);
                 $validators[] = new validation\ValidateFileSize($dir . $fname, $helper->getConfig('xhelp_uploadSize'));
@@ -182,7 +180,7 @@ class EmailStore
                 if (!Xhelp\Utility::checkRules($validators, $errors)) {
                     //Remove the file
                     $this->_addAttachmentError($errors, $msg, $fname);
-                    unlink($dir . $fname);
+                    \unlink($dir . $fname);
                 } else {
                     //Add attachment to ticket
 
@@ -206,17 +204,16 @@ class EmailStore
      */
     public function _addAttachmentError($errors, $msg, $fname)
     {
-        if (0 <> $errors) {
+        if (0 != $errors) {
             $aErrors = [];
             foreach ($errors as $err) {
-                if (in_array($err, $aErrors)) {
+                if (\in_array($err, $aErrors)) {
                     continue;
-                } else {
-                    $aErrors[] = $err;
                 }
+                $aErrors[] = $err;
             }
-            $error = implode($aErrors, ', ');
-            $this->_setError(sprintf(_XHELP_MESSAGE_UPLOAD_ERR, $fname, $msg->getEmail(), $error));
+            $error = \implode(', ', $aErrors);
+            $this->_setError(\sprintf(_XHELP_MESSAGE_UPLOAD_ERR, $fname, $msg->getEmail(), $error));
         }
     }
 }

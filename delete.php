@@ -1,8 +1,8 @@
 <?php
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-//
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
 //require_once XHELP_BASE_PATH . '/functions.php';
@@ -13,20 +13,20 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
 if ($xoopsUser) {
     $uid = $xoopsUser->getVar('uid');
 
-    if (isset($_POST['delete_ticket'])) {
-        $hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        if (isset($_POST['ticketid'])) {
+    if (Request::hasVar('delete_ticket', 'POST')) {
+        $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
+        if (Request::hasVar('ticketid', 'POST')) {
             $xhelp_id = $_POST['ticketid'];
         }
-        $ticketInfo =& $hTicket->get($xhelp_id);      // Retrieve ticket information
-        if ($hTicket->delete($ticketInfo)) {
+        $ticketInfo = $ticketHandler->get($xhelp_id);      // Retrieve ticket information
+        if ($ticketHandler->delete($ticketInfo)) {
             $message = _XHELP_MESSAGE_DELETE_TICKET;
             $_eventsrv->trigger('delete_ticket', [&$ticketInfo]);
         } else {
             $message = _XHELP_MESSAGE_DELETE_TICKET_ERROR;
         }
         redirect_header(XHELP_BASE_URL . '/index.php', 3, $message);
-    } elseif (isset($_POST['delete_responseTpl'])) {
+    } elseif (Request::hasVar('delete_responseTpl', 'POST')) {
         //Should only the owner of a template be able to delete it?
         $hResponseTpl = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');
         $displayTpl   = $hResponseTpl->get($_POST['tplID']);

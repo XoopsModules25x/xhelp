@@ -1,8 +1,8 @@
 <?php
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-//
 require_once __DIR__ . '/header.php';
 //require_once XHELP_BASE_PATH . '/functions.php';
 
@@ -16,21 +16,21 @@ if ($xoopsUser) {
     $responseTplID = 0;
 
     $op = 'default';
-    if (isset($_REQUEST['op'])) {
+    if (Request::hasVar('op', 'REQUEST')) {
         $op = $_REQUEST['op'];
     }
 
-    if (\Xmf\Request::hasVar('responseTplID', 'GET')) {
-        $responseTplID = \Xmf\Request::getInt('responseTplID', 0, 'GET');
+    if (Request::hasVar('responseTplID', 'GET')) {
+        $responseTplID = Request::getInt('responseTplID', 0, 'GET');
     }
 
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_staff_profile.tpl';   // Set template
-    require XOOPS_ROOT_PATH . '/header.php';                     // Include the page header
+    require_once XOOPS_ROOT_PATH . '/header.php';                     // Include the page header
 
     $numResponses = 0;
     $uid          = $xoopsUser->getVar('uid');
-    $hStaff       = Xhelp\Helper::getInstance()->getHandler('Staff');
-    if (!$staff = $hStaff->getByUid($uid)) {
+    $staffHandler = Xhelp\Helper::getInstance()->getHandler('Staff');
+    if (!$staff = $staffHandler->getByUid($uid)) {
         redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_INV_STAFF);
     }
     $hTicketList  = Xhelp\Helper::getInstance()->getHandler('TicketList');
@@ -44,7 +44,7 @@ if ($xoopsUser) {
             'id'       => $response->getVar('id'),
             'uid'      => $response->getVar('uid'),
             'name'     => $response->getVar('name'),
-            'response' => $response->getVar('response')
+            'response' => $response->getVar('response'),
         ];
     }
     $has_responseTpl = count($responseTpl) > 0;
@@ -54,10 +54,10 @@ if ($xoopsUser) {
 
     switch ($op) {
         case 'responseTpl':
-            if (isset($_POST['updateResponse'])) {
-                if (isset($_POST['attachSig'])) {
+            if (Request::hasVar('updateResponse', 'POST')) {
+                if (Request::hasVar('attachSig', 'POST')) {
                     $staff->setVar('attachSig', $_POST['attachSig']);
-                    if (!$hStaff->insert($staff)) {
+                    if (!$staffHandler->insert($staff)) {
                         $message = _XHELP_MESSAGE_UPDATE_SIG_ERROR;
                     }
                 }
@@ -89,73 +89,67 @@ if ($xoopsUser) {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, $message);
             }
             break;
-
         case 'updateNotification':
             $notArray = (is_array($_POST['notifications']) ? $_POST['notifications'] : [0]);
             $notValue = array_sum($notArray);
             $staff->setVar('notify', $notValue);
-            if (isset($_POST['email']) && $_POST['email'] <> $staff->getVar('email')) {
+            if (Request::hasVar('email', 'POST') && $_POST['email'] != $staff->getVar('email')) {
                 $staff->setVar('email', $_POST['email']);
             }
-            if (!$hStaff->insert($staff)) {
+            if (!$staffHandler->insert($staff)) {
                 $message = _XHELP_MESSAGE_UPDATE_EMAIL_ERROR;
             }
             $message = _XHELP_MESSAGE_NOTIFY_UPDATE;
             redirect_header(XHELP_BASE_URL . '/profile.php', 3, $message);
             break;
-
         case 'addTicketList':
-            if (isset($_POST['savedSearch']) && (0 != $_POST['savedSearch'])) {
-                $searchid   = \Xmf\Request::getInt('savedSearch', 0, 'POST');
+            if (Request::hasVar('savedSearch', 'POST') && (0 != $_POST['savedSearch'])) {
+                $searchid   = Request::getInt('savedSearch', 0, 'POST');
                 $ticketList = $hTicketList->create();
                 $ticketList->setVar('uid', $xoopsUser->getVar('uid'));
                 $ticketList->setVar('searchid', $searchid);
                 $ticketList->setVar('weight', $hTicketList->createNewWeight($xoopsUser->getVar('uid')));
 
                 if ($hTicketList->insert($ticketList)) {
-                    header('Location: ' . XHELP_BASE_URL . '/profile.php');
+                    redirect_header(XHELP_BASE_URL . '/profile.php');
                 } else {
                     redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_ADD_TICKETLIST_ERR);
                 }
             }
             break;
-
         case 'editTicketList':
-            if (isset($_REQUEST['id']) && 0 != $_REQUEST['id']) {
-                $listID = \Xmf\Request::getInt('id', 0, 'REQUEST');
+            if (Request::hasVar('id', 'REQUEST') && 0 != $_REQUEST['id']) {
+                $listID = Request::getInt('id', 0, 'REQUEST');
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_NO_ID);
             }
             break;
-
         case 'deleteTicketList':
-            if (isset($_REQUEST['id']) && 0 != $_REQUEST['id']) {
-                $listID = \Xmf\Request::getInt('id', 0, 'REQUEST');
+            if (Request::hasVar('id', 'REQUEST') && 0 != $_REQUEST['id']) {
+                $listID = Request::getInt('id', 0, 'REQUEST');
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_NO_ID);
             }
             $ticketList = $hTicketList->get($listID);
             if ($hTicketList->delete($ticketList, true)) {
-                header('Location: ' . XHELP_BASE_URL . '/profile.php');
+                redirect_header(XHELP_BASE_URL . '/profile.php');
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_DEL_TICKETLIST_ERR);
             }
             break;
-
         case 'changeListWeight':
-            if (isset($_REQUEST['id']) && 0 != $_REQUEST['id']) {
-                $listID = \Xmf\Request::getInt('id', 0, 'REQUEST');
+            if (Request::hasVar('id', 'REQUEST') && 0 != $_REQUEST['id']) {
+                $listID = Request::getInt('id', 0, 'REQUEST');
             } else {
                 redirect_header(XHELP_BASE_URL . '/profile.php', 3, _XHELP_MSG_NO_ID);
             }
             $up = false;
-            if (isset($_REQUEST['up'])) {
+            if (Request::hasVar('up', 'REQUEST')) {
                 $up = $_REQUEST['up'];
             }
             $hTicketList->changeWeight($listID, $up);
-            header('Location: ' . XHELP_BASE_URL . '/profile.php');
+            redirect_header(XHELP_BASE_URL . '/profile.php');
             break;
-
         default:
             $xoopsTpl->assign('xhelp_responseTplID', $responseTplID);
             $module_header = '<!--[if lt IE 7]><script src="iepngfix.js" language="JavaScript" type="text/javascript"></script><![endif]-->';
@@ -198,7 +192,7 @@ if ($xoopsUser) {
             $xoopsTpl->assign('xhelp_staff_email', $staff->getVar('email'));
             $xoopsTpl->assign('xhelp_savedSearches', $aSavedSearches);
 
-            $myRoles       = $hStaff->getRoles($xoopsUser->getVar('uid'), true);
+            $myRoles       = $staffHandler->getRoles($xoopsUser->getVar('uid'), true);
             $hNotification = Xhelp\Helper::getInstance()->getHandler('Notification');
             $settings      = $hNotification->getObjects(null, true);
 
@@ -209,7 +203,7 @@ if ($xoopsUser) {
             $i             = 0;
             $staff_enabled = true;
             foreach ($templates as $template_id => $template) {
-                if ('dept' == $template['category']) {
+                if ('dept' === $template['category']) {
                     if (isset($settings[$template_id])) {
                         $staff_setting = $settings[$template_id]->getVar('staff_setting');
                         if (4 == $staff_setting) {
@@ -220,9 +214,9 @@ if ($xoopsUser) {
                                 if (array_key_exists($role, $myRoles)) {
                                     $staff_enabled = true;
                                     break;
-                                } else {
-                                    $staff_enabled = false;
                                 }
+
+                                $staff_enabled = false;
                             }
                         }
                     }
@@ -237,7 +231,7 @@ if ($xoopsUser) {
                         'caption'       => $template['caption'],
                         'description'   => $template['description'],
                         'isChecked'     => ($staff->getVar('notify') & (2 ** $template['bit_value'])) > 0,
-                        'staff_setting' => $staff_enabled
+                        'staff_setting' => $staff_enabled,
                     ];
                 }
             }
@@ -260,15 +254,18 @@ if ($xoopsUser) {
 
             foreach ($reviews as $review) {
                 $reviewer = $hMembers->getUser($review->getVar('submittedBy'));
-                $xoopsTpl->append('xhelp_reviews', [
-                    'rating'         => $review->getVar('rating'),
-                    'ratingdsc'      => Xhelp\Utility::getRating($review->getVar('rating')),
-                    'submittedBy'    => $reviewer ? Xhelp\Utility::getUsername($reviewer, $displayName) : $xoopsConfig['anonymous'],
-                    'submittedByUID' => $review->getVar('submittedBy'),
-                    'responseid'     => $review->getVar('responseid'),
-                    'comments'       => $review->getVar('comments'),
-                    'ticketid'       => $review->getVar('ticketid')
-                ]);
+                $xoopsTpl->append(
+                    'xhelp_reviews',
+                    [
+                        'rating'         => $review->getVar('rating'),
+                        'ratingdsc'      => Xhelp\Utility::getRating($review->getVar('rating')),
+                        'submittedBy'    => $reviewer ? Xhelp\Utility::getUsername($reviewer, $displayName) : $xoopsConfig['anonymous'],
+                        'submittedByUID' => $review->getVar('submittedBy'),
+                        'responseid'     => $review->getVar('responseid'),
+                        'comments'       => $review->getVar('comments'),
+                        'ticketid'       => $review->getVar('ticketid'),
+                    ]
+                );
             }
             $xoopsTpl->assign('xhelp_hasReviews', count($reviews) > 0);
 
@@ -292,7 +289,7 @@ if ($xoopsUser) {
                     'name'          => $mySavedSearches[$ticketList->getVar('searchid')]['name'],
                     'hasWeightUp'   => ($eleNum != $ticketListCount - 1) ? true : false,
                     'hasWeightDown' => (0 != $eleNum) ? true : false,
-                    'hasEdit'       => (-999 != $mySavedSearches[$ticketList->getVar('searchid')]['uid']) ? true : false
+                    'hasEdit'       => (-999 != $mySavedSearches[$ticketList->getVar('searchid')]['uid']) ? true : false,
                 ];
                 ++$eleNum;
                 $aUsedSearches[$searchid] = $searchid;
@@ -301,7 +298,7 @@ if ($xoopsUser) {
 
             // Take used searches to get unused searches
             $aSearches = [];
-            if (is_array($mySavedSearches) && count($mySavedSearches) > 0) {
+            if ($mySavedSearches && is_array($mySavedSearches)) {
                 foreach ($mySavedSearches as $savedSearch) {
                     if (!in_array($savedSearch['id'], $aUsedSearches)) {
                         if ('' != $savedSearch['id']) {
@@ -322,4 +319,4 @@ if ($xoopsUser) {
     redirect_header(XOOPS_URL . '/user.php', 3);
 }
 
-require XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

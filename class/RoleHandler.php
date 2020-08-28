@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,11 +22,10 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * class RoleHandler
@@ -50,9 +51,9 @@ class RoleHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -68,7 +69,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (id, NAME, description, tasks) VALUES (%u, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($name), $this->_db->quoteString($description), $tasks);
+        $sql = \sprintf('INSERT INTO `%s` (id, NAME, description, tasks) VALUES (%u, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($name), $this->_db->quoteString($description), $tasks);
 
         return $sql;
     }
@@ -84,7 +85,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE `%s` SET NAME = %s, description = %s, tasks = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($name), $this->_db->quoteString($description), $tasks, $id);
+        $sql = \sprintf('UPDATE `%s` SET NAME = %s, description = %s, tasks = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($name), $this->_db->quoteString($description), $tasks, $id);
 
         return $sql;
     }
@@ -95,7 +96,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -105,7 +106,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
      *
      * @param \XoopsObject $obj       reference to the {@link Xhelp\Role}
      *                                obj to delete
-     * @param  bool        $force
+     * @param bool         $force
      * @return bool FALSE if failed.
      * @access  public
      */

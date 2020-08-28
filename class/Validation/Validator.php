@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
 
 /**
  *  Validator superclass for form validation
@@ -16,7 +16,7 @@ class Validator
     //! A constructor.
 
     /**
-     * Constucts a new Validator object
+     * Constructs a new Validator object
      */
     public function __construct()
     {
@@ -26,9 +26,6 @@ class Validator
 
     //! A manipulator
 
-    /**
-     * @return void
-     */
     public function validate()
     {
         // Superclass method does nothing
@@ -39,7 +36,6 @@ class Validator
     /**
      * Adds an error message to the array
      * @param $msg
-     * @return void
      */
     public function setError($msg)
     {
@@ -50,15 +46,15 @@ class Validator
 
     /**
      * Returns true is string valid, false if not
-     * @return boolean
+     * @return bool
      */
     public function isValid()
     {
-        if (count($this->errorMsg)) {
+        if (\count($this->errorMsg)) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     //! An accessor
@@ -69,7 +65,7 @@ class Validator
      */
     public function getError()
     {
-        return array_pop($this->errorMsg);
+        return \array_pop($this->errorMsg);
     }
 
     /**

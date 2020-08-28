@@ -1,6 +1,31 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
+
+use function basename;
+use function define;
+use function defined;
+use function dirname;
+
+use const XHELP_ASSETS_PATH;
+use const XHELP_ASSETS_URL;
+use const XHELP_BASE_PATH;
+use const XHELP_BASE_URL;
+use const XHELP_CLASS_PATH;
+use const XHELP_DIR_NAME;
+use const XHELP_SEC_FAQ_ADD;
+use const XHELP_SEC_FILE_DELETE;
+use const XHELP_SEC_RESPONSE_ADD;
+use const XHELP_SEC_RESPONSE_EDIT;
+use const XHELP_SEC_TICKET_ADD;
+use const XHELP_SEC_TICKET_DELETE;
+use const XHELP_SEC_TICKET_EDIT;
+use const XHELP_SEC_TICKET_LOGUSER;
+use const XHELP_SEC_TICKET_MERGE;
+use const XHELP_SEC_TICKET_OWNERSHIP;
+use const XHELP_SEC_TICKET_PRIORITY;
+use const XHELP_SEC_TICKET_STATUS;
+use const XHELP_SEC_TICKET_TAKE_OWNERSHIP;
 
 /**
  *Global Application Constants
@@ -73,24 +98,27 @@ define('XHELP_ROLE_PERM_3', 0);
 define('XHELP_BASE_PATH', XOOPS_ROOT_PATH . '/modules/' . XHELP_DIR_NAME);
 define('XHELP_CLASS_PATH', XHELP_BASE_PATH . '/class');
 define('XHELP_BASE_URL', XHELP_SITE_URL . '/modules/' . XHELP_DIR_NAME);
-define('XHELP_UPLOAD_PATH', XOOPS_ROOT_PATH . '/uploads/' . XHELP_DIR_NAME);
+//define('XHELP_UPLOAD_PATH', XOOPS_ROOT_PATH . '/uploads/' . XHELP_DIR_NAME);
 define('XHELP_INCLUDE_PATH', XHELP_BASE_PATH . '/include');
 define('XHELP_INCLUDE_URL', XHELP_BASE_URL . '/include');
 define('XHELP_IMAGE_PATH', XHELP_BASE_PATH . '/assets/images');
 define('XHELP_IMAGE_URL', XHELP_BASE_URL . '/assets/images');
-define('XHELP_ADMIN_URL', XHELP_BASE_URL . '/admin');
-define('XHELP_ADMIN_PATH', XHELP_BASE_PATH . '/admin');
+//define('XHELP_ADMIN_URL', XHELP_BASE_URL . '/admin');
+//define('XHELP_ADMIN_PATH', XHELP_BASE_PATH . '/admin');
 define('XHELP_PEAR_PATH', XHELP_CLASS_PATH . '/pear');
 define('XHELP_CACHE_PATH', XOOPS_ROOT_PATH . '/cache');
 define('XHELP_CACHE_URL', XHELP_SITE_URL . '/cache');
 define('XHELP_SCRIPT_URL', XHELP_BASE_URL . '/scripts');
-define('XHELP_JPSPAN_PATH', XHELP_INCLUDE_PATH . '/jpspan');
 define('XHELP_FAQ_ADAPTER_PATH', XHELP_CLASS_PATH . '/faq');
 define('XHELP_REPORT_PATH', XHELP_BASE_PATH . '/reports');
 define('XHELP_REPORT_URL', XHELP_BASE_URL . '/reports');
-define('XHELP_JPGRAPH_PATH', XHELP_INCLUDE_PATH . '/jpgraph');
-define('XHELP_JPGRAPH_URL', XHELP_INCLUDE_URL . '/jpgraph');
 define('XHELP_RPT_RENDERER_PATH', XHELP_CLASS_PATH . '/reportRenderer');
+
+define('XHELP_ASSETS_PATH', XHELP_BASE_PATH . '/assets');
+define('XHELP_ASSETS_URL', XHELP_BASE_URL . '/assets');
+define('XHELP_JPGRAPH_PATH', XHELP_ASSETS_PATH . '/js/jpgraph');
+define('XHELP_JPGRAPH_URL', XHELP_ASSETS_URL . '/js/jpgraph');
+define('XHELP_JPSPAN_PATH', XHELP_ASSETS_PATH . '/js/jpspan');
 
 //Control Types
 define('XHELP_CONTROL_TXTBOX', 0);

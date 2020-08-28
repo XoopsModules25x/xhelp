@@ -1,19 +1,19 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CONSTANTS_INCLUDED')) {
+if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
-define('MD5SIGNATUREPATTERN', '/{([^ ]*)}/i');
-define('HEADER_PRIORITY', 'Importance');
-define('_XHELP_MSGTYPE_TICKET', 1);
-define('_XHELP_MSGTYPE_RESPONSE', 2);
+\define('MD5SIGNATUREPATTERN', '/{([^ ]*)}/i');
+\define('HEADER_PRIORITY', 'Importance');
+\define('_XHELP_MSGTYPE_TICKET', 1);
+\define('_XHELP_MSGTYPE_RESPONSE', 2);
 
-require_once XHELP_PEAR_PATH . '/Mail/mimeDecode.php';
+require_once \XHELP_PEAR_PATH . '/Mail/mimeDecode.php';
 
 /**
  * xhelpMessageParser class
@@ -46,7 +46,7 @@ class EmailParser
      * @param $msg
      * @return Xhelp\ParsedMessage
      */
-    public function &parseMessage(&$msg)
+    public function &parseMessage($msg)
     {
         $struct = $this->_parseMsg($msg);
         $newMsg = new Xhelp\ParsedMessage($struct);
@@ -58,7 +58,7 @@ class EmailParser
      * @param $msg
      * @return array
      */
-    public function &_parseMsg(&$msg)
+    public function &_parseMsg($msg)
     {
         $arr = [];
         //Parse out attachments/HTML
@@ -69,7 +69,7 @@ class EmailParser
         $arr['hash']        = $this->_parseTicketID($structure->headers['subject']);
         $arr['msg']         = $this->_parseBody($body);
         $arr['mime_struct'] = $structure;
-        $arr                = array_merge($arr, $this->_parseFrom($structure->headers['from']));
+        $arr                = \array_merge($arr, $this->_parseFrom($structure->headers['from']));
 
         return $arr;
     }
@@ -82,14 +82,14 @@ class EmailParser
     {
         //Extract Name & Email from supplied message
         //eregi("From: (.*)\nTo:",$headers, $addr);
-        preg_match('/"?([^"<@]*)"?/i', $from, $name);
+        \preg_match('/"?([^"<@]*)"?/i', $from, $name);
         //eregi("<(.*)>",$from, $email);
 
         $arr['name'] = $name[1];
 
         $pattern['email'] = "/([a-z0-9\-_\.]+?)@([^, \r\n\"\(\)'<>\[\]]+)/i";
 
-        preg_match($pattern['email'], $from, $matches);
+        \preg_match($pattern['email'], $from, $matches);
         $arr['email'] = $matches[0];
 
         //$arr['email'] = $email[1];
@@ -103,7 +103,7 @@ class EmailParser
     public function _parseTicketID($msg)
     {
         $matches = [];
-        $ret     = preg_match(MD5SIGNATUREPATTERN, $msg, $matches);
+        $ret     = \preg_match(MD5SIGNATUREPATTERN, $msg, $matches);
 
         if ($ret) {
             // This function assumes that the ticket id is stored in the first
@@ -135,9 +135,9 @@ class EmailParser
     {
         $current = 0;
 
-        $msg = explode("\r\n", $msg);
+        $msg = \explode("\r\n", $msg);
 
-        for ($i = 0, $iMax = count($msg); $i < $iMax; ++$i) {
+        for ($i = 0, $iMax = \count($msg); $i < $iMax; ++$i) {
             $pattern    = [];
             $replace    = [];
             $next       = $current + 1;
@@ -151,23 +151,23 @@ class EmailParser
             $replace[2] = '[/quote]\\2';
 
             //Check if current line indicates a quote
-            if (preg_match($pattern[0], $msg[$i])) {
-                $msg[$i] = preg_replace($pattern[0], $replace[0], $msg[$i]);
+            if (\preg_match($pattern[0], $msg[$i])) {
+                $msg[$i] = \preg_replace($pattern[0], $replace[0], $msg[$i]);
                 ++$current;
             } else {
                 if ($current) {
                     //Check if line indicates a closed quote
-                    if (preg_match($pattern[1], $msg[$i])) {
-                        $msg[$i] = preg_replace($pattern[1], $replace[1], $msg[$i]);
+                    if (\preg_match($pattern[1], $msg[$i])) {
+                        $msg[$i] = \preg_replace($pattern[1], $replace[1], $msg[$i]);
                     } else {
-                        $msg[$i] = preg_replace($pattern[2], $replace[2], $msg[$i]);
+                        $msg[$i] = \preg_replace($pattern[2], $replace[2], $msg[$i]);
                         $current--;
                     }
                 }
             }
         }
 
-        return implode("\r\n", $msg);
+        return \implode("\r\n", $msg);
     }
 
     /**
@@ -178,7 +178,7 @@ class EmailParser
     {
         $pattern = '/^\*{4}\s' . _XHELP_TICKET_MD5SIGNATURE . '\s(.)*\*{4}/im';
 
-        return preg_replace($pattern, '', $msg);
+        return \preg_replace($pattern, '', $msg);
     }
 
     /**
@@ -187,7 +187,7 @@ class EmailParser
      * @param string $secondary
      * @return bool
      */
-    public function _getBody(&$part, $primary = 'text', $secondary = 'plain')
+    public function _getBody($part, $primary = 'text', $secondary = 'plain')
     {
         $body = false;
 
@@ -196,21 +196,20 @@ class EmailParser
         // 2. array of subparts
         // 2a. subarray of subparts (recursion)?
 
-        if (is_array($part)) {
+        if (\is_array($part)) {
             foreach ($part as $subpart) {
                 if (!$body = $this->_getBody($subpart, $primary, $secondary)) {
                     continue;
-                } else {
-                    return $body;
                 }
+
+                return $body;
             }
         } else {
             if (isset($part->parts)) {
                 return $this->_getBody($part->parts, $primary, $secondary);
-            } else {
-                if ($part->ctype_primary == $primary && $part->ctype_secondary == $secondary) {
-                    return $part->body;
-                }
+            }
+            if ($part->ctype_primary == $primary && $part->ctype_secondary == $secondary) {
+                return $part->body;
             }
         }
 

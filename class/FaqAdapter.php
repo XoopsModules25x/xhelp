@@ -1,25 +1,25 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/faq.php';
 
-define('XHELP_FAQ_CATEGORY_SING', 0);
-define('XHELP_FAQ_CATEGORY_MULTI', 1);
-define('XHELP_FAQ_CATEGORY_NONE', 2);
+\define('XHELP_FAQ_CATEGORY_SING', 0);
+\define('XHELP_FAQ_CATEGORY_MULTI', 1);
+\define('XHELP_FAQ_CATEGORY_NONE', 2);
 
 /**
  * class FaqAdapter
  */
 class FaqAdapter
 {
-    public $categoryType = XHELP_FAQ_CATEGORY_SING;
+    public $categoryType = \XHELP_FAQ_CATEGORY_SING;
 
     /**
      * Adapter Details
@@ -40,7 +40,7 @@ class FaqAdapter
         'version'         => '',
         'tested_versions' => '',
         'url'             => '',
-        'module_dir'      => ''
+        'module_dir'      => '',
     ];
 
     /**
@@ -52,7 +52,6 @@ class FaqAdapter
 
     /**
      * Stub function (does nothing)
-     * @return void of Xhelp\FaqCategory objects
      */
     public function &getCategories()
     {
@@ -87,27 +86,27 @@ class FaqAdapter
         $module_name = $this->meta['name'];
 
         if ('' == $module_dir || '' == $module_name) {      // Sanity check
-
             return false;
         }
 
         // Make sure that module is active
-        $hModule = xoops_getHandler('module');
-        $mod     = $hModule->getByDirname($module_dir);
+        $moduleHandler = \xoops_getHandler('module');
+        $mod           = $moduleHandler->getByDirname($module_dir);
 
-        if (is_object($mod)) {
+        if (\is_object($mod)) {
             if ($mod->getVar('isactive')) {   // Module active?
                 $activeAdapter = Xhelp\Utility::getMeta('faq_adapter');
-                if ($activeAdapter = $module_name) {
+                $activeAdapter = $module_name;
+                if ($activeAdapter) {
                     return true;
-                } else {
-                    return false;
                 }
-            } else {
+
                 return false;
             }
-        } else {
+
             return false;
         }
+
+        return false;
     }
 }

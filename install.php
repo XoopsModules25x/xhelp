@@ -1,9 +1,9 @@
 <?php
-//
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-require_once  dirname(dirname(__DIR__)) . '/mainfile.php';
+require_once dirname(__DIR__, 2) . '/mainfile.php';
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
@@ -14,7 +14,7 @@ $helper->loadLanguage('main');
 
 $op = '';
 
-if (isset($_GET['op'])) {
+if (Request::hasVar('op', 'GET')) {
     $op = $_GET['op'];
 }
 
@@ -23,12 +23,10 @@ switch ($op) {
         global $xoopsModule;
         $myTopics = updateTopics();
         break;
-
     case 'updateDepts':
         global $xoopsModule;
         $myDepts = updateDepts();
         break;
-
     default:
         return false;
 }
@@ -91,7 +89,7 @@ function removeDepts()
 
     // Select the config from the xoops_config table
     $crit   = new \Criteria('conf_name', 'xhelp_defaultDept');
-    $config =& $hConfig->getConfigs($crit);
+    $config = &$hConfig->getConfigs($crit);
 
     if (count($config) > 0) {
         $xhelp_config = $config[0]->getVar('conf_id');
@@ -107,12 +105,10 @@ function removeDepts()
     if (count($configOptions) > 0) {
         foreach ($configOptions as $option) {
             if (!$hConfigOption->deleteAll($option, true)) {   // Remove each config option
-
                 return false;
             }
         }
     } else {    // If no config options were found
-
         return $xhelp_config;
     }
 
@@ -194,7 +190,7 @@ function removeTopics()
 }
 
 /**
- * @param XoopsModule $module
+ * @param \XoopsModule $module
  * @return bool
  */
 function xoops_module_install_xhelp(\XoopsModule $module)

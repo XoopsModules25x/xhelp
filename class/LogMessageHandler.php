@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,12 +22,11 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 //
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * Xhelp\LogMessageHandler class
@@ -57,9 +58,9 @@ class LogMessageHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -75,7 +76,7 @@ class LogMessageHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (id, uid, ticketid, lastUpdated, ACTION) VALUES (%u, %u, %u, %u, %s)', $this->_db->prefix($this->_dbtable), $id, $uid, $ticketid, time(), $this->_db->quoteString($action));
+        $sql = \sprintf('INSERT INTO `%s` (id, uid, ticketid, lastUpdated, ACTION) VALUES (%u, %u, %u, %u, %s)', $this->_db->prefix($this->_dbtable), $id, $uid, $ticketid, \time(), $this->_db->quoteString($action));
 
         return $sql;
     }
@@ -91,7 +92,7 @@ class LogMessageHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE `%s` SET uid = %u, ticketid = %u, lastUpdated = %u, ACTION = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $ticketid, time(), $this->_db->quoteString($action), $id);
+        $sql = \sprintf('UPDATE `%s` SET uid = %u, ticketid = %u, lastUpdated = %u, ACTION = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $ticketid, \time(), $this->_db->quoteString($action), $id);
 
         return $sql;
     }
@@ -102,7 +103,7 @@ class LogMessageHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->_idfield));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->_idfield));
 
         return $sql;
     }

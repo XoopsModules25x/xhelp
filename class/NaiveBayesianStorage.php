@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  ***** BEGIN LICENSE BLOCK *****
@@ -73,10 +75,10 @@ class NaiveBayesianStorage
 
         $ret = $this->con->query('SELECT * FROM ' . $this->con->prefix('xhelp_bayes_categories'));
 
-        while ($arr = $this->con->fetchRow($ret)) {
+        while (false !== ($arr = $this->con->fetchRow($ret))) {
             $categories[$arr['category_id']] = [
                 'probability' => $arr['probability'],
-                'word_count'  => $arr['word_count']
+                'word_count'  => $arr['word_count'],
             ];
         }
 
@@ -84,8 +86,8 @@ class NaiveBayesianStorage
     }
 
     /** see if the word is an already learnt word.
+     * @param mixed $word
      * @return bool
-     * @param string word
      */
     public function wordExists($word)
     {
@@ -95,17 +97,17 @@ class NaiveBayesianStorage
 
         if (!$ret) {
             return false;
-        } else {
-            $arr = $this->con->fetchRow($ret);
-
-            return $arr['WordCount'] > 0;
         }
+
+        $arr = $this->con->fetchRow($ret);
+
+        return $arr['WordCount'] > 0;
     }
 
     /** get details of a word in a category.
+     * @param mixed $word
+     * @param mixed $category_id
      * @return array ('count' => count)
-     * @param  string word
-     * @param  string category id
      */
     public function getWord($word, $category_id)
     {
@@ -140,42 +142,42 @@ class NaiveBayesianStorage
     {
         $oldword = $this->getWord($word, $category_id);
         if (0 == $oldword['count']) {
-            $sql = sprintf('INSERT INTO `%s` (word, category_id, COUNT) VALUES (%s, %s, %d)', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)), (int)$count);
+            $sql = \sprintf('INSERT INTO `%s` (word, category_id, COUNT) VALUES (%s, %s, %d)', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)), (int)$count);
         } else {
-            $sql = sprintf('UPDATE `%s` SET COUNT+=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
+            $sql = \sprintf('UPDATE `%s` SET COUNT+=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
         }
 
         $ret = $this->con->query($sql);
 
         if (!$ret) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     /** remove a word from a category.
      *
+     * @param mixed $word
+     * @param mixed $count
+     * @param mixed $category_id
      * @return bool success
-     * @param string word
-     * @param int    count
-     * @param string category id
      */
     public function removeWord($word, $count, $category_id)
     {
         $oldword = $this->getWord($word, $category_id);
         if (0 != $oldword['count'] && 0 >= ($oldword['count'] - $count)) {
-            $sql = sprintf('DELETE FROM `%s` WHERE word = %s AND category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)));
+            $sql = \sprintf('DELETE FROM `%s` WHERE word = %s AND category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $this->con->quoteString($this->_cleanVar($word)), $this->con->quoteString($this->_cleanVar($category_id)));
         } else {
-            $sql = sprintf('UPDATE `%s` SET COUNT-=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
+            $sql = \sprintf('UPDATE `%s` SET COUNT-=%d WHERE category_id = %s AND word = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), (int)$count, $this->con->quoteString($this->_cleanVar($category_id)), $this->con->quoteString($this->_cleanVar($word)));
         }
         $ret = $this->con->query($sql);
 
         if (!$ret) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     /** update the probabilities of the categories and word count.
@@ -188,7 +190,7 @@ class NaiveBayesianStorage
         // first update the word count of each category
         $ret         = $this->con->query('SELECT category_id, SUM(count) AS total FROM ' . $this->con->prefix('xhelp_bayes_wordfreqs') . ' GROUP BY category_id');
         $total_words = 0;
-        while ($arr = $this->con->fetchRow($ret)) {
+        while (false !== ($arr = $this->con->fetchRow($ret))) {
             $total_words              += $arr['total'];
             $cat[$arr['category_id']] = $arr['total'];
         }
@@ -200,7 +202,7 @@ class NaiveBayesianStorage
         foreach ($cat as $cat_id => $cat_total) {
             //Calculate each category's probability
             $proba = $cat_total / $total_words;
-            $this->con->query(sprintf('UPDATE `%s` SET word_count = %d, probability = %f WHERE category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $cat_total, $proba, $this->con->quoteString($this->_cleanVar($cat_id))));
+            $this->con->query(\sprintf('UPDATE `%s` SET word_count = %d, probability = %f WHERE category_id = %s', $this->con->prefix('xhelp_bayes_wordfreqs'), $cat_total, $proba, $this->con->quoteString($this->_cleanVar($cat_id))));
         }
 
         return true;
@@ -208,10 +210,10 @@ class NaiveBayesianStorage
 
     /** save a reference in the database.
      *
+     * @param mixed $doc_id
+     * @param mixed $category_id
+     * @param mixed $content
      * @return bool success
-     * @param  string reference if, must be unique
-     * @param  string category id
-     * @param  string content of the reference
      */
     public function saveReference($doc_id, $category_id, $content)
     {
@@ -220,14 +222,14 @@ class NaiveBayesianStorage
 
     /** get a reference from the database.
      *
+     * @param mixed $doc_id
      * @return array reference( category_id => ...., content => ....)
-     * @param  string id
      */
     public function getReference($doc_id)
     {
-        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-        $ticket  = $hTicket->get($doc_id);
-        $ref     = [];
+        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticket        = $ticketHandler->get($doc_id);
+        $ref           = [];
 
         if (!$ticket) {
             return $ref;
@@ -242,8 +244,8 @@ class NaiveBayesianStorage
 
     /** remove a reference from the database
      *
+     * @param mixed $doc_id
      * @return bool sucess
-     * @param  string reference id
      */
     public function removeReference($doc_id)
     {

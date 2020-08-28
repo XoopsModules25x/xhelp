@@ -2,7 +2,6 @@
 
 use XoopsModules\Xhelp;
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 // require_once XHELP_CLASS_PATH . '/faqAdapterFactory.php';
@@ -10,7 +9,7 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 $op = 'default';
 
-if (isset($_REQUEST['op'])) {
+if (\Xmf\Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -18,12 +17,10 @@ switch ($op) {
     case 'updateActive':
         updateActive();
         break;
-
     case 'manage':
     default:
         manage();
         break;
-
 }
 
 function manage()
@@ -101,7 +98,7 @@ function updateActive()
     }
 
     if ($ret) {
-        header('Location: ' . XHELP_ADMIN_URL . '/faqAdapter.php');
+        redirect_header(XHELP_ADMIN_URL . '/faqAdapter.php');
     } else {
         redirect_header(XHELP_ADMIN_URL . '/faqAdapter.php', 3, _AM_XHELP_MSG_INSTALL_MODULE);
     }

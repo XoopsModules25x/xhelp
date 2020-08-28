@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -37,13 +39,13 @@ class TicketEmails extends \XoopsObject
      */
     public function __construct($id = null)
     {
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('uid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('email', XOBJ_DTYPE_TXTBOX, null, false, 100);
-        $this->initVar('suppress', XOBJ_DTYPE_INT, null, false);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('uid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('email', \XOBJ_DTYPE_TXTBOX, null, false, 100);
+        $this->initVar('suppress', \XOBJ_DTYPE_INT, null, false);
 
-        if (isset($id)) {
-            if (is_array($id)) {
+        if (null !== $id) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {

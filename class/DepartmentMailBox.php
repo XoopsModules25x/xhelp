@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,7 +22,7 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -38,7 +40,7 @@ if (!defined('XHELP_CLASS_PATH')) {
 class DepartmentMailBox extends \XoopsObject
 {
     public $_mBox;
-//    public $_errors;
+    //    public $_errors;
     public $_msgCount;
     public $_curMsg;
 
@@ -50,19 +52,19 @@ class DepartmentMailBox extends \XoopsObject
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('emailaddress', XOBJ_DTYPE_TXTBOX, null, false, 255);
-        $this->initVar('departmentid', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('server', XOBJ_DTYPE_TXTBOX, null, false, 50);
-        $this->initVar('serverport', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('username', XOBJ_DTYPE_TXTBOX, null, false, 50);
-        $this->initVar('password', XOBJ_DTYPE_TXTBOX, null, false, 50);
-        $this->initVar('priority', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('mboxtype', XOBJ_DTYPE_INT, _XHELP_MAILBOXTYPE_POP3, false);
-        $this->initVar('active', XOBJ_DTYPE_INT, true, true);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('emailaddress', \XOBJ_DTYPE_TXTBOX, null, false, 255);
+        $this->initVar('departmentid', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('server', \XOBJ_DTYPE_TXTBOX, null, false, 50);
+        $this->initVar('serverport', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('username', \XOBJ_DTYPE_TXTBOX, null, false, 50);
+        $this->initVar('password', \XOBJ_DTYPE_TXTBOX, null, false, 50);
+        $this->initVar('priority', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('mboxtype', \XOBJ_DTYPE_INT, \_XHELP_MAILBOXTYPE_POP3, false);
+        $this->initVar('active', \XOBJ_DTYPE_INT, true, true);
 
         if (null !== $id) {
-            if (is_array($id)) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -124,7 +126,7 @@ class DepartmentMailBox extends \XoopsObject
     /**
      * @return array|bool
      */
-    public function &getMessage()
+    public function getMessage()
     {
         $msg = [];
         $this->_curMsg++;
@@ -158,11 +160,11 @@ class DepartmentMailBox extends \XoopsObject
     public function _getMailBox($mboxType)
     {
         switch ($mboxType) {
-            case _XHELP_MAILBOXTYPE_IMAP:
-                return new Xhelp\MailBoxIMAP;
+            case \_XHELP_MAILBOXTYPE_IMAP:
+                return new Xhelp\MailBoxIMAP();
                 break;
-            case _XHELP_MAILBOXTYPE_POP3:
-                return new Xhelp\MailBoxPOP3;
+            case \_XHELP_MAILBOXTYPE_POP3:
+                return new Xhelp\MailBoxPOP3();
                 break;
             default:
                 return false;
@@ -175,7 +177,7 @@ class DepartmentMailBox extends \XoopsObject
      */
     public function deleteMessage($msg)
     {
-        if (is_array($msg)) {
+        if (\is_array($msg)) {
             if (isset($msg['index'])) {
                 $msgid = (int)$msg['index'];
             }

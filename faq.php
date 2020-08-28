@@ -1,5 +1,6 @@
 <?php
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
@@ -13,7 +14,7 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
 // require_once XHELP_CLASS_PATH . '/faqCategory.php';
 // require_once XHELP_CLASS_PATH . '/Tree.php';
 
-if (isset($_REQUEST['op'])) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -31,7 +32,6 @@ switch ($op) {
             addFaq_action();
         }
         break;
-
     default:
         addFaq_display();
         break;
@@ -43,21 +43,21 @@ function addFaq_display()
     /** @var Xhelp\Helper $helper */
     $helper = Xhelp\Helper::getInstance();
 
-    if (!isset($_POST['ticketid']) && 0 == \Xmf\Request::getInt('ticketid', 0, 'POST')) {
+    if (!isset($_POST['ticketid']) && 0 == Request::getInt('ticketid', 0, 'POST')) {
         redirect_header(XHELP_BASE_URL, 3, _XHELP_MSG_NO_ID);
     }
-    $ticketid = \Xmf\Request::getInt('ticketid', 0, 'POST');
+    $ticketid = Request::getInt('ticketid', 0, 'POST');
 
-    $hTicket    = Xhelp\Helper::getInstance()->getHandler('Ticket');
-    $hResponses = Xhelp\Helper::getInstance()->getHandler('Responses');
-    $ticket     = $hTicket->get($ticketid);
+    $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $hResponses    = Xhelp\Helper::getInstance()->getHandler('Responses');
+    $ticket        = $ticketHandler->get($ticketid);
 
     if (!$hasRights = $xhelp_staff->checkRoleRights(XHELP_SEC_FAQ_ADD, $ticket->getVar('department'))) {
         redirect_header(XHELP_BASE_URL . "/ticket.php?id=$ticketid", 3, XHELP_MESSAGE_NO_ADD_FAQ);
     }
 
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_addFaq.tpl';
-    require XOOPS_ROOT_PATH . '/header.php';
+    require_once XOOPS_ROOT_PATH . '/header.php';
 
     $crit         = new \Criteria('ticketid', $ticketid);
     $responses    = $hResponses->getObjects($crit, true);
@@ -68,8 +68,8 @@ function addFaq_display()
         $allUsers[$response->getVar('uid')] = '';
     }
 
-    $crit  = new \Criteria('uid', '(' . implode(array_keys($allUsers), ',') . ')', 'IN');
-    $users =& Xhelp\Utility::getUsers($crit, $helper->getConfig('xhelp_displayName'));
+    $crit  = new \Criteria('uid', '(' . implode(',', array_keys($allUsers)) . ')', 'IN');
+    $users = Xhelp\Utility::getUsers($crit, $helper->getConfig('xhelp_displayName'));
     unset($allUsers);
 
     foreach ($responses as $response) {
@@ -78,11 +78,11 @@ function addFaq_display()
     }
 
     // Get current faq adapter
-    $oAdapter =& Xhelp\FaqAdapterFactory::getFaqAdapter();
+    $oAdapter = Xhelp\FaqAdapterFactory::getFaqAdapter();
     if (!$oAdapter) {
         redirect_header(XHELP_BASE_URL, 3, _XHELP_MESSAGE_NO_FAQ);
     }
-    $categories =& $oAdapter->getCategories();
+    $categories = &$oAdapter->getCategories();
 
     $tree = new Xhelp\Tree($categories, 'id', 'parent');
 
@@ -95,17 +95,17 @@ function addFaq_display()
     $xoopsTpl->assign('xhelp_ticketID', $ticketid);
     $xoopsTpl->assign('xhelp_faqSubject', $ticket->getVar('subject', 'e'));
 
-    require XOOPS_ROOT_PATH . '/footer.php';
+    require_once XOOPS_ROOT_PATH . '/footer.php';
 }
 
 function addFaq_action()
 {
     global $xoopsUser, $_eventsrv;
-    $hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
 
     // Retrieve ticket information
     $ticketid = $_POST['ticketid'];
-    $ticket   = $hTicket->get($ticketid);
+    $ticket   = $ticketHandler->get($ticketid);
 
     $adapter = Xhelp\FaqAdapterFactory::getFaqAdapter();
     $faq     = $adapter->createFaq();
@@ -118,7 +118,6 @@ function addFaq_action()
     $faq->setVar('categories', serialize($_POST['categories']));
 
     if ($adapter->storeFaq($faq)) {
-
         // Todo: Run events here
         $_eventsrv->trigger('new_faq', [&$ticket, &$faq]);
 

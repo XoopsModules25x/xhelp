@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
@@ -36,7 +38,7 @@ class Plugin
 
     /**
      * Class Constructor
-     * @param  EventService $event_srv a reference to a {@link Xhelp\EventService} object
+     * @param EventService $event_srv a reference to a {@link Xhelp\EventService} object
      */
     public function __construct($event_srv)
     {
@@ -45,13 +47,13 @@ class Plugin
 
     /**
      * Retrieve the specified meta field
-     * @param  string $var name of variable to return
+     * @param string $var name of variable to return
      * @return string if var is set, false if not
      * @access public
      */
     public function getMeta($var)
     {
-        return (isset($this->_meta[$var]) ? $this->_meta[$var] : false);
+        return ($this->_meta[$var] ?? false);
     }
 
     /**
@@ -65,7 +67,6 @@ class Plugin
 
     /**
      * Initialization function, triggered when a plugin is "loaded" by the system
-     * @return void
      * @access public
      */
     public function onLoad()
@@ -76,7 +77,6 @@ class Plugin
 
     /**
      * Destruction function, triggered when a plugin is "un-loaded" by the system
-     * @return void
      * @access public
      */
     public function onUnload()
@@ -94,7 +94,6 @@ class Plugin
      * @access protected
      * @param $event_ctx
      * @param $event_func
-     * @return void
      */
     public function registerEventHandler($event_ctx, $event_func)
     {
@@ -110,14 +109,15 @@ class Plugin
      * @return Plugin {@link Xhelp\Plugin}
      * @access  public
      */
-    public function getInstance()
+    public static function getInstance()
     {
         // Declare a static variable to hold the object instance
         static $instance;
 
         // If the instance is not there, create one
         if (null === $instance) {
-            $instance = new $this->getMeta('classname');
+            //            $instance = new $this->getMeta('classname');
+            $instance = new static();
         }
 
         return $instance;

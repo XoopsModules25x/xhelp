@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 require_once XOOPS_ROOT_PATH . '/class/tree.php';
 
@@ -19,7 +19,7 @@ class Tree extends \XoopsObjectTree
      * @param bool   $selectMulti
      * @return string
      */
-    public function &makeSelBox(
+    public function makeSelBox(
         $name,
         $fieldName,
         $prefix = '-',

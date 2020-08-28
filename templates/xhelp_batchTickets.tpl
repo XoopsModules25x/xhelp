@@ -29,7 +29,7 @@
         <{foreach from=$xhelp_goodTickets item=ticket}>
             <tr class="<{cycle values="odd,even"}> pri<{$ticket.priority}><{if $ticket.overdue}> overdue<{/if}>">
                 <td nowrap="nowrap">
-                    <input type="checkbox" name="tickets[]" value="<{$ticket.id}>" checked="checked"> <a
+                    <input type="checkbox" name="tickets[]" value="<{$ticket.id}>" checked> <a
                             href="ticket.php?id=<{$ticket.id}>"><{$ticket.id}></a>
                 </td>
                 <td class="priority">

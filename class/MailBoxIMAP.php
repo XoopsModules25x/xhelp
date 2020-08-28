@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 

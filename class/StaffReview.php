@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,7 +22,7 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -41,17 +43,17 @@ class StaffReview extends \XoopsObject
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('staffid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('rating', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('comments', XOBJ_DTYPE_TXTAREA, null, false, 1024);
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('responseid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('submittedBy', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('userIP', XOBJ_DTYPE_TXTBOX, null, false, 255);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('staffid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('rating', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('comments', \XOBJ_DTYPE_TXTAREA, null, false, 1024);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('responseid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('submittedBy', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('userIP', \XOBJ_DTYPE_TXTBOX, null, false, 255);
 
         if (null !== $id) {
-            if (is_array($id)) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -67,6 +69,6 @@ class StaffReview extends \XoopsObject
      */
     public function posted()
     {
-        return formatTimestamp($this->getVar('updateTime'));
+        return \formatTimestamp($this->getVar('updateTime'));
     }
 }

@@ -2,7 +2,6 @@
 
 use XoopsModules\Xhelp;
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 // require_once XHELP_CLASS_PATH . '/PageNav.php';
 
@@ -18,7 +17,7 @@ $aLimitByD = ['1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '10' => 10];
 
 $op = 'default';
 
-if (isset($_REQUEST['op'])) {
+if (\Xmf\Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -26,33 +25,26 @@ switch ($op) {
     case 'addRole':
         addRole();
         break;
-
     case 'clearOrphanedStaff':
         clearOrphanedStaff();
         break;
-
     case 'clearRoles':
         clearRoles();
         break;
-
     case 'customDept':
         customDept();
         break;
-
     case 'editRole':
         editRole();
         break;
-
     case 'editStaff':
         editStaff();
         break;
-
     case 'manageStaff':
         manageStaff();
         break;
-
     default:
-        header('Location: ' . XHELP_BASE_URL . '/admin/index.php');
+        redirect_header(XHELP_BASE_URL . '/admin/index.php');
         break;
 }
 
@@ -75,7 +67,7 @@ function addRole()
             XHELP_SEC_RESPONSE_EDIT         => _AM_XHELP_SEC_TEXT_RESPONSE_EDIT,
             XHELP_SEC_FILE_DELETE           => _AM_XHELP_SEC_TEXT_FILE_DELETE,
             XHELP_SEC_FAQ_ADD               => _AM_XHELP_SEC_TEXT_FAQ_ADD,
-            XHELP_SEC_TICKET_TAKE_OWNERSHIP => _AM_XHELP_SEC_TEXT_TICKET_TAKE_OWNERSHIP
+            XHELP_SEC_TICKET_TAKE_OWNERSHIP => _AM_XHELP_SEC_TEXT_TICKET_TAKE_OWNERSHIP,
         ];
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
@@ -118,7 +110,7 @@ function addRole()
         $role = $hRole->create();
         $role->setVar('name', $_POST['roleName']);
         $role->setVar('description', $_POST['roleDescription']);
-        if (isset($_POST['tasks'])) {
+        if (\Xmf\Request::hasVar('tasks', 'POST')) {
             $tasksValue = array_sum($_POST['tasks']);
         } else {
             $tasksValue = 0;
@@ -129,7 +121,7 @@ function addRole()
 
         if ($hRole->insert($role)) {
             $message = _AM_XHELP_MESSAGE_ROLE_INSERT;
-            header('Location: ' . XHELP_ADMIN_URL . "/staff.php?op=$lastPage");
+            redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage");
         } else {
             $message = _AM_XHELP_MESSAGE_ROLE_INSERT_ERROR;
             redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage", 3, $message);
@@ -139,10 +131,11 @@ function addRole()
 
 function clearOrphanedStaff()
 {
-    $hMember = xoops_getHandler('member');
-    $hStaff  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    $users   = $hMember->getUserList();
-    $staff   = $hStaff->getObjects();
+    /** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');
+    $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $users         = $memberHandler->getUserList();
+    $staff         = $staffHandler->getObjects();
 
     $aUsers = [];
     foreach ($staff as $stf) {
@@ -153,10 +146,10 @@ function clearOrphanedStaff()
     }
 
     $crit = new \Criteria('uid', '(' . implode($aUsers, ',') . ')', 'IN');
-    $ret  = $hStaff->deleteAll($crit);
+    $ret  = $staffHandler->deleteAll($crit);
 
     if ($ret) {
-        header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=manageStaff');
+        redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff');
     } else {
         redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff', 3, _AM_XHELP_MSG_CLEAR_ORPHANED_ERR);
     }
@@ -171,8 +164,9 @@ function clearRoles()
     $depts = $hDept->getObjects();
 
     foreach ($depts as $dept) {
-        $deptid = $dept->getVar('id');
-        if ($deptRoles = $_xhelpSession->get("xhelp_dept_$deptid")) {
+        $deptid    = $dept->getVar('id');
+        $deptRoles = $_xhelpSession->get("xhelp_dept_$deptid");
+        if ($deptRoles) {
             $_xhelpSession->del("xhelp_dept_$deptid");
         }
     }
@@ -187,11 +181,10 @@ function clearRoles()
     $_xhelpSession->del('xhelp_return_op');
 
     if (!$returnPage) {
-        header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=manageStaff');
+        redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff');
     } else {
-        header('Location: ' . XHELP_ADMIN_URL . "/$returnPage");
+        redirect_header(XHELP_ADMIN_URL . "/$returnPage");
     }
-    exit();
 }
 
 function customDept()
@@ -207,17 +200,17 @@ function customDept()
         redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage", 3, _AM_XHELP_MSG_NEED_UID);
     }
     if (\Xmf\Request::hasVar('deptid', 'REQUEST')) {
- $deptid = \Xmf\Request::getInt('deptid', 0, 'REQUEST');
-}
+        $deptid = \Xmf\Request::getInt('deptid', 0, 'REQUEST');
+    }
 
     if (!isset($_POST['submit'])) {
-        if (isset($_POST['addRole'])) {
+        if (\Xmf\Request::hasVar('addRole', 'POST')) {
             $_xhelpSession->set('xhelp_return_op2', $lastPage);
-            $_xhelpSession->set('xhelp_return_op', substr(strstr($_SERVER['REQUEST_URI'], 'op='), 3));
-            header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=addRole');
+            $_xhelpSession->set('xhelp_return_op', mb_substr(mb_strstr($_SERVER['REQUEST_URI'], 'op='), 3));
+            redirect_header(XHELP_ADMIN_URL . '/staff.php?op=addRole');
         }
 
-        if (isset($_GET['xhelp_role'])) {
+        if (\Xmf\Request::hasVar('xhelp_role', 'GET')) {
             $aRoles = explode(',', $_GET['xhelp_role']);
             foreach ($aRoles as $role) {
                 $role = (int)$role;
@@ -225,7 +218,7 @@ function customDept()
             $_xhelpSession->set('xhelp_mainRoles', $aRoles);    // Store roles from the manage staff page
         }
 
-        if (isset($_GET['xhelp_depts'])) {
+        if (\Xmf\Request::hasVar('xhelp_depts', 'GET')) {
             $aDepts = explode(',', $_GET['xhelp_depts']);
             foreach ($aDepts as $dept) {
                 $dept = (int)$dept;
@@ -258,17 +251,18 @@ function customDept()
         echo "<tr><td class='head'>" . _AM_XHELP_TEXT_ROLES . "</td>
                   <td class='even'><table width='75%'>";
 
-        $bFound = false;
-        if ($storedRoles = $_xhelpSession->get("xhelp_dept_$deptid")) {    // If editing previously customized dept
+        $bFound      = false;
+        $storedRoles = $_xhelpSession->get("xhelp_dept_$deptid");
+        if ($storedRoles) {    // If editing previously customized dept
             foreach ($roles as $role) {
                 if (-1 != $storedRoles['roles']) {
                     foreach ($storedRoles['roles'] as $storedRole) {
                         if ($role->getVar('id') == $storedRole) {
                             $bFound = true;
                             break;
-                        } else {
-                            $bFound = false;
                         }
+
+                        $bFound = false;
                     }
                 }
                 if ($bFound) {
@@ -286,8 +280,8 @@ function customDept()
                 }
             }
         } elseif ('editStaff' === $lastPage && (!$storedRoles = $_xhelpSession->get("xhelp_dept_$deptid"))) {
-            $hStaff  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-            $myRoles = $hStaff->getRolesByDept($uid, $deptid);
+            $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+            $myRoles      = $staffHandler->getRolesByDept($uid, $deptid);
 
             $bFound = false;
             foreach ($roles as $role) {
@@ -296,9 +290,9 @@ function customDept()
                         if ($role->getVar('id') == $myRole->getVar('roleid')) {
                             $bFound = true;
                             break;
-                        } else {
-                            $bFound = false;
                         }
+
+                        $bFound = false;
                     }
                 }
                 if ($bFound) {
@@ -325,22 +319,25 @@ function customDept()
     } else {
         $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
-       if (\Xmf\Request::hasVar('roles', 'POST')) {
+        if (\Xmf\Request::hasVar('roles', 'POST')) {
             foreach ($_POST['roles'] as $role) {
                 $thisRole     = $hRole->get($role);
                 $aRoleNames[] = $thisRole->getVar('name');
             }
         }
 
-        $_xhelpSession->set("xhelp_dept_$deptid",       // Store roles for customized dept
-                            [
-                                'id'        => $deptid,
-                                'roles'     => !empty($_POST['roles']) ? $_POST['roles'] : -1,
-                                'roleNames' => !empty($aRoleNames) ? $aRoleNames : -1
-                            ]);
+        $_xhelpSession->set(
+            "xhelp_dept_$deptid",       // Store roles for customized dept
+            [
+                'id'        => $deptid,
+                'roles'     => !empty($_POST['roles']) ? $_POST['roles'] : -1,
+                'roleNames' => !empty($aRoleNames) ? $aRoleNames : -1,
+            ]
+        );
 
         $xhelp_has_deptRoles = false;
-        if ($hasRoles = $_xhelpSession->get("xhelp_dept_$deptid")) {
+        $hasRoles            = $_xhelpSession->get("xhelp_dept_$deptid");
+        if ($hasRoles) {
             $xhelp_has_deptRoles = true;
             if (-1 == $hasRoles['roles']) {                   // No perms for this dept
                 //$_xhelpSession->del("xhelp_dept_$deptid");  // Delete custom roles for dept
@@ -348,7 +345,8 @@ function customDept()
             }
         }
 
-        if ($mainDepts = $_xhelpSession->get('xhelp_mainDepts')) {
+        $mainDepts = $_xhelpSession->get('xhelp_mainDepts');
+        if ($mainDepts) {
             if ($xhelp_has_deptRoles) {           // If dept has roles
                 if (!in_array($deptid, $mainDepts)) {     // Does dept already exist in array?
                     array_push($mainDepts, $deptid);    // Add dept to array
@@ -372,7 +370,7 @@ function customDept()
         if (!$lastPage = $_xhelpSession->get('xhelp_return_op2')) {
             $lastPage = $_xhelpSession->get('xhelp_return_op');
         }
-        header('Location: ' . XHELP_ADMIN_URL . "/staff.php?op=$lastPage&uid=$uid");
+        redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage&uid=$uid");
     }
 }
 
@@ -389,7 +387,7 @@ function deleteRole($xhelp_id, $return_op)
 
     if ($hRole->delete($role, true)) {
         $message = _AM_XHELP_MESSAGE_ROLE_DELETE;
-        header('Location: ' . XHELP_ADMIN_URL . "/staff.php?op=$return_op");
+        redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$return_op");
     } else {
         $message = _AM_XHELP_MESSAGE_ROLE_DELETE_ERROR;
         redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$return_op", 3, $message);
@@ -404,22 +402,22 @@ function editRole()
     $lastPage = $_xhelpSession->get('xhelp_return_op');
 
     if (\Xmf\Request::hasVar('id', 'REQUEST')) {
- $xhelp_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
-}
+        $xhelp_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
+    }
 
     $uid = \Xmf\Request::getInt('uid', 0, 'REQUEST');
 
     $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
     $role  = $hRole->get($xhelp_id);
 
-    if (isset($_POST['deleteRole'])) {
+    if (\Xmf\Request::hasVar('deleteRole', 'POST')) {
         deleteRole($xhelp_id, 'manageStaff');
         exit();
     }
 
     if (!isset($_POST['edit'])) {
         $_xhelpSession->set('xhelp_return_op2', $lastPage);
-        $_xhelpSession->set('xhelp_return_op', substr(strstr($_SERVER['REQUEST_URI'], 'op='), 3));
+        $_xhelpSession->set('xhelp_return_op', mb_substr(mb_strstr($_SERVER['REQUEST_URI'], 'op='), 3));
 
         // Set array of security items
         $tasks = [
@@ -435,7 +433,7 @@ function editRole()
             XHELP_SEC_TICKET_MERGE          => _AM_XHELP_SEC_TEXT_TICKET_MERGE,
             XHELP_SEC_FILE_DELETE           => _AM_XHELP_SEC_TEXT_FILE_DELETE,
             XHELP_SEC_FAQ_ADD               => _AM_XHELP_SEC_TEXT_FAQ_ADD,
-            XHELP_SEC_TICKET_TAKE_OWNERSHIP => _AM_XHELP_SEC_TEXT_TICKET_TAKE_OWNERSHIP
+            XHELP_SEC_TICKET_TAKE_OWNERSHIP => _AM_XHELP_SEC_TEXT_TICKET_TAKE_OWNERSHIP,
         ];
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
@@ -481,7 +479,7 @@ function editRole()
     } else {
         $role->setVar('name', $_POST['roleName']);
         $role->setVar('description', $_POST['roleDescription']);
-        if (isset($_POST['tasks'])) {
+        if (\Xmf\Request::hasVar('tasks', 'POST')) {
             $tasksValue = array_sum($_POST['tasks']);
         } else {
             $tasksValue = 0;
@@ -496,7 +494,7 @@ function editRole()
             Xhelp\Utility::resetStaffUpdatedTime();
 
             $message = _AM_XHELP_MESSAGE_ROLE_UPDATE;
-            header('Location: ' . XHELP_ADMIN_URL . "/staff.php?op=$lastPage&uid=$uid");
+            redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage&uid=$uid");
         } else {
             $message = _AM_XHELP_MESSAGE_ROLE_UPDATE_ERROR;
             redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage&uid=$uid", 3, $message);
@@ -510,24 +508,24 @@ function editStaff()
     // require_once XHELP_CLASS_PATH . '/session.php';
     $_xhelpSession = new Xhelp\Session();
 
-    if (isset($_REQUEST['uid'])) {
+    if (\Xmf\Request::hasVar('uid', 'REQUEST')) {
         $uid = $_REQUEST['uid'];
     }
     /*
-     if (isset($_REQUEST['user'])) {       // Remove me
+     if (\Xmf\Request::hasVar('user', 'REQUEST')) {       // Remove me
      $uid = $_REQUEST['user'];
      }
      */
-    if (isset($_POST['clearRoles'])) {
-        header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
-        exit();
+    if (\Xmf\Request::hasVar('clearRoles', 'POST')) {
+        redirect_header(XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
     }
 
     $_xhelpSession->set('xhelp_return_op', 'editStaff');
 
     if (!isset($_POST['updateStaff'])) {
         //xoops_cp_header();
-        $memberHandler = xoops_getHandler('member');          // Get member handler
+        /** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');          // Get member handler
         $member        = $memberHandler->getUser($uid);
 
         $hRoles = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
@@ -543,12 +541,12 @@ function editStaff()
         $total          = $hDepartments->getCount($crit);
         $departmentInfo = $hDepartments->getObjects($crit);
 
-        $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
-        $staff        = $hStaff->getByUid($uid);
-        $hMembership  = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-        $staffDepts   = $hMembership->membershipByStaff($uid);
-        $staffroles   = $staff->getAllRoleRights();
-        $global_roles = (isset($staffroles[0]['roles']) ? array_keys($staffroles[0]['roles']) : []);  //Get all Global Roles
+        $staffHandler      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
+        $staff             = $staffHandler->getByUid($uid);
+        $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+        $staffDepts        = $membershipHandler->membershipByStaff($uid);
+        $staffroles        = $staff->getAllRoleRights();
+        $global_roles      = (isset($staffroles[0]['roles']) ? array_keys($staffroles[0]['roles']) : []);  //Get all Global Roles
 
         $xhelp_depts = [];
         foreach ($staffDepts as $myDept) {
@@ -559,7 +557,7 @@ function editStaff()
         }
         $xhelp_depts = implode(',', $xhelp_depts);
 
-        //$myRoles =& $hStaff->getRoles($staff->getVar('uid'));
+        //$myRoles =& $staffHandler->getRoles($staff->getVar('uid'));
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
         $adminObject = \Xmf\Module\Admin::getInstance();
@@ -590,7 +588,8 @@ function editStaff()
                      . $role->getVar('description')
                      . '</td></tr>';
             } else {
-                if ($mainRoles = $_xhelpSession->get('xhelp_mainRoles')) {
+                $mainRoles = $_xhelpSession->get('xhelp_mainRoles');
+                if ($mainRoles) {
                     if (in_array($roleid, $mainRoles)) {
                         echo "<tr><td><input type='checkbox' name='roles[]' checked value='"
                              . $role->getVar('id')
@@ -645,7 +644,8 @@ function editStaff()
             $deptroleids   = '';
             $deptrolenames = '';
 
-            if ($sess_roles = $_xhelpSession->get("xhelp_dept_$deptid")) {  //Customized roles stored in session?
+            $sess_roles = $_xhelpSession->get("xhelp_dept_$deptid");
+            if ($sess_roles) {  //Customized roles stored in session?
                 if (-1 != $sess_roles['roles']) {                           //Is the user assigned to any roles in the dept?
                     $inDept = true;
                     foreach ($sess_roles['roles'] as $roleid) {   // Check if customized roles match global roles
@@ -656,7 +656,7 @@ function editStaff()
                     $deptroleids = implode(',', $sess_roles['roles']);  // Put all roles into 1 string separated by a ','
 
                     //An empty string means dept roles match global roles
-                    if (strlen($deptroleids) > 0) { //Customized Roles
+                    if (mb_strlen($deptroleids) > 0) { //Customized Roles
                         $deptrolenames = implode(', ', $sess_roles['roleNames']);
                     }
                 } else {                                //Not a member of the dept
@@ -704,7 +704,7 @@ function editStaff()
 
             printf(
                 "<tr><td><input type='checkbox' name='departments[]' value='%u' %s onclick=\"Xhelp\RoleCustOnClick('frmEditStaff', 'departments[]', 'xhelp_depts', '&amp;', 'xhelp_dept_cust');\">%s [<a href='staff.php?op=customDept&amp;deptid=%u&amp;uid=%u&amp;xhelp_role=%s&amp;xhelp_depts=%s' class='xhelp_dept_cust'>Customize</a>] <i>%s</i><input type='hidden' name='custrole[%u]' value='%s'></td></tr>",
-                   $deptid,
+                $deptid,
                 $checked,
                 $deptname,
                 $deptid,
@@ -736,46 +736,46 @@ function editStaff()
         $roles     = $_POST['roles'];
         $custroles = $_POST['custrole'];
 
-        $hStaff      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+        $staffHandler      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 
         //Remove existing dept membership
-        if (!$hMembership->clearStaffMembership($uid)) {
+        if (!$membershipHandler->clearStaffMembership($uid)) {
             $message = _XHELP_MESSAGE_EDITSTAFF_NOCLEAR_ERROR;
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff', 3, $message);
         }
 
         //Add staff member to selected depts
-        if ($hMembership->addDeptToStaff($depts, $uid)) {
+        if ($membershipHandler->addDeptToStaff($depts, $uid)) {
             $message = _XHELP_MESSAGE_EDITSTAFF;
         } else {
             $message = _XHELP_MESSAGE_EDITSTAFF_ERROR;
         }
 
         //Clear Existing Staff Role Permissions
-        $removedRoles = $hStaff->removeStaffRoles($uid);
+        $removedRoles = $staffHandler->removeStaffRoles($uid);
 
         //Add Global Role Permissions
         foreach ($roles as $role) {
-            $hStaff->addStaffRole($uid, $role, 0);
+            $staffHandler->addStaffRole($uid, $role, 0);
         }
 
         //Add Department Specific Roles
         foreach ($depts as $dept) {
-            if (strlen($custroles[$dept]) > 0) {
+            if (mb_strlen($custroles[$dept]) > 0) {
                 $dept_roles = explode(',', $custroles[$dept]);
             } else {
                 $dept_roles = $roles;
             }
 
             foreach ($dept_roles as $role) {
-                $hStaff->addStaffRole($uid, $role, $dept);
+                $staffHandler->addStaffRole($uid, $role, $dept);
             }
         }
 
-        $staff = $hStaff->getByUid($uid);
+        $staff = $staffHandler->getByUid($uid);
         $staff->setVar('permTimestamp', time());
-        if (!$hStaff->insert($staff)) {
+        if (!$staffHandler->insert($staff)) {
             $message = _XHELP_MESSAGE_EDITSTAFF;
         }
 
@@ -795,27 +795,25 @@ function manageStaff()
     $staff_search = false;
     $dept_search  = false;
 
-    if (isset($_POST['addRole'])) {
-        header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=addRole');
-        exit();
+    if (\Xmf\Request::hasVar('addRole', 'POST')) {
+        redirect_header(XHELP_ADMIN_URL . '/staff.php?op=addRole');
     }
-    if (isset($_POST['clearRoles'])) {
-        header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
-        exit();
+    if (\Xmf\Request::hasVar('clearRoles', 'POST')) {
+        redirect_header(XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
     }
 
     if (\Xmf\Request::hasVar('limit', 'REQUEST')) {
- $limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
-}
+        $limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
+    }
 
     if (\Xmf\Request::hasVar('start', 'REQUEST')) {
- $start = \Xmf\Request::getInt('start', 0, 'REQUEST');
-}
-    if (isset($_REQUEST['staff_search'])) {
+        $start = \Xmf\Request::getInt('start', 0, 'REQUEST');
+    }
+    if (\Xmf\Request::hasVar('staff_search', 'REQUEST')) {
         $staff_search = $_REQUEST['staff_search'];
     }
 
-    if (isset($_REQUEST['dept_search'])) {
+    if (\Xmf\Request::hasVar('dept_search', 'REQUEST')) {
         $dept_search = $_REQUEST['dept_search'];
     }
 
@@ -824,12 +822,12 @@ function manageStaff()
     }
 
     if (\Xmf\Request::hasVar('dlimit', 'REQUEST')) {
- $dlimit = \Xmf\Request::getInt('dlimit', 0, 'REQUEST');
-}
+        $dlimit = \Xmf\Request::getInt('dlimit', 0, 'REQUEST');
+    }
 
     if (\Xmf\Request::hasVar('dstart', 'REQUEST')) {
- $dstart = \Xmf\Request::getInt('dstart', 0, 'REQUEST');
-}
+        $dstart = \Xmf\Request::getInt('dstart', 0, 'REQUEST');
+    }
 
     if (!$dlimit) {
         $dlimit = 10;
@@ -838,8 +836,9 @@ function manageStaff()
     $_xhelpSession->set('xhelp_return_op', 'manageStaff');
 
     if (!isset($_POST['addStaff'])) {
-        $memberHandler = xoops_getHandler('member');          // Get member handler
-        $hStaff        = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
+        /** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');          // Get member handler
+        $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
         $hDepartments  = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Get department handler
         $hRoles        = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
@@ -855,7 +854,7 @@ function manageStaff()
         $adminObject = \Xmf\Module\Admin::getInstance();
         $adminObject->displayNavigation('staff.php?op=manageStaff');
 
-        if (isset($_GET['uid'])) {
+        if (\Xmf\Request::hasVar('uid', 'GET')) {
             $userid = \Xmf\Request::getInt('uid', 0, 'GET');
             $uname  = $xoopsUser::getUnameFromId($userid);
         } else {
@@ -871,8 +870,8 @@ function manageStaff()
             $crit->setStart($start);
             $crit->setLimit($limit);
 
-            $staff_obj   = $hStaff->getObjects($crit);
-            $staff_count = $hStaff->getCount($crit);
+            $staff_obj   = $staffHandler->getObjects($crit);
+            $staff_count = $staffHandler->getCount($crit);
             $user_count  = $memberHandler->getUserCount();
 
             $nav = new Xhelp\PageNav($staff_count, $limit, $start, 'start', "op=manageStaff&amp;limit=$limit");
@@ -899,7 +898,8 @@ function manageStaff()
             echo '</td></tr>';
             echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_ROLES . "</td>
                       <td class='even'><table width='75%'>";
-            if ($mainRoles = $_xhelpSession->get('xhelp_mainRoles')) {
+            $mainRoles = $_xhelpSession->get('xhelp_mainRoles');
+            if ($mainRoles) {
                 foreach ($roles as $role) {
                     if (!in_array($role->getVar('id'), $mainRoles)) {
                         echo "<tr><td><input type='checkbox' name='roles[]' value='" . $role->getVar('id') . "' onclick=\"Xhelp\RoleCustOnClick('manageStaff', 'roles[]', 'xhelp_role', '&amp;', 'xhelp_dept_cust');\">
@@ -919,7 +919,8 @@ function manageStaff()
             echo '</table></td></tr>';
             echo "<tr><td class='head' width='20%'>" . _AM_XHELP_TEXT_DEPARTMENTS . "</td>
                   <td class='even' width='50%'><table width='75%'>";
-            if ($mainDepts = $_xhelpSession->get('xhelp_mainDepts')) {
+            $mainDepts = $_xhelpSession->get('xhelp_mainDepts');
+            if ($mainDepts) {
                 foreach ($dept_obj as $dept) {
                     $deptid     = $dept->getVar('id');
                     $aDept      = $_xhelpSession->get("xhelp_dept_$deptid");
@@ -1036,10 +1037,10 @@ function manageStaff()
                     echo '<td>' . $thisdept->getVar('department') . '</td>';
                 }
                 echo '</tr>';
-                $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-                $hStaffRole  = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
+                $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+                $hStaffRole        = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
                 foreach ($staff_users as $staff) {
-                    $departments = $hMembership->membershipByStaff($staff->getVar('uid'), true);
+                    $departments = $membershipHandler->membershipByStaff($staff->getVar('uid'), true);
                     echo "<tr class='even'><td>" . $staff->getVar('uid') . '</td><td>' . $staff->getVar('uname') . '</td>';
                     foreach ($allDepts as $thisdept) {
                         echo "<td><img src='" . XOOPS_URL . '/modules/xhelp/assets/images/';
@@ -1067,31 +1068,32 @@ function manageStaff()
         $roles = $_POST['roles'];
         //$selectAll = $_POST['selectall'];
 
-        $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
-        if (!isset($uid) || '' == $uid) {
+        if (null === $uid || '' == $uid) {
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff', 3, _AM_XHELP_STAFF_ERROR_USERS);
         }
-        if (!isset($depts)) {
+        if (null === $depts) {
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff', 3, _AM_XHELP_STAFF_ERROR_DEPTARTMENTS);
         }
-        if (!isset($roles)) {
+        if (null === $roles) {
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff', 3, _AM_XHELP_STAFF_ERROR_ROLES);
         }
-        if ($hStaff->isStaff($uid)) {
+        if ($staffHandler->isStaff($uid)) {
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff', 3, _AM_XHELP_STAFF_EXISTS);
         }
 
-        $memberHandler = xoops_getHandler('member');          // Get member handler
+        /** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');          // Get member handler
         $newUser       = $memberHandler->getUser($uid);
 
         $email = $newUser->getVar('email');
-        if ($hStaff->addStaff($uid, $email)) {    // $selectAll
-            $message     = _XHELP_MESSAGE_ADDSTAFF;
-            $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+        if ($staffHandler->addStaff($uid, $email)) {    // $selectAll
+            $message           = _XHELP_MESSAGE_ADDSTAFF;
+            $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 
             //Set Department Membership
-            if ($hMembership->addDeptToStaff($depts, $uid)) {
+            if ($membershipHandler->addDeptToStaff($depts, $uid)) {
                 $message = _XHELP_MESSAGE_ADDSTAFF;
             } else {
                 $message = _XHELP_MESSAGE_ADDSTAFF_ERROR;
@@ -1099,32 +1101,33 @@ function manageStaff()
 
             //Set Global Roles
             foreach ($roles as $role) {
-                $hStaff->addStaffRole($uid, $role, 0);
+                $staffHandler->addStaffRole($uid, $role, 0);
             }
 
             //Set Department Roles
             foreach ($depts as $dept) {
-                if ($custRoles = $_xhelpSession->get("xhelp_dept_$dept")) {
+                $custRoles = $_xhelpSession->get("xhelp_dept_$dept");
+                if ($custRoles) {
                     if (-1 != $custRoles['roles']) {
                         foreach ($custRoles['roles'] as $role) {
-                            $hStaff->addStaffRole($uid, $role, $dept);
+                            $staffHandler->addStaffRole($uid, $role, $dept);
                         }
                     } else {
                         // If dept still checked, but no custom depts, give global roles to dept
                         foreach ($roles as $role) {
-                            $hStaff->addStaffRole($uid, $role, $dept);
+                            $staffHandler->addStaffRole($uid, $role, $dept);
                         }
                     }
                 } else {
                     foreach ($roles as $role) {
-                        $hStaff->addStaffRole($uid, $role, $dept);
+                        $staffHandler->addStaffRole($uid, $role, $dept);
                     }
                 }
             }
             $hTicketList    = new Xhelp\TicketListHandler($GLOBALS['xoopsDB']);
             $hasTicketLists = $hTicketList->createStaffGlobalLists($uid);
 
-            header('Location: ' . XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
+            redirect_header(XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
         } else {
             $message = _XHELP_MESSAGE_ADDSTAFF_ERROR;
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=clearRoles', 3, $message);

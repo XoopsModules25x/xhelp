@@ -1,22 +1,24 @@
-<?php namespace XoopsModules\Xhelp\Faq;
+<?php
+
+namespace XoopsModules\Xhelp\Faq;
 
 use XoopsModules\Xhelp;
 
 //Sanity Check: make sure that file is not being accessed directly
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // ** Define any site specific variables here **
-define('XHELP_SMARTFAQ_PATH', XOOPS_ROOT_PATH . '/modules/smartfaq');
-define('XHELP_SMARTFAQ_URL', XOOPS_URL . '/modules/smartfaq');
+\define('XHELP_SMARTFAQ_PATH', XOOPS_ROOT_PATH . '/modules/smartfaq');
+\define('XHELP_SMARTFAQ_URL', XOOPS_URL . '/modules/smartfaq');
 // ** End site specific variables **
 
 //Include the base faqAdapter interface (required)
 // require_once XHELP_CLASS_PATH . '/faqAdapter.php';
 
 //These functions are required to work with the smartfaq application directly
-@include XHELP_SMARTFAQ_PATH . '/include/functions.php';
+@require \XHELP_SMARTFAQ_PATH . '/include/functions.php';
 
 /**
  * class SmartfaqAdapter
@@ -31,7 +33,7 @@ class SmartfaqAdapter extends Xhelp\FaqAdapter
      * XHELP_FAQ_CATEGORY_NONE - No category support
      * @access public
      */
-    public $categoryType = XHELP_FAQ_CATEGORY_SING;
+    public $categoryType = \XHELP_FAQ_CATEGORY_SING;
 
     /**
      * Adapter Details
@@ -53,7 +55,7 @@ class SmartfaqAdapter extends Xhelp\FaqAdapter
         'version'         => '1.0',
         'tested_versions' => '1.04',
         'url'             => 'http://www.smartfactory.ca/',
-        'module_dir'      => 'smartfaq'
+        'module_dir'      => 'smartfaq',
     ];
 
     /**
@@ -96,7 +98,7 @@ class SmartfaqAdapter extends Xhelp\FaqAdapter
 
     /**
      * storeFaq: store the FAQ in the application's specific database (required)
-     * @param  Xhelp\Faq $faq The faq to add
+     * @param null $faq The faq to add
      * @return bool     true (success) / false (failure)
      * @access public
      */
@@ -119,7 +121,7 @@ class SmartfaqAdapter extends Xhelp\FaqAdapter
 
         $myFaq->setVar('uid', $uid);
         $myFaq->setVar('question', $faq->getVar('problem'));
-        $myFaq->setVar('datesub', time());
+        $myFaq->setVar('datesub', \time());
         $myFaq->setVar('categoryid', $categories);
         $myFaq->setVar('status', _SF_STATUS_PUBLISHED);
 
@@ -151,12 +153,12 @@ class SmartfaqAdapter extends Xhelp\FaqAdapter
     /**
      * Create the url going to the faq article
      *
-     * @param $faq Xhelp\Faq object
+     * @param Xhelp\Faq $faq object
      * @return string
      * @access private
      */
-    public function makeFaqUrl(&$faq)
+    public function makeFaqUrl($faq)
     {
-        return XHELP_SMARTFAQ_URL . '/faq.php?faqid=' . $faq->getVar('id');
+        return \XHELP_SMARTFAQ_URL . '/faq.php?faqid=' . $faq->getVar('id');
     }
 }

@@ -1,15 +1,15 @@
-<?php namespace XoopsModules\Xhelp\Faq;
+<?php
 
-//
+namespace XoopsModules\Xhelp\Faq;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
-define('XHELP_WP_PATH', XOOPS_ROOT_PATH . '/modules/wordpress');
-define('XHELP_WP_URL', XOOPS_URL . '/modules/wordpress');
+\define('XHELP_WP_PATH', XOOPS_ROOT_PATH . '/modules/wordpress');
+\define('XHELP_WP_URL', XOOPS_URL . '/modules/wordpress');
 
 // require_once XHELP_CLASS_PATH . '/faqAdapter.php';
 
@@ -26,7 +26,7 @@ class WordpressAdapter extends Xhelp\FaqAdapter
      * XHELP_FAQ_CATEGORY_NONE - No category support
      * @access public
      */
-    public $categoryType = XHELP_FAQ_CATEGORY_MULTI;
+    public $categoryType = \XHELP_FAQ_CATEGORY_MULTI;
 
     /**
      * Adapter Details
@@ -48,7 +48,7 @@ class WordpressAdapter extends Xhelp\FaqAdapter
         'version'         => '1.0',
         'tested_versions' => '1.52',
         'url'             => 'https://xoops.org.cn',
-        'module_dir'      => 'wordpress'
+        'module_dir'      => 'wordpress',
     ];
 
     /**
@@ -70,7 +70,7 @@ class WordpressAdapter extends Xhelp\FaqAdapter
         // Create an instance of the Xhelp\FaqCategoryHandler
         $hFaqCategory = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
 
-        $sql    = sprintf('SELECT cat_ID, cat_name, category_parent FROM `%s`', $xoopsDB->prefix('wp_categories'));
+        $sql    = \sprintf('SELECT cat_ID, cat_name, category_parent FROM `%s`', $xoopsDB->prefix('wp_categories'));
         $result = $xoopsDB->query($sql);
 
         if (!$result) {
@@ -100,16 +100,16 @@ class WordpressAdapter extends Xhelp\FaqAdapter
 
         $post_ID        = 0;
         $post_author    = $xoopsUser->getVar('uid');
-        $now            = gmdate('Y-m-d H:i:s');
-        $now_gmt        = gmdate('Y-m-d H:i:s');
-        $content        = '<h3>' . strtoupper(_XHELP_TEXT_PROBLEM) . '</h3><p>' . $faq->getVar('problem') . '</p><h3>' . strtoupper(_XHELP_TEXT_SOLUTION) . '</h3><p>' . $faq->getVar('solution') . '</p>';
+        $now            = \gmdate('Y-m-d H:i:s');
+        $now_gmt        = \gmdate('Y-m-d H:i:s');
+        $content        = '<h3>' . mb_strtoupper(_XHELP_TEXT_PROBLEM) . '</h3><p>' . $faq->getVar('problem') . '</p><h3>' . mb_strtoupper(_XHELP_TEXT_SOLUTION) . '</h3><p>' . $faq->getVar('solution') . '</p>';
         $post_title     = $faq->getVar('subject');  // Ticket subject
         $excerpt        = '';
         $post_status    = 'publish';
         $comment_status = 'open';
         $ping_status    = 'open';
         $post_password  = '';
-        $post_name      = strtolower(str_replace(' ', '-', $post_title));
+        $post_name      = mb_strtolower(\str_replace(' ', '-', $post_title));
         $trackback      = '';
         $post_parent    = 0;
         $menu_order     = 0;
@@ -138,9 +138,9 @@ class WordpressAdapter extends Xhelp\FaqAdapter
      * @param $faq
      * @return string
      */
-    public function makeFaqUrl(&$faq)
+    public function makeFaqUrl($faq)
     {
-        return XHELP_WP_URL . '/?p=' . $faq->getVar('id');
+        return \XHELP_WP_URL . '/?p=' . $faq->getVar('id');
     }
 
     /**

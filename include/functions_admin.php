@@ -14,7 +14,7 @@ use XoopsModules\Xhelp;
  * @param bool $getStatus
  * @return int|string
  */
-function &xhelp_admin_getPathStatus($path, $getStatus = false)
+function xhelp_admin_getPathStatus($path, $getStatus = false)
 {
     if (empty($path)) {
         return false;
@@ -32,9 +32,9 @@ function &xhelp_admin_getPathStatus($path, $getStatus = false)
     }
     if (!$getStatus) {
         return $path_status;
-    } else {
-        return $pathCheckResult;
     }
+
+    return $pathCheckResult;
 }
 
 /**
@@ -50,11 +50,11 @@ function xhelp_admin_mkdir($target)
     if (is_dir($target) || empty($target)) {
         return true;
     } // best case check first
-    if (file_exists($target) && !is_dir($target)) {
+    if (is_dir($target) && !is_dir($target)) {
         return false;
     }
-    if (xhelp_admin_mkdir(substr($target, 0, strrpos($target, '/')))) {
-        if (!file_exists($target)) {
+    if (xhelp_admin_mkdir(mb_substr($target, 0, mb_strrpos($target, '/')))) {
+        if (!is_dir($target)) {
             return mkdir($target);
         }
     } // crawl back up & create dir tree
@@ -84,10 +84,10 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     $size = 0;
 
     if ($getResolved) {
-        $hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        $hFile   = Xhelp\Helper::getInstance()->getHandler('File');
+        $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
+        $hFile         = Xhelp\Helper::getInstance()->getHandler('File');
 
-        $tickets = $hTicket->getObjectsByState(1);
+        $tickets = $ticketHandler->getObjectsByState(1);
 
         $aTickets = [];
         foreach ($tickets as $ticket) {
@@ -95,7 +95,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
         }
 
         // Retrieve all unresolved ticket attachments
-        $crit   = new \Criteria('ticketid', '(' . implode($aTickets, ',') . ')', 'IN');
+        $crit   = new \Criteria('ticketid', '(' . implode(',', $aTickets) . ')', 'IN');
         $files  = $hFile->getObjects($crit);
         $aFiles = [];
         foreach ($files as $f) {
@@ -129,25 +129,22 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
  */
 function xhelpGetControlLabel($control)
 {
-    if ($controlArr = xhelpGetControl($control)) {
+    $controlArr = xhelpGetControl($control);
+    if ($controlArr) {
         return $controlArr['label'];
-    } else {
-        return $control;
     }
+
+    return $control;
 }
 
 /**
  * @param $control
  * @return bool|mixed
  */
-function &xhelpGetControl($control)
+function xhelpGetControl($control)
 {
     $controls = xhelpGetControlArray();
-    if (isset($controls[$control])) {
-        return $controls[$control];
-    } else {
-        return false;
-    }
+    return $controls[$control] ?? false;
 }
 
 /**
@@ -159,42 +156,42 @@ function &xhelpGetControlArray()
         XHELP_CONTROL_TXTBOX   => [
             'label'        => _XHELP_CONTROL_DESC_TXTBOX,
             'needs_length' => true,
-            'needs_values' => false
+            'needs_values' => false,
         ],
         XHELP_CONTROL_TXTAREA  => [
             'label'        => _XHELP_CONTROL_DESC_TXTAREA,
             'needs_length' => true,
-            'needs_values' => false
+            'needs_values' => false,
         ],
         XHELP_CONTROL_SELECT   => [
             'label'        => _XHELP_CONTROL_DESC_SELECT,
             'needs_length' => true,
-            'needs_values' => true
+            'needs_values' => true,
         ],
         //Search issues?
         //XHELP_CONTROL_MULTISELECT => _XHELP_CONTROL_DESC_MULTISELECT,
         XHELP_CONTROL_YESNO    => [
             'label'        => _XHELP_CONTROL_DESC_YESNO,
             'needs_length' => false,
-            'needs_values' => false
+            'needs_values' => false,
         ],
         //Search issues?
         //XHELP_CONTROL_CHECKBOX => _XHELP_CONTROL_DESC_CHECKBOX,
         XHELP_CONTROL_RADIOBOX => [
             'label'        => _XHELP_CONTROL_DESC_RADIOBOX,
             'needs_length' => true,
-            'needs_values' => true
+            'needs_values' => true,
         ],
         XHELP_CONTROL_DATETIME => [
             'label'        => _XHELP_CONTROL_DESC_DATETIME,
             'needs_length' => false,
-            'needs_values' => false
+            'needs_values' => false,
         ],
         XHELP_CONTROL_FILE     => [
             'label'        => _XHELP_CONTROL_DESC_FILE,
             'needs_length' => false,
-            'needs_values' => false
-        ]
+            'needs_values' => false,
+        ],
     ];
 
     return $ret;
@@ -204,9 +201,9 @@ function &xhelpGetControlArray()
  * @param        $err_arr
  * @param string $reseturl
  */
-function xhelpRenderErrors(&$err_arr, $reseturl = '')
+function xhelpRenderErrors($err_arr, $reseturl = '')
 {
-    if (is_array($err_arr) && count($err_arr) > 0) {
+    if ($err_arr && is_array($err_arr)) {
         echo '<div id="readOnly" class="errorMsg" style="border:1px solid #D24D00; background:#FEFECC url(' . XHELP_IMAGE_URL . '/important-32.png) no-repeat 7px 50%;color:#333;padding-left:45px;">';
 
         echo '<h4 style="text-align:left;margin:0; padding-top:0;">' . _AM_XHELP_MSG_SUBMISSION_ERR;
@@ -261,7 +258,9 @@ function removeAccents($string)
                     . chr(205)
                     . chr(206)
                     . chr(207)
-                    . chr(209)
+                    . chr(
+                        209
+                    )
                     . chr(210)
                     . chr(211)
                     . chr(212)
@@ -310,7 +309,7 @@ function removeAccents($string)
             chr(197) . chr(189)            => 'Z',
             chr(197) . chr(161)            => 's',
             chr(197) . chr(190)            => 'z',
-            chr(226) . chr(130) . chr(172) => 'E'
+            chr(226) . chr(130) . chr(172) => 'E',
         ];
         $string              = utf8_decode(strtr($string, $invalid_latin_chars));
     }
@@ -324,7 +323,7 @@ function removeAccents($string)
         chr(223),
         chr(230),
         chr(240),
-        chr(254)
+        chr(254),
     ];
     $double_chars['out'] = ['OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th'];
     $string              = str_replace($double_chars['in'], $double_chars['out'], $string);
@@ -338,7 +337,7 @@ function removeAccents($string)
  */
 function seemsUtf8($Str)
 { # by bmorel at ssi dot fr
-    for ($i = 0, $iMax = strlen($Str); $i < $iMax; ++$i) {
+    foreach ($Str as $i => $iValue) {
         if (ord($Str[$i]) < 0x80) {
             continue;
         } # 0bbbbbbb
@@ -361,7 +360,7 @@ function seemsUtf8($Str)
             return false;
         } # Does not match any model
         for ($j = 0; $j < $n; ++$j) { # n bytes matching 10bbbbbb follow ?
-            if ((++$i == strlen($Str)) || (0x80 != (ord($Str[$i]) & 0xC0))) {
+            if ((++$i == mb_strlen($Str)) || (0x80 != (ord($Str[$i]) & 0xC0))) {
                 return false;
             }
         }
@@ -377,7 +376,7 @@ function seemsUtf8($Str)
 function sanitizeFieldName($field)
 {
     $field = removeAccents($field);
-    $field = strtolower($field);
+    $field = mb_strtolower($field);
     $field = preg_replace('/&.+?;/', '', $field); // kill entities
     $field = preg_replace('/[^a-z0-9 _-]/', '', $field);
     $field = preg_replace('/\s+/', ' ', $field);
@@ -393,10 +392,11 @@ function sanitizeFieldName($field)
  */
 function xhelpCreateDepartmentVisibility()
 {
-    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
-    $hGroups      = xoops_getHandler('group');
-    $hGroupPerm   = xoops_getHandler('groupperm');
-    $xoopsModule  = Xhelp\Utility::getModule();
+    $hDepartments     = Xhelp\Helper::getInstance()->getHandler('Department');
+    $hGroups          = xoops_getHandler('group');
+    /** @var \XoopsGroupPermHandler $grouppermHandler */
+$grouppermHandler = xoops_getHandler('groupperm');
+    $xoopsModule      = Xhelp\Utility::getModule();
 
     $module_id = $xoopsModule->getVar('mid');
 
@@ -417,12 +417,11 @@ function xhelpCreateDepartmentVisibility()
         $crit = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
         $crit->add(new \Criteria('gperm_itemid', $deptID));
         $crit->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $hGroupPerm->deleteAll($crit);
+        $grouppermHandler->deleteAll($crit);
 
         foreach ($aGroups as $group => $group_name) {     // Add new group permissions
-            $hGroupPerm->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
+            $grouppermHandler->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
         }
-
         // Todo: Possibly add text saying, "Visibility for Department x set"
     }
 

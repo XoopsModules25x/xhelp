@@ -1,15 +1,15 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/mailbox.php';
-require_once XHELP_PEAR_PATH . '/Net/POP3.php';
+require_once \XHELP_PEAR_PATH . '/Net/POP3.php';
 
 /**
  * Xhelp\MailBoxPop3 class
@@ -38,32 +38,32 @@ class MailBoxPOP3 extends Xhelp\MailBox
 
     /**
      * Connect to mailbox
-     * @param string IP or DNS name of server
-     * @param int    Service Port Number
+     * @param mixed $server
+     * @param mixed $port
      * @return bool
      */
     public function connect($server, $port = 110)
     {
         if ($this->_pop3->connect($server, $port)) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
      * Send Authentication Credentials to mail server
-     * @param string account name
-     * @param string account password
+     * @param mixed $username
+     * @param mixed $password
      * @return bool
      */
     public function login($username, $password)
     {
         if (!PEAR::isError($this->_pop3->login($username, $password, false))) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

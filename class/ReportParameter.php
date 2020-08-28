@@ -1,8 +1,10 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -91,7 +93,7 @@ class ReportParameter
         $fieldlength = $this->maxlength;
 
         if (!empty($vals) && isset($vals[$this->fieldname])) {
-            if (!is_array($vals[$this->fieldname])) {
+            if (!\is_array($vals[$this->fieldname])) {
                 $this->value = $vals[$this->fieldname];
             } else {
                 $this->values = $vals[$this->fieldname][0];
@@ -100,15 +102,13 @@ class ReportParameter
         }
 
         switch ($controltype) {
-            case XHELP_CONTROL_TXTBOX:
+            case \XHELP_CONTROL_TXTBOX:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
                 break;
-
-            case XHELP_CONTROL_TXTAREA:
+            case \XHELP_CONTROL_TXTAREA:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<textarea name='" . $this->fieldname . "' id='" . $this->fieldname . "' cols='" . $this->fieldlength . "' rows='5'>" . $this->value . '</textarea>';
                 break;
-
-            case XHELP_CONTROL_SELECT:
+            case \XHELP_CONTROL_SELECT:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<select name='" . $this->fieldname . "' id='" . $this->fieldname . "' size='1'>";
                 foreach ($this->values as $key => $value) {
                     $ret .= "<option value='" . $key . "' " . (($this->value == $key) ? 'selected' : '') . '>' . $value . '</option>';
@@ -117,8 +117,7 @@ class ReportParameter
 
                 return $ret;
                 break;
-
-            case XHELP_CONTROL_MULTISELECT:
+            case \XHELP_CONTROL_MULTISELECT:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<select name='" . $this->fieldname . "' id='" . $this->fieldname . "' size='3' multiple='multiple'>";
                 foreach ($this->values as $key => $value) {
                     $ret .= "<option value='" . $key . "' " . (($this->value == $key) ? 'selected' : '') . '>' . $value . '</option>';
@@ -127,8 +126,7 @@ class ReportParameter
 
                 return $ret;
                 break;
-
-            case XHELP_CONTROL_YESNO:
+            case \XHELP_CONTROL_YESNO:
                 return "<label for='"
                        . $this->fieldname
                        . "'>"
@@ -151,8 +149,7 @@ class ReportParameter
                        . '>'
                        . _XHELP_TEXT_NO;
                 break;
-
-            case XHELP_CONTROL_RADIOBOX:
+            case \XHELP_CONTROL_RADIOBOX:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>';
                 foreach ($this->values as $key => $value) {
                     $ret .= "<input type='checkbox' name='" . $this->fieldname . "' id='" . $this->fieldname . "1' value='1' " . (($key == $this->value) ? 'checked' : '') . '>' . $value;
@@ -160,11 +157,9 @@ class ReportParameter
 
                 return $ret;
                 break;
-
-            case XHELP_CONTROL_DATETIME:
+            case \XHELP_CONTROL_DATETIME:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
                 break;
-
             default:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
                 break;

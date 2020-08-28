@@ -1,14 +1,18 @@
 <?php
-global $xoopsModule;
-$xhelp_imagePath = XOOPS_URL . '/modules/xhelp/images';
 
-/** @var XoopsModuleHandler $moduleHandler */
+require_once __DIR__ . '/admin_header.php';
+xoops_cp_header();
+
+global $xoopsModule;
+$xhelp_imagePath = XOOPS_URL . '/modules/xhelp/assets/images';
+
+/** @var \XoopsModuleHandler $moduleHandler */
 $moduleHandler = xoops_getHandler('module');
 $xhelp_info    = $moduleHandler->get($xoopsModule->getVar('mid'));
 
 echo "<table border='0'>";
 echo '<tr>';
-echo "<td><img src='" . $xhelp_imagePath . "/xhelp_slogo.png'></td>";
+echo "<td><img src='" . $xhelp_imagePath . "/logoModule.png'></td>";
 echo "<td><div style='margin-top: 0px; color: #2F5376; margin-bottom: 4px; font-size: 18px; line-height: 18px; font-weight: bold; display: block;'>" . $xhelp_info->getInfo('name') . ' version ' . $xhelp_info->getInfo('version') . ' (' . $xhelp_info->getInfo('version_info') . ')</div>';
 echo "<div style = 'line-height: 16px; font-weight: bold; display: block;'>" . _AM_XHELP_TEXT_BY . ' ' . $xhelp_info->getInfo('creator') . '</div>';
 echo '<div>' . $xhelp_info->getInfo('license') . '</div>';

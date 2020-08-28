@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
@@ -34,10 +36,10 @@ class PageNav extends \XoopsPageNav
         if ('' != $bookmark) {
             $this->bookmark = '#' . $bookmark;
         }
-        if ('' != $extra_arg && ('&amp;' !== substr($extra_arg, -5) || '&' !== substr($extra_arg, -1))) {
+        if ('' != $extra_arg && ('&amp;' !== mb_substr($extra_arg, -5) || '&' !== mb_substr($extra_arg, -1))) {
             $extra_arg .= '&amp;';
         }
-        $this->url = $_SERVER['PHP_SELF'] . '?' . $extra_arg . trim($start_name) . '=';
+        $this->url = $_SERVER['SCRIPT_NAME'] . '?' . $extra_arg . \trim($start_name) . '=';
     }
 
     /**
@@ -50,14 +52,14 @@ class PageNav extends \XoopsPageNav
         if ($this->total <= $this->perpage) {
             return $ret;
         }
-        $total_pages = ceil($this->total / $this->perpage);
+        $total_pages = \ceil($this->total / $this->perpage);
         if ($total_pages > 1) {
             $prev = $this->current - $this->perpage;
             if ($prev >= 0) {
                 $ret .= '<a href="' . $this->url . $prev . $this->bookmark . '"><u>&laquo;</u></a> ';
             }
             $counter      = 1;
-            $current_page = (int)floor(($this->current + $this->perpage) / $this->perpage);
+            $current_page = (int)\floor(($this->current + $this->perpage) / $this->perpage);
             while ($counter <= $total_pages) {
                 if ($counter == $current_page) {
                     $ret .= '<b>(' . $counter . ')</b> ';

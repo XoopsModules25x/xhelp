@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,7 +22,7 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -41,14 +43,14 @@ class File extends \XoopsObject
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('filename', XOBJ_DTYPE_TXTBOX, null, true, 255);
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('responseid', XOBJ_DTYPE_INT, 0, false);
-        $this->initVar('mimetype', XOBJ_DTYPE_TXTBOX, null, true, 255);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('filename', \XOBJ_DTYPE_TXTBOX, null, true, 255);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('responseid', \XOBJ_DTYPE_INT, 0, false);
+        $this->initVar('mimetype', \XOBJ_DTYPE_TXTBOX, null, true, 255);
 
         if (null !== $id) {
-            if (is_array($id)) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -80,16 +82,16 @@ class File extends \XoopsObject
 
         $filename = $this->getVar('filename');
         if ((0 != $old_responseid) && (0 != $responseid)) {   // Was a response and is going to be a response
-            $newFilename = str_replace('_' . $old_responseid . '_', '_' . $responseid . '_', $filename);
-            $newFilename = str_replace($old_ticketid . '_', $ticketid . '_', $newFilename);
+            $newFilename = \str_replace('_' . $old_responseid . '_', '_' . $responseid . '_', $filename);
+            $newFilename = \str_replace($old_ticketid . '_', $ticketid . '_', $newFilename);
         } elseif ((0 != $old_responseid) && (0 == $responseid)) { // Was a response and is part of the ticket now
-            $newFilename = str_replace('_' . $old_responseid . '_', '_', $filename);
-            $newFilename = str_replace($old_ticketid . '_', $ticketid . '_', $newFilename);
+            $newFilename = \str_replace('_' . $old_responseid . '_', '_', $filename);
+            $newFilename = \str_replace($old_ticketid . '_', $ticketid . '_', $newFilename);
         } elseif ((0 == $old_responseid) && (0 != $responseid)) {  // Was part of the ticket, now going to a response
-            $newFilename = str_replace($old_ticketid . '_', $ticketid . '_' . $responseid . '_', $filename);
+            $newFilename = \str_replace($old_ticketid . '_', $ticketid . '_' . $responseid . '_', $filename);
         } elseif ((0 == $old_responseid)
                   && (0 == $responseid)) {  // Was part of the ticket, and is part of the ticket now
-            $newFilename = str_replace($old_ticketid . '_', $ticketid . '_', $filename);
+            $newFilename = \str_replace($old_ticketid . '_', $ticketid . '_', $filename);
         }
 
         $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
@@ -117,7 +119,7 @@ class File extends \XoopsObject
      */
     public function renameAtFS($oldName, $newName)
     {
-        $ret = rename(XHELP_UPLOAD_PATH . '/' . $oldName, XHELP_UPLOAD_PATH . '/' . $newName);
+        $ret = \rename(XHELP_UPLOAD_PATH . '/' . $oldName, XHELP_UPLOAD_PATH . '/' . $newName);
 
         return $ret;
     }

@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
@@ -42,7 +42,7 @@ class Service
     public function detachEvents()
     {
         foreach ($this->_cookies as $event => $cookie) {
-            if (is_array($cookie)) {
+            if (\is_array($cookie)) {
                 foreach ($cookie as $ele) {
                     $this->_eventSrv->unadvise($event, $ele);
                 }
@@ -60,7 +60,7 @@ class Service
     {
         if (isset($this->_cookies[$eventName])) {
             $cookie = $this->_cookies[$eventName];
-            if (is_array($cookie)) {
+            if (\is_array($cookie)) {
                 foreach ($cookie as $ele) {
                     $this->_eventSrv->unadvise($eventName, $ele);
                 }
@@ -82,7 +82,7 @@ class Service
             //Cookie doesn't exist
             $this->_cookies[$eventName] = $cookie;
         } else {
-            if (is_array($this->_cookies[$eventName])) {
+            if (\is_array($this->_cookies[$eventName])) {
                 //Already an array, just add new cookie to array
                 $this->_cookies[$eventName][] = $cookie;
             } else {

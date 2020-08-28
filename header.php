@@ -2,13 +2,14 @@
 
 use XoopsModules\Xhelp;
 
-require_once  dirname(dirname(__DIR__)) . '/mainfile.php';
+require_once dirname(__DIR__, 2) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-include __DIR__ . '/preloads/autoloader.php';
+require_once __DIR__ . '/preloads/autoloader.php';
+require_once __DIR__ . '/include/common.php';
 
 //require_once XHELP_BASE_PATH . '/functions.php';
 // require_once XHELP_CLASS_PATH . '/session.php';
@@ -21,8 +22,9 @@ $xhelp_isStaff = false;
 
 // Is the current user a staff member?
 if ($xoopsUser) {
-    $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    if ($xhelp_staff = $hStaff->getByUid($xoopsUser->getVar('uid'))) {
+    $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $xhelp_staff  = $staffHandler->getByUid($xoopsUser->getVar('uid'));
+    if ($xhelp_staff) {
         $xhelp_isStaff = true;
 
         // Check if the staff member permissions have changed since the last page request

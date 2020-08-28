@@ -1,14 +1,20 @@
 <?php
 
+use Xmf\Module\Admin;
 use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\Helper;
 
-// require_once  dirname(__DIR__) . '/class/Helper.php';
-//require_once  dirname(__DIR__) . '/include/common.php';
-$helper = Xhelp\Helper::getInstance();
+require  dirname(__DIR__) . '/preloads/autoloader.php';
 
-$pathIcon32 = \Xmf\Module\Admin::menuIconPath('');
-$pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+/** @var \XoopsModules\Xhelp\Helper $helper */
+$helper = Helper::getInstance();
+$helper->loadLanguage('common');
+$helper->loadLanguage('feedback');
 
+$pathIcon32 = Admin::menuIconPath('');
+if (is_object($helper->getModule())) {
+    $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+}
 
 $adminmenu[] = [
     'title' => _MI_XHELP_MENU_HOME,
@@ -38,7 +44,6 @@ $adminmenu[] = [
     'title' => _MI_XHELP_MENU_MANAGE_STAFF,
     'link'  => 'admin/staff.php?op=manageStaff',
     'icon'  => $pathIcon32 . '/users.png',
-
 ];
 
 $adminmenu[] = [
@@ -49,7 +54,7 @@ $adminmenu[] = [
 
 $adminmenu[] = [
     'title' => _MI_XHELP_TEXT_MANAGE_STATUSES,
-    'link'  => 'admin/staff.php?op=manageStatus',
+    'link'  => 'admin/status.php?op=manageStatus',
     'icon'  => $pathIcon32 . '/stats.png',
 ];
 
@@ -89,11 +94,10 @@ $adminmenu[] = [
     'icon'  => $pathIcon32 . '/about.png',
 ];
 
-
 /*
-$oAdminButton->AddTopLink(_AM_XHELP_MENU_PREFERENCES, XOOPS_URL ."/modules/system/admin.php?fct=preferences&amp;op=showmod&amp;mod=". $module_id);
+$oAdminButton->addTopLink(_AM_XHELP_MENU_PREFERENCES, XOOPS_URL ."/modules/system/admin.php?fct=preferences&amp;op=showmod&amp;mod=". $module_id);
 $oAdminButton->addTopLink(_AM_XHELP_UPDATE_MODULE, XOOPS_URL ."/modules/system/admin.php?fct=modulesadmin&amp;op=update&amp;module=xhelp");
 $oAdminButton->addTopLink(_MI_XHELP_MENU_CHECK_TABLES, XHELP_ADMIN_URL."/upgrade.php?op=checkTables");
-$oAdminButton->AddTopLink(_AM_XHELP_ADMIN_GOTOMODULE, XHELP_BASE_URL."/index.php");
-$oAdminButton->AddTopLink(_AM_XHELP_ADMIN_ABOUT, XHELP_ADMIN_URL."/index.php?op=about");
+$oAdminButton->addTopLink(_AM_XHELP_ADMIN_GOTOMODULE, XHELP_BASE_URL."/index.php");
+$oAdminButton->addTopLink(_AM_XHELP_ADMIN_ABOUT, XHELP_ADMIN_URL."/index.php?op=about");
 */

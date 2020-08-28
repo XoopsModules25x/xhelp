@@ -1,10 +1,10 @@
-<?php namespace XoopsModules\Xhelp\ReportRenderer;
+<?php
 
-//
+namespace XoopsModules\Xhelp\ReportRenderer;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -45,7 +45,7 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
         $params = '';
         if (!empty($paramVals)) {
             foreach ($paramVals as $key => $value) {
-                if (is_array($value)) {
+                if (\is_array($value)) {
                     $params .= "&$key=$value[1]";
                 } else {
                     $params .= "&$key=$value";
@@ -58,7 +58,7 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
 
         if ($report->getVar('hasGraph')) {
             $myReport .= "<div id='xhelp_graph'>";
-            $myReport .= "<img src='" . XHELP_BASE_URL . '/report.php?op=graph&name=' . $report->name . $params . "' align='center' width='" . $graphWidth . "' height='" . $graphHeight . "'>";
+            $myReport .= "<img src='" . \XHELP_BASE_URL . '/report.php?op=graph&name=' . $report->name . $params . "' align='center' width='" . $graphWidth . "' height='" . $graphHeight . "'>";
             $myReport .= '</div>';
         }
 

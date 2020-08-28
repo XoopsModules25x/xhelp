@@ -1,12 +1,13 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
 use XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidateImageSize
  */
-class ValidateImageSize extends validation\Validator
+class ValidateImageSize extends Validator
 {
     public $file;
     public $maxwidth;
@@ -23,12 +24,12 @@ class ValidateImageSize extends validation\Validator
         $this->file      = $file;
         $this->maxwidth  = $maxwidth;
         $this->maxheight = $maxheight;
-        Validator::Validator();
+        parent::__construct();
     }
 
     public function validate()
     {
-        list($width, $height) = getimagesize($this->file);
+        [$width, $height] = \getimagesize($this->file);
         if ($this->maxwidth < $width) {
             $this->setError('Image Width is too large');
         }

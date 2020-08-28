@@ -10,11 +10,11 @@ require_once XHELP_INCLUDE_PATH . '/events.php';
 /** @var Xhelp\Helper $helper */
 $helper = Xhelp\Helper::getInstance();
 
-
 $language = $xoopsConfig['language'];
 require_once XOOPS_ROOT_PATH . "/language/$language/user.php";
 
-$configHandler   = xoops_getHandler('config');
+/** @var \XoopsConfigHandler $configHandler */
+$configHandler = xoops_getHandler('config');
 $xoopsConfigUser = [];
 $crit            = new \CriteriaCompo(new \Criteria('conf_name', 'allow_register'), 'OR');
 $crit->add(new \Criteria('conf_name', 'activation_type'), 'OR');
@@ -25,18 +25,19 @@ foreach ($myConfigs as $myConf) {
 }
 
 if (0 == $helper->getConfig('xhelp_allowAnonymous')) {
-    header('Location: ' . XHELP_BASE_URL . '/error.php');
+    redirect_header(XHELP_BASE_URL . '/error.php');
 }
 
-$hTicket    = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-$hGroupPerm = xoops_getHandler('groupperm');
-$hMember    = xoops_getHandler('member');
-$hFieldDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
-$module_id  = $xoopsModule->getVar('mid');
+$ticketHandler               = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+/** @var \XoopsGroupPermHandler $grouppermHandler */
+$grouppermHandler = xoops_getHandler('groupperm');
+/** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');
+$tickefielddepartmentHandler = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+$module_id                   = $xoopsModule->getVar('mid');
 
 if (0 == $xoopsConfigUser['allow_register']) {    // Use to doublecheck that anonymous users are allowed to register
-    header('Location: ' . XHELP_BASE_URL . '/error.php');
-    exit();
+    redirect_header(XHELP_BASE_URL . '/error.php');
 }
 
 if (!isset($dept_id)) {
@@ -45,7 +46,7 @@ if (!isset($dept_id)) {
 
 if (!isset($_POST['addTicket'])) {
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_anon_addTicket.tpl';             // Always set main template before including the header
-    include XOOPS_ROOT_PATH . '/header.php';
+    require_once XOOPS_ROOT_PATH . '/header.php';
 
     $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Department handler
     $crit         = new \Criteria('', '');
@@ -59,10 +60,10 @@ if (!isset($_POST['addTicket'])) {
     //XOOPS_GROUP_ANONYMOUS
     foreach ($departments as $dept) {
         $deptid = $dept->getVar('id');
-        if ($hGroupPerm->checkRight(_XHELP_GROUP_PERM_DEPT, $deptid, XOOPS_GROUP_ANONYMOUS, $module_id)) {
+        if ($grouppermHandler->checkRight(_XHELP_GROUP_PERM_DEPT, $deptid, XOOPS_GROUP_ANONYMOUS, $module_id)) {
             $aDept[] = [
                 'id'         => $deptid,
-                'department' => $dept->getVar('department')
+                'department' => $dept->getVar('department'),
             ];
         }
     }
@@ -83,7 +84,7 @@ if (!isset($_POST['addTicket'])) {
     }
 
     // Get current dept's custom fields
-    $fields = $hFieldDept->fieldsByDepartment($dept_id, true);
+    $fields = $tickefielddepartmentHandler->fieldsByDepartment($dept_id, true);
 
     if (!$savedFields = $_xhelpSession->get('xhelp_custFields')) {
         $savedFields = [];
@@ -114,7 +115,7 @@ if (!isset($_POST['addTicket'])) {
             'maxlength'    => $field->getVar('fieldlength') < 50 ? $field->getVar('fieldlength') : 50,
             'weight'       => $field->getVar('weight'),
             'fieldvalues'  => $values,
-            'validation'   => $field->getVar('validation')
+            'validation'   => $field->getVar('validation'),
         ];
     }
     $xoopsTpl->assign('xhelp_custFields', $aFields);
@@ -159,21 +160,25 @@ window.setTimeout('window_onload()', 1500);
     $xoopsTpl->assign('xhelp_departments', $aDept);
     $xoopsTpl->assign('xhelp_current_file', basename(__file__));
     $xoopsTpl->assign('xhelp_priorities', [5, 4, 3, 2, 1]);
-    $xoopsTpl->assign('xhelp_priorities_desc', [
-        '5' => _XHELP_PRIORITY5,
-        '4' => _XHELP_PRIORITY4,
-        '3' => _XHELP_PRIORITY3,
-        '2' => _XHELP_PRIORITY2,
-        '1' => _XHELP_PRIORITY1
-    ]);
+    $xoopsTpl->assign(
+        'xhelp_priorities_desc',
+        [
+            '5' => _XHELP_PRIORITY5,
+            '4' => _XHELP_PRIORITY4,
+            '3' => _XHELP_PRIORITY3,
+            '2' => _XHELP_PRIORITY2,
+            '1' => _XHELP_PRIORITY1,
+        ]
+    );
     $xoopsTpl->assign('xhelp_default_priority', XHELP_DEFAULT_PRIORITY);
     $xoopsTpl->assign('xhelp_default_dept', Xhelp\Utility::getMeta('default_department'));
     $xoopsTpl->assign('xhelp_includeURL', XHELP_INCLUDE_URL);
     $xoopsTpl->assign('xhelp_numTicketUploads', $helper->getConfig('xhelp_numTicketUploads'));
 
-    $errors    = [];
-    $aElements = [];
-    if ($validateErrors = $_xhelpSession->get('xhelp_validateError')) {
+    $errors         = [];
+    $aElements      = [];
+    $validateErrors = $_xhelpSession->get('xhelp_validateError');
+    if ($validateErrors) {
         foreach ($validateErrors as $fieldname => $error) {
             if (!empty($error['errors'])) {
                 $aElements[] = $fieldname;
@@ -198,7 +203,8 @@ window.setTimeout('window_onload()', 1500);
         }
     }
 
-    if ($ticket = $_xhelpSession->get('xhelp_ticket')) {
+    $ticket = $_xhelpSession->get('xhelp_ticket');
+    if ($ticket) {
         $xoopsTpl->assign('xhelp_ticket_subject', stripslashes($ticket['subject']));
         $xoopsTpl->assign('xhelp_ticket_description', stripslashes($ticket['description']));
         $xoopsTpl->assign('xhelp_ticket_department', $ticket['department']);
@@ -212,14 +218,15 @@ window.setTimeout('window_onload()', 1500);
         $xoopsTpl->assign('xhelp_ticket_priority', 4);
     }
 
-    if ($user = $_xhelpSession->get('xhelp_user')) {
+    $user = $_xhelpSession->get('xhelp_user');
+    if ($user) {
         $xoopsTpl->assign('xhelp_uid', $user['uid']);
         $xoopsTpl->assign('xhelp_email', $user['email']);
     } else {
         $xoopsTpl->assign('xhelp_uid', null);
         $xoopsTpl->assign('xhelp_email', null);
     }
-    include XOOPS_ROOT_PATH . '/footer.php';
+    require_once XOOPS_ROOT_PATH . '/footer.php';
 } else {
     // require_once XHELP_CLASS_PATH . '/validator.php';
 
@@ -229,7 +236,7 @@ window.setTimeout('window_onload()', 1500);
     $v['email'][]       = new validation\ValidateEmail(Request::getString('email', '', 'POST'));
 
     // Get current dept's custom fields
-    $fields  = $hFieldDept->fieldsByDepartment($dept_id, true);
+    $fields  = $tickefielddepartmentHandler->fieldsByDepartment($dept_id, true);
     $aFields = [];
 
     foreach ($fields as $field) {
@@ -258,22 +265,28 @@ window.setTimeout('window_onload()', 1500);
             'maxlength'    => $field->getVar('fieldlength') < 50 ? $field->getVar('fieldlength') : 50,
             'weight'       => $field->getVar('weight'),
             'fieldvalues'  => $values,
-            'validation'   => $field->getVar('validation')
+            'validation'   => $field->getVar('validation'),
         ];
     }
 
-    $_xhelpSession->set('xhelp_ticket', [
-        'uid'         => 0,
-        'subject'     => $_POST['subject'],
-        'description' => htmlspecialchars($_POST['description'], ENT_QUOTES),
-        'department'  => $_POST['departments'],
-        'priority'    => $_POST['priority']
-    ]);
+    $_xhelpSession->set(
+        'xhelp_ticket',
+        [
+            'uid'         => 0,
+            'subject'     => $_POST['subject'],
+            'description' => htmlspecialchars($_POST['description'], ENT_QUOTES),
+            'department'  => $_POST['departments'],
+            'priority'    => $_POST['priority'],
+        ]
+    );
 
-    $_xhelpSession->set('xhelp_user', [
-        'uid'   => 0,
-        'email' => $_POST['email']
-    ]);
+    $_xhelpSession->set(
+        'xhelp_user',
+        [
+            'uid'   => 0,
+            'email' => $_POST['email'],
+        ]
+    );
 
     if ('' != $fields) {
         $_xhelpSession->set('xhelp_custFields', $fields);
@@ -295,8 +308,7 @@ window.setTimeout('window_onload()', 1500);
     if (!empty($errors)) {
         $_xhelpSession->set('xhelp_validateError', $fields);
         $message = _XHELP_MESSAGE_VALIDATE_ERROR;
-        header('Location: ' . XHELP_BASE_URL . '/anon_addTicket.php');
-        exit();
+        redirect_header(XHELP_BASE_URL . '/anon_addTicket.php');
     }
 
     //Check email address
@@ -306,15 +318,16 @@ window.setTimeout('window_onload()', 1500);
             case 1:
                 $level = 1;
                 break;
-
             case 0:
             case 2:
             default:
                 $level = 0;
         }
 
-        if ($anon_user = Xhelp\Utility::getXoopsAccountFromEmail($_POST['email'], '', $password, $level)) { // If new user created
-            $memberHandler = xoops_getHandler('member');
+        $anon_user = Xhelp\Utility::getXoopsAccountFromEmail($_POST['email'], '', $password, $level);
+        if ($anon_user) { // If new user created
+            /** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');
             $xoopsUser     = $memberHandler->loginUserMd5($anon_user->getVar('uname'), $anon_user->getVar('pass'));
             $user_added    = true;
         } else {        // User not created
@@ -322,7 +335,7 @@ window.setTimeout('window_onload()', 1500);
             redirect_header(XHELP_BASE_URL . '/user.php', 3, $message);
         }
     }
-    $ticket = $hTicket->create();
+    $ticket = $ticketHandler->create();
     $ticket->setVar('uid', $xoopsUser->getVar('uid'));
     $ticket->setVar('subject', $_POST['subject']);
     $ticket->setVar('description', $_POST['description']);
@@ -336,10 +349,11 @@ window.setTimeout('window_onload()', 1500);
     $aUploadFiles = [];
     if ($helper->getConfig('xhelp_allowUpload')) {
         foreach ($_FILES as $key => $aFile) {
-            $pos = strpos($key, 'userfile');
+            $pos = mb_strpos($key, 'userfile');
             if (false !== $pos
                 && is_uploaded_file($aFile['tmp_name'])) {     // In the userfile array and uploaded file?
-                if ($ret = $ticket->checkUpload($key, $allowed_mimetypes, $errors)) {
+                $ret = $ticket->checkUpload($key, $allowed_mimetypes, $errors);
+                if ($ret) {
                     $aUploadFiles[$key] = $aFile;
                 } else {
                     $errorstxt = implode('<br>', $errors);
@@ -350,7 +364,7 @@ window.setTimeout('window_onload()', 1500);
         }
     }
 
-    if ($hTicket->insert($ticket)) {
+    if ($ticketHandler->insert($ticket)) {
         $ticket->addSubmitter($xoopsUser->getVar('email'), $xoopsUser->getVar('uid'));
         if (count($aUploadFiles) > 0) {   // Has uploaded files?
             foreach ($aUploadFiles as $key => $aFile) {
@@ -375,7 +389,8 @@ window.setTimeout('window_onload()', 1500);
                             $message   = sprintf(_XHELP_MESSAGE_FILE_ERROR, $errorstxt);
                             redirect_header(XHELP_BASE_URL . '/addTicket.php', 5, $message);
                         }
-                        if ($file = $ticket->storeUpload($fieldname, -1, $allowed_mimetypes)) {
+                        $file = $ticket->storeUpload($fieldname, -1, $allowed_mimetypes);
+                        if ($file) {
                             $ticketValues->setVar($fieldname, $file->getVar('id') . '_' . $_FILES[$fieldname]['name']);
                         }
                     }

@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
@@ -18,14 +20,15 @@ class Session
      */
     public function __construct()
     {
-        @session_start();
+        if (false === @\session_start()) {
+            throw new \RuntimeException('Session could not start.');
+        }
     }
 
     /**
      * Sets a session variable
-     * @param string name of variable
-     * @param mixed  value of variable
-     * @return void
+     * @param mixed $name
+     * @param mixed $value
      * @access public
      */
     public function set($name, $value)
@@ -35,23 +38,18 @@ class Session
 
     /**
      * Fetches a session variable
-     * @param string name of variable
+     * @param mixed $name
      * @return mixed value of session variable
      * @access public
      */
     public function get($name)
     {
-        if (isset($_SESSION[$name])) {
-            return $_SESSION[$name];
-        } else {
-            return false;
-        }
+        return $_SESSION[$name] ?? false;
     }
 
     /**
      * Deletes a session variable
-     * @param string name of variable
-     * @return void
+     * @param mixed $name
      * @access public
      */
     public function del($name)
@@ -61,13 +59,12 @@ class Session
 
     /**
      * Destroys the whole session
-     * @return void
      * @access public
      */
     public function destroy()
     {
         $_SESSION = [];
-        session_destroy();
+        \session_destroy();
     }
 
     /**

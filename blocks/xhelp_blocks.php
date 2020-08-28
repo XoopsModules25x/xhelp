@@ -1,9 +1,10 @@
 <?php
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 //
-// defined('XOOPS_ROOT_PATH') || die('Restricted access');
+
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -26,11 +27,12 @@ function b_xhelp_open_show($options)
     $max_char_in_title = $options[0];
 
     if ($xoopsUser) {
-        $uid      = $xoopsUser->getVar('uid');   // Get uid
-        $block    = [];
-        $hTickets = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);  // Get ticket handler
-        $hStaff   = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        if ($isStaff = $hStaff->isStaff($xoopsUser->getVar('uid'))) {
+        $uid          = $xoopsUser->getVar('uid');   // Get uid
+        $block        = [];
+        $hTickets     = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);  // Get ticket handler
+        $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $isStaff      = $staffHandler->isStaff($xoopsUser->getVar('uid'));
+        if ($isStaff) {
             $crit = new \CriteriaCompo(new \Criteria('ownership', $uid));
             $crit->add(new \Criteria('status', 2, '<'));
             $crit->setOrder('DESC');
@@ -60,7 +62,7 @@ function b_xhelp_open_show($options)
                     'userinfo'       => XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid'),
                     //'ownerinfo'=>XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('ownership'),
                     'url'            => XOOPS_URL . '/modules/xhelp/ticket.php?id=' . $ticket->getVar('id'),
-                    'overdue'        => $overdue
+                    'overdue'        => $overdue,
                 ];
             }
 
@@ -96,7 +98,7 @@ function b_xhelp_open_show($options)
                     //'uname'=>$user->getVar('uname'),
                     'userinfo'       => XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('uid'),
                     //'ownerinfo'=>XOOPS_URL . '/userinfo.php?uid=' . $ticket->getVar('ownership'),
-                    'url'            => XOOPS_URL . '/modules/xhelp/ticket.php?id=' . $ticket->getVar('id')
+                    'url'            => XOOPS_URL . '/modules/xhelp/ticket.php?id=' . $ticket->getVar('id'),
                 ];
             }
         }
@@ -132,13 +134,13 @@ function b_xhelp_performance_show($options)
         $sql = sprintf(
             'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM `%s` t INNER JOIN %s d ON t.department = d.id  INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 GROUP BY d.department, d.id ORDER BY d.department',
             $xoopsDB->prefix('xhelp_tickets'),
-                       $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_departments'),
             $xoopsDB->prefix('xhelp_status')
         );
     } else {
         $sql = sprintf(
             'SELECT COUNT(*) AS TicketCount, d.department, d.id FROM `%s` t INNER JOIN %s j ON t.department = j.department INNER JOIN %s d ON t.department = d.id INNER JOIN %s s ON t.status = s.id WHERE s.state = 1 AND j.uid = %u GROUP BY d.department, d.id',
-                       $xoopsDB->prefix('xhelp_tickets'),
+            $xoopsDB->prefix('xhelp_tickets'),
             $xoopsDB->prefix('xhelp_jstaffdept'),
             $xoopsDB->prefix('xhelp_departments'),
             $xoopsDB->prefix('xhelp_status'),
@@ -157,7 +159,7 @@ function b_xhelp_performance_show($options)
             'id'      => $myrow['id'],
             'tickets' => $myrow['TicketCount'],
             'name'    => $myrow['department'],
-            'url'     => $url
+            'url'     => $url,
         ];
     }
 
@@ -167,7 +169,7 @@ function b_xhelp_performance_show($options)
 
     if ($block['use_img']) {
         //Retrieve the image path for each department
-        for ($i = 0, $iMax = count($depts); $i < $iMax; ++$i) {
+        foreach ($depts as $i => $iValue) {
             $depts[$i]['img'] = _xhelp_getDeptImg($depts[$i]['id'], $depts[$i]['tickets'], $max_open, $i);
         }
     }
@@ -229,18 +231,17 @@ function b_xhelp_recent_show($options)
 {
     if (!isset($_COOKIE['xhelp_recent_tickets'])) {
         return false;
-    } else {
-        $tmp = $_COOKIE['xhelp_recent_tickets'];
     }
+    $tmp = $_COOKIE['xhelp_recent_tickets'];
 
     $block = [];
 
-    if (strlen($tmp) > 0) {
+    if (mb_strlen($tmp) > 0) {
         $tmp2 = explode(',', $tmp);
 
-        $crit    = new \Criteria('id', '(' . $tmp . ')', 'IN', 't');
-        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-        $tickets = $hTicket->getObjects($crit, true);
+        $crit          = new \Criteria('id', '(' . $tmp . ')', 'IN', 't');
+        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $tickets       = $ticketHandler->getObjects($crit, true);
 
         foreach ($tmp2 as $ele) {
             if (isset($tickets[(int)$ele])) {
@@ -256,16 +257,16 @@ function b_xhelp_recent_show($options)
                     'trim_subject' => xoops_substr($ticket->getVar('subject'), 0, 25),
                     'subject'      => $ticket->getVar('subject'),
                     'url'          => XOOPS_URL . '/modules/xhelp/ticket.php?id=' . $ticket->getVar('id'),
-                    'overdue'      => $overdue
+                    'overdue'      => $overdue,
                 ];
             }
         }
         $block['ticketcount'] = count($tickets);
 
         return $block;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 /**
@@ -274,17 +275,20 @@ function b_xhelp_recent_show($options)
 function b_xhelp_actions_show()
 {
     $_xhelpSession = new Xhelp\Session();
-    global $ticketInfo, $xoopsUser, $xoopsModule,  $ticketInfo, $staff, $xoopsConfig;
+    global $ticketInfo, $xoopsUser, $xoopsModule, $ticketInfo, $staff, $xoopsConfig;
     /** @var Xhelp\Helper $helper */
     $helper = Xhelp\Helper::getInstance();
 
-    $moduleHandler = xoops_getHandler('module');
-    $configHandler = xoops_getHandler('config');
-    $memberHandler = xoops_getHandler('member');
-    $hTickets      = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $hMembership   = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-    $hStaff        = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    $hDepartment   = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+    /** @var \XoopsModuleHandler $moduleHandler */
+$moduleHandler = xoops_getHandler('module');
+    /** @var \XoopsConfigHandler $configHandler */
+$configHandler = xoops_getHandler('config');
+    /** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');
+    $hTickets          = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+    $staffHandler      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $hDepartment       = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 
     //Don't show block for anonymous users or for non-staff members
     if (!$xoopsUser) {
@@ -292,27 +296,26 @@ function b_xhelp_actions_show()
     }
 
     //Don't show block if outside the xhelp module'
-    if (!isset($xoopsModule) || 'xhelp' !== $xoopsModule->getVar('dirname')) {
+    if (null === $xoopsModule || 'xhelp' !== $xoopsModule->getVar('dirname')) {
         return false;
     }
 
     $block = [];
 
-    $myPage      = $_SERVER['PHP_SELF'];
-    $currentPage = substr(strrchr($myPage, '/'), 1);
-    if (('ticket.php' !== $currentPage) || (2 <> $helper->getConfig('xhelp_staffTicketActions'))) {
+    $myPage      = $_SERVER['SCRIPT_NAME'];
+    $currentPage = mb_substr(mb_strrchr($myPage, '/'), 1);
+    if (('ticket.php' !== $currentPage) || (2 != $helper->getConfig('xhelp_staffTicketActions'))) {
         return false;
     }
 
-
-    if (\Xmf\Request::hasVar('id', 'GET')) {
-        $block['ticketid'] = \Xmf\Request::getInt('id', 0, 'GET');
+    if (Request::hasVar('id', 'GET')) {
+        $block['ticketid'] = Request::getInt('id', 0, 'GET');
     } else {
         return false;
     }
 
     //Use Global $ticketInfo object (if exists)
-    if (!isset($ticketInfo)) {
+    if (null === $ticketInfo) {
         $ticketInfo = $hTickets->get($block['ticketid']);
     }
 
@@ -320,15 +323,15 @@ function b_xhelp_actions_show()
         $aOwnership   = [];
         $aOwnership[] = [
             'uid'   => 0,
-            'uname' => _XHELP_NO_OWNER
+            'uname' => _XHELP_NO_OWNER,
         ];
-        if (isset($staff)) {
+        if (null !== $staff) {
             foreach ($staff as $stf) {
                 //** BTW - Need to have a way to get all XoopsUser objects for the staff in 1 shot
                 //$own = $memberHandler->getUser($stf->getVar('uid'));    // Create user object
                 $aOwnership[]                   = [
                     'uid'   => $stf->getVar('uid'),
-                    'uname' => ''
+                    'uname' => '',
                 ];
                 $all_users[$stf->getVar('uid')] = '';
             }
@@ -340,18 +343,18 @@ function b_xhelp_actions_show()
         $users   = [];
 
         //@Todo - why is this query here instead of using a function or the XoopsMemberHandler?
-        $sql         = sprintf('SELECT uid, uname, name FROM `%s` WHERE uid IN (%s)', $xoopsDB->prefix('users'), implode(array_keys($all_users), ','));
+        $sql         = sprintf('SELECT uid, uname, name FROM `%s` WHERE uid IN (%s)', $xoopsDB->prefix('users'), implode(',', array_keys($all_users)));
         $ret         = $xoopsDB->query($sql);
         $displayName = $helper->getConfig('xhelp_displayName');
         while (false !== ($member = $xoopsDB->fetchArray($ret))) {
-            if ((2 == $displayName) && ('' <> $member['name'])) {
+            if ((2 == $displayName) && ('' != $member['name'])) {
                 $users[$member['uid']] = $member['name'];
             } else {
                 $users[$member['uid']] = $member['uname'];
             }
         }
 
-        for ($i = 0, $iMax = count($aOwnership); $i < $iMax; ++$i) {
+        foreach ($aOwnership as $i => $iValue) {
             if (isset($users[$aOwnership[$i]['uid']])) {
                 $aOwnership[$i]['uname'] = $users[$aOwnership[$i]['uid']];
             }
@@ -366,7 +369,7 @@ function b_xhelp_actions_show()
         '4' => _XHELP_PRIORITY4,
         '3' => _XHELP_PRIORITY3,
         '2' => _XHELP_PRIORITY2,
-        '1' => _XHELP_PRIORITY1
+        '1' => _XHELP_PRIORITY1,
     ];
     $block['ticket_priority']       = $ticketInfo->getVar('priority');
     $block['ticket_status']         = $ticketInfo->getVar('status');
@@ -399,10 +402,10 @@ function b_xhelp_actions_show()
         XHELP_SEC_RESPONSE_EDIT         => ['xhelp_has_editResponse', false],
         XHELP_SEC_FILE_DELETE           => ['xhelp_has_deleteFile', false],
         XHELP_SEC_FAQ_ADD               => ['xhelp_has_addFaq', false],
-        XHELP_SEC_TICKET_TAKE_OWNERSHIP => ['xhelp_has_takeOwnership', false]
+        XHELP_SEC_TICKET_TAKE_OWNERSHIP => ['xhelp_has_takeOwnership', false],
     ];
 
-    $checkStaff = $hStaff->getByUid($xoopsUser->getVar('uid'));
+    $checkStaff = $staffHandler->getByUid($xoopsUser->getVar('uid'));
     // See if this user is accepted for this ticket
     $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
     $crit          = new \CriteriaCompo(new \Criteria('ticketid', $ticketInfo->getVar('id')));
@@ -430,7 +433,8 @@ function b_xhelp_actions_show()
             $block[$desc[0]] = true;
             continue;
         }
-        if ($hasRights = $checkStaff->checkRoleRights($right, $ticketInfo->getVar('department'))) {
+        $hasRights = $checkStaff->checkRoleRights($right, $ticketInfo->getVar('department'));
+        if ($hasRights) {
             $block[$desc[0]] = true;
             if ($desc[1]) {
                 ++$rowspan;
@@ -450,7 +454,7 @@ function b_xhelp_actions_show()
         $aStatuses[$status->getVar('id')] = [
             'id'    => $status->getVar('id'),
             'desc'  => $status->getVar('description'),
-            'state' => $status->getVar('state')
+            'state' => $status->getVar('state'),
         ];
     }
 
@@ -496,7 +500,7 @@ function b_xhelp_mainactions_show($options)
     $block['items'][0]      = [
         'link'  => 'anon_addTicket.php',
         'image' => 'addTicket.png',
-        'text'  => _XHELP_MENU_LOG_TICKET
+        'text'  => _XHELP_MENU_LOG_TICKET,
     ];
 
     if ($xoopsUser) {
@@ -504,26 +508,27 @@ function b_xhelp_mainactions_show($options)
         $block['items'][1] = [
             'link'  => 'addTicket.php',
             'image' => 'addTicket.png',
-            'text'  => _XHELP_MENU_LOG_TICKET
+            'text'  => _XHELP_MENU_LOG_TICKET,
         ];
         $block['items'][2] = [
             'link'  => 'index.php?viewAllTickets=1&op=userViewAll',
             'image' => 'ticket.png',
-            'text'  => _XHELP_MENU_ALL_TICKETS
+            'text'  => _XHELP_MENU_ALL_TICKETS,
         ];
-        $hStaff            = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        if ($xhelp_staff = $hStaff->getByUid($xoopsUser->getVar('uid'))) {
+        $staffHandler      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $xhelp_staff       = $staffHandler->getByUid($xoopsUser->getVar('uid'));
+        if ($xhelp_staff) {
             $block['whoami']   = 'staff';
             $block['items'][3] = ['link' => 'search.php', 'image' => 'search2.png', 'text' => _XHELP_MENU_SEARCH];
             $block['items'][4] = [
                 'link'  => 'profile.php',
                 'image' => 'profile.png',
-                'text'  => _XHELP_MENU_MY_PROFILE
+                'text'  => _XHELP_MENU_MY_PROFILE,
             ];
             $block['items'][2] = [
                 'link'  => 'index.php?viewAllTickets=1&op=staffViewAll',
                 'image' => 'ticket.png',
-                'text'  => _XHELP_MENU_ALL_TICKETS
+                'text'  => _XHELP_MENU_ALL_TICKETS,
             ];
             $hSavedSearch      = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
             $savedSearches     = $hSavedSearch->getByUid($xoopsUser->getVar('uid'));
@@ -533,7 +538,7 @@ function b_xhelp_mainactions_show($options)
                     'id'           => $sSearch->getVar('id'),
                     'name'         => $sSearch->getVar('name'),
                     'search'       => $sSearch->getVar('search'),
-                    'pagenav_vars' => $sSearch->getVar('pagenav_vars')
+                    'pagenav_vars' => $sSearch->getVar('pagenav_vars'),
                 ];
             }
             $block['savedSearches'] = (count($aSavedSearches) < 1) ? false : $aSavedSearches;

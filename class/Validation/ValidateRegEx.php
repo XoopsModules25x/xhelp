@@ -1,13 +1,14 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
 use XoopsModules\Xhelp\Validation;
 
 /**
  *  ValidatorRegex subclass of Validator
  *  Validates an email address
  */
-class ValidateRegEx extends validation\Validator
+class ValidateRegEx extends Validator
 {
     public $pattern;
     public $checkText;
@@ -16,7 +17,7 @@ class ValidateRegEx extends validation\Validator
     //! A constructor.
 
     /**
-     * Constucts a new ValidateEmail object subclass or Validator
+     * Constructs a new ValidateEmail object subclass or Validator
      * @param $checkText
      * @param $pattern
      * @param $required
@@ -27,25 +28,24 @@ class ValidateRegEx extends validation\Validator
         $this->pattern   = $pattern;
         $this->checkText = $checkText;
         $this->required  = $required;
-        Validator::Validator();
+        parent::__construct();
     }
 
     //! A manipulator
 
     /**
      * Validates a regular expression
-     * @return void
      */
     public function validate()
     {
         if (1 == $this->required) {                                // If value is required
-            if (is_array($this->checkText) && isset($this->checkText['size'])) {     // If this is a file
+            if (\is_array($this->checkText) && isset($this->checkText['size'])) {     // If this is a file
                 if ('' == $this->checkText['name']) {
                     $this->setError(_XHELP_MESSAGE_REQUIRED);           // Return message saying required value
                 }
             } else {                                                    // If not a file
                 if ('' != $this->pattern) {                               // If regex pattern is not empty
-                    if (!preg_match('/' . $this->pattern . '/', $this->checkText)) {  // Check regex against supplied text
+                    if (!\preg_match('/' . $this->pattern . '/', $this->checkText)) {  // Check regex against supplied text
                         $this->setError(_XHELP_MESSAGE_INVALID);        // Return message saying invalid value
                     }
                 } else {
@@ -57,7 +57,7 @@ class ValidateRegEx extends validation\Validator
         } else {
             if (empty($this->checkText)) {
                 if ('' != $this->pattern) {
-                    if (!preg_match('/' . $this->pattern . '/', $this->checkText)) {
+                    if (!\preg_match('/' . $this->pattern . '/', $this->checkText)) {
                         $this->setError(_XHELP_MESSAGE_INVALID);
                     }
                 }

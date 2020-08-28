@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,12 +22,11 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 // require_once XHELP_CLASS_PATH . '/NaiveBayesian.php';
-
 
 /**
  * class TicketSolutionHandler
@@ -51,9 +52,9 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -69,7 +70,17 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (id, ticketid, url, title, description, uid, posted) VALUES (%u, %u, %s, %s, %s, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $ticketid, $this->_db->quoteString($url), $this->_db->quoteString($title), $this->_db->quoteString($description), $uid, time());
+        $sql = \sprintf(
+            'INSERT INTO `%s` (id, ticketid, url, title, description, uid, posted) VALUES (%u, %u, %s, %s, %s, %u, %u)',
+            $this->_db->prefix($this->_dbtable),
+            $id,
+            $ticketid,
+            $this->_db->quoteString($url),
+            $this->_db->quoteString($title),
+            $this->_db->quoteString($description),
+            $uid,
+            \time()
+        );
 
         return $sql;
     }
@@ -85,7 +96,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf(
+        $sql = \sprintf(
             'UPDATE `%s` SET ticketid = %u, url = %s, title = %s, description = %s, uid = %u, posted = %u WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $ticketid,
@@ -94,7 +105,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
             $this->_db->quoteString($description),
             $uid,
             $posted,
-                       $id
+            $id
         );
 
         return $sql;
@@ -106,7 +117,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -114,7 +125,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
     /**
      * Recommend solutions to a ticket based on similarity
      * to previous tickets and their solutions
-     * @param  Xhelp\Ticket $ticket ticket to search for solutions
+     * @param Xhelp\Ticket $ticket ticket to search for solutions
      * @return array       Value 1 = bayesian likeness probability, Value 2 = Xhelp\TicketSolution object
      * @access public
      */
@@ -123,19 +134,19 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
         $ret = [];
 
         //1. Get list of bayesian categories(tickets) similar to current ticket
-        $bayes    = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage);
+        $bayes    = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage());
         $document = $ticket->getVar('subject') . "\r\n" . $ticket->getVar('description');
         $cats     = $bayes->categorize($document);
 
         //2. Get solutions to those tickets
-        $crit      = new \Criteria('ticketid', '(' . implode(array_keys($cats), ',') . ')', 'IN');
+        $crit      = new \Criteria('ticketid', '(' . \implode(',', \array_keys($cats)) . ')', 'IN');
         $solutions = $this->getObjects($crit);
 
         //3. Sort solutions based on likeness probability
         foreach ($solutions as $solution) {
             $ret[] = [
                 'probability' => $cats[$solution->getVar('ticketid')],
-                'solution'    => $solution
+                'solution'    => $solution,
             ];
         }
         unset($solutions);
@@ -153,7 +164,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
         //1. Store solution in db for current ticket
         if ($this->insert($solution)) {
             //2. Train Bayesian DB
-            $bayes      = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage);
+            $bayes      = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage());
             $documentid = (string)$ticket->getVar('id');
             $categoryid = (string)$ticket->getVar('id');
             $document   = $ticket->getVar('subject') . "\r\n" . $ticket->getVar('description');
@@ -191,7 +202,7 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
             return $varcmp;
         }
 
-        usort($array, '_compare');
+        \usort($array, '_compare');
 
         return $array;
     }

@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,14 +22,13 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 // require_once XHELP_CLASS_PATH . '/mailbox.php';
 // require_once XHELP_CLASS_PATH . '/mailboxPOP3.php';
-
 
 /**
  * Xhelp\DepartmentMailBoxHandler class
@@ -60,16 +61,16 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
 
     /**
      * retrieve server list by department
-     * @param  int $depid department id
+     * @param int $depid department id
      * @return array array of {@link Xhelp\DepartmentMailBox}
      * @access public
      */
@@ -81,7 +82,7 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
             $crit = new \Criteria('departmentid', $depid);
             $crit->setSort('priority');
             $total = $this->getCount($crit);
-            //
+
             if ($total > 0) {
                 $ret = $this->getObjects($crit);
 
@@ -123,7 +124,7 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
      *
      * @param \XoopsObject $obj         {@link Xhelp\DepartmentMailbox}
      *                                  Mailbox to delete
-     * @param  bool        $force       Should bypass XOOPS delete restrictions
+     * @param bool         $force       Should bypass XOOPS delete restrictions
      * @return bool True on Successful delete
      * @access public
      */
@@ -150,14 +151,14 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf(
+        $sql = \sprintf(
             'INSERT INTO `%s` (id, departmentid, SERVER, serverport, username, PASSWORD, priority, emailaddress, mboxtype, active) VALUES (%u, %u, %s, %u, %s, %s, %u, %s, %u, %u)',
             $this->_db->prefix($this->_dbtable),
             $id,
             $departmentid,
             $this->_db->quoteString($server),
             $serverport,
-                       $this->_db->quoteString($username),
+            $this->_db->quoteString($username),
             $this->_db->quoteString($password),
             $priority,
             $this->_db->quoteString($emailaddress),
@@ -179,13 +180,13 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf(
+        $sql = \sprintf(
             'UPDATE `%s` SET departmentid = %u, SERVER = %s, serverport = %u, username = %s, PASSWORD = %s, priority = %u, emailaddress = %s, mboxtype = %u, active = %u WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $departmentid,
             $this->_db->quoteString($server),
             $serverport,
-                       $this->_db->quoteString($username),
+            $this->_db->quoteString($username),
             $this->_db->quoteString($password),
             $priority,
             $this->_db->quoteString($emailaddress),
@@ -203,7 +204,7 @@ class DepartmentMailBoxHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }

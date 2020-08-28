@@ -1,12 +1,13 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
 use XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidateFileSize
  */
-class ValidateFileSize extends validation\Validator
+class ValidateFileSize extends Validator
 {
     public $file;
     public $maxsize;
@@ -20,12 +21,12 @@ class ValidateFileSize extends validation\Validator
     {
         $this->file    = $file;
         $this->maxsize = $maxsize;
-        Validator::Validator();
+        parent::__construct();
     }
 
     public function validate()
     {
-        if ($this->maxsize < filesize($this->file)) {
+        if ($this->maxsize < \filesize($this->file)) {
             $this->setError('File is too large');
         }
     }

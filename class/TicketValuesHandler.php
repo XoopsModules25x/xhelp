@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,13 +22,12 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CONSTANTS_INCLUDED')) {
+if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 $helper->LoadLanguage('admin');
-
 
 /**
  * class TicketValuesHandler
@@ -54,9 +55,9 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -78,7 +79,7 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
         $sqlFields = '';
         $sqlVars   = '';
         foreach ($myFields as $myField => $datatype) {      // Create sql name and value pairs
-            if (isset(${$myField}) && null != ${$myField}) {
+            if (null !== ${$myField}) {
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars   .= ', ';
                     $sqlFields .= ', ';
@@ -113,7 +114,7 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
         $count    = 1;
         $sqlVars  = '';
         foreach ($myFields as $myField => $datatype) {      // Used to create sql field and value substrings
-            if (isset(${$myField}) && null !== ${$myField}) {
+            if (null !== ${$myField}) {
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars .= ', ';
                 }
@@ -138,7 +139,7 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
+        $sql = \sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
 
         return $sql;
     }

@@ -1,17 +1,17 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
-if (!defined('XHELP_CONSTANTS_INCLUDED')) {
+if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
-define('MD5SIGNATUREPATTERN', '/{([^ ]*)}/i');
-define('HEADER_PRIORITY', 'Importance');
-define('_XHELP_MSGTYPE_TICKET', 1);
-define('_XHELP_MSGTYPE_RESPONSE', 2);
+\define('MD5SIGNATUREPATTERN', '/{([^ ]*)}/i');
+\define('HEADER_PRIORITY', 'Importance');
+\define('_XHELP_MSGTYPE_TICKET', 1);
+\define('_XHELP_MSGTYPE_RESPONSE', 2);
 
-require_once XHELP_PEAR_PATH . '/Mail/mimeDecode.php';
+require_once \XHELP_PEAR_PATH . '/Mail/mimeDecode.php';
 
 /**
  * class ParsedMessage
@@ -32,8 +32,7 @@ class ParsedMessage
      * @access   public
      * @param array $msg Array of message values
      */
-
-    public function __construct(&$msg)
+    public function __construct($msg)
     {
         $struct         = $msg['mime_struct'];
         $this->_email   = $msg['email'];
@@ -43,7 +42,7 @@ class ParsedMessage
         $this->_hash = $msg['hash'];
         $this->_msg  = $msg['msg'];
 
-        $this->_msgtype     = (0 == strlen($msg['hash']) ? _XHELP_MSGTYPE_TICKET : _XHELP_MSGTYPE_RESPONSE);
+        $this->_msgtype     = ('' === $msg['hash'] ? _XHELP_MSGTYPE_TICKET : _XHELP_MSGTYPE_RESPONSE);
         $this->_attachments = [];
         $this->_loadAttachments($struct);
     }
@@ -107,11 +106,7 @@ class ParsedMessage
      */
     public function getHeader($header)
     {
-        if (isset($this->_headers[$header])) {
-            return $this->_headers[$header];
-        }
-
-        return false;
+        return $this->_headers[$header] ?? false;
     }
 
     public function &getAllHeaders()
@@ -140,7 +135,7 @@ class ParsedMessage
      */
     public function _loadAttachments($part)
     {
-        if (is_array($part)) {
+        if (\is_array($part)) {
             foreach ($part as $subpart) {
                 $this->_loadAttachments($subpart);
             }
@@ -176,14 +171,14 @@ class ParsedMessage
     /**
      * Removes unsafe characters from the attachment filename
      *
-     * @param  string $name Original Filename
+     * @param string $name Original Filename
      * @return string "cleaned" filename
      * @access private
      * @todo   Get list of other unsafe characters by platform
      */
     public function _cleanFilename($name)
     {
-        $name = str_replace(' ', '_', $name);
+        $name = \str_replace(' ', '_', $name);
 
         return $name;
     }

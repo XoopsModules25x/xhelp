@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-//
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
@@ -23,7 +23,7 @@ class CacheService extends Xhelp\Service
      * @access  private
      */
     public $_cacheDir;
-//    public $_cookies = [];
+    //    public $_cookies = [];
 
     /**
      * Class Constructor
@@ -32,7 +32,7 @@ class CacheService extends Xhelp\Service
      */
     public function __construct()
     {
-        $this->_cacheDir = XHELP_CACHE_PATH;
+        $this->_cacheDir = \XHELP_CACHE_PATH;
         $this->init();
     }
 
@@ -47,7 +47,7 @@ class CacheService extends Xhelp\Service
 
     /**
      * Reset Performance Images on 'new_ticket' event
-     * @param  Xhelp\Ticket $ticket Ticket that was added
+     * @param Xhelp\Ticket $ticket Ticket that was added
      * @return bool        True on success, false on error
      * @access  public
      */
@@ -58,7 +58,7 @@ class CacheService extends Xhelp\Service
 
     /**
      * Reset Performance Images on 'close_ticket' event
-     * @param  Xhelp\Ticket $ticket Ticket that was closed
+     * @param Xhelp\Ticket $ticket Ticket that was closed
      * @return bool        True on success, false on error
      * @access public
      */
@@ -69,7 +69,7 @@ class CacheService extends Xhelp\Service
 
     /**
      * Call Backback function for 'delete_ticket'
-     * @param  Xhelp\Ticket $ticket Ticket being deleted
+     * @param Xhelp\Ticket $ticket Ticket being deleted
      * @return bool        True on success, false on error
      * @access  public
      */
@@ -78,14 +78,14 @@ class CacheService extends Xhelp\Service
         $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
         $status  = $hStatus->get($ticket->getVar('status'));
 
-        if (XHELP_STATE_UNRESOLVED == $status->getVar('state')) {
+        if (\XHELP_STATE_UNRESOLVED == $status->getVar('state')) {
             return $this->_clearPerfImages();
         }
     }
 
     /**
      * Reset Performance Images on 'reopen_ticket' event
-     * @param  Xhelp\Ticket $ticket Ticket that was re-opened
+     * @param Xhelp\Ticket $ticket Ticket that was re-opened
      * @return bool        True on success, false on error
      * @access public
      */
@@ -96,7 +96,7 @@ class CacheService extends Xhelp\Service
 
     /**
      * Callback function for the 'new_department' event
-     * @param  array $args Array of arguments passed to EventService
+     * @param array $args Array of arguments passed to EventService
      * @return bool  True on success, false on error
      * @access  public
      */
@@ -107,7 +107,7 @@ class CacheService extends Xhelp\Service
 
     /**
      * Callback function for the 'delete_department' event
-     * @param  array $args Array of arguments passed to EventService
+     * @param array $args Array of arguments passed to EventService
      * @return bool  True on success, false on error
      * @access  public
      */
@@ -133,14 +133,14 @@ class CacheService extends Xhelp\Service
     public function _clearPerfImages()
     {
         //Remove all cached department queue images
-        $opendir = opendir($this->_cacheDir);
+        $opendir = \opendir($this->_cacheDir);
 
-        while (null != ($file = readdir($opendir))) {
-            if (false === strpos($file, 'xhelp_perf_')) {
+        while (null !== ($file = \readdir($opendir))) {
+            if (false === mb_strpos($file, 'xhelp_perf_')) {
                 continue;
             }
 
-            unlink($this->_cacheDir . '/' . $file);
+            \unlink($this->_cacheDir . '/' . $file);
         }
 
         return true;

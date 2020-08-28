@@ -12,11 +12,10 @@ use XoopsModules\Xhelp;
 
 /**
  * Prepares system prior to attempting to uninstall module
- * @param XoopsModule $module {@link XoopsModule}
+ * @param \XoopsModule $module {@link XoopsModule}
  *
  * @return bool true if ready to uninstall, false if not
  */
-
 function xoops_module_pre_uninstall_xhelp(\XoopsModule $module)
 {
     // Do some synchronization
@@ -24,22 +23,21 @@ function xoops_module_pre_uninstall_xhelp(\XoopsModule $module)
 }
 
 /**
- *
  * Performs tasks required during uninstallation of the module
- * @param XoopsModule $module {@link XoopsModule}
+ * @param \XoopsModule $module {@link XoopsModule}
  *
  * @return bool true if uninstallation successful, false if not
  */
 function xoops_module_uninstall_xhelp(\XoopsModule $module)
 {
-    include  dirname(__DIR__) . '/preloads/autoloader.php';
-    $moduleDirName = basename(dirname(__DIR__));
-    $moduleDirNameUpper = strtoupper($moduleDirName); //$capsDirName
+    require_once dirname(__DIR__) . '/preloads/autoloader.php';
+    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirNameUpper = mb_strtoupper($moduleDirName); //$capsDirName
 
     /** @var Xhelp\Helper $helper */
     /** @var Xhelp\Utility $utility */
-    $helper = Xhelp\Helper::getInstance();
-    $utility      = new Xhelp\Utility();
+    $helper  = Xhelp\Helper::getInstance();
+    $utility = new Xhelp\Utility();
     //    $configurator = new Xhelp\Common\Configurator();
 
     // Load language files

@@ -4,11 +4,14 @@ use Xmf\Request;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Validation;
 
-if (\Xmf\Request::hasVar('deptid', 'GET')) { 
- $dept_id = \Xmf\Request::getInt('deptid', 0, 'GET');
+require_once __DIR__ . '/header.php';
+require_once XHELP_INCLUDE_PATH . '/events.php';
+
+if (\Xmf\Request::hasVar('deptid', 'GET')) {
+    $dept_id = \Xmf\Request::getInt('deptid', 0, 'GET');
 }
 
-if (isset($_GET['view_id'])) {
+if (\Xmf\Request::hasVar('view_id', 'GET')) {
     $view_id = \Xmf\Request::getInt('view_id', 0, 'GET');
     setcookie('xhelp_logMode', $view_id, time() + 60 * 60 * 24 * 30);
     if (isset($dept_id)) {
@@ -24,9 +27,6 @@ if (isset($_GET['view_id'])) {
     }
 }
 
-require_once __DIR__ . '/header.php';
-require_once XHELP_INCLUDE_PATH . '/events.php';
-
 /** @var Xhelp\Helper $helper */
 $helper = Xhelp\Helper::getInstance();
 
@@ -38,12 +38,14 @@ $helper = Xhelp\Helper::getInstance();
  $_eventsrv->advise('update_owner', xhelp_notificationService::getInstance());
  $_eventsrv->advise('update_owner', xhelp_logService::getInstance()); */
 
-$hTicket     = Xhelp\Helper::getInstance()->getHandler('Ticket');
-$hStaff      = Xhelp\Helper::getInstance()->getHandler('Staff');
-$hGroupPerm  = xoops_getHandler('groupperm');
-$hMember     = xoops_getHandler('member');
-$hMembership = Xhelp\Helper::getInstance()->getHandler('Membership');
-$hFieldDept  = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
+$ticketHandler               = Xhelp\Helper::getInstance()->getHandler('Ticket');
+$staffHandler                = Xhelp\Helper::getInstance()->getHandler('Staff');
+/** @var \XoopsGroupPermHandler $grouppermHandler */
+$grouppermHandler = xoops_getHandler('groupperm');
+/** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');
+$membershipHandler           = Xhelp\Helper::getInstance()->getHandler('Membership');
+$tickefielddepartmentHandler = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
 
 $module_id = $xoopsModule->getVar('mid');
 
@@ -52,14 +54,14 @@ if ($xoopsUser) {
         $dept_id = Xhelp\Utility::getMeta('default_department');
     }
 
-    if (isset($_GET['saveTicket']) && 1 == $_GET['saveTicket']) {
+    if (\Xmf\Request::hasVar('saveTicket', 'GET') && 1 == $_GET['saveTicket']) {
         _saveTicket();
     }
 
     //    if (!isset($_POST['addTicket'])) {                           // Initial load of page
     if (!Request::hasVar('addTicket', 'POST')) {
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_addTicket.tpl';             // Always set main template before including the header
-        include XOOPS_ROOT_PATH . '/header.php';
+        require_once XOOPS_ROOT_PATH . '/header.php';
 
         $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');    // Department handler
         $crit         = new \Criteria('', '');
@@ -70,27 +72,27 @@ if ($xoopsUser) {
             redirect_header(XHELP_BASE_URL . '/index.php', 3, $message);
         }
         $aDept    = [];
-        $myGroups = $hMember->getGroupsByUser($xoopsUser->getVar('uid'));
+        $myGroups = $memberHandler->getGroupsByUser($xoopsUser->getVar('uid'));
         if ($xhelp_isStaff && (0 == $helper->getConfig('xhelp_deptVisibility'))) {     // If staff are not applied
             foreach ($departments as $dept) {
                 $deptid  = $dept->getVar('id');
                 $aDept[] = [
                     'id'         => $deptid,
-                    'department' => $dept->getVar('department')
+                    'department' => $dept->getVar('department'),
                 ];
             }
         } else {
             foreach ($departments as $dept) {
                 $deptid = $dept->getVar('id');
                 foreach ($myGroups as $group) {   // Check for user to be in multiple groups
-                    if ($hGroupPerm->checkRight(_XHELP_GROUP_PERM_DEPT, $deptid, $group, $module_id)) {
+                    if ($grouppermHandler->checkRight(_XHELP_GROUP_PERM_DEPT, $deptid, $group, $module_id)) {
                         //Assign the first value to $dept_id incase the default department property not set
                         if (null === $dept_id) {
                             $dept_id = $deptid;
                         }
                         $aDept[] = [
                             'id'         => $deptid,
-                            'department' => $dept->getVar('department')
+                            'department' => $dept->getVar('department'),
                         ];
                         break;
                     }
@@ -107,15 +109,15 @@ if ($xoopsUser) {
         $xoopsTpl->assign('xhelp_isUser', true);
 
         if ($xhelp_isStaff) {
-            $checkStaff = $hStaff->getByUid($xoopsUser->getVar('uid'));
+            $checkStaff = $staffHandler->getByUid($xoopsUser->getVar('uid'));
             if (!$hasRights = $checkStaff->checkRoleRights(XHELP_SEC_TICKET_ADD)) {
                 $message = _XHELP_MESSAGE_NO_ADD_TICKET;
                 redirect_header(XHELP_BASE_URL . '/index.php', 3, $message);
             }
             unset($checkStaff);
 
-            if ($hasRights = $xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_OWNERSHIP, $dept_id)) {
-                $staff = $hMembership->xoopsUsersByDept($dept_id);
+            if (false !== ($hasRights = $xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_OWNERSHIP, $dept_id))) {
+                $staff = $membershipHandler->xoopsUsersByDept($dept_id);
 
                 $aOwnership    = [];
                 $aOwnership[0] = _XHELP_NO_OWNER;
@@ -153,15 +155,15 @@ if ($xoopsUser) {
 
         $xoopsTpl->assign('xhelp_has_logUser', false);
         if ($xhelp_isStaff) {
-            $checkStaff = $hStaff->getByUid($xoopsUser->getVar('uid'));
-            if ($hasRights = $checkStaff->checkRoleRights(XHELP_SEC_TICKET_LOGUSER)) {
+            $checkStaff = $staffHandler->getByUid($xoopsUser->getVar('uid'));
+            if (false !== ($hasRights = $checkStaff->checkRoleRights(XHELP_SEC_TICKET_LOGUSER))) {
                 $xoopsTpl->assign('xhelp_has_logUser', true);
             }
             unset($checkStaff);
         }
 
         // Get current dept's custom fields
-        $fields = $hFieldDept->fieldsByDepartment($dept_id, true);
+        $fields = $tickefielddepartmentHandler->fieldsByDepartment($dept_id, true);
 
         if (!$savedFields = $_xhelpSession->get('xhelp_custFields')) {
             $savedFields = [];
@@ -192,7 +194,7 @@ if ($xoopsUser) {
                 'maxlength'    => $field->getVar('fieldlength'),
                 'weight'       => $field->getVar('weight'),
                 'fieldvalues'  => $values,
-                'validation'   => $field->getVar('validation')
+                'validation'   => $field->getVar('validation'),
             ];
         }
         $xoopsTpl->assign('xhelp_custFields', $aFields);
@@ -221,7 +223,7 @@ function departments_onchange()
 var staffHandler = {
     staffbydept: function(result){';
         if ($xhelp_isStaff) {
-            if (isset($_COOKIE['xhelp_logMode']) && 2 == $_COOKIE['xhelp_logMode']
+            if (\Xmf\Request::hasVar('xhelp_logMode', 'COOKIE') && 2 == $_COOKIE['xhelp_logMode']
                 && $xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_OWNERSHIP, $dept_id)) {
                 $javascript .= "var sel = gE('owner');";
                 $javascript .= "xhelpFillStaffSelect(sel, result);\n";
@@ -262,17 +264,20 @@ window.setTimeout('window_onload()', 1500);
         $xoopsTpl->assign('xhelp_departments', $aDept);
         $xoopsTpl->assign('xhelp_current_file', basename(__file__));
         $xoopsTpl->assign('xhelp_priorities', [5, 4, 3, 2, 1]);
-        $xoopsTpl->assign('xhelp_priorities_desc', [
-            '5' => _XHELP_PRIORITY5,
-            '4' => _XHELP_PRIORITY4,
-            '3' => _XHELP_PRIORITY3,
-            '2' => _XHELP_PRIORITY2,
-            '1' => _XHELP_PRIORITY1
-        ]);
+        $xoopsTpl->assign(
+            'xhelp_priorities_desc',
+            [
+                '5' => _XHELP_PRIORITY5,
+                '4' => _XHELP_PRIORITY4,
+                '3' => _XHELP_PRIORITY3,
+                '2' => _XHELP_PRIORITY2,
+                '1' => _XHELP_PRIORITY1,
+            ]
+        );
         $xoopsTpl->assign('xhelp_default_priority', XHELP_DEFAULT_PRIORITY);
         $xoopsTpl->assign('xhelp_currentUser', $xoopsUser->getVar('uid'));
         $xoopsTpl->assign('xhelp_numTicketUploads', $helper->getConfig('xhelp_numTicketUploads'));
-        //        if (isset($_POST['logFor'])) {
+        //        if (\Xmf\Request::hasVar('logFor', 'POST')) {
         if (Request::hasVar('logFor', 'POST')) {
             $uid      = Request::getInt('logFor', '', 'POST');
             $username = $xoopsUser::getUnameFromId($uid);
@@ -292,7 +297,7 @@ window.setTimeout('window_onload()', 1500);
         }
 
         if ($xhelp_isStaff) {
-            if (isset($_COOKIE['xhelp_logMode']) && 2 == $_COOKIE['xhelp_logMode']) {
+            if (\Xmf\Request::hasVar('xhelp_logMode', 'COOKIE') && 2 == $_COOKIE['xhelp_logMode']) {
                 $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
                 $crit    = new \Criteria('', '');
                 $crit->setSort('description');
@@ -303,7 +308,7 @@ window.setTimeout('window_onload()', 1500);
                     $aStatuses[$status->getVar('id')] = [
                         'id'    => $status->getVar('id'),
                         'desc'  => $status->getVar('description'),
-                        'state' => $status->getVar('state')
+                        'state' => $status->getVar('state'),
                     ];
                 }
 
@@ -314,7 +319,7 @@ window.setTimeout('window_onload()', 1500);
 
         $errors    = [];
         $aElements = [];
-        if ($validateErrors = $_xhelpSession->get('xhelp_validateError')) {
+        if (false !== ($validateErrors = $_xhelpSession->get('xhelp_validateError'))) {
             foreach ($validateErrors as $fieldname => $error) {
                 if (!empty($error['errors'])) {
                     $aElements[] = $fieldname;
@@ -339,7 +344,7 @@ window.setTimeout('window_onload()', 1500);
             }
         }
 
-        if ($ticket = $_xhelpSession->get('xhelp_ticket')) {
+        if (false !== ($ticket = $_xhelpSession->get('xhelp_ticket'))) {
             $xoopsTpl->assign('xhelp_ticket_uid', $ticket['uid']);
             $xoopsTpl->assign('xhelp_ticket_username', $xoopsUser::getUnameFromId($ticket['uid']));
             $xoopsTpl->assign('xhelp_ticket_subject', stripslashes($ticket['subject']));
@@ -355,7 +360,7 @@ window.setTimeout('window_onload()', 1500);
             $xoopsTpl->assign('xhelp_ticket_priority', XHELP_DEFAULT_PRIORITY);
         }
 
-        if ($response = $_xhelpSession->get('xhelp_response')) {
+        if (false !== ($response = $_xhelpSession->get('xhelp_response'))) {
             $xoopsTpl->assign('xhelp_response_uid', $response['uid']);
             $xoopsTpl->assign('xhelp_response_message', $response['message']);
             $xoopsTpl->assign('xhelp_response_timespent', $response['timeSpent']);
@@ -373,7 +378,7 @@ window.setTimeout('window_onload()', 1500);
             $xoopsTpl->assign('xhelp_ticket_ownership', 0);
         }
 
-        require XOOPS_ROOT_PATH . '/footer.php';                             //Include the page footer
+        require_once XOOPS_ROOT_PATH . '/footer.php';                             //Include the page footer
     } else {
         $dept_id = Request::getInt('departments', 0, 'POST');
 
@@ -383,7 +388,7 @@ window.setTimeout('window_onload()', 1500);
         $v['description'][] = new validation\ValidateLength(Request::getString('description', '', 'POST'), 2);
 
         // Get current dept's custom fields
-        $fields  = $hFieldDept->fieldsByDepartment($dept_id, true);
+        $fields  = $tickefielddepartmentHandler->fieldsByDepartment($dept_id, true);
         $aFields = [];
 
         foreach ($fields as $field) {
@@ -412,7 +417,7 @@ window.setTimeout('window_onload()', 1500);
                 'maxlength'    => $field->getVar('fieldlength') < 50 ? $field->getVar('fieldlength') : 50,
                 'weight'       => $field->getVar('weight'),
                 'fieldvalues'  => $values,
-                'validation'   => $field->getVar('validation')
+                'validation'   => $field->getVar('validation'),
             ];
         }
 
@@ -434,12 +439,11 @@ window.setTimeout('window_onload()', 1500);
         if (!empty($errors)) {
             $_xhelpSession->set('xhelp_validateError', $fields);
             $message = _XHELP_MESSAGE_VALIDATE_ERROR;
-            header('Location: ' . XHELP_BASE_URL . '/addTicket.php');
-            exit();
+            redirect_header(XHELP_BASE_URL . '/addTicket.php');
         }
 
-        //$hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        $ticket = $hTicket->create();
+        //$ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
+        $ticket = $ticketHandler->create();
         $ticket->setVar('uid', Request::getInt('user_id', 0, 'POST'));
         $ticket->setVar('subject', Request::getString('subject', '', 'POST'));
         $ticket->setVar('description', Request::getString('description', '', 'POST'));
@@ -447,7 +451,7 @@ window.setTimeout('window_onload()', 1500);
         $ticket->setVar('priority', Request::getInt('priority', 0, 'POST'));
         if ($xhelp_isStaff && 2 == $_COOKIE['xhelp_logMode']) {
             $ticket->setVar('status', Request::getInt('status', null, 'POST'));    // Set status
-            //            if (isset($_POST['owner'])) {  //Check if user claimed ownership
+            //            if (\Xmf\Request::hasVar('owner', 'POST')) {  //Check if user claimed ownership
             if (!Request::hasVar('owner', 'POST')) {
                 if (Request::getInt('owner', 0, 'POST') > 0) {
                     $oldOwner = 0;
@@ -467,10 +471,10 @@ window.setTimeout('window_onload()', 1500);
         $aUploadFiles = [];
         if ($helper->getConfig('xhelp_allowUpload')) {
             foreach ($_FILES as $key => $aFile) {
-                $pos = strpos($key, 'userfile');
+                $pos = mb_strpos($key, 'userfile');
                 if (false !== $pos
                     && is_uploaded_file($aFile['tmp_name'])) {     // In the userfile array and uploaded file?
-                    if ($ret = $ticket->checkUpload($key, $allowed_mimetypes, $errors)) {
+                    if (false !== ($ret = $ticket->checkUpload($key, $allowed_mimetypes, $errors))) {
                         $aUploadFiles[$key] = $aFile;
                     } else {
                         $errorstxt = implode('<br>', $errors);
@@ -481,9 +485,10 @@ window.setTimeout('window_onload()', 1500);
             }
         }
 
-        if ($hTicket->insert($ticket)) {
-            $hMember = xoops_getHandler('member');
-            $newUser = $hMember->getUser($ticket->getVar('uid'));
+        if ($ticketHandler->insert($ticket)) {
+            /** @var \XoopsMemberHandler $memberHandler */
+$memberHandler = xoops_getHandler('member');
+            $newUser       = $memberHandler->getUser($ticket->getVar('uid'));
             $ticket->addSubmitter($newUser->getVar('email'), $newUser->getVar('uid'));
 
             if (count($aUploadFiles) > 0) {   // Has uploaded files?
@@ -510,7 +515,7 @@ window.setTimeout('window_onload()', 1500);
                                 $message = sprintf(_XHELP_MESSAGE_FILE_ERROR, $errorstxt);
                                 redirect_header(XHELP_BASE_URL . '/addTicket.php', 5, $message);
                             }
-                            if ($file = $ticket->storeUpload($fieldname, -1, $allowed_mimetypes)) {
+                            if (false !== ($file = $ticket->storeUpload($fieldname, -1, $allowed_mimetypes))) {
                                 $ticketValues->setVar($fieldname, $file->getVar('id') . '_' . $_FILES[$fieldname]['name']);
                             }
                         }
@@ -571,7 +576,8 @@ window.setTimeout('window_onload()', 1500);
         redirect_header(XHELP_BASE_URL . '/index.php', 5, $message);
     }
 } else {    // If not a user
-    $configHandler = xoops_getHandler('config');
+    /** @var \XoopsConfigHandler $configHandler */
+$configHandler = xoops_getHandler('config');
     //$xoopsConfigUser = $configHandler->getConfigsByCat(XOOPS_CONF_USER);
     $xoopsConfigUser = [];
     $crit            = new \CriteriaCompo(new \Criteria('conf_name', 'allow_register'), 'OR');
@@ -582,9 +588,9 @@ window.setTimeout('window_onload()', 1500);
         $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
     }
     if (0 == $xoopsConfigUser['allow_register']) {    // Use to doublecheck that anonymous users are allowed to register
-        header('Location: ' . XHELP_BASE_URL . '/error.php');
+        redirect_header(XHELP_BASE_URL . '/error.php');
     } else {
-        header('Location: ' . XHELP_BASE_URL . '/anon_addTicket.php');
+        redirect_header(XHELP_BASE_URL . '/anon_addTicket.php');
     }
     exit();
 }
@@ -596,24 +602,30 @@ window.setTimeout('window_onload()', 1500);
 function _saveTicket($fields = '')
 {
     global $_xhelpSession, $xhelp_isStaff;
-    $_xhelpSession->set('xhelp_ticket', [
-        'uid'         => Request::getInt('user_id', 0, 'POST'),
-        'subject'     => Request::getString('subject', '', 'POST'),
-        'description' => Request::getText('description', '', 'POST'), //htmlspecialchars($_POST['description'], ENT_QUOTES),
-        'department'  => Request::getInt('departments', 0, 'POST'), //$_POST['departments'],
-        'priority'    => Request::getInt('priority', 0, 'POST')
-    ]);
+    $_xhelpSession->set(
+        'xhelp_ticket',
+        [
+            'uid'         => Request::getInt('user_id', 0, 'POST'),
+            'subject'     => Request::getString('subject', '', 'POST'),
+            'description' => Request::getText('description', '', 'POST'), //htmlspecialchars($_POST['description'], ENT_QUOTES),
+            'department'  => Request::getInt('departments', 0, 'POST'), //$_POST['departments'],
+            'priority'    => Request::getInt('priority', 0, 'POST'),
+        ]
+    );
 
     if ($xhelp_isStaff && 2 == $_COOKIE['xhelp_logMode']) {
-        $_xhelpSession->set('xhelp_response', [
-            'uid'       => Request::getInt('user_id', 0, 'POST'),
-            'message'   => Request::getString('response', '', 'POST'),
-            'timeSpent' => Request::getInt('timespent', 0, 'POST'),
-            'userIP'    => getenv('REMOTE_ADDR'),
-            'private'   => Request::hasVar('private', 'POST')? 1 : 0, //isset($_POST['private']) ? 1 : 0,
-            'status'    => Request::getInt('status', 0, 'POST'),
-            'owner'     => Request::getInt('owner', 0, 'POST') //$_POST['owner']
-        ]);
+        $_xhelpSession->set(
+            'xhelp_response',
+            [
+                'uid'       => Request::getInt('user_id', 0, 'POST'),
+                'message'   => Request::getString('response', '', 'POST'),
+                'timeSpent' => Request::getInt('timespent', 0, 'POST'),
+                'userIP'    => getenv('REMOTE_ADDR'),
+                'private'   => Request::hasVar('private', 'POST') ? 1 : 0, //isset($_POST['private']) ? 1 : 0,
+                'status'    => Request::getInt('status', 0, 'POST'),
+                'owner'     => Request::getInt('owner', 0, 'POST'), //$_POST['owner']
+            ]
+        );
     }
 
     if ('' != $fields) {

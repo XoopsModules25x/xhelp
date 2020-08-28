@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
@@ -43,16 +45,16 @@ class EventService
 
     /**
      * Add a new class function to be notified
-     * @param  string   $context  Event used for callback
-     * @param  callback $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
-     * @param  int      $priority Order that callback should be triggered
+     * @param string   $context  Event used for callback
+     * @param callback $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
+     * @param int      $priority Order that callback should be triggered
      * @return int      Event cookie, used for unadvise
      * @access  public
      */
-    public function advise($context, &$callback, $priority = 10)
+    public function advise($context, $callback, $priority = 10)
     {
         $clbk = $callback;
-        if (!is_array($callback) && is_object($callback)) {
+        if (!\is_array($callback) && \is_object($callback)) {
             $clbk = [$callback, $context];
         }
 
@@ -60,7 +62,7 @@ class EventService
         $this->_ctx[$context][(string)$priority][] = $clbk;
 
         //Return element # in array
-        return count($this->_ctx[$context][(string)$priority]) - 1;
+        return \count($this->_ctx[$context][(string)$priority]) - 1;
     }
 
     /**
@@ -80,7 +82,7 @@ class EventService
      * @return object {@link xhelp_eventService}
      * @access  public
      */
-    public function getInstance()
+    public static function getInstance()
     {
         static $instance;
         if (null === $instance) {
@@ -99,12 +101,12 @@ class EventService
     public function trigger($context, $args)
     {
         if (isset($this->_ctx[$context])) {
-            ksort($this->_ctx[$context]);
+            \ksort($this->_ctx[$context]);
             $_notlist = $this->_ctx[$context];
             foreach ($_notlist as $priority => $functions) {
                 foreach ($functions as $func) {
-                    if (is_callable($func, true, $func_name)) {
-                        call_user_func_array($func, $args);
+                    if (\is_callable($func, true, $func_name)) {
+                        \call_user_func_array($func, $args);
                     }
                 }
             }

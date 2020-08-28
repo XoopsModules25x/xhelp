@@ -1,12 +1,13 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
 use XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidateLength
  */
-class ValidateLength extends validation\Validator
+class ValidateLength extends Validator
 {
     /**
      * Private
@@ -29,9 +30,9 @@ class ValidateLength extends validation\Validator
     //! A constructor.
 
     /**
-     * Constucts a new ValidateLength object subclass or Validator
+     * Constructs a new ValidateLength object subclass or Validator
      * @param         $text
-     * @param         $min_length the min string size
+     * @param the     $min_length min string size
      * @param int     $max_length the max string size
      */
     public function __construct($text, $min_length, $max_length = 0)
@@ -46,15 +47,14 @@ class ValidateLength extends validation\Validator
 
     /**
      * Validates a string
-     * @return void
      */
     public function validate()
     {
-        if (strlen($this->text) < $this->min_length) {
+        if (mb_strlen($this->text) < $this->min_length) {
             $this->setError(_XHELP_MESSAGE_SHORT);
         }
         if ($this->max_length) {
-            if (strlen($this->text) > $this->max_length) {
+            if (mb_strlen($this->text) > $this->max_length) {
                 $this->setError(_XHELP_MESSAGE_LONG);
             }
         }

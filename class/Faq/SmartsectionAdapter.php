@@ -1,27 +1,27 @@
-<?php namespace XoopsModules\Xhelp\Faq;
+<?php
 
-//
+namespace XoopsModules\Xhelp\Faq;
 
 use XoopsModules\Xhelp;
 
 //Sanity Check: make sure that file is not being accessed directly
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // ** Define any site specific variables here **
-define('XHELP_SSECTION_PATH', XOOPS_ROOT_PATH . '/modules/smartsection');
-define('XHELP_SSECTION_URL', XHELP_SITE_URL . '/modules/smartsection');
+\define('XHELP_SSECTION_PATH', XOOPS_ROOT_PATH . '/modules/smartsection');
+\define('XHELP_SSECTION_URL', XHELP_SITE_URL . '/modules/smartsection');
 // ** End site specific variables **
 
 // What features should be enabled for new smartsection items
-define('XHELP_SSECTION_DOHTML', 0);
-define('XHELP_SSECTION_DOSMILEY', 1);
-define('XHELP_SSECTION_DOBBCODE', 1);
-define('XHELP_SSECTION_DOIMAGE', 0);
-define('XHELP_SSECTION_DOBR', 1);
-define('XHELP_SSECTION_NOTIFYPUB', 1);
-define('XHELP_SSECTION_FORCEAPPROVAL', 0); //Should articles be reviewed prior to submission (0 = Always No, 1 = Always Yes, 2 = Follow Module Config
+\define('XHELP_SSECTION_DOHTML', 0);
+\define('XHELP_SSECTION_DOSMILEY', 1);
+\define('XHELP_SSECTION_DOBBCODE', 1);
+\define('XHELP_SSECTION_DOIMAGE', 0);
+\define('XHELP_SSECTION_DOBR', 1);
+\define('XHELP_SSECTION_NOTIFYPUB', 1);
+\define('XHELP_SSECTION_FORCEAPPROVAL', 0); //Should articles be reviewed prior to submission (0 = Always No, 1 = Always Yes, 2 = Follow Module Config
 
 // @todo - can this declaration be moved into the initialization sequence so
 // that each class does not need to include its interface?
@@ -29,7 +29,7 @@ define('XHELP_SSECTION_FORCEAPPROVAL', 0); //Should articles be reviewed prior t
 // require_once XHELP_CLASS_PATH . '/faqAdapter.php';
 
 //These functions are required to work with the smartsection application directly
-@include XHELP_SSECTION_PATH . '/include/functions.php';
+@require \XHELP_SSECTION_PATH . '/include/functions.php';
 
 /**
  * class SmartsectionAdapter
@@ -44,7 +44,7 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
      * XHELP_FAQ_CATEGORY_NONE - No category support
      * @access public
      */
-    public $categoryType = XHELP_FAQ_CATEGORY_SING;
+    public $categoryType = \XHELP_FAQ_CATEGORY_SING;
 
     /**
      * Adapter Details
@@ -66,7 +66,7 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
         'version'         => '1.0',
         'tested_versions' => '1.05 Beta 1',
         'url'             => 'http://www.smartfactory.ca/',
-        'module_dir'      => 'smartsection'
+        'module_dir'      => 'smartsection',
     ];
 
     /**
@@ -103,14 +103,14 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
             $ret[] = $faqcat;
         }
         unset($categories);
-        ksort($ret);
+        \ksort($ret);
 
         return $ret;
     }
 
     /**
      * storeFaq: store the FAQ in the application's specific database (required)
-     * @param  Xhelp\Faq $faq The faq to add
+     * @param null $faq The faq to add
      * @return bool     true (success) / false (failure)
      * @access public
      */
@@ -139,17 +139,17 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
         // Putting the values about the ITEM in the ITEM object
         $itemObj->setVar('categoryid', $categories);
         $itemObj->setVar('title', $faq->getVar('subject', 'e'));
-        $itemObj->setVar('summary', '[b]' . ucfirst(_XHELP_TEXT_PROBLEM) . "[/b]\r\n" . $faq->getVar('problem', 'e'));
-        $itemObj->setVar('body', '[b]' . ucfirst(_XHELP_TEXT_SOLUTION) . "[/b]\r\n" . $faq->getVar('solution', 'e'));
+        $itemObj->setVar('summary', '[b]' . \ucfirst(_XHELP_TEXT_PROBLEM) . "[/b]\r\n" . $faq->getVar('problem', 'e'));
+        $itemObj->setVar('body', '[b]' . \ucfirst(_XHELP_TEXT_SOLUTION) . "[/b]\r\n" . $faq->getVar('solution', 'e'));
 
-        $itemObj->setVar('dohtml', XHELP_SSECTION_DOHTML);
-        $itemObj->setVar('dosmiley', XHELP_SSECTION_DOSMILEY);
-        $itemObj->setVar('doxcode', XHELP_SSECTION_DOBBCODE);
-        $itemObj->setVar('doimage', XHELP_SSECTION_DOIMAGE);
-        $itemObj->setVar('dobr', XHELP_SSECTION_DOBR);
-        $itemObj->setVar('notifypub', XHELP_SSECTION_NOTIFYPUB);
+        $itemObj->setVar('dohtml', \XHELP_SSECTION_DOHTML);
+        $itemObj->setVar('dosmiley', \XHELP_SSECTION_DOSMILEY);
+        $itemObj->setVar('doxcode', \XHELP_SSECTION_DOBBCODE);
+        $itemObj->setVar('doimage', \XHELP_SSECTION_DOIMAGE);
+        $itemObj->setVar('dobr', \XHELP_SSECTION_DOBR);
+        $itemObj->setVar('notifypub', \XHELP_SSECTION_NOTIFYPUB);
         $itemObj->setVar('uid', $uid);
-        $itemObj->setVar('datesub', time());
+        $itemObj->setVar('datesub', \time());
 
         // Setting the status of the item
         if ($this->_articleNeedsApproval()) {
@@ -159,7 +159,8 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
         }
 
         // Storing the item object in the database
-        if ($ret = $itemObj->store()) {
+        $ret = $itemObj->store();
+        if ($ret) {
             $faq->setVar('id', $itemObj->getVar('itemid'));
             $faq->setVar('url', $this->makeFaqUrl($faq));
 
@@ -167,11 +168,11 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
                 // Send notifications
                 $itemObj->sendNotifications([_SSECTION_NOT_ITEM_PUBLISHED]);
             } else {
-                if (XHELP_SSECTION_NOTIFYPUB) {
+                if (\XHELP_SSECTION_NOTIFYPUB) {
                     require_once XOOPS_ROOT_PATH . '/include/notification_constants.php';
                     /** @var \XoopsNotificationHandler $notificationHandler */
-                    $notificationHandler = xoops_getHandler('notification');
-                    $notificationHandler->subscribe('item', $itemObj->itemid(), 'approved', XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
+                    $notificationHandler = \xoops_getHandler('notification');
+                    $notificationHandler->subscribe('item', $itemObj->itemid(), 'approved', \XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
                 }
                 // Send notifications
                 $itemObj->sendNotifications([_SSECTION_NOT_ITEM_SUBMITTED]);
@@ -184,13 +185,13 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
     /**
      * Create the url going to the faq article
      *
-     * @param $faq Xhelp\Faq object
+     * @param Xhelp\Faq $faq object
      * @return string
      * @access private
      */
-    public function makeFaqUrl(&$faq)
+    public function makeFaqUrl($faq)
     {
-        return XHELP_SSECTION_URL . '/item.php?itemid=' . $faq->getVar('id');
+        return \XHELP_SSECTION_URL . '/item.php?itemid=' . $faq->getVar('id');
     }
 
     /**
@@ -198,7 +199,7 @@ class SmartsectionAdapter extends Xhelp\FaqAdapter
      */
     public function _articleNeedsApproval()
     {
-        return (XHELP_SSECTION_FORCEAPPROVAL == 2 && 0 == $ssConfig['autoapprove_submitted'])
-               || XHELP_SSECTION_FORCEAPPROVAL == 1;
+        return (\XHELP_SSECTION_FORCEAPPROVAL == 2 && 0 == $ssConfig['autoapprove_submitted'])
+               || \XHELP_SSECTION_FORCEAPPROVAL == 1;
     }
 }

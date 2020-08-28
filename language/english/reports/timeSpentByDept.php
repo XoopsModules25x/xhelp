@@ -1,5 +1,4 @@
 <?php
-//
 
 define('_XHELP_TSBD_NAME', 'Time Spent By Department');
 define('_XHELP_TSBD_DESC', 'Retrieve the amount of time spent by each department.');

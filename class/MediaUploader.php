@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -14,7 +16,7 @@ use XoopsModules\Xhelp;
 
 /**
  * @copyright    XOOPS Project https://xoops.org/
- * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @package
  * @since
  * @author       XOOPS Development Team, Kazumi Ono (AKA onokazu)
@@ -73,9 +75,6 @@ use XoopsModules\Xhelp;
  * @copyright (c) 2000-2003 XOOPS Project (https://xoops.org)
  */
 
-
-mt_srand((double)microtime() * 1000000);
-
 /**
  * class MediaUploader
  */
@@ -113,17 +112,17 @@ class MediaUploader
      * @param int       $maxHeight
      * @internal param int $cmodvalue
      */
-    public function __construct($uploadDir, $allowedMimeTypes = 0, $maxFileSize, $maxWidth = 0, $maxHeight = 0)
+    public function __construct($uploadDir, $allowedMimeTypes, $maxFileSize, $maxWidth = 0, $maxHeight = 0)
     {
-        if (is_array($allowedMimeTypes)) {
-            $this->allowedMimeTypes =& $allowedMimeTypes;
+        if (\is_array($allowedMimeTypes)) {
+            $this->allowedMimeTypes = &$allowedMimeTypes;
         }
         $this->uploadDir   = $uploadDir;
         $this->maxFileSize = (int)$maxFileSize;
-        if (isset($maxWidth)) {
+        if (null !== $maxWidth) {
             $this->maxWidth = (int)$maxWidth;
         }
-        if (isset($maxHeight)) {
+        if (null !== $maxHeight) {
             $this->maxHeight = (int)$maxHeight;
         }
     }
@@ -140,9 +139,9 @@ class MediaUploader
      * Fetch the uploaded file
      *
      * @param string $media_name Name of the file field
-     * @param int    $index      Index of the file (if more than one uploaded under that name)
-     * @global       $HTTP_POST_FILES
+     * @param null   $index      Index of the file (if more than one uploaded under that name)
      * @return bool
+     * @global       $HTTP_POST_FILES
      */
     public function fetchMedia($media_name, $index = null)
     {
@@ -152,23 +151,25 @@ class MediaUploader
             $this->setErrors('You either did not choose a file to upload or the server has insufficient read/writes to upload this file.!');
 
             return false;
-        } elseif (is_array($_FILES[$media_name]['name']) && isset($index)) {
+        }
+
+        if (\is_array($_FILES[$media_name]['name']) && null !== $index) {
             $index              = (int)$index;
-            $this->mediaName    = get_magic_quotes_gpc() ? stripslashes($_FILES[$media_name]['name'][$index]) : $_FILES[$media_name]['name'][$index];
+            $this->mediaName    = @\get_magic_quotes_gpc() ? \stripslashes($_FILES[$media_name]['name'][$index]) : $_FILES[$media_name]['name'][$index];
             $this->mediaType    = $_FILES[$media_name]['type'][$index];
             $this->mediaSize    = $_FILES[$media_name]['size'][$index];
             $this->mediaTmpName = $_FILES[$media_name]['tmp_name'][$index];
             $this->mediaError   = !empty($_FILES[$media_name]['error'][$index]) ? $_FILES[$media_name]['errir'][$index] : 0;
         } else {
             $media_name         = @$_FILES[$media_name];
-            $this->mediaName    = get_magic_quotes_gpc() ? stripslashes($media_name['name']) : $media_name['name'];
+            $this->mediaName    = @\get_magic_quotes_gpc() ? \stripslashes($media_name['name']) : $media_name['name'];
             $this->mediaName    = $media_name['name'];
             $this->mediaType    = $media_name['type'];
             $this->mediaSize    = $media_name['size'];
             $this->mediaTmpName = $media_name['tmp_name'];
             $this->mediaError   = !empty($media_name['error']) ? $media_name['error'] : 0;
         }
-        $this->dimension = getimagesize($this->mediaTmpName);
+        $this->dimension = \getimagesize($this->mediaTmpName);
 
         $this->errors = [];
 
@@ -190,19 +191,19 @@ class MediaUploader
         }
 
         if (!$this->checkMaxFileSize()) {
-            $this->setErrors(sprintf('File Size: %u. Maximum Size Allowed: %u', $this->mediaSize, $this->maxFileSize));
+            $this->setErrors(\sprintf('File Size: %u. Maximum Size Allowed: %u', $this->mediaSize, $this->maxFileSize));
         }
 
-        if (is_array($this->dimension)) {
+        if (\is_array($this->dimension)) {
             if (!$this->checkMaxWidth($this->dimension[0])) {
-                $this->setErrors(sprintf('File width: %u. Maximum width allowed: %u', $this->dimension[0], $this->maxWidth));
+                $this->setErrors(\sprintf('File width: %u. Maximum width allowed: %u', $this->dimension[0], $this->maxWidth));
             }
             if (!$this->checkMaxHeight($this->dimension[1])) {
-                $this->setErrors(sprintf('File height: %u. Maximum height allowed: %u', $this->dimension[1], $this->maxHeight));
+                $this->setErrors(\sprintf('File height: %u. Maximum height allowed: %u', $this->dimension[1], $this->maxHeight));
             }
         }
 
-        if (count($this->errors) > 0) {
+        if (\count($this->errors) > 0) {
             return false;
         }
 
@@ -210,7 +211,7 @@ class MediaUploader
             $this->setErrors('MIME type not allowed: ' . $this->mediaType);
         }
 
-        if (!is_uploaded_file($this->mediaTmpName)) {
+        if (!\is_uploaded_file($this->mediaTmpName)) {
             switch ($this->mediaError) {
                 case 0: // no error; possible file attack!
                     $this->setErrors('There was a problem with your upload. Error: 0');
@@ -249,7 +250,7 @@ class MediaUploader
      */
     public function setTargetFileName($value)
     {
-        $this->targetFileName = trim($value);
+        $this->targetFileName = \trim($value);
     }
 
     /**
@@ -259,7 +260,7 @@ class MediaUploader
      */
     public function setPrefix($value)
     {
-        $this->prefix = trim($value);
+        $this->prefix = \trim($value);
     }
 
     /**
@@ -336,24 +337,24 @@ class MediaUploader
             return false;
         }
 
-        if (!is_dir($this->uploadDir)) {
+        if (!\is_dir($this->uploadDir)) {
             $this->setErrors('Failed opening directory: ' . $this->uploadDir);
         }
 
-        if (!is_writable($this->uploadDir)) {
+        if (!\is_writable($this->uploadDir)) {
             $this->setErrors('Failed opening directory with write permission: ' . $this->uploadDir);
         }
 
         if (!$this->checkMaxFileSize()) {
-            $this->setErrors(sprintf('File Size: %u. Maximum Size Allowed: %u', $this->mediaSize, $this->maxFileSize));
+            $this->setErrors(\sprintf('File Size: %u. Maximum Size Allowed: %u', $this->mediaSize, $this->maxFileSize));
         }
 
-        if (is_array($this->dimension)) {
+        if (\is_array($this->dimension)) {
             if (!$this->checkMaxWidth($this->dimension[0])) {
-                $this->setErrors(sprintf('File width: %u. Maximum width allowed: %u', $this->dimension[0], $this->maxWidth));
+                $this->setErrors(\sprintf('File width: %u. Maximum width allowed: %u', $this->dimension[0], $this->maxWidth));
             }
             if (!$this->checkMaxHeight($this->dimension[1])) {
-                $this->setErrors(sprintf('File height: %u. Maximum height allowed: %u', $this->dimension[1], $this->maxHeight));
+                $this->setErrors(\sprintf('File height: %u. Maximum height allowed: %u', $this->dimension[1], $this->maxHeight));
             }
         }
 
@@ -365,7 +366,7 @@ class MediaUploader
             $this->setErrors('Failed uploading file: ' . $this->mediaName);
         }
 
-        if (count($this->errors) > 0) {
+        if (\count($this->errors) > 0) {
             return false;
         }
 
@@ -381,27 +382,27 @@ class MediaUploader
     public function _copyFile($chmod)
     {
         $matched = [];
-        if (!preg_match("/\.([a-zA-Z0-9]+)$/", $this->mediaName, $matched)) {
+        if (!\preg_match("/\.([a-zA-Z0-9]+)$/", $this->mediaName, $matched)) {
             return false;
         }
-        if (isset($this->targetFileName)) {
+        if (null !== $this->targetFileName) {
             $this->savedFileName = $this->targetFileName;
-        } elseif (isset($this->prefix)) {
-            $this->savedFileName = uniqid($this->prefix) . '.' . strtolower($matched[1]);
+        } elseif (null !== $this->prefix) {
+            $this->savedFileName = \uniqid($this->prefix, true) . '.' . mb_strtolower($matched[1]);
         } else {
-            $this->savedFileName = strtolower($this->mediaName);
+            $this->savedFileName = mb_strtolower($this->mediaName);
         }
-        $this->savedFileName    = preg_replace('!\s+!', '_', $this->savedFileName);
+        $this->savedFileName    = \preg_replace('!\s+!', '_', $this->savedFileName);
         $this->savedDestination = $this->uploadDir . $this->savedFileName;
-        if (is_file($this->savedDestination) && !!is_dir($this->savedDestination)) {
+        if (\is_file($this->savedDestination) && !!\is_dir($this->savedDestination)) {
             $this->setErrors('File ' . $this->mediaName . ' already exists on the server. Please rename this file and try again.<br>');
 
             return false;
         }
-        if (!move_uploaded_file($this->mediaTmpName, $this->savedDestination)) {
+        if (!\move_uploaded_file($this->mediaTmpName, $this->savedDestination)) {
             return false;
         }
-        @chmod($this->savedDestination, $chmod);
+        @\chmod($this->savedDestination, $chmod);
 
         return true;
     }
@@ -431,7 +432,7 @@ class MediaUploader
      */
     public function checkMaxWidth($dimension)
     {
-        if (!isset($this->maxWidth)) {
+        if (null === $this->maxWidth) {
             return true;
         }
         if ($dimension > $this->maxWidth) {
@@ -449,7 +450,7 @@ class MediaUploader
      */
     public function checkMaxHeight($dimension)
     {
-        if (!isset($this->maxHeight)) {
+        if (null === $this->maxHeight) {
             return true;
         }
         if ($dimension > $this->maxWidth) {
@@ -468,11 +469,11 @@ class MediaUploader
      */
     public function checkMimeType()
     {
-        if (count($this->allowedMimeTypes) > 0 && !in_array($this->mediaType, $this->allowedMimeTypes)) {
+        if (\count($this->allowedMimeTypes) > 0 && !\in_array($this->mediaType, $this->allowedMimeTypes)) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     /**
@@ -482,29 +483,29 @@ class MediaUploader
      */
     public function setErrors($error)
     {
-        $this->errors[] = trim($error);
+        $this->errors[] = \trim($error);
     }
 
     /**
      * Get generated errors
      *
-     * @param  bool $ashtml Format using HTML?
+     * @param bool $ashtml Format using HTML?
      * @return array |string    Array of array messages OR HTML string
      */
     public function &getErrors($ashtml = true)
     {
         if (!$ashtml) {
             return $this->errors;
-        } else {
-            $ret = '';
-            if (count($this->errors) > 0) {
-                $ret = '<h4>Errors Returned While Uploading</h4>';
-                foreach ($this->errors as $error) {
-                    $ret .= $error . '<br>';
-                }
-            }
-
-            return $ret;
         }
+
+        $ret = '';
+        if (\count($this->errors) > 0) {
+            $ret = '<h4>Errors Returned While Uploading</h4>';
+            foreach ($this->errors as $error) {
+                $ret .= $error . '<br>';
+            }
+        }
+
+        return $ret;
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,7 +22,7 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CONSTANTS_INCLUDED')) {
+if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
@@ -49,7 +51,7 @@ class TicketValues extends \XoopsObject
      */
     public function __construct($id = null)
     {
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, false);
 
         $hFields = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
         $fields  = $hFields->getObjects(null, true);
@@ -68,8 +70,8 @@ class TicketValues extends \XoopsObject
         }
         $this->_fields['ticketid'] = '%u';
 
-        if (isset($id)) {
-            if (is_array($id)) {
+        if (null !== $id) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -85,36 +87,29 @@ class TicketValues extends \XoopsObject
     public function _getDataType($datatype, $controltype)
     {
         switch ($controltype) {
-            case XHELP_CONTROL_TXTBOX:
+            case \XHELP_CONTROL_TXTBOX:
                 return $this->_getXoopsDataType($datatype);
                 break;
-
-            case XHELP_CONTROL_TXTAREA:
+            case \XHELP_CONTROL_TXTAREA:
                 return $this->_getXoopsDataType($datatype);
                 break;
-
-            case XHELP_CONTROL_SELECT:
-                return XOBJ_DTYPE_TXTAREA;
+            case \XHELP_CONTROL_SELECT:
+                return \XOBJ_DTYPE_TXTAREA;
                 break;
-
-            case XHELP_CONTROL_YESNO:
-                return XOBJ_DTYPE_INT;
+            case \XHELP_CONTROL_YESNO:
+                return \XOBJ_DTYPE_INT;
                 break;
-
-            case XHELP_CONTROL_RADIOBOX:
-                return XOBJ_DTYPE_TXTBOX;
+            case \XHELP_CONTROL_RADIOBOX:
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
-
-            case XHELP_CONTROL_DATETIME:
+            case \XHELP_CONTROL_DATETIME:
                 return $this->_getXoopsDataType($datatype);
                 break;
-
-            case XHELP_CONTROL_FILE:
-                return XOBJ_DTYPE_TXTBOX;
+            case \XHELP_CONTROL_FILE:
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
-
             default:
-                return XOBJ_DTYPE_TXTBOX;
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
         }
     }
@@ -127,19 +122,16 @@ class TicketValues extends \XoopsObject
     {
         switch ($datatype) {
             case _XHELP_DATATYPE_TEXT:
-                return XOBJ_DTYPE_TXTBOX;
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
-
             case _XHELP_DATATYPE_NUMBER_INT:
-                return XOBJ_DTYPE_INT;
+                return \XOBJ_DTYPE_INT;
                 break;
-
             case _XHELP_DATATYPE_NUMBER_DEC:
-                return XOBJ_DTYPE_OTHER;
+                return \XOBJ_DTYPE_OTHER;
                 break;
-
             default:
-                return XOBJ_DTYPE_TXTBOX;
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
         }
     }
@@ -151,19 +143,16 @@ class TicketValues extends \XoopsObject
     public function _getValueFromXoopsDataType($datatype)
     {
         switch ($datatype) {
-            case XOBJ_DTYPE_TXTBOX:
-            case XOBJ_DTYPE_TXTAREA:
+            case \XOBJ_DTYPE_TXTBOX:
+            case \XOBJ_DTYPE_TXTAREA:
                 return '';
                 break;
-
-            case XOBJ_DTYPE_INT:
+            case \XOBJ_DTYPE_INT:
                 return 0;
                 break;
-
-            case XOBJ_DTYPE_OTHER:
+            case \XOBJ_DTYPE_OTHER:
                 return 0.0;
                 break;
-
             default:
                 return null;
                 break;

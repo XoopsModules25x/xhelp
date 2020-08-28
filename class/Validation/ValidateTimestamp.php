@@ -1,12 +1,13 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
 use XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidateTimestamp
  */
-class ValidateTimestamp extends validation\Validator
+class ValidateTimestamp extends Validator
 {
     /**
      * Private
@@ -17,20 +18,19 @@ class ValidateTimestamp extends validation\Validator
     //! A constructor.
 
     /**
-     * Constucts a new ValidateTimestamp object subclass or Validator
-     * @param int  $timestamp the string to validate
+     * Constructs a new ValidateTimestamp object subclass or Validator
+     * @param int $timestamp the string to validate
      */
     public function __construct($timestamp)
     {
         $this->timestamp = $timestamp;
-        Validator::Validator();
+        parent::__construct();
     }
 
     //! A manipulator
 
     /**
      * Validates a timestamp
-     * @return void
      */
     public function validate()
     {

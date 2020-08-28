@@ -1,5 +1,5 @@
 //1. Get the custom fields for a given department
-$hTicketCustField = xoops_getModuleHandler('ticketCustomField');
+$hTicketCustField = $helper->getHandler('TicketCustomField');
 $fields =& $hTicketCustField->getByDept($deptid);
 
 foreach($fields as $field) {
@@ -19,7 +19,7 @@ foreach($fields as $field) {
 }
 
 //2. Create a new custom field
-$hTicketCustField = xoops_getModuleHandler('ticketCustomField');
+$hTicketCustField = $helper->getHandler('TicketCustomField');
 $field =& $hTicketCustField->create();
 $field->setVar('name', $name);
 $field->setVar('description', $description);
@@ -54,7 +54,7 @@ foreach ($fields as $field) {
 }
 
 // Store ticket (and custom fields)
-$ret = $hTicket->insert($ticket);
+$ret = $ticketHandler->insert($ticket);
 
 
 //4. Get Custom Fields for a ticket (after dept is set)

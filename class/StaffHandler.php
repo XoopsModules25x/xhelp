@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,7 +22,7 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -36,7 +38,6 @@ if (!defined('XHELP_CLASS_PATH')) {
  */
 
 // require_once XHELP_CLASS_PATH . '/session.php';
-
 
 /**
  * Xhelp\StaffHandler class
@@ -77,7 +78,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
 
     /**
      * retrieve a staff object from the database
-     * @param  int $uid user id
+     * @param int $uid user id
      * @return bool <a href='psi_element://Xhelp\Staff'>Xhelp\Staff</a>
      * @access public
      */
@@ -90,7 +91,8 @@ class StaffHandler extends Xhelp\BaseObjectHandler
             if (!$result = $this->_db->query($sql)) {
                 return $ret;
             }
-            if ($arr = $this->_db->fetchArray($result)) {
+            $arr = $this->_db->fetchArray($result);
+            if ($arr) {
                 $ret = new $this->classname($arr);
 
                 return $ret;
@@ -107,7 +109,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      * @param int $roleid role id
      * @param int $deptid department id
      *
-     * @return TRUE if success, FALSE if failure
+     * @return true if success, FALSE if failure
      * @access public
      */
     public function addStaffRole($uid, $roleid, $deptid)
@@ -133,7 +135,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      * FALSE if failure
      * @access public
      */
-    public function &getRoles($uid, $id_as_key = false)
+    public function getRoles($uid, $id_as_key = false)
     {
         $uid        = (int)$uid;
         $hStaffRole = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
@@ -152,7 +154,8 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     {
         $_xhelpSession = new Xhelp\Session();
 
-        if ($myRoles = $_xhelpSession->get('xhelp_hasRights')) {
+        $myRoles = $_xhelpSession->get('xhelp_hasRights');
+        if ($myRoles) {
             $_xhelpSession->del('xhelp_hasRights');
 
             return true;
@@ -171,7 +174,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      * FALSE if failure
      * @access public
      */
-    public function &getRolesByDept($uid, $deptid, $id_as_key = false)
+    public function getRolesByDept($uid, $deptid, $id_as_key = false)
     {
         $uid        = (int)$uid;
         $deptid     = (int)$deptid;
@@ -191,7 +194,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      * Remove user from a role
      *
      * @param int $uid user id
-     * @return TRUE if success, FALSE if failure
+     * @return true if success, FALSE if failure
      * @internal param int $roleid role id
      * @internal param int $deptid department id
      *
@@ -211,7 +214,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      * @param int $uid    user id
      * @param int $roleid role id
      *
-     * @return TRUE on success, FALSE on failure
+     * @return true on success, FALSE on failure
      * @access public
      */
     public function staffInRole($uid, $roleid)
@@ -226,7 +229,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
 
     /**
      * Retrieve amount of time spent by staff member
-     * @param  int $uid user id
+     * @param int $uid user id
      * @return int $timeSpent
      * @access public
      */
@@ -275,7 +278,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
         $staff->setVar('email', $email);
         $numNotify = $notify->getNumDeptNotifications();
         $staff->setVar('notify', (2 ** $numNotify) - 1);
-        $staff->setVar('permTimestamp', time());
+        $staff->setVar('permTimestamp', \time());
 
         return $this->insert($staff);
     }
@@ -283,7 +286,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     /**
      * checks to see if the user is a staff member
      *
-     * @param  int $uid User ID to look for
+     * @param int $uid User ID to look for
      * @return bool TRUE if user is a staff member, false if not
      */
     public function isStaff($uid)
@@ -304,12 +307,12 @@ class StaffHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf(
+        $sql = \sprintf(
             'INSERT INTO `%s` (id, uid, email, responseTime, numReviews, callsClosed, attachSig, rating, allDepartments, ticketsResponded, notify, permTimestamp) VALUES (%u, %u, %s, %u, %u, %u, %u, %u, %u, %u, %u, %u)',
             $this->_db->prefix($this->_dbtable),
             $id,
             $uid,
-                       $this->_db->quoteString($email),
+            $this->_db->quoteString($email),
             $responseTime,
             $numReviews,
             $callsClosed,
@@ -335,11 +338,11 @@ class StaffHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf(
+        $sql = \sprintf(
             'UPDATE `%s` SET uid = %u, email = %s, responseTime = %u, numReviews = %u, callsClosed = %u, attachSig = %u, rating = %u, allDepartments = %u, ticketsResponded = %u, notify = %u, permTimestamp = %u WHERE id = %u',
             $this->_db->prefix($this->_dbtable),
             $uid,
-                       $this->_db->quoteString($email),
+            $this->_db->quoteString($email),
             $responseTime,
             $numReviews,
             $callsClosed,
@@ -361,7 +364,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }
@@ -371,19 +374,19 @@ class StaffHandler extends Xhelp\BaseObjectHandler
      *
      * @param \XoopsObject $obj       reference to the {@link Xhelp\Staff}
      *                                obj to delete
-     * @param  bool        $force
+     * @param bool         $force
      * @return bool FALSE if failed.
      * @access  public
      */
     public function delete(\XoopsObject $obj, $force = false)
     {
-        if (0 != strcasecmp($this->classname, get_class($obj))) {
+        if (0 != \strcasecmp($this->classname, \get_class($obj))) {
             return false;
         }
 
         // Clear Department Membership
-        $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-        if (!$hMembership->clearStaffMembership($obj->getVar('uid'))) {
+        $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+        if (!$membershipHandler->clearStaffMembership($obj->getVar('uid'))) {
             return false;
         }
 
@@ -397,7 +400,6 @@ class StaffHandler extends Xhelp\BaseObjectHandler
         // Remove saved searches
         $hSavedSearch = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
         if (!$hSavedSearch->deleteAll($crit)) {   // use existing crit object
-
             return false;
         }
 
@@ -414,18 +416,17 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     /**
      * Adjust the # of calls closed for the given user by the given offset
      *
-     * @param  int $uid    User ID to modify
-     * @param  int $offset Number of tickets to add to current call count (Negative for decrementing)
+     * @param int $uid    User ID to modify
+     * @param int $offset Number of tickets to add to current call count (Negative for decrementing)
      * @return bool FALSE if query failed
      * @access  public
      */
-
     public function increaseCallsClosed($uid, $offset = 1)
     {
         if ($offset < 0) {
-            $sql = sprintf('UPDATE `%s` SET callsClosed = callsClosed - %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), abs($offset), $uid);
+            $sql = \sprintf('UPDATE `%s` SET callsClosed = callsClosed - %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), \abs($offset), $uid);
         } else {
-            $sql = sprintf('UPDATE `%s` SET callsClosed = callsClosed + %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $offset, $uid);
+            $sql = \sprintf('UPDATE `%s` SET callsClosed = callsClosed + %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $offset, $uid);
         }
         if (!$result = $this->_db->query($sql)) {
             return false;
@@ -437,9 +438,9 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     /**
      * Adjust the responseTime for the specified staff member
      *
-     * @param  int $uid          User ID to modify
-     * @param  int $responseTime If $ticketCount is specified, the total # of response seconds, otherwise the number of seconds to add
-     * @param  int $ticketCount  If = 0, increments 'responseTime' and 'ticketsResponded' otherwise, total # of tickets
+     * @param int $uid          User ID to modify
+     * @param int $responseTime If $ticketCount is specified, the total # of response seconds, otherwise the number of seconds to add
+     * @param int $ticketCount  If = 0, increments 'responseTime' and 'ticketsResponded' otherwise, total # of tickets
      * @return bool FALSE if query failed
      * @access  public
      */
@@ -447,10 +448,10 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     {
         if (0 == $ticketCount) {
             //Incrementing responseTime
-            $sql = sprintf('UPDATE `%s` SET responseTime = responseTime + %u, ticketsResponded = ticketsResponded + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $uid);
+            $sql = \sprintf('UPDATE `%s` SET responseTime = responseTime + %u, ticketsResponded = ticketsResponded + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $uid);
         } else {
             //Setting responseTime, ticketsResponded
-            $sql = sprintf('UPDATE `%s` SET responseTime = %u, ticketsResponded = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $ticketCount, $uid);
+            $sql = \sprintf('UPDATE `%s` SET responseTime = %u, ticketsResponded = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $ticketCount, $uid);
         }
         if (!$result = $this->_db->query($sql)) {
             return false;
@@ -462,9 +463,9 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     /**
      * Adjust the rating for the specified staff member
      *
-     * @param  int $uid        Staff ID to modify
-     * @param  int $rating     If $numReviews is specified, the total # of rating points, otherwise the number of rating points to add
-     * @param  int $numReviews If = 0, increments 'rating' and 'numReviews', otherwise total # of reviews
+     * @param int $uid        Staff ID to modify
+     * @param int $rating     If $numReviews is specified, the total # of rating points, otherwise the number of rating points to add
+     * @param int $numReviews If = 0, increments 'rating' and 'numReviews', otherwise total # of reviews
      * @return bool FALSE if query failed
      * @access public
      */
@@ -472,10 +473,10 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     {
         if (0 == $numReviews) {
             //Add New Review
-            $sql = sprintf('UPDATE `%s` SET rating = rating + %u, numReviews = numReviews + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $uid);
+            $sql = \sprintf('UPDATE `%s` SET rating = rating + %u, numReviews = numReviews + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $uid);
         } else {
             //Set rating, numReviews to supplied values
-            $sql = sprintf('UPDATE `%s` SET rating = %u, numReviews = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $numReviews, $uid);
+            $sql = \sprintf('UPDATE `%s` SET rating = %u, numReviews = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $numReviews, $uid);
         }
         if (!$result = $this->_db->query($sql)) {
             return false;
@@ -494,7 +495,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
     public function getStaffByTask($task, $deptid = 0, $id_as_key = false)
     {
         $task = (int)$task;
-        if (isset($deptid)) {
+        if (null !== $deptid) {
             $deptid = (int)$deptid;
         }
 
@@ -509,7 +510,7 @@ class StaffHandler extends Xhelp\BaseObjectHandler
         // Get staff roles by dept
         $hStaffRole = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
         $crit       = new \CriteriaCompo(new \Criteria('deptid', $deptid));
-        $crit->add(new \Criteria('roleid', '(' . implode(array_keys($aRoles), ',') . ')', 'IN'));
+        $crit->add(new \Criteria('roleid', '(' . \implode(',', \array_keys($aRoles)) . ')', 'IN'));
         unset($aRoles);
 
         $staffRoles = $hStaffRole->getObjects($crit);
@@ -519,9 +520,9 @@ class StaffHandler extends Xhelp\BaseObjectHandler
         }
 
         // Get staff objects
-        $crit   = new \Criteria('uid', '(' . implode(array_keys($aStaffID), ',') . ')', 'IN');
-        $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $crit         = new \Criteria('uid', '(' . \implode(',', \array_keys($aStaffID)) . ')', 'IN');
+        $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
-        return $hStaff->getObjects($crit, $id_as_key);
+        return $staffHandler->getObjects($crit, $id_as_key);
     }
 }

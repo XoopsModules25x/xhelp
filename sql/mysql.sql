@@ -25,7 +25,7 @@ CREATE TABLE xhelp_departments (
 CREATE TABLE xhelp_department_mailbox (
   id           INT(11) NOT NULL AUTO_INCREMENT,
   departmentid INT(11)          DEFAULT NULL,
-  emailaddress VARCHAR(255)     DEFAULT NULL,
+  emailaddress VARCHAR(150)     DEFAULT NULL,
   server       VARCHAR(50)      DEFAULT NULL,
   serverport   INT(11)          DEFAULT NULL,
   username     VARCHAR(50)      DEFAULT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE xhelp_department_mailbox (
   mboxtype     INT(11) NOT NULL DEFAULT 1,
   active       INT(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
+  # UNIQUE KEY `id` (`id`),
   KEY `departmentid` (`departmentid`),
   KEY `emailaddress` (`emailaddress`),
   KEY `mboxtype` (`mboxtype`),
@@ -344,7 +344,7 @@ CREATE TABLE xhelp_staffreview (
 CREATE TABLE xhelp_tickets (
   id             INT(11)      NOT NULL AUTO_INCREMENT,
   uid            INT(11)      NOT NULL DEFAULT '0',
-  subject        VARCHAR(255) NOT NULL DEFAULT '',
+  subject        VARCHAR(200) NOT NULL DEFAULT '',
   description    MEDIUMTEXT,
   department     INT(11)      NOT NULL DEFAULT '0',
   priority       INT(11)      NOT NULL DEFAULT '0',
@@ -558,7 +558,7 @@ CREATE TABLE xhelp_bayes_categories (
 
 CREATE TABLE xhelp_bayes_wordfreqs (
   word        VARCHAR(50)  NOT NULL DEFAULT '',
-  category_id VARCHAR(250) NOT NULL DEFAULT '',
+  category_id VARCHAR(200) NOT NULL DEFAULT '',
   count       BIGINT(20)   NOT NULL DEFAULT '0',
   PRIMARY KEY (word, category_id)
 )

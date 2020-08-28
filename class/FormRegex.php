@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 use XoopsModules\Xhelp;
 
@@ -11,7 +13,7 @@ class FormRegex extends \XoopsFormElement
     public $_select;
     public $_txtbox;
     public $_value;
-//    public $_caption;
+    //    public $_caption;
 
     /**
      * Xhelp\FormRegex constructor.
@@ -97,7 +99,7 @@ class FormRegex extends \XoopsFormElement
         $values = $this->_select->getOptions();
         $value  = $this->getValue();
 
-        if (array_key_exists($value, $values)) {
+        if (\array_key_exists($value, $values)) {
             $this->_select->setValue($value);
             $this->_txtbox->setValue('');
         } else {

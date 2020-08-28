@@ -11,7 +11,7 @@
 
 /**
  * @copyright    XOOPS Project https://xoops.org/
- * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -21,7 +21,6 @@ use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Common;
 
 /**
- *
  * Prepares system prior to attempting to install module
  * @param \XoopsModule $module {@link XoopsModule}
  *
@@ -29,14 +28,14 @@ use XoopsModules\Xhelp\Common;
  */
 function xoops_module_pre_install_xhelp(\XoopsModule $module)
 {
-    include  dirname(__DIR__) . '/preloads/autoloader.php';
+    require_once dirname(__DIR__) . '/preloads/autoloader.php';
     /** @var Xhelp\Utility $utility */
-    $utility = new \XoopsModules\Xhelp\Utility();
+    $utility      = new \XoopsModules\Xhelp\Utility();
     $xoopsSuccess = $utility::checkVerXoops($module);
     $phpSuccess   = $utility::checkVerPhp($module);
 
-    if (false !== $xoopsSuccess && false !==  $phpSuccess) {
-        $moduleTables =& $module->getInfo('tables');
+    if (false !== $xoopsSuccess && false !== $phpSuccess) {
+        $moduleTables = &$module->getInfo('tables');
         foreach ($moduleTables as $table) {
             $GLOBALS['xoopsDB']->queryF('DROP TABLE IF EXISTS ' . $GLOBALS['xoopsDB']->prefix($table) . ';');
         }
@@ -46,7 +45,6 @@ function xoops_module_pre_install_xhelp(\XoopsModule $module)
 }
 
 /**
- *
  * Performs tasks required during installation of the module
  * @param \XoopsModule $module {@link XoopsModule}
  *
@@ -54,17 +52,15 @@ function xoops_module_pre_install_xhelp(\XoopsModule $module)
  */
 function xoops_module_install_xhelp(\XoopsModule $module)
 {
-    include  dirname(__DIR__) . '/preloads/autoloader.php';
+    require_once dirname(__DIR__) . '/preloads/autoloader.php';
 
     $moduleDirName = basename(dirname(__DIR__));
 
-    /** @var Xhelp\Helper $helper */
-    /** @var Xhelp\Utility $utility */
-    /** @var common\Configurator $configurator */
+    /** @var Xhelp\Helper $helper */ /** @var Xhelp\Utility $utility */
+    /** @var Common\Configurator $configurator */
     $helper       = Xhelp\Helper::getInstance();
     $utility      = new Xhelp\Utility();
-    $configurator = new common\Configurator();
-
+    $configurator = new Common\Configurator();
 
     // Load language files
     $helper->loadLanguage('admin');
@@ -72,9 +68,10 @@ function xoops_module_install_xhelp(\XoopsModule $module)
 
     // default Permission Settings ----------------------
     $moduleId = $module->getVar('mid');
-    $moduleId2    = $helper->getModule()->mid();
+
     //$moduleName = $module->getVar('name');
-    $grouppermHandler = xoops_getHandler('groupperm');
+    /** @var \XoopsGroupPermHandler $grouppermHandler */
+$grouppermHandler = xoops_getHandler('groupperm');
     // access rights ------------------------------------------
     $grouppermHandler->addRight($moduleDirName . '_approve', 1, XOOPS_GROUP_ADMIN, $moduleId);
     $grouppermHandler->addRight($moduleDirName . '_submit', 1, XOOPS_GROUP_ADMIN, $moduleId);
@@ -91,7 +88,7 @@ function xoops_module_install_xhelp(\XoopsModule $module)
     }
     //  ---  COPY blank.png FILES ---------------
     if (count($configurator->copyBlankFiles) > 0) {
-        $file =  dirname(__DIR__) . '/assets/images/blank.png';
+        $file = dirname(__DIR__) . '/assets/images/blank.png';
         foreach (array_keys($configurator->copyBlankFiles) as $i) {
             $dest = $configurator->copyBlankFiles[$i] . '/blank.png';
             $utility::copyFile($file, $dest);
@@ -104,7 +101,7 @@ function xoops_module_install_xhelp(\XoopsModule $module)
         foreach (array_keys($configurator->copyTestFolders) as $i) {
             $src  = $configurator->copyTestFolders[$i][0];
             $dest = $configurator->copyTestFolders[$i][1];
-            $utility::xcopy($src, $dest);
+            $utility::rcopy($src, $dest);
         }
     }
 

@@ -1,13 +1,13 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 require_once XOOPS_ROOT_PATH . '/class/xoopsform/formcheckbox.php';
 
 /**
  * class FormCheckbox
  */
-class FormCheckbox extends \XoopsFormCheckbox
+class FormCheckbox extends \XoopsFormCheckBox
 {
     /**
      * Add an option

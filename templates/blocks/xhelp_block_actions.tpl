@@ -111,7 +111,7 @@
                 <form method="post" action="ticket.php?id=<{$block.ticketid}>&amp;op=updatePriority">
                     <{foreach from=$block.xhelp_priorities item=priority}>
                         <input type="radio" value="<{$priority}>" id="priority<{$priority}>" name="priority"
-                               <{if $block.ticket_priority eq $priority}>checked="checked"<{/if}>>
+                               <{if $block.ticket_priority eq $priority}>checked<{/if}>>
                         <label for="priority<{$priority}>"><img src="<{$block.imagePath}>priority<{$priority}>.png"
                                                                 alt="<{$block.xhelp_priorities_desc.$priority}>"></label>
                         <br>

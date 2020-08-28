@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,7 +14,7 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @package
  * @since
  * @author       XOOPS Development Team
@@ -20,12 +22,11 @@
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-
 
 /**
  * Xhelp\StatusHandler class
@@ -57,9 +58,9 @@ class StatusHandler extends Xhelp\BaseObjectHandler
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
@@ -75,7 +76,7 @@ class StatusHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO `%s` (id, state, description) VALUES (%u, %u, %s)', $this->_db->prefix($this->_dbtable), $id, $state, $this->_db->quoteString($description));
+        $sql = \sprintf('INSERT INTO `%s` (id, state, description) VALUES (%u, %u, %s)', $this->_db->prefix($this->_dbtable), $id, $state, $this->_db->quoteString($description));
 
         return $sql;
     }
@@ -91,7 +92,7 @@ class StatusHandler extends Xhelp\BaseObjectHandler
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE `%s` SET state = %u, description = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $state, $this->_db->quoteString($description), $id);
+        $sql = \sprintf('UPDATE `%s` SET state = %u, description = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $state, $this->_db->quoteString($description), $id);
 
         return $sql;
     }
@@ -102,7 +103,7 @@ class StatusHandler extends Xhelp\BaseObjectHandler
      */
     public function _deleteQuery($obj)
     {
-        $sql = sprintf('DELETE FROM `%s` WHERE ID = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE ID = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
         return $sql;
     }

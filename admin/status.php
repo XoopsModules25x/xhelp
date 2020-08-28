@@ -2,7 +2,6 @@
 
 use XoopsModules\Xhelp;
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 // require_once XHELP_CLASS_PATH . '/Form.php';
@@ -10,19 +9,18 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
-
 $limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
 $start = \Xmf\Request::getInt('start', 0, 'REQUEST');
 
 if (!$limit) {
     $limit = 15;
 }
-if (isset($_REQUEST['order'])) {
+if (\Xmf\Request::hasVar('order', 'REQUEST')) {
     $order = $_REQUEST['order'];
 } else {
     $order = 'ASC';
 }
-if (isset($_REQUEST['sort'])) {
+if (\Xmf\Request::hasVar('sort', 'REQUEST')) {
     $sort = $_REQUEST['sort'];
 } else {
     $sort = 'id';
@@ -31,14 +29,14 @@ if (isset($_REQUEST['sort'])) {
 $aSortBy  = [
     'id'          => _AM_XHELP_TEXT_ID,
     'description' => _AM_XHELP_TEXT_DESCRIPTION,
-    'state'       => _AM_XHELP_TEXT_STATE
+    'state'       => _AM_XHELP_TEXT_STATE,
 ];
 $aOrderBy = ['ASC' => _AM_XHELP_TEXT_ASCENDING, 'DESC' => _AM_XHELP_TEXT_DESCENDING];
 $aLimitBy = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' => 100];
 
 $op = 'default';
 
-if (isset($_REQUEST['op'])) {
+if (\Xmf\Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -46,26 +44,23 @@ switch ($op) {
     case 'deleteStatus':
         deleteStatus();
         break;
-
     case 'editStatus':
         editStatus();
         break;
-
     case 'manageStatus':
         manageStatus();
         break;
-
     default:
-        header('Location: ' . XHELP_ADMIN_URL . '/index.php');
+        redirect_header(XHELP_ADMIN_URL . '/index.php');
         break;
 }
 
 function deleteStatus()
 {
     if (\Xmf\Request::hasVar('statusid', 'GET')) {
- $statusid = \Xmf\Request::getInt('statusid', 0, 'GET');
-} else {
-        header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+        $statusid = \Xmf\Request::getInt('statusid', 0, 'GET');
+    } else {
+        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
     $hTickets = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
@@ -81,7 +76,7 @@ function deleteStatus()
     }
 
     if ($hStatus->delete($status, true)) {
-        header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     } else {
         $message = _AM_XHELP_DEL_STATUS_ERR;
         redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
@@ -91,9 +86,9 @@ function deleteStatus()
 function editStatus()
 {
     if (\Xmf\Request::hasVar('statusid', 'REQUEST')) {
- $statusid = \Xmf\Request::getInt('statusid', 0, 'REQUEST');
-} else {
-        header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+        $statusid = \Xmf\Request::getInt('statusid', 0, 'REQUEST');
+    } else {
+        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
     $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
@@ -136,7 +131,7 @@ function editStatus()
         $status->setVar('description', $_POST['desc']);
         $status->setVar('state', $_POST['state']);
         if ($hStatus->insert($status)) {
-            header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+            redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
         } else {
             $message = _AM_MESSAGE_EDIT_STATUS_ERR;
             readirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
@@ -149,11 +144,11 @@ function manageStatus()
     global $aSortBy, $aOrderBy, $aLimitBy, $order, $limit, $start, $sort;
     $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
-    if (isset($_POST['changeDefaultStatus'])) {
+    if (\Xmf\Request::hasVar('changeDefaultStatus', 'POST')) {
         Xhelp\Utility::setMeta('default_status', $_POST['default']);
     }
 
-    if (isset($_POST['newStatus'])) {
+    if (\Xmf\Request::hasVar('newStatus', 'POST')) {
         if ('' == $_POST['desc']) {  // If no description supplied
             $message = _AM_XHELP_MESSAGE_NO_DESC;
             redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
@@ -163,7 +158,7 @@ function manageStatus()
         $newStatus->setVar('state', \Xmf\Request::getInt('state', 0, 'POST'));
         $newStatus->setVar('description', $_POST['desc']);
         if ($hStatus->insert($newStatus)) {
-            header('Location: ' . XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+            redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
         } else {
             $message = _AM_MESSAGE_ADD_STATUS_ERR;
             redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);

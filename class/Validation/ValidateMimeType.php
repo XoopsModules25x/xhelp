@@ -1,12 +1,13 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
 use XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidateMimeType
  */
-class ValidateMimeType extends validation\Validator
+class ValidateMimeType extends Validator
 {
     public $file;
     public $mimetype;
@@ -21,21 +22,21 @@ class ValidateMimeType extends validation\Validator
     public function __construct($file, $mimetype, $allowed_mimetypes)
     {
         $this->file              = $file;
-        $this->mimetype          = strtolower($mimetype);
+        $this->mimetype          = mb_strtolower($mimetype);
         $this->allowed_mimetypes = $allowed_mimetypes;
-        Validator::Validator();
+        parent::__construct();
     }
 
     public function validate()
     {
         $allowed_mimetypes = false;
         //Check MimeType
-        if (is_array($this->allowed_mimetypes)) {
-            $farray     = explode('.', $this->file);
-            $fextension = strtolower($farray[count($farray) - 1]);
+        if (\is_array($this->allowed_mimetypes)) {
+            $farray     = \explode('.', $this->file);
+            $fextension = mb_strtolower($farray[\count($farray) - 1]);
             foreach ($this->allowed_mimetypes as $mime) {
-                $lower_type = strtolower($mime['type']);
-                $lower_ext  = strtolower($mime['ext']);
+                $lower_type = mb_strtolower($mime['type']);
+                $lower_ext  = mb_strtolower($mime['ext']);
                 if ($lower_type == $this->mimetype && $lower_ext == $fextension) {
                     $allowed_mimetypes = $mime['type'];
                     break;

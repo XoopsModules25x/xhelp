@@ -187,9 +187,9 @@
                             </td>
                             <td class="even">
                                 <input name="attachSig" value="1" type="radio" class="formButton"
-                                       <{if $xhelp_has_sig neq 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
+                                       <{if $xhelp_has_sig neq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                                 <input name="attachSig" value="0" type="radio" class="formButton"
-                                       <{if $xhelp_has_sig eq 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                                       <{if $xhelp_has_sig eq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                             </td>
                         </tr>
                         <tr>
@@ -246,7 +246,7 @@
                 <tr class="<{cycle values="odd,even"}>">
                     <td colspan="2">
                         <input type="checkbox" name="notifications[]" value="<{$dept.bitValue}>"
-                               <{if $dept.isChecked eq true}>checked="checked"<{/if}>
+                               <{if $dept.isChecked eq true}>checked<{/if}>
                                 <{if $dept.staff_setting eq 0}>disabled="disabled"<{/if}> class="formButton">
                         <{$dept.caption}>
                         <{if $dept.staff_setting eq 0}>

@@ -1,15 +1,15 @@
-<?php namespace XoopsModules\Xhelp\Faq;
+<?php
 
-//
+namespace XoopsModules\Xhelp\Faq;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
-define('XHELP_XFAQ_PATH', XOOPS_ROOT_PATH . '/modules/xoopsfaq');
-define('XHELP_XFAQ_URL', XOOPS_URL . '/modules/xoopsfaq');
+\define('XHELP_XFAQ_PATH', XOOPS_ROOT_PATH . '/modules/xoopsfaq');
+\define('XHELP_XFAQ_URL', XOOPS_URL . '/modules/xoopsfaq');
 
 // require_once XHELP_CLASS_PATH . '/faqAdapter.php';
 
@@ -26,7 +26,7 @@ class XoopsfaqAdapter extends Xhelp\FaqAdapter
      * XHELP_FAQ_CATEGORY_NONE - No category support
      * @access public
      */
-    public $categoryType = XHELP_FAQ_CATEGORY_SING;
+    public $categoryType = \XHELP_FAQ_CATEGORY_SING;
 
     /**
      * Adapter Details
@@ -48,7 +48,7 @@ class XoopsfaqAdapter extends Xhelp\FaqAdapter
         'version'         => '1.0',
         'tested_versions' => '1.1',
         'url'             => 'https://xoops.org',
-        'module_dir'      => 'xoopsfaq'
+        'module_dir'      => 'xoopsfaq',
     ];
 
     /**
@@ -70,7 +70,7 @@ class XoopsfaqAdapter extends Xhelp\FaqAdapter
         // Create an instance of the Xhelp\FaqCategoryHandler
         $hFaqCategory = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
 
-        $sql    = sprintf('SELECT category_id, category_title FROM `%s` ORDER BY category_order', $xoopsDB->prefix('xoopsfaq_categories'));
+        $sql    = \sprintf('SELECT category_id, category_title FROM `%s` ORDER BY category_order', $xoopsDB->prefix('xoopsfaq_categories'));
         $result = $xoopsDB->query($sql);
 
         if (!$result) {
@@ -121,7 +121,7 @@ class XoopsfaqAdapter extends Xhelp\FaqAdapter
                . "', '"
                . $contents
                . "', "
-               . time()
+               . \time()
                . ', '
                . $contents_order
                . ', '
@@ -147,8 +147,8 @@ class XoopsfaqAdapter extends Xhelp\FaqAdapter
      * @param $faq
      * @return string
      */
-    public function makeFaqUrl(&$faq)
+    public function makeFaqUrl($faq)
     {
-        return XHELP_XFAQ_URL . '/index.php?cat_id=' . $faq->getVar('categories') . '#q' . $faq->getVar('id');
+        return \XHELP_XFAQ_URL . '/index.php?cat_id=' . $faq->getVar('categories') . '#q' . $faq->getVar('id');
     }
 }

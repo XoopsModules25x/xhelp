@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
+
+namespace XoopsModules\Xhelp;
 
 /**
  * Xhelp\TicketMailParser class
@@ -13,6 +15,10 @@
 
 use XoopsModules\Xhelp;
 
+/**
+ * Class TicketMailParser
+ * @package XoopsModules\Xhelp
+ */
 class TicketMailParser
 {
     /**
@@ -32,36 +38,36 @@ class TicketMailParser
 
     /**
      * Create a new ticket object
-     * @param object Reference to a {@link Xhelp\EmailParser} object
-     * @param object Current {@link xoopsUser} object
-     * @param object {@link Xhelp\Department} Ticket Department
-     * @param object {@link Xhelp\DepartmentEmailServer} Originating Email Server
+     * @param mixed $mailParser
+     * @param mixed $xoopsUser
+     * @param mixed $department
+     * @param mixed $server
      * @return bool
      * @access public
      */
-    public function createTicket(&$mailParser, &$xoopsUser, &$department, &$server)
+    public function createTicket($mailParser, $xoopsUser, $department, $server)
     {
         //get ticket handler
-        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-        $ticket  = $hTicket->create();
-        //
+        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticket        = $ticketHandler->create();
+
         $ticket->setVar('uid', $xoopsUser->uid());
         $ticket->setVar('subject', $mailParser->getSubject());
         $ticket->setVar('department', $department->getVar('id'));
         $ticket->setVar('description', $mailParser->getBody());
         $ticket->setVar('priority', 3);
-        $ticket->setVar('posted', time());
+        $ticket->setVar('posted', \time());
         $ticket->setVar('userIP', _XHELP_EMAIL_SCANNER_IP_COLUMN);
         $ticket->setVar('serverid', $server->getVar('id'));
         $ticket->createEmailHash($mailParser->getEmail());
-        //
-        if ($hTicket->insert($ticket)) {
+
+        if ($ticketHandler->insert($ticket)) {
             $this->_ticket = $ticket;
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

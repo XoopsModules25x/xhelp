@@ -17,7 +17,7 @@ if (!$xhelp_isStaff) {        // Is user a staff member?
 }
 
 $op = 'default';
-if (isset($_GET['op'])) {
+if (\Xmf\Request::hasVar('op', 'GET')) {
     $op = $_GET['op'];
 }
 
@@ -34,7 +34,6 @@ switch ($op) {
          */
         runReport($reportName);
         break;
-
     case 'graph':
         if (!isset($_GET['name']) && '' == $_GET['name']) {
             redirect_header(XHELP_BASE_URL . '/report.php', 3, _XHELP_MSG_NO_REPORT);
@@ -45,7 +44,6 @@ switch ($op) {
          }*/
         makeGraph($reportName);
         break;
-
     default:        // Display list of reports
         $reports = Xhelp\ReportFactory::getReports();
 
@@ -63,7 +61,7 @@ function displayReports()
     global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser;
 
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_report.tpl';   // Set template
-    require XOOPS_ROOT_PATH . '/header.php';                 // Include page header
+    require_once XOOPS_ROOT_PATH . '/header.php';                 // Include page header
 
     $aReports = _getReportsMeta();
 
@@ -71,7 +69,7 @@ function displayReports()
     $xoopsTpl->assign('xhelp_reports', $aReports);
     $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
 
-    require XOOPS_ROOT_PATH . '/footer.php';                    // Include page footer
+    require_once XOOPS_ROOT_PATH . '/footer.php';                    // Include page footer
 }
 
 /**
@@ -130,7 +128,7 @@ function runReport($reportName)
     }
 
     //$GLOBALS['xoopsOption']['template_main'] = 'xhelp_report.tpl';   // Set template
-    require XOOPS_ROOT_PATH . '/header.php';                 // Include page header
+    require_once XOOPS_ROOT_PATH . '/header.php';                 // Include page header
 
     generateHeader($report);
 
@@ -140,7 +138,7 @@ function runReport($reportName)
     $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');
     $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
 
-    require XOOPS_ROOT_PATH . '/footer.php';
+    require_once XOOPS_ROOT_PATH . '/footer.php';
 }
 
 /**
