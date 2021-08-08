@@ -1,5 +1,5 @@
 <?php
-// $Id: departmentSummary.php 8197 2011-11-07 03:07:38Z beckmi $
+// $Id: DepartmentSummaryReport.php 8197 2011-11-07 03:07:38Z beckmi $
 
 define('_XHELP_DS_NAME', 'Department Summary');
 define('_XHELP_DS_DESC', 'Retrieves department related information.');

@@ -1,14 +1,16 @@
 <?php
 //
 
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/../../mainfile.php';
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-require_once XHELP_BASE_PATH . '/functions.php';
-xhelpIncludeLang('modinfo');
-xhelpIncludeLang('main');
+//require_once XHELP_BASE_PATH . '/functions.php';
+$helper->loadLanguage('modinfo');
+$helper->loadLanguage('main');
 
 $op = '';
 
@@ -50,7 +52,7 @@ function updateDepts()
     }
 
     //Retrieve list of departments
-    $hDept = xhelpGetHandler('department');
+    $hDept = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts = $hDept->getObjects();
 
     $class = 'odd';
@@ -58,7 +60,7 @@ function updateDepts()
         $deptid   = $dept->getVar('id');
         $deptname = $dept->getVar('department');
 
-        $hConfigOption = xhelpGetHandler('configoption');
+        $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
         $newOption     = $hConfigOption->create();
         $newOption->setVar('confop_name', $deptname);
         $newOption->setVar('confop_value', $deptid);
@@ -69,7 +71,7 @@ function updateDepts()
         }
 
         echo "<tr class='" . $class . "'><td>" . $dept->getVar('department') . '</td></tr>';
-        $class = ($class === 'odd') ? 'even' : 'odd';
+        $class = ('odd' === $class) ? 'even' : 'odd';
     }
     echo "<tr class='foot'><td>" . _XHELP_TEXT_UPDATE_COMP . "<br><br><input type='button' name='closeWindow' value='" . _XHELP_TEXT_CLOSE_WINDOW . "' class='formButton' onClick=\"window.opener.location=window.opener.location;window.close();\"></td></tr>";
     echo '</table>';
@@ -88,7 +90,7 @@ function removeDepts()
     $hConfig = xoops_getHandler('config');
 
     // Select the config from the xoops_config table
-    $crit   = new Criteria('conf_name', 'xhelp_defaultDept');
+    $crit   = new \Criteria('conf_name', 'xhelp_defaultDept');
     $config =& $hConfig->getConfigs($crit);
 
     if (count($config) > 0) {
@@ -98,8 +100,8 @@ function removeDepts()
     }
 
     // Remove the config options
-    $hConfigOption = xhelpGetHandler('configoption');
-    $crit          = new Criteria('conf_id', $xhelp_config);
+    $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
+    $crit          = new \Criteria('conf_id', $xhelp_config);
     $configOptions = $hConfigOption->getObjects($crit);
 
     if (count($configOptions) > 0) {
@@ -158,7 +160,7 @@ function updateTopics($onInstall = false)
         }
         if (!$onInstall) {    // Don't need to display anything if installing
             echo "<tr class='" . $class . "'><td>" . $topic . '</td></tr>';
-            $class = ($class === 'odd') ? 'even' : 'odd';
+            $class = ('odd' === $class) ? 'even' : 'odd';
         }
     }
     if (!$onInstall) {    // Don't need to display anything if installing
@@ -195,13 +197,13 @@ function removeTopics()
  * @param XoopsModule $module
  * @return bool
  */
-function xoops_module_install_xhelp(XoopsModule $module)
+function xoops_module_install_xhelp(\XoopsModule $module)
 {
     $myTopics         = updateTopics(true);
-    $hasRoles         = xhelpCreateRoles();
-    $hasStatuses      = xhelpCreateStatuses();
-    $hasNotifications = xhelpCreateNotifications();
-    $hasTicketLists   = xhelpCreateDefaultTicketLists();
+    $hasRoles         = Xhelp\Utility::createRoles();
+    $hasStatuses      = Xhelp\Utility::createStatuses();
+    $hasNotifications = Xhelp\Utility::createNotifications();
+    $hasTicketLists   = Xhelp\Utility::createDefaultTicketLists();
 
     return true;
 }

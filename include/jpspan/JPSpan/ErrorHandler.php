@@ -80,6 +80,7 @@ function JPSpan_ErrorHandler($level, $message, $file, $line)
                 return;
             }
             $code = 2004;
+            // no break
         default:
             if (!JPSPAN_ERROR_MESSAGES) {
                 $message = 'Server unable to respond';

@@ -1,4 +1,7 @@
 <?php
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/../../../mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
@@ -6,13 +9,13 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 }
 require_once XHELP_JPSPAN_PATH . '/JPSpan.php';       // Including this sets up the JPSPAN constants
 require_once JPSPAN . 'Server/PostOffice.php';      // Load the PostOffice server
-require_once XHELP_BASE_PATH . '/functions.php';
+//require_once XHELP_BASE_PATH . '/functions.php'; //moved functions to /Utility
 
 // Create the PostOffice server
 $server = new JPSpan_Server_PostOffice();
 $server->addHandler(new XHelpWebLib());
 
-if (isset($_SERVER['QUERY_STRING']) && strcasecmp($_SERVER['QUERY_STRING'], 'client') == 0) {
+if (isset($_SERVER['QUERY_STRING']) && 0 == strcasecmp($_SERVER['QUERY_STRING'], 'client')) {
 
     // Compress the output Javascript (e.g. strip whitespace)
     define('JPSPAN_INCLUDE_COMPRESS', true);
@@ -30,7 +33,7 @@ if (isset($_SERVER['QUERY_STRING']) && strcasecmp($_SERVER['QUERY_STRING'], 'cli
 }
 
 /**
- * Class XHelpWebLib
+ * class WebLib
  */
 class XHelpWebLib
 {
@@ -41,7 +44,7 @@ class XHelpWebLib
     public function statusesByState($state)
     {
         $state   = (int)$state;
-        $hStatus = xhelpGetHandler('status');
+        $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
         if ($state == -1) {   // If select all is chosen
             $statuses = $hStatus->getObjects(null, true);

@@ -1,10 +1,12 @@
 <?php
-//
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
-require_once XHELP_CLASS_PATH . '/faqAdapterFactory.php';
-require_once XHELP_CLASS_PATH . '/faqAdapter.php';
+// require_once XHELP_CLASS_PATH . '/faqAdapterFactory.php';
+// require_once XHELP_CLASS_PATH . '/faqAdapter.php';
 
 $op = 'default';
 
@@ -27,8 +29,8 @@ switch ($op) {
 function manage()
 {
     global $imagearray;
-    $faqAdapters = xhelpFaqAdapterFactory::installedAdapters();
-    $myAdapter   = xhelpFaqAdapterFactory::getFaqAdapter();
+    $faqAdapters = Xhelp\FaqAdapterFactory::installedAdapters();
+    $myAdapter   = Xhelp\FaqAdapterFactory::getFaqAdapter();
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manFaqAdapters');
     $adminObject = \Xmf\Module\Admin::getInstance();
@@ -47,16 +49,16 @@ function manage()
                   <td>' . _AM_XHELP_TEXT_ACTIVE . '</td>
               </tr>';
 
-        $activeAdapter = xhelpGetMeta('faq_adapter');
+        $activeAdapter = Xhelp\Utility::getMeta('faq_adapter');
         foreach ($faqAdapters as $name => $oAdapter) {
             $modname     = $name;
             $author      = $oAdapter->meta['author'];
             $author_name = $author;
 
-            if ($oAdapter->meta['url'] != '') {   // If a website is specified
+            if ('' != $oAdapter->meta['url']) {   // If a website is specified
                 $name = "<a href='" . $oAdapter->meta['url'] . "'>" . $oAdapter->meta['name'] . '</a>'; // Add link to module name
             }
-            if ($oAdapter->meta['author_email'] != '') {
+            if ('' != $oAdapter->meta['author_email']) {
                 $author = "<a href='mailto:" . $oAdapter->meta['author_email'] . "'>" . $author_name . '</a>';  // Add link to email author
             }
             echo "<tr class='even'>
@@ -91,11 +93,11 @@ function updateActive()
         $modname = $_POST['modname'];
     }
 
-    $currentAdapter = xhelpGetMeta('faq_adapter');
+    $currentAdapter = Xhelp\Utility::getMeta('faq_adapter');
     if ($currentAdapter == $modname) {    // Deactivate current adapter?
-        $ret = xhelpDeleteMeta('faq_adapter');
+        $ret = Xhelp\Utility::deleteMeta('faq_adapter');
     } else {
-        $ret = xhelpFaqAdapterFactory::setFaqAdapter($modname);
+        $ret = Xhelp\FaqAdapterFactory::setFaqAdapter($modname);
     }
 
     if ($ret) {

@@ -1,4 +1,7 @@
 <?php
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
@@ -30,7 +33,7 @@ $aSearchBy = [
     'mime_ext'  => _AM_XHELP_MIME_EXT
 ];
 
-$hMime = xhelpGetHandler('mimetype');
+$hMime = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
 $op    = 'default';
 
 if (isset($_REQUEST['op'])) {
@@ -83,16 +86,16 @@ function add()
         $adminObject = \Xmf\Module\Admin::getInstance();
         $adminObject->displayNavigation(basename(__FILE__));
 
-        $session     = Session::getInstance();
+        $session     = Xhelp\Session::getInstance();
         $mime_type   = $session->get('xhelp_addMime');
         $mime_errors = $session->get('xhelp_addMimeErr');
 
         //Display any form errors
-        if (!$mime_errors === false) {
-            xhelpRenderErrors($mime_errors, xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'clearAddSession']));
+        if (false === !$mime_errors) {
+            xhelpRenderErrors($mime_errors, Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'clearAddSession']));
         }
 
-        if ($mime_type === false) {
+        if (false === $mime_type) {
             $mime_ext   = '';
             $mime_name  = '';
             $mime_types = '';
@@ -127,15 +130,15 @@ function add()
                   <td class='head'>" . _AM_XHELP_MIME_ADMINF . "</td>
                   <td class='even'>";
 
-        echo "<input type='radio' name='mime_admin' value='1' " . ($mime_admin == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
-        echo "<input type='radio' name='mime_admin' value='0' " . ($mime_admin == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+        echo "<input type='radio' name='mime_admin' value='1' " . (1 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
+        echo "<input type='radio' name='mime_admin' value='0' " . (0 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
                   <td class='head'>" . _AM_XHELP_MIME_USERF . "</td>
                   <td class='even'>";
-        echo "<input type='radio' name='mime_user' value='1'" . ($mime_user == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
-        echo "<input type='radio' name='mime_user' value='0'" . ($mime_user == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+        echo "<input type='radio' name='mime_user' value='1'" . (1 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_YES;
+        echo "<input type='radio' name='mime_user' value='0'" . (0 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
@@ -171,23 +174,23 @@ function add()
         $mime_user  = (int)$_POST['mime_user'];
 
         //Validate Mimetype entry
-        if (trim($mime_ext) == '') {
+        if ('' == trim($mime_ext)) {
             $has_errors          = true;
             $error['mime_ext'][] = _AM_XHELP_VALID_ERR_MIME_EXT;
         }
 
-        if (trim($mime_name) == '') {
+        if ('' == trim($mime_name)) {
             $has_errors           = true;
             $error['mime_name'][] = _AM_XHELP_VALID_ERR_MIME_NAME;
         }
 
-        if (trim($mime_types) == '') {
+        if ('' == trim($mime_types)) {
             $has_errors            = true;
             $error['mime_types'][] = _AM_XHELP_VALID_ERR_MIME_TYPES;
         }
 
         if ($has_errors) {
-            $session            = Session::getInstance();
+            $session            = Xhelp\Session::getInstance();
             $mime               = [];
             $mime['mime_ext']   = $mime_ext;
             $mime['mime_name']  = $mime_name;
@@ -196,7 +199,7 @@ function add()
             $mime['mime_user']  = $mime_user;
             $session->set('xhelp_addMime', $mime);
             $session->set('xhelp_addMimeErr', $error);
-            header('Location: ' . xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'add'], false));
+            header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'add'], false));
         }
 
         $mimetype = $hMime->create();
@@ -244,7 +247,7 @@ function edit()
     $mimetype =& $hMime->get($mime_id);     // Retrieve mimetype object
 
     if (!isset($_POST['edit_mime'])) {
-        $session     = Session::getInstance();
+        $session     = Xhelp\Session::getInstance();
         $mime_type   = $session->get("xhelp_editMime_$mime_id");
         $mime_errors = $session->get("xhelp_editMimeErr_$mime_id");
 
@@ -255,11 +258,11 @@ function edit()
         $adminObject->displayNavigation(basename(__FILE__));
 
         //Display any form errors
-        if (!$mime_errors === false) {
-            xhelpRenderErrors($mime_errors, xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'clearEditSession', 'id' => $mime_id]));
+        if (false === !$mime_errors) {
+            xhelpRenderErrors($mime_errors, Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'clearEditSession', 'id' => $mime_id]));
         }
 
-        if ($mime_type === false) {
+        if (false === $mime_type) {
             $mime_ext   = $mimetype->getVar('mime_ext');
             $mime_name  = $mimetype->getVar('mime_name', 'e');
             $mime_types = $mimetype->getVar('mime_types', 'e');
@@ -295,15 +298,15 @@ function edit()
         echo "<tr valign='top'>
                   <td class='head'>" . _AM_XHELP_MIME_ADMINF . "</td>
                   <td class='even'>
-                      <input type='radio' name='mime_admin' value='1' " . ($mime_admin == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
-                      <input type='radio' name='mime_admin' value='0' " . ($mime_admin == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+                      <input type='radio' name='mime_admin' value='1' " . (1 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
+                      <input type='radio' name='mime_admin' value='0' " . (0 == $mime_admin ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
                   <td class='head'>" . _AM_XHELP_MIME_USERF . "</td>
                   <td class='even'>
-                      <input type='radio' name='mime_user' value='1' " . ($mime_user == 1 ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
-                      <input type='radio' name='mime_user' value='0' " . ($mime_user == 0 ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
+                      <input type='radio' name='mime_user' value='1' " . (1 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_YES . "
+                      <input type='radio' name='mime_user' value='0' " . (0 == $mime_user ? 'checked' : '') . '>' . _XHELP_TEXT_NO . '
                   </td>
               </tr>';
         echo "<tr valign='top'>
@@ -320,31 +323,31 @@ function edit()
     } else {
         $mime_admin = 0;
         $mime_user  = 0;
-        if (isset($_POST['mime_admin']) && $_POST['mime_admin'] == 1) {
+        if (isset($_POST['mime_admin']) && 1 == $_POST['mime_admin']) {
             $mime_admin = 1;
         }
-        if (isset($_POST['mime_user']) && $_POST['mime_user'] == 1) {
+        if (isset($_POST['mime_user']) && 1 == $_POST['mime_user']) {
             $mime_user = 1;
         }
 
         //Validate Mimetype entry
-        if (trim($_POST['mime_ext']) == '') {
+        if ('' == trim($_POST['mime_ext'])) {
             $has_errors          = true;
             $error['mime_ext'][] = _AM_XHELP_VALID_ERR_MIME_EXT;
         }
 
-        if (trim($_POST['mime_name']) == '') {
+        if ('' == trim($_POST['mime_name'])) {
             $has_errors           = true;
             $error['mime_name'][] = _AM_XHELP_VALID_ERR_MIME_NAME;
         }
 
-        if (trim($_POST['mime_types']) == '') {
+        if ('' == trim($_POST['mime_types'])) {
             $has_errors            = true;
             $error['mime_types'][] = _AM_XHELP_VALID_ERR_MIME_TYPES;
         }
 
         if ($has_errors) {
-            $session            = Session::getInstance();
+            $session            = Xhelp\Session::getInstance();
             $mime               = [];
             $mime['mime_ext']   = $_POST['mime_ext'];
             $mime['mime_name']  = $_POST['mime_name'];
@@ -353,7 +356,7 @@ function edit()
             $mime['mime_user']  = $mime_user;
             $session->set('xhelp_editMime_' . $mime_id, $mime);
             $session->set('xhelp_editMimeErr_' . $mime_id, $error);
-            header('Location: ' . xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'edit', 'id' => $mime_id], false));
+            header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'edit', 'id' => $mime_id], false));
         }
 
         $mimetype->setVar('mime_ext', $_POST['mime_ext']);
@@ -378,7 +381,7 @@ function manage()
     if (isset($_POST['deleteMimes'])) {
         $aMimes = $_POST['mimes'];
 
-        $crit = new Criteria('mime_id', '(' . implode($aMimes, ',') . ')', 'IN');
+        $crit = new \Criteria('mime_id', '(' . implode($aMimes, ',') . ')', 'IN');
 
         if ($hMime->deleteAll($crit)) {
             header('Location: ' . XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start");
@@ -400,7 +403,7 @@ function manage()
     $adminObject = \Xmf\Module\Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
-    $crit = new Criteria('', '');
+    $crit = new \Criteria('', '');
     if (isset($_REQUEST['order'])) {
         $order = $_REQUEST['order'];
     } else {
@@ -417,7 +420,7 @@ function manage()
     $crit->setSort($sort);
     $mimetypes  = $hMime->getObjects($crit);    // Retrieve a list of all mimetypes
     $mime_count = $hMime->getCount();
-    $nav        = new XoopsPageNav($mime_count, $limit, $start, 'start', "op=manage&amp;limit=$limit");
+    $nav        = new \XoopsPageNav($mime_count, $limit, $start, 'start', "op=manage&amp;limit=$limit");
 
     echo '<script type="text/javascript" src="' . XHELP_BASE_URL . '/include/functions.js"></script>';
     echo "<table width='100%' cellspacing='1' class='outer'>";
@@ -519,7 +522,7 @@ function search()
     if (isset($_POST['deleteMimes'])) {
         $aMimes = $_POST['mimes'];
 
-        $crit = new Criteria('mime_id', '(' . implode($aMimes, ',') . ')', 'IN');
+        $crit = new \Criteria('mime_id', '(' . implode($aMimes, ',') . ')', 'IN');
 
         if ($hMime->deleteAll($crit)) {
             header('Location: ' . XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start");
@@ -576,14 +579,14 @@ function search()
         $search_field = $_REQUEST['search_by'];
         $search_text  = $_REQUEST['search_text'];
 
-        $crit = new Criteria($search_field, "%$search_text%", 'LIKE');
+        $crit = new \Criteria($search_field, "%$search_text%", 'LIKE');
         $crit->setSort($sort);
         $crit->setOrder($order);
         $crit->setLimit($limit);
         $crit->setStart($start);
         $mime_count = $hMime->getCount($crit);
         $mimetypes  = $hMime->getObjects($crit);
-        $nav        = new XoopsPageNav($mime_count, $limit, $start, 'start', "op=search&amp;limit=$limit&amp;order=$order&amp;sort=$sort&amp;mime_search=1&amp;search_by=$search_field&amp;search_text=$search_text");
+        $nav        = new \XoopsPageNav($mime_count, $limit, $start, 'start', "op=search&amp;limit=$limit&amp;order=$order&amp;sort=$sort&amp;mime_search=1&amp;search_by=$search_field&amp;search_text=$search_text");
         // Display results
         echo '<script type="text/javascript" src="' . XHELP_BASE_URL . '/include/functions.js"></script>';
 
@@ -732,7 +735,7 @@ function updateMimeValue()
  */
 function _changeMimeValue($mime_value)
 {
-    if ($mime_value == 1) {
+    if (1 == $mime_value) {
         $mime_value = 0;
     } else {
         $mime_value = 1;
@@ -743,7 +746,7 @@ function _changeMimeValue($mime_value)
 
 function _clearAddSessionVars()
 {
-    $session = Session::getInstance();
+    $session = Xhelp\Session::getInstance();
     $session->del('xhelp_addMime');
     $session->del('xhelp_addMimeErr');
 }
@@ -751,7 +754,7 @@ function _clearAddSessionVars()
 function clearAddSession()
 {
     _clearAddSessionVars();
-    header('Location: ' . xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'add'], false));
+    header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'add'], false));
 }
 
 /**
@@ -760,7 +763,7 @@ function clearAddSession()
 function _clearEditSessionVars($id)
 {
     $id      = (int)$id;
-    $session = Session::getInstance();
+    $session = Xhelp\Session::getInstance();
     $session->del("xhelp_editMime_$id");
     $session->del("xhelp_editMimeErr_$id");
 }
@@ -769,5 +772,5 @@ function clearEditSession()
 {
     $mimeid = $_REQUEST['id'];
     _clearEditSessionVars($mimeid);
-    header('Location: ' . xhelpMakeURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'edit', 'id' => $mimeid], false));
+    header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'edit', 'id' => $mimeid], false));
 }

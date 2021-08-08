@@ -17,23 +17,22 @@
  * @author       XOOPS Development Team
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('XOOPS root path not defined');
+// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
 
-$modversion['version']       = '0.81';
-$modversion['module_status'] = 'Beta 2';
-$modversion['release_date']  = '2016/12/30';
-$modversion['name']          = _MI_XHELP_NAME;
-$modversion['description']   = _MI_XHELP_DESC;
-$modversion['author']        = '3dev.org';
-$modversion['help']          = 'page=help';
-$modversion['license']       = 'GNU GPL 2.0 or later';
-$modversion['license_url']   = 'www.gnu.org/licenses/gpl-2.0.html';
-$modversion['official']      = 0; //1 indicates supported by Xoops CORE Dev Team, 0 means 3rd party supported
-$modversion['image']         = 'assets/images/logoModule.png';
-$modversion['dirname']       = basename(__DIR__);
-//$modversion['dirmoduleadmin']      = '/Frameworks/moduleclasses/moduleadmin';
-//$modversion['icons16']             = '../../Frameworks/moduleclasses/icons/16';
-//$modversion['icons32']             = '../../Frameworks/moduleclasses/icons/32';
+require_once __DIR__ . '/preloads/autoloader.php';
+
+$modversion['version']             = '0.90';
+$modversion['module_status']       = 'Alpha 1';
+$modversion['release_date']        = '2017/12/29';
+$modversion['name']                = _MI_XHELP_NAME;
+$modversion['description']         = _MI_XHELP_DESC;
+$modversion['author']              = '3dev.org';
+$modversion['help']                = 'page=help';
+$modversion['license']             = 'GNU GPL 2.0 or later';
+$modversion['license_url']         = 'www.gnu.org/licenses/gpl-2.0.html';
+$modversion['official']            = 0; //1 indicates supported by Xoops CORE Dev Team, 0 means 3rd party supported
+$modversion['image']               = 'assets/images/logoModule.png';
+$modversion['dirname']             = basename(__DIR__);
 $modversion['modicons16']          = 'assets/images/icons/16';
 $modversion['modicons32']          = 'assets/images/icons/32';
 $modversion['release_file']        = XOOPS_URL . '/modules/' . $modversion['dirname'] . '/docs/changelog.txt';
@@ -45,7 +44,6 @@ $modversion['min_admin']           = '1.2';
 $modversion['min_db']              = ['mysql' => '5.5'];
 
 // Extra stuff for about page
-$modversion['release_date']    = '19/09/2010';
 $modversion['version_info']    = 'Final';
 $modversion['creator']         = '3Dev';
 $modversion['demo_site']       = 'http://demo.3dev.org';
@@ -53,6 +51,14 @@ $modversion['official_site']   = 'http://www.3dev.org';
 $modversion['bug_url']         = 'http://dev.xoops.org/modules/xfmod/tracker/?group_id=1058&atid=336';
 $modversion['feature_url']     = 'http://dev.xoops.org/modules/xfmod/tracker/?group_id=1058&atid=339';
 $modversion['questions_email'] = 'xhelp-questions@3dev.org';
+
+// ------------------- Help files ------------------- //
+$modversion['helpsection'] = [
+    ['name' => _MI_XHELP_OVERVIEW, 'link' => 'page=help'],
+    ['name' => _MI_XHELP_DISCLAIMER, 'link' => 'page=disclaimer'],
+    ['name' => _MI_XHELP_LICENSE, 'link' => 'page=license'],
+    ['name' => _MI_XHELP_SUPPORT, 'link' => 'page=support'],
+];
 
 // Developers
 $modversion['contributors']['developers'][0]['name']    = 'Eric Juden';
@@ -213,11 +219,11 @@ $modversion['adminindex']  = 'admin/index.php';
 $modversion['adminmenu']   = 'admin/menu.php';
 
 // ------------------- Help files ------------------- //
-$modversion['helpsection'] = array(
-    array('name' => _MI_XHELP_OVERVIEW, 'link' => 'page=help'),
-    array('name' => _MI_XHELP_DISCLAIMER, 'link' => 'page=disclaimer'),
-    array('name' => _MI_XHELP_LICENSE, 'link' => 'page=license'),
-    array('name' => _MI_XHELP_SUPPORT, 'link' => 'page=support'),
+$modversion['helpsection'] = [
+    ['name' => _MI_XHELP_OVERVIEW, 'link' => 'page=help'],
+    ['name' => _MI_XHELP_DISCLAIMER, 'link' => 'page=disclaimer'],
+    ['name' => _MI_XHELP_LICENSE, 'link' => 'page=license'],
+    ['name' => _MI_XHELP_SUPPORT, 'link' => 'page=support'],
 
     //    array('name' => _MI_XHELP_HELP1, 'link' => 'page=help1'),
     //    array('name' => _MI_XHELP_HELP2, 'link' => 'page=help2'),
@@ -227,7 +233,7 @@ $modversion['helpsection'] = array(
     //    array('name' => _MI_XHELP_REQUIREMENTS, 'link' => 'page=__requirements'),
     //    array('name' => _MI_XHELP_CREDITS, 'link' => 'page=__credits'),
 
-);
+];
 
 // Templates
 $modversion['templates'][1]['file']         = 'xhelp_staff_header.tpl';
@@ -357,8 +363,10 @@ if ($xhelp_isStaff) {
 // Search
 $modversion['hasSearch'] = 0;
 
-// On Install
-$modversion['onInstall'] = 'install.php';
+//Install/Uninstall Functions
+$modversion['onInstall']   = 'include/oninstall.php';
+$modversion['onUpdate']    = 'include/onupdate.php';
+$modversion['onUninstall'] = 'include/onuninstall.php';
 
 // Config
 $modversion['config'][1]['name']        = 'xhelp_allowUpload';     // Allows users to upload files when adding a ticket

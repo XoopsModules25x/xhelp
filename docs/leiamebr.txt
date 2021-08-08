@@ -81,7 +81,7 @@ A anterior linha conferirá todas as caixas postal configuradas, cada dois minut
 
 Para servidores de janelas você pode tentar usando Tarefa Scheduler ou runat com
 esta variante:
-C:\php\php.exe "<XOOPS_ROOT_PATH>\modules\xhelp\checkemail.php"
+C:\php\php.exe "<XOOPS_ROOT_PATH>\modules\Xhelp\checkemail.php"
 
 Se PHP fosse instalado em um diretório diferente da falta você
 precisará ajustar o caminho adequadamente a php.exe.

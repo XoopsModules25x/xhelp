@@ -1,9 +1,10 @@
 <?php
-//
+
+use XoopsModules\Xhelp;
 
 require_once XHELP_JPGRAPH_PATH . '/jpgraph.php';
-require_once XHELP_CLASS_PATH . '/report.php';
-xhelpIncludeReportLangFile('unresolvedTicketsByOwner');
+// require_once XHELP_CLASS_PATH . '/report.php';
+Xhelp\Utility::includeReportLangFile('unresolvedTicketsByOwner');
 
 global $xoopsDB, $paramVals;
 
@@ -13,17 +14,17 @@ $endDate   = date('m/d/y') . ' 12:00:00 AM';
 // Cannot fill date values in class...have to fill these values later
 $paramVals = [
     'startDate' => (isset($_REQUEST['startDate'])
-                    && $_REQUEST['startDate'] != '') ? $_REQUEST['startDate'] : $startDate,
-    'endDate'   => (isset($_REQUEST['endDate']) && $_REQUEST['endDate'] != '') ? $_REQUEST['endDate'] : $endDate
+                    && '' != $_REQUEST['startDate']) ? $_REQUEST['startDate'] : $startDate,
+    'endDate'   => (isset($_REQUEST['endDate']) && '' != $_REQUEST['endDate']) ? $_REQUEST['endDate'] : $endDate
 ];
 
 /**
- * Class XHelpUnresolvedTicketsByOwnerReport
+ * class UnresolvedTicketsByOwnerReport
  */
-class XHelpUnresolvedTicketsByOwnerReport extends xhelpReport
+class UnresolvedTicketsByOwnerReport extends Xhelp\Report
 {
     /**
-     * XHelpUnresolvedTicketsByOwnerReport constructor.
+     * Xhelp\UnresolvedTicketsByOwnerReport constructor.
      */
     public function __construct()
     {
@@ -79,7 +80,7 @@ class XHelpUnresolvedTicketsByOwnerReport extends xhelpReport
     {
         global $paramVals;
 
-        if ($this->getVar('hasResults') == 0) {
+        if (0 == $this->getVar('hasResults')) {
             $this->_setResults();
         }
         $aResults = $this->getVar('results');
@@ -140,11 +141,11 @@ class XHelpUnresolvedTicketsByOwnerReport extends xhelpReport
      */
     public function generateGraph()
     {
-        if ($this->getVar('hasGraph') == 0) {
+        if (0 == $this->getVar('hasGraph')) {
             return false;
         }
 
-        if ($this->getVar('hasResults') == 0) {
+        if (0 == $this->getVar('hasResults')) {
             $this->_setResults();
         }
         $aResults = $this->getVar('results');
@@ -154,7 +155,7 @@ class XHelpUnresolvedTicketsByOwnerReport extends xhelpReport
         foreach ($aResults as $result) {
             if ($i > 0) {
                 $ret = array_search($result['owner'], $data[0]);
-                if ($ret !== false) {
+                if (false !== $ret) {
                     $data[1][$ret] += 1;
                 } else {
                     $data[0][] = $result['owner'];     // Used for identifier on chart
@@ -177,8 +178,14 @@ class XHelpUnresolvedTicketsByOwnerReport extends xhelpReport
     {
         global $xoopsDB;
 
-        $sSQL = sprintf('SELECT t.subject, d.department, s.description AS status, t.totalTimeSpent, t.posted, t.id, FROM_UNIXTIME(t.posted) AS postTime, u.name AS owner FROM %s d, %s t, %s u, %s s WHERE (d.id = t.department) AND (t.ownership = u.uid) AND (t.status = s.id) AND (s.state = 1) %s',
-                        $xoopsDB->prefix('xhelp_departments'), $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_status'), $this->extraWhere);
+        $sSQL = sprintf(
+            'SELECT t.subject, d.department, s.description AS status, t.totalTimeSpent, t.posted, t.id, FROM_UNIXTIME(t.posted) AS postTime, u.name AS owner FROM %s d, %s t, %s u, %s s WHERE (d.id = t.department) AND (t.ownership = u.uid) AND (t.status = s.id) AND (s.state = 1) %s',
+                        $xoopsDB->prefix('xhelp_departments'),
+            $xoopsDB->prefix('xhelp_tickets'),
+            $xoopsDB->prefix('users'),
+            $xoopsDB->prefix('xhelp_status'),
+            $this->extraWhere
+        );
 
         $result   = $xoopsDB->query($sSQL);
         $aResults = $this->_arrayFromData($result);

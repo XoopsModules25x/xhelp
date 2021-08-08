@@ -1,8 +1,12 @@
 <?php
-//
+
+use Xmf\Request;
+use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\Validation;
+
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
-require_once XHELP_CLASS_PATH . '/validator.php';
+// require_once XHELP_CLASS_PATH . '/validator.php';
 
 $op = 'user';
 
@@ -25,21 +29,21 @@ $xoopsVersion = substr(XOOPS_VERSION, 6);
 (int)$xoopsVersion;
 
 global $ticketInfo;
-$hStaff        = xhelpGetHandler('staff');
+$hStaff        = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 $memberHandler = xoops_getHandler('member');
-$hTickets      = xhelpGetHandler('ticket');
+$hTickets      = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
 if (!$ticketInfo = $hTickets->get($xhelp_id)) {
     redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_INV_TICKET);
 }
 
 $displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
 
-$hDepartments = xhelpGetHandler('department');
+$hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
 $departments  = $hDepartments->getObjects(null, true);
 $user         = $memberHandler->getUser($ticketInfo->getVar('uid'));
-$hStaffReview = xhelpGetHandler('staffReview');
-$hResponses   = xhelpGetHandler('responses');
-$hMembership  = xhelpGetHandler('membership');
+$hStaffReview = new Xhelp\StaffReviewHandler($GLOBALS['xoopsDB']);
+$hResponses   = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+$hMembership  = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 $aResponses   = [];
 $all_users    = [];
 
@@ -58,12 +62,12 @@ $has_ticketFiles = false;
 $files           = $ticketInfo->getFiles();
 $aFiles          = [];
 foreach ($files as $file) {
-    if ($file->getVar('responseid') == 0) {
+    if (0 == $file->getVar('responseid')) {
         $has_ticketFiles = true;
     }
 
     $filename_full = $file->getVar('filename');
-    if ($file->getVar('responseid') != 0) {
+    if (0 != $file->getVar('responseid')) {
         $removeText = $file->getVar('ticketid') . '_' . $file->getVar('responseid') . '_';
     } else {
         $removeText = $file->getVar('ticketid') . '_';
@@ -162,7 +166,7 @@ if ($xhelp_isStaff) {
     unset($logMessage);
 
     //For assign to ownership box
-    $hMembership = xhelpGetHandler('membership');
+    $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
 
     global $staff;
     $staff = $hStaff->getStaffByTask(XHELP_SEC_TICKET_TAKE_OWNERSHIP, $ticketInfo->getVar('department'));
@@ -170,7 +174,7 @@ if ($xhelp_isStaff) {
     $aOwnership = [];
     // Only run if actions are set to inline style
 
-    if ($xoopsModuleConfig['xhelp_staffTicketActions'] == 1) {
+    if (1 == $xoopsModuleConfig['xhelp_staffTicketActions']) {
         $aOwnership[] = [
             'uid'   => 0,
             'uname' => _XHELP_NO_OWNER
@@ -185,7 +189,7 @@ if ($xhelp_isStaff) {
     }
 
     // Get list of user's last submitted tickets
-    $crit = new CriteriaCompo(new Criteria('uid', $ticketInfo->getVar('uid')));
+    $crit = new \CriteriaCompo(new \Criteria('uid', $ticketInfo->getVar('uid')));
     $crit->setSort('posted');
     $crit->setOrder('DESC');
     $crit->setLimit(10);
@@ -202,7 +206,7 @@ if ($xhelp_isStaff) {
         $aLastTickets[] = [
             'id'         => $ticket->getVar('id'),
             'subject'    => $ticket->getVar('subject'),
-            'status'     => xhelpGetStatus($ticket->getVar('status')),
+            'status'     => Xhelp\Utility::getStatus($ticket->getVar('status')),
             'department' => $dept,
             'dept_url'   => $hasUrl ? XOOPS_URL . '/modules/xhelp/index.php?op=staffViewAll&amp;dept=' . $ticket->getVar('department') : '',
             'url'        => XOOPS_URL . '/modules/xhelp/ticket.php?id=' . $ticket->getVar('id')
@@ -215,27 +219,27 @@ if ($xhelp_isStaff) {
 switch ($op) {
     case 'addEmail':
 
-        if ($_POST['newEmail'] == '') {
+        if ('' == $_POST['newEmail']) {
             $message = _XHELP_MESSAGE_NO_EMAIL;
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
 
         //Check if email is valid
-        $validator = new ValidateEmail($_POST['newEmail']);
+        $validator = new validation\ValidateEmail(Request::getString('newEmail', '', 'POST'));
         if (!$validator->isValid()) {
-            redirect_header(xhelpMakeURI('ticket.php', ['id' => $xhelp_id], false), 3, _XHELP_MESSAGE_NO_EMAIL);
+            redirect_header(Xhelp\Utility::createURI('ticket.php', ['id' => $xhelp_id], false), 3, _XHELP_MESSAGE_NO_EMAIL);
         }
 
-        if (!$newUser = xhelpEmailIsXoopsUser($_POST['newEmail'])) {      // If a user doesn't exist with this email
+        if (!$newUser = Xhelp\Utility::emailIsXoopsUser(Request::getString('newEmail', '', 'POST'))) {      // If a user doesn't exist with this email
             $user_id = 0;
         } else {
             $user_id = $newUser->getVar('uid');
         }
 
         // Check that the email doesn't already exist for this ticket
-        $hTicketEmails = xhelpGetHandler('ticketEmails');
-        $crit          = new CriteriaCompo(new Criteria('ticketid', $xhelp_id));
-        $crit->add(new Criteria('email', $_POST['newEmail']));
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $crit          = new \CriteriaCompo(new \Criteria('ticketid', $xhelp_id));
+        $crit->add(new \Criteria('email', $_POST['newEmail']));
         $existingUsers = $hTicketEmails->getObjects($crit);
         if (count($existingUsers) > 0) {
             $message = _XHELP_MESSAGE_EMAIL_USED;
@@ -263,13 +267,13 @@ switch ($op) {
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
 
-        $hTicketEmails = xhelpGetHandler('ticketEmails');
-        $crit          = new CriteriaCompo(new Criteria('ticketid', $_GET['id']));
-        $crit->add(new Criteria('email', $_GET['email']));
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $crit          = new \CriteriaCompo(new \Criteria('ticketid', $_GET['id']));
+        $crit->add(new \Criteria('email', $_GET['email']));
         $suppressUser = $hTicketEmails->getObjects($crit);
 
         foreach ($suppressUser as $sUser) {
-            if ($sUser->getVar('suppress') == 0) {
+            if (0 == $sUser->getVar('suppress')) {
                 $sUser->setVar('suppress', 1);
             } else {
                 $sUser->setVar('suppress', 0);
@@ -305,16 +309,16 @@ switch ($op) {
             $message = _XHELP_MESSAGE_NO_EDIT_TICKET;
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
-        $hDepartments = xhelpGetHandler('department');    // Department handler
+        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Department handler
 
         if (!isset($_POST['editTicket'])) {
             $GLOBALS['xoopsOption']['template_main'] = 'xhelp_editTicket.tpl';             // Always set main template before including the header
             require XOOPS_ROOT_PATH . '/header.php';
 
-            $crit = new Criteria('', '');
+            $crit = new \Criteria('', '');
             $crit->setSort('department');
             $departments = $hDepartments->getObjects($crit);
-            $hStaff      = xhelpGetHandler('staff');
+            $hStaff      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
             foreach ($departments as $dept) {
                 $aDept[] = [
@@ -352,14 +356,14 @@ switch ($op) {
             }
             // end form validation stuff
 
-            $javascript = "<script type=\"text/javascript\" src=\"" . XHELP_BASE_URL . "/include/functions.js\"></script>
+            $javascript = '<script type="text/javascript" src="' . XHELP_BASE_URL . "/include/functions.js\"></script>
 <script type=\"text/javascript\" src='" . XHELP_SCRIPT_URL . "/addTicketDeptChange.php?client'></script>
 <script type=\"text/javascript\">
 <!--
 function departments_onchange()
 {
     dept = xoopsGetElementById('departments');
-    var wl = new xhelpweblib(fieldHandler);
+    var wl = new Xhelp\WebLib(fieldHandler);
     wl.editticketcustfields(dept.value, $xhelp_id);
 }
 
@@ -414,11 +418,11 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
 
             if (isset($_POST['logFor'])) {
                 $uid      = $_POST['logFor'];
-                $username = xhelpGetUsername($uid, $displayName);
+                $username = Xhelp\Utility::getUsername($uid, $displayName);
                 $xoopsTpl->assign('xhelp_username', $username);
                 $xoopsTpl->assign('xhelp_user_id', $uid);
             } else {
-                $xoopsTpl->assign('xhelp_username', xhelpGetUsername($xoopsUser->getVar('uid'), $displayName));
+                $xoopsTpl->assign('xhelp_username', Xhelp\Utility::getUsername($xoopsUser->getVar('uid'), $displayName));
                 $xoopsTpl->assign('xhelp_user_id', $xoopsUser->getVar('uid'));
             }
             // Used for displaying transparent-background images in IE
@@ -430,18 +434,18 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             } else {
                 $custFields = _getTicketFields($ticketInfo);
             }
-            $xoopsTpl->assign('xhelp_hasCustFields', (!empty($custFields)) ? true : false);
+            $xoopsTpl->assign('xhelp_hasCustFields', !empty($custFields) ? true : false);
             $xoopsTpl->assign('xhelp_custFields', $custFields);
             $xoopsTpl->assign('xhelp_uploadPath', XHELP_UPLOAD_PATH);
             $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
 
             require XOOPS_ROOT_PATH . '/footer.php';
         } else {
-            require_once XHELP_CLASS_PATH . '/validator.php';
+            // require_once XHELP_CLASS_PATH . '/validator.php';
 
             $v                  = [];
-            $v['subject'][]     = new ValidateLength($_POST['subject'], 2, 100);
-            $v['description'][] = new ValidateLength($_POST['description'], 2, 50000);
+            $v['subject'][]     = new validation\ValidateLength(Request::getString('subject', '', 'POST'), 2, 100);
+            $v['description'][] = new validation\ValidateLength(Request::getString('description', '', 'POST'), 2, 50000);
 
             $aFields = [];
 
@@ -457,14 +461,14 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 $fileid   = '';
                 $filename = '';
                 $file     = '';
-                if ($field['controltype'] == XHELP_CONTROL_FILE) {
+                if (XHELP_CONTROL_FILE == $field['controltype']) {
                     $file     = explode('_', $value);
-                    $fileid   = ((isset($file[0]) && $file[0] != '') ? $file[0] : '');
-                    $filename = ((isset($file[1]) && $file[1] != '') ? $file[1] : '');
+                    $fileid   = ((isset($file[0]) && '' != $file[0]) ? $file[0] : '');
+                    $filename = ((isset($file[1]) && '' != $file[1]) ? $file[1] : '');
                 }
 
-                if ($field['validation'] != '') {
-                    $v[$fieldname][] = new ValidateRegex($_POST[$fieldname], $field['validation'], $field['required']);
+                if ('' != $field['validation']) {
+                    $v[$fieldname][] = new validation\ValidateRegex(Request::getString('$fieldname', '', 'POST'), $field['validation'], $field['required']);
                 }
 
                 $aFields[$field['fieldname']] = [
@@ -499,7 +503,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             $fields = [];
             $errors = [];
             foreach ($v as $fieldname => $validator) {
-                if (!xhelpCheckRules($validator, $errors)) {
+                if (!Xhelp\Utility::checkRules($validator, $errors)) {
                     //Mark field with error
                     $fields[$fieldname]['haserrors'] = true;
                     $fields[$fieldname]['errors']    = $errors;
@@ -520,7 +524,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 'subject'       => $ticketInfo->getVar('subject', 'n'),
                 'description'   => $ticketInfo->getVar('description', 'n'),
                 'priority'      => $ticketInfo->getVar('priority'),
-                'status'        => xhelpGetStatus($ticketInfo->getVar('status')),
+                'status'        => Xhelp\Utility::getStatus($ticketInfo->getVar('status')),
                 'department'    => $department->getVar('department'),
                 'department_id' => $department->getVar('id')
             ];
@@ -536,7 +540,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 $message = _XHELP_MESSAGE_EDITTICKET;     // Successfully updated ticket
 
                 // Update custom fields
-                $hTicketValues = xhelpGetHandler('ticketValues');
+                $hTicketValues = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
                 $ticketValues  = $hTicketValues->get($xhelp_id);
 
                 if (is_object($ticketValues)) {
@@ -565,7 +569,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             $message = _XHELP_MESSAGE_NO_MERGE;
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
-        if ($_POST['ticket2'] == '') {
+        if ('' == $_POST['ticket2']) {
             $message = _XHELP_MESSAGE_NO_TICKET2;
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
@@ -595,7 +599,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             $message = _XHELP_MESSAGE_NO_UID;
             redirect_header(XHELP_BASE_URL . "/ticket.php?id=$xhelp_id", 3, $message);
         }
-        if ($ticketInfo->getVar('ownership') <> 0) {
+        if (0 <> $ticketInfo->getVar('ownership')) {
             $oldOwner = $ticketInfo->getVar('ownership');
         } else {
             $oldOwner = _XHELP_NO_OWNER;
@@ -625,7 +629,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             $aPrintMessages[]               = [
                 'id'          => $msg->getVar('id'),
                 'uid'         => $msg->getVar('uid'),
-                'uname'       => xhelpGetUsername($msgLoggedBy->getVar('uid'), $displayName),
+                'uname'       => Xhelp\Utility::getUsername($msgLoggedBy->getVar('uid'), $displayName),
                 'ticketid'    => $msg->getVar('ticketid'),
                 'lastUpdated' => $msg->lastUpdated('m'),
                 'action'      => preg_replace($patterns, $replacements, $msg->getVar('action'))
@@ -635,7 +639,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         unset($logMessage);
 
         require_once XOOPS_ROOT_PATH . '/class/template.php';
-        $xoopsTpl = new XoopsTpl();
+        $xoopsTpl = new \XoopsTpl();
         $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
         $xoopsTpl->assign('xhelp_lang_userlookup', 'User Lookup');
         $xoopsTpl->assign('sitename', $xoopsConfig['sitename']);
@@ -646,22 +650,22 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_ticket_description', $ticketInfo->getVar('description'));
         $xoopsTpl->assign('xhelp_ticket_department', $department->getVar('department'));
         $xoopsTpl->assign('xhelp_ticket_priority', $ticketInfo->getVar('priority'));
-        $xoopsTpl->assign('xhelp_ticket_status', xhelpGetStatus($ticketInfo->getVar('status')));
+        $xoopsTpl->assign('xhelp_ticket_status', Xhelp\Utility::getStatus($ticketInfo->getVar('status')));
         $xoopsTpl->assign('xhelp_ticket_lastUpdated', $ticketInfo->lastUpdated('m'));
         $xoopsTpl->assign('xhelp_ticket_posted', $ticketInfo->posted('m'));
         if ($giveOwnership) {
             $xoopsTpl->assign('xhelp_ticket_ownerUid', $owner->getVar('uid'));
-            $xoopsTpl->assign('xhelp_ticket_ownership', xhelpGetUsername($owner, $displayName));
+            $xoopsTpl->assign('xhelp_ticket_ownership', Xhelp\Utility::getUsername($owner, $displayName));
             $xoopsTpl->assign('xhelp_ownerinfo', XOOPS_URL . '/userinfo.php?uid=' . $owner->getVar('uid'));
         }
         $xoopsTpl->assign('xhelp_ticket_closedBy', $ticketInfo->getVar('closedBy'));
         $xoopsTpl->assign('xhelp_ticket_totalTimeSpent', $ticketInfo->getVar('totalTimeSpent'));
         $xoopsTpl->assign('xhelp_userinfo', XOOPS_URL . '/userinfo.php?uid=' . $ticketInfo->getVar('uid'));
-        $xoopsTpl->assign('xhelp_username', xhelpGetUsername($user, $displayName));
+        $xoopsTpl->assign('xhelp_username', Xhelp\Utility::getUsername($user, $displayName));
         $xoopsTpl->assign('xhelp_ticket_details', sprintf(_XHELP_TEXT_TICKETDETAILS, $xhelp_id));
 
         $custFields = $ticketInfo->getCustFieldValues();
-        $xoopsTpl->assign('xhelp_hasCustFields', (!empty($custFields)) ? true : false);
+        $xoopsTpl->assign('xhelp_hasCustFields', !empty($custFields) ? true : false);
         $xoopsTpl->assign('xhelp_custFields', $custFields);
 
         if (isset($aMessages)) {
@@ -674,9 +678,9 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
 
         if ($has_responses) {
             $users  = [];
-            $_users = $memberHandler->getUsers(new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
+            $_users = $memberHandler->getUsers(new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
             foreach ($_users as $key => $_user) {
-                if (($displayName == 2) && ($_user->getVar('name') <> '')) {
+                if ((2 == $displayName) && ('' <> $_user->getVar('name'))) {
                     $users[$_user->getVar('uid')] = ['uname' => $_user->getVar('name')];
                 } else {
                     $users[$_user->getVar('uid')] = ['uname' => $_user->getVar('uname')];
@@ -684,7 +688,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
             unset($_users);
 
-            $myTs = MyTextSanitizer::getInstance();
+            $myTs = \MyTextSanitizer::getInstance();
             //Update arrays with user information
             if (count($aResponses) > 0) {
                 for ($i = 0, $iMax = count($aResponses); $i < $iMax; ++$i) {
@@ -743,7 +747,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $responseError = $ticketError = false;
 
         //1. Check if either a response was added or status was changed
-        $addResponse  = ($_POST['response'] <> '');
+        $addResponse  = ('' <> $_POST['response']);
         $changeStatus = ($_POST['status'] != $ticketInfo->getVar('status'));
 
         if ($addResponse || $changeStatus) {
@@ -752,7 +756,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             $ticketInfo->setVar('lastUpdated', time());
 
             //3. Add Response (if necessary)
-            if ($addResponse === true) {
+            if (true === $addResponse) {
                 if ($ticketInfo->canAddResponse($xoopsUser)) {
                     $userIP        = xoops_getenv('REMOTE_ADDR');
                     $newResponse   = $ticketInfo->addResponse($xoopsUser->getVar('uid'), $xhelp_id, $_POST['response'], $ticketInfo->getVar('lastUpdated'), $userIP, 0, 0, true);
@@ -761,23 +765,23 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
 
             //4. Update Status (if necessary)
-            if ($changeStatus === true) {
+            if (true === $changeStatus) {
                 //Check if the current staff member can change status
                 if ($xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_STATUS, $ticketInfo->getVar('department'))) {
-                    $hStatus = xhelpGetHandler('status');
-                    $hStaff  = xhelpGetHandler('staff');
+                    $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+                    $hStaff  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
 
                     $oldStatus = $hStatus->get($ticketInfo->getVar('status'));
                     $newStatus = $hStatus->get((int)$_POST['status']);
                     $ticketInfo->setVar('status', $_POST['status']);
 
-                    if ($newStatus->getVar('state') == XHELP_STATE_RESOLVED
-                        && $oldStatus->getVar('state') == XHELP_STATE_UNRESOLVED) {
+                    if (XHELP_STATE_RESOLVED == $newStatus->getVar('state')
+                        && XHELP_STATE_UNRESOLVED == $oldStatus->getVar('state')) {
                         //Closing the ticket
                         $ticketInfo->setVar('closedBy', $xoopsUser->getVar('uid'));
                         $statusClosed = true;
-                    } elseif ($oldStatus->getVar('state') == XHELP_STATE_RESOLVED
-                              && $newStatus->getVar('state') == XHELP_STATE_UNRESOLVED) {
+                    } elseif (XHELP_STATE_RESOLVED == $oldStatus->getVar('state')
+                              && XHELP_STATE_UNRESOLVED == $newStatus->getVar('state')) {
                         //Re-opening the ticket
                         $ticketInfo->setVar('overdueTime', $ticketInfo->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] * 60 * 60));
                         $statusReopened = true;
@@ -789,14 +793,14 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             $ticketError = !$hTickets->insert($ticketInfo);
 
             //6. Fire Necessary Events, set response messages
-            if ($addResponse === true && $responseError === false) {
+            if (true === $addResponse && false === $responseError) {
                 $_eventsrv->trigger('new_response', [&$ticketInfo, &$newResponse]);
                 $message .= _XHELP_MESSAGE_ADDRESPONSE;
-            } elseif ($addResponse === true && $responseError === true) {
+            } elseif (true === $addResponse && true === $responseError) {
                 $message .= _XHELP_MESSAGE_ADDRESPONSE_ERROR;
             }
 
-            if ($changeStatus === true && $ticketError === false) {
+            if (true === $changeStatus && false === $ticketError) {
                 if ($statusClosed) {
                     $_eventsrv->trigger('close_ticket', [&$ticketInfo]);
                 } elseif ($statusReopened) {
@@ -806,7 +810,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 }
 
                 $message .= _XHELP_MESSAGE_UPDATE_STATUS;
-            } elseif ($changeStatus === true && $ticketError === true) {
+            } elseif (true === $changeStatus && true === $ticketError) {
                 $message .= _XHELP_MESSAGE_UPDATE_STATUS_ERROR . '. ';
             }
         } else {
@@ -821,15 +825,15 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         break;
 
     case 'staff':
-        $hStatus = xhelpGetHandler('status');
+        $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
         $_eventsrv->trigger('view_ticket', [&$ticketInfo]);
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_staff_ticketDetails.tpl';   // Set template
         require XOOPS_ROOT_PATH . '/header.php';                     // Include
 
         $users  = [];
-        $_users = $memberHandler->getUsers(new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
+        $_users = $memberHandler->getUsers(new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
         foreach ($_users as $key => $_user) {
-            if (($displayName == 2) && ($_user->getVar('name') <> '')) {
+            if ((2 == $displayName) && ('' <> $_user->getVar('name'))) {
                 $users[$key] = [
                     'uname'       => $_user->getVar('name'),
                     'user_sig'    => $_user->getVar('user_sig'),
@@ -844,7 +848,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
         }
 
-        $crit = new Criteria('', '');
+        $crit = new \Criteria('', '');
         $crit->setSort('department');
         $alldepts = $hDepartments->getObjects($crit);
         foreach ($alldepts as $dept) {
@@ -852,14 +856,14 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         }
         unset($_users);
         $staff  = [];
-        $_staff = $hStaff->getObjects(new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
+        $_staff = $hStaff->getObjects(new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
         foreach ($_staff as $key => $_user) {
             $staff[$key] = $_user->getVar('attachSig');
         }
         unset($_staff);
         $staffReviews = $ticketInfo->getReviews();
 
-        $myTs = MyTextSanitizer::getInstance();
+        $myTs = \MyTextSanitizer::getInstance();
         //Update arrays with user information
         if (count($aResponses) > 0) {
             for ($i = 0, $iMax = count($aResponses); $i < $iMax; ++$i) {
@@ -879,7 +883,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 if (count($staffReviews) > 0) {                   // Add staffRating to array
                     foreach ($staffReviews as $review) {
                         if ($aResponses[$i]['id'] == $review->getVar('responseid')) {
-                            $aResponses[$i]['staffRating'] = xhelpGetRating($review->getVar('rating'));
+                            $aResponses[$i]['staffRating'] = Xhelp\Utility::getRating($review->getVar('rating'));
                         }
                     }
                 }
@@ -894,7 +898,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             }
         }
 
-        if ($xoopsModuleConfig['xhelp_staffTicketActions'] == 1) {
+        if (1 == $xoopsModuleConfig['xhelp_staffTicketActions']) {
             for ($i = 0, $iMax = count($aOwnership); $i < $iMax; ++$i) {
                 if (isset($users[$aOwnership[$i]['uid']])) {
                     $aOwnership[$i]['uname'] = $users[$aOwnership[$i]['uid']]['uname'];
@@ -904,8 +908,8 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         unset($users);
 
         // Get list of users notified of changes to ticket
-        $hTicketEmails = xhelpGetHandler('ticketEmails');
-        $crit          = new Criteria('ticketid', $xhelp_id);
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $crit          = new \Criteria('ticketid', $xhelp_id);
         $crit->setOrder('ASC');
         $crit->setSort('email');
         $notifiedUsers = $hTicketEmails->getObjects($crit);
@@ -931,7 +935,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_ticket_uid', $ticketInfo->getVar('uid'));
         $submitUser = $memberHandler->getUser($ticketInfo->getVar('uid'));
         $xoopsTpl->assign('xhelp_user_avatar', XOOPS_URL . '/uploads/' . (($submitUser
-                                                                           && $submitUser->getVar('user_avatar') != '') ? $submitUser->getVar('user_avatar') : 'blank.gif'));
+                                                                           && '' != $submitUser->getVar('user_avatar')) ? $submitUser->getVar('user_avatar') : 'blank.gif'));
         $xoopsTpl->assign('xhelp_ticket_subject', $ticketInfo->getVar('subject', 's'));
         $xoopsTpl->assign('xhelp_ticket_description', $ticketInfo->getVar('description'));
         $xoopsTpl->assign('xhelp_ticket_department', (isset($departments[$ticketInfo->getVar('department')]) ? $departments[$ticketInfo->getVar('department')]->getVar('department') : _XHELP_TEXT_NO_DEPT));
@@ -940,7 +944,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_departments', $aDept);
         $xoopsTpl->assign('xhelp_ticket_priority', $ticketInfo->getVar('priority'));
         $xoopsTpl->assign('xhelp_ticket_status', $ticketInfo->getVar('status'));
-        $xoopsTpl->assign('xhelp_text_status', xhelpGetStatus($ticketInfo->getVar('status')));
+        $xoopsTpl->assign('xhelp_text_status', Xhelp\Utility::getStatus($ticketInfo->getVar('status')));
         $xoopsTpl->assign('xhelp_ticket_userIP', $ticketInfo->getVar('userIP'));
         $xoopsTpl->assign('xhelp_ticket_lastUpdated', $ticketInfo->lastUpdated('m'));
         $xoopsTpl->assign('xhelp_priorities', [5, 4, 3, 2, 1]);
@@ -954,13 +958,13 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_ticket_posted', $ticketInfo->posted('m'));
         if ($giveOwnership) {
             $xoopsTpl->assign('xhelp_ticket_ownerUid', $owner->getVar('uid'));
-            $xoopsTpl->assign('xhelp_ticket_ownership', xhelpGetUsername($owner, $displayName));
+            $xoopsTpl->assign('xhelp_ticket_ownership', Xhelp\Utility::getUsername($owner, $displayName));
             $xoopsTpl->assign('xhelp_ownerinfo', XOOPS_URL . '/userinfo.php?uid=' . $owner->getVar('uid'));
         }
         $xoopsTpl->assign('xhelp_ticket_closedBy', $ticketInfo->getVar('closedBy'));
         $xoopsTpl->assign('xhelp_ticket_totalTimeSpent', $ticketInfo->getVar('totalTimeSpent'));
         $xoopsTpl->assign('xhelp_userinfo', XOOPS_URL . '/userinfo.php?uid=' . $ticketInfo->getVar('uid'));
-        $xoopsTpl->assign('xhelp_username', ($user ? xhelpGetUsername($user, $displayName) : $xoopsConfig['anonymous']));
+        $xoopsTpl->assign('xhelp_username', ($user ? Xhelp\Utility::getUsername($user, $displayName) : $xoopsConfig['anonymous']));
         $xoopsTpl->assign('xhelp_userlevel', ($user ? $user->getVar('level') : 0));
         $xoopsTpl->assign('xhelp_email', ($user ? $user->getVar('email') : ''));
         $xoopsTpl->assign('xhelp_ticket_details', sprintf(_XHELP_TEXT_TICKETDETAILS, $xhelp_id));
@@ -1026,19 +1030,19 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         ];
 
         // See if this user is accepted for this ticket
-        $hTicketEmails = xhelpGetHandler('ticketEmails');
-        $crit          = new CriteriaCompo(new Criteria('ticketid', $xhelp_id));
-        $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $crit          = new \CriteriaCompo(new \Criteria('ticketid', $xhelp_id));
+        $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
         $ticketEmails = $hTicketEmails->getObjects($crit);
 
         foreach ($checkRights as $right => $desc) {
-            if (($right == XHELP_SEC_RESPONSE_ADD) && (count($ticketEmails) > 0)) {
+            if ((XHELP_SEC_RESPONSE_ADD == $right) && (count($ticketEmails) > 0)) {
                 //Is this user in the ticket emails list (should be treated as a user)
                 $xoopsTpl->assign($desc[0], true);
                 ++$colspan;
                 continue;
             }
-            if (($right == XHELP_SEC_TICKET_STATUS) && count($ticketEmails > 0)) {
+            if ((XHELP_SEC_TICKET_STATUS == $right) && count($ticketEmails > 0)) {
                 //Is this user in the ticket emails list (should be treated as a user)
                 $xoopsTpl->assign($desc[0], true);
                 ++$colspan;
@@ -1054,7 +1058,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         }
         $xoopsTpl->assign('xhelp_actions_colspan', $colspan);
 
-        $crit = new Criteria('', '');
+        $crit = new \Criteria('', '');
         $crit->setSort('description');
         $crit->setOrder('ASC');
         $statuses  = $hStatus->getObjects($crit);
@@ -1071,7 +1075,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_statuses', $aStatuses);
 
         $custFields = $ticketInfo->getCustFieldValues();
-        $xoopsTpl->assign('xhelp_hasCustFields', (!empty($custFields)) ? true : false);
+        $xoopsTpl->assign('xhelp_hasCustFields', !empty($custFields) ? true : false);
         $xoopsTpl->assign('xhelp_custFields', $custFields);
         unset($custFields);
         $xoopsTpl->assign('xhelp_uploadPath', XHELP_UPLOAD_PATH);
@@ -1081,11 +1085,11 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
 
     case 'user':
         // Check if user has permission to view ticket
-        $hTicketEmails = xhelpGetHandler('ticketEmails');
-        $crit          = new CriteriaCompo(new Criteria('ticketid', $xhelp_id));
-        $crit->add(new Criteria('uid', $xoopsUser->getVar('uid')));
+        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $crit          = new \CriteriaCompo(new \Criteria('ticketid', $xhelp_id));
+        $crit->add(new \Criteria('uid', $xoopsUser->getVar('uid')));
         $ticketEmails = $hTicketEmails->getObjects($crit);
-        if (count($ticketEmails) == 0) {
+        if (0 == count($ticketEmails)) {
             redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_ERROR_INV_USER);
         }
 
@@ -1116,7 +1120,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 'timeSpent'   => $response->getVar('timeSpent'),
                 'updateTime'  => $response->posted('m'),
                 'userIP'      => $response->getVar('userIP'),
-                'rating'      => isset($review) ? xhelpGetRating($review->getVar('rating')) : 0,
+                'rating'      => isset($review) ? Xhelp\Utility::getRating($review->getVar('rating')) : 0,
                 'user_sig'    => '',
                 'private'     => $response->getVar('private'),
                 'hasFiles'    => $hasFiles,
@@ -1131,17 +1135,17 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
             unset($review);
         }
         $staff  = [];
-        $_staff = $hStaff->getObjects(new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
+        $_staff = $hStaff->getObjects(new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
         foreach ($_staff as $key => $_user) {
             $staff[$key] = $_user->getVar('attachSig');
         }
         unset($_staff);
 
         $users  = [];
-        $_users = $memberHandler->getUsers(new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
+        $_users = $memberHandler->getUsers(new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN'), true);
         foreach ($_users as $key => $_user) {
             $users[$key] = [
-                'uname'       => xhelpGetUsername($_user, $xoopsModuleConfig['xhelp_displayName']),
+                'uname'       => Xhelp\Utility::getUsername($_user, $xoopsModuleConfig['xhelp_displayName']),
                 //Display signature if user is a staff member + has set signature to display
                 //or user with signature set to display
                 'user_sig'    => (isset($staff[$key]) && $staff[$key])
@@ -1168,14 +1172,14 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $has_responses = count($responses) > 0;
         unset($responses);
 
-        $hStatus  = xhelpGetHandler('status');
+        $hStatus  = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
         $myStatus = $hStatus->get($ticketInfo->getVar('status'));
 
         // Smarty variables
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
-        $reopenTicket = $xoopsModuleConfig['xhelp_allowReopen'] && $myStatus->getVar('state') == 2;
+        $reopenTicket = $xoopsModuleConfig['xhelp_allowReopen'] && 2 == $myStatus->getVar('state');
         $xoopsTpl->assign('xhelp_reopenTicket', $reopenTicket);
-        $xoopsTpl->assign('xhelp_allowResponse', ($myStatus->getVar('state') != 2) || $reopenTicket);
+        $xoopsTpl->assign('xhelp_allowResponse', (2 != $myStatus->getVar('state')) || $reopenTicket);
         $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');
         $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
         $xoopsTpl->assign('xhelp_ticketID', $xhelp_id);
@@ -1184,7 +1188,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_ticket_description', $ticketInfo->getVar('description'));
         $xoopsTpl->assign('xhelp_ticket_department', $department->getVar('department'));
         $xoopsTpl->assign('xhelp_ticket_priority', $ticketInfo->getVar('priority'));
-        $xoopsTpl->assign('xhelp_ticket_status', $myStatus->getVar('description')); // xhelpGetStatus($ticketInfo->getVar('status')));
+        $xoopsTpl->assign('xhelp_ticket_status', $myStatus->getVar('description')); // Xhelp\Utility::getStatus($ticketInfo->getVar('status')));
         $xoopsTpl->assign('xhelp_ticket_posted', $ticketInfo->posted('m'));
         $xoopsTpl->assign('xhelp_ticket_lastUpdated', $ticketInfo->posted('m'));
         $xoopsTpl->assign('xhelp_userinfo', XOOPS_URL . '/userinfo.php?uid=' . $ticketInfo->getVar('uid'));
@@ -1217,7 +1221,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $xoopsTpl->assign('xhelp_ticket_details', sprintf(_XHELP_TEXT_TICKETDETAILS, $xhelp_id));
 
         $custFields = $ticketInfo->getCustFieldValues();
-        $xoopsTpl->assign('xhelp_hasCustFields', (!empty($custFields)) ? true : false);
+        $xoopsTpl->assign('xhelp_hasCustFields', !empty($custFields) ? true : false);
         $xoopsTpl->assign('xhelp_custFields', $custFields);
         $xoopsTpl->assign('xhelp_uploadPath', XHELP_UPLOAD_PATH);
         $xoopsTpl->assign('xhelp_allowUpload', $xoopsModuleConfig['xhelp_allowUpload']);
@@ -1228,8 +1232,8 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
     case 'userResponse':
         if (isset($_POST['newResponse'])) {
             // Check if user has permission to view ticket
-            $hTicketEmails = xhelpGetHandler('ticketEmails');
-            $crit          = new Criteria('ticketid', $xhelp_id);
+            $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
+            $crit          = new \Criteria('ticketid', $xhelp_id);
             $ticketEmails  = $hTicketEmails->getObjects($crit);
             $canChange     = false;
             foreach ($ticketEmails as $ticketEmail) {
@@ -1239,14 +1243,14 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 }
             }
 
-            $hStatus = xhelpGetHandler('status');
+            $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
             if ($canChange) {
                 $oldStatus = $hStatus->get($ticketInfo->getVar('status'));
-                if ($oldStatus->getVar('state') == 2) {     //If the ticket is resolved
+                if (2 == $oldStatus->getVar('state')) {     //If the ticket is resolved
                     $ticketInfo->setVar('closedBy', 0);
                     $ticketInfo->setVar('status', 1);
                     $ticketInfo->setVar('overdueTime', $ticketInfo->getVar('posted') + ($xoopsModuleConfig['xhelp_overdueTime'] * 60 * 60));
-                } elseif (isset($_POST['closeTicket']) && $_POST['closeTicket'] == 1) { // If the user closes the ticket
+                } elseif (isset($_POST['closeTicket']) && 1 == $_POST['closeTicket']) { // If the user closes the ticket
                     $ticketInfo->setVar('closedBy', $ticketInfo->getVar('uid'));
                     $ticketInfo->setVar('status', 3);   // Todo: make moduleConfig for default resolved status?
                 }
@@ -1255,14 +1259,14 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                 if ($hTickets->insert($ticketInfo, true)) {   // Insert the ticket
                     $newStatus = $hStatus->get($ticketInfo->getVar('status'));
 
-                    if ($newStatus->getVar('state') == 2) {
+                    if (2 == $newStatus->getVar('state')) {
                         $_eventsrv->trigger('close_ticket', [&$ticketInfo]);
                     } elseif ($oldStatus->getVar('id') <> $newStatus->getVar('id')
-                              && $newStatus->getVar('state') <> 2) {
+                              && 2 <> $newStatus->getVar('state')) {
                         $_eventsrv->trigger('update_status', [&$ticketInfo, &$oldStatus, &$newStatus]);
                     }
                 }
-                if ($_POST['userResponse'] <> '') {       // If the user does not add any text in the response
+                if ('' <> $_POST['userResponse']) {       // If the user does not add any text in the response
                     $newResponse = $hResponses->create();
                     $newResponse->setVar('uid', $xoopsUser->getVar('uid'));
                     $newResponse->setVar('ticketid', $xhelp_id);
@@ -1290,7 +1294,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                         $message = _XHELP_MESSAGE_USER_MOREINFO_ERROR;
                     }
                 } else {
-                    if ($newStatus->getVar('state') != 2) {
+                    if (2 != $newStatus->getVar('state')) {
                         $message = _XHELP_MESSAGE_USER_NO_INFO;
                     } else {
                         $message = _XHELP_MESSAGE_UPDATE_STATUS;
@@ -1316,14 +1320,14 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
 
         if (isset($_GET['field'])) {      // Remove filename from custom field
             $field         = $_GET['field'];
-            $hTicketValues = xhelpGetHandler('ticketValues');
+            $hTicketValues = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
             $ticketValues  = $hTicketValues->get($xhelp_id);
 
             $ticketValues->setVar($field, '');
             $hTicketValues->insert($ticketValues, true);
         }
 
-        $hFile  = xhelpGetHandler('file');
+        $hFile  = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
         $fileid = (int)$_GET['fileid'];
         $file   = $hFile->get($fileid);
 
@@ -1346,7 +1350,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
  */
 function &_getTicketFields(&$ticket)
 {
-    $hFieldDept = xhelpGetHandler('ticketFieldDepartment');
+    $hFieldDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
     $fields     = $hFieldDept->fieldsByDepartment($ticket->getVar('department'));
     $values     = $ticket->getCustFieldValues(true);
     foreach ($fields as $field) {

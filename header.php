@@ -1,22 +1,27 @@
 <?php
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/../../mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-require_once XHELP_BASE_PATH . '/functions.php';
-require_once XHELP_CLASS_PATH . '/session.php';
-require_once XHELP_CLASS_PATH . '/eventService.php';
+include __DIR__ . '/preloads/autoloader.php';
 
-$_xhelpSession = new Session();
+//require_once XHELP_BASE_PATH . '/functions.php';
+// require_once XHELP_CLASS_PATH . '/session.php';
+// require_once XHELP_CLASS_PATH . '/eventService.php';
+
+$_xhelpSession = new Xhelp\Session();
 
 $roleReset     = false;
 $xhelp_isStaff = false;
 
 // Is the current user a staff member?
 if ($xoopsUser) {
-    $hStaff = xhelpGetHandler('staff');
+    $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
     if ($xhelp_staff = $hStaff->getByUid($xoopsUser->getVar('uid'))) {
         $xhelp_isStaff = true;
 
@@ -38,7 +43,7 @@ if ($xoopsUser) {
 
         //Retrieve the staff member's saved searches
         if (!$aSavedSearches = $_xhelpSession->get('xhelp_savedSearches')) {
-            $aSavedSearches = xhelpGetSavedSearches($xoopsUser->getVar('uid'));
+            $aSavedSearches = Xhelp\Utility::getSavedSearches($xoopsUser->getVar('uid'));
             $_xhelpSession->set('xhelp_savedSearches', $aSavedSearches);
         }
     }

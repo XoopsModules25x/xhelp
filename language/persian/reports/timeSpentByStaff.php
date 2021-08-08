@@ -1,5 +1,5 @@
 <?php
-// $Id: timeSpentByStaff.php 8197 2011-11-07 03:07:38Z beckmi $
+// $Id: TimeSpentByStaffReport.php 8197 2011-11-07 03:07:38Z beckmi $
 
 define('_XHELP_TSBS_NAME', 'Time Spent By Staff');
 define('_XHELP_TSBS_DESC', 'Retrieves staff name and amount of time spent working on tickets.');

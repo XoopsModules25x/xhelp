@@ -1,5 +1,7 @@
 <?php
-//
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
 

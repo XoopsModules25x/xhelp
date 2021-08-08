@@ -39,7 +39,7 @@ function selectAll(formObj, fieldname, isInverse) {
     }
 }
 
-function xhelpRoleCustOnClick(frmName, roleName, roleParam, joinChr, className) {
+function Xhelp\RoleCustOnClick(frmName, roleName, roleParam, joinChr, className) {
     if (joinChr.length == 0) {
         joinChr = '&amp;';
     }

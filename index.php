@@ -1,19 +1,23 @@
 <?php
-//
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 // Setup event handlers for page
 
+$helper = Xhelp\Helper::getInstance();
+
 //Initialise Necessary Data Handler Classes
-$hStaff       = xhelpGetHandler('staff');
+$hStaff       = Xhelp\Helper::getInstance()->getHandler('Staff');
 $hXoopsMember = xoops_getHandler('member');
-$hDepartments = xhelpGetHandler('department');
-$hMembership  = xhelpGetHandler('membership');
-$hTickets     = xhelpGetHandler('ticket');
-$hTicketList  = xhelpGetHandler('ticketList');
-$hSavedSearch = xhelpGetHandler('savedSearch');
+$hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
+$hMembership  = Xhelp\Helper::getInstance()->getHandler('Membership');
+$hTickets     = Xhelp\Helper::getInstance()->getHandler('Ticket');
+$hTicketList  = Xhelp\Helper::getInstance()->getHandler('TicketList');
+$hSavedSearch = Xhelp\Helper::getInstance()->getHandler('SavedSearch');
 
 //Determine default 'op' (if none is specified)
 $uid = 0;
@@ -47,8 +51,8 @@ foreach ($vars as $var) {
 }
 
 //Ensure Criteria Fields hold valid values
-$limit = (int)$limit;
-$start = (int)$start;
+$limit = $limit;
+$start = $start;
 $sort  = strtolower($sort);
 $order = (in_array(strtoupper($order), $sort_order) ? $order : 'ASC');
 
@@ -178,15 +182,15 @@ switch ($op) {
     case 'anonMain':
         $configHandler   = xoops_getHandler('config');
         $xoopsConfigUser = [];
-        $crit            = new CriteriaCompo(new Criteria('conf_name', 'allow_register'), 'OR');
-        $crit->add(new Criteria('conf_name', 'activation_type'), 'OR');
-        $myConfigs =& $configHandler->getConfigs($crit);
+        $crit            = new \CriteriaCompo(new \Criteria('conf_name', 'allow_register'), 'OR');
+        $crit->add(new \Criteria('conf_name', 'activation_type'), 'OR');
+        $myConfigs = $configHandler->getConfigs($crit);
 
         foreach ($myConfigs as $myConf) {
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
         }
 
-        if ($xoopsConfigUser['allow_register'] == 0) {
+        if (0 == $xoopsConfigUser['allow_register']) {
             header('Location: ' . XHELP_BASE_URL . '/error.php');
         } else {
             header('Location: ' . XHELP_BASE_URL . '/addTicket.php');
@@ -215,7 +219,7 @@ function setdept_action()
     }
     $tickets  = implode($_POST['tickets'], ',');
     $tickets  = _cleanTickets($tickets);
-    $oTickets =& xhelpGetTickets($tickets);
+    $oTickets =& Xhelp\Utility::getTickets($tickets);
 
     $depts = [];
     foreach ($oTickets as $ticket) {
@@ -227,7 +231,7 @@ function setdept_action()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_EDIT_TICKET);
     }
 
-    $ret = xhelpSetDept($tickets, $_POST['department']);
+    $ret = Xhelp\Utility::setDept($tickets, $_POST['department']);
     if ($ret) {
         $_eventsrv->trigger('batch_dept', [@$oTickets, $_POST['department']]);
         if (count($oTickets) > 1) {
@@ -251,9 +255,9 @@ function setdept_display()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_TICKETS);
     }
 
-    $hDepartments = xhelpGetHandler('department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts        = $hDepartments->getObjects(null, true);
-    $oTickets     =& xhelpGetTickets($_POST['tickets']);
+    $oTickets     = Xhelp\Utility::getTickets($_POST['tickets']);
     $all_users    = [];
     $j            = 0;
 
@@ -268,8 +272,8 @@ function setdept_display()
 
     //Retrieve all member information for the current page
     if (count($all_users)) {
-        $crit  = new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-        $users =& xhelpGetUsers($crit, $displayName);
+        $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
+        $users =& Xhelp\Utility::getUsers($crit, $displayName);
     } else {
         $users = [];
     }
@@ -299,7 +303,7 @@ function setpriority_action()
     }
     $tickets  = implode($_POST['tickets'], ',');
     $tickets  = _cleanTickets($tickets);
-    $oTickets =& xhelpGetTickets($tickets);
+    $oTickets =& Xhelp\Utility::getTickets($tickets);
 
     $depts = [];
     foreach ($oTickets as $ticket) {
@@ -311,7 +315,7 @@ function setpriority_action()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_CHANGE_PRIORITY);
     }
 
-    $ret = xhelpSetPriority($tickets, $_POST['priority']);
+    $ret = Xhelp\Utility::setPriority($tickets, $_POST['priority']);
     if ($ret) {
         $_eventsrv->trigger('batch_priority', [@$oTickets, $_POST['priority']]);
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_UPDATE_PRIORITY);
@@ -328,9 +332,9 @@ function setpriority_display()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_TICKETS);
     }
 
-    $hDepartments = xhelpGetHandler('department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts        = $hDepartments->getObjects(null, true);
-    $oTickets     =& xhelpGetTickets($_POST['tickets']);
+    $oTickets     = Xhelp\Utility::getTickets($_POST['tickets']);
     $all_users    = [];
     $j            = 0;
 
@@ -339,8 +343,8 @@ function setpriority_display()
 
     //Retrieve all member information for the current page
     if (count($all_users)) {
-        $crit  = new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-        $users =& xhelpGetUsers($crit, $displayName);
+        $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
+        $users =& Xhelp\Utility::getUsers($crit, $displayName);
     } else {
         $users = [];
     }
@@ -373,6 +377,7 @@ function setpriority_display()
 function setstatus_action()
 {
     global $_eventsrv, $xhelp_staff;
+
     if (!isset($_POST['tickets'])) {
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_TICKETS);
     }
@@ -382,7 +387,7 @@ function setstatus_action()
     }
     $tickets  = implode($_POST['tickets'], ',');
     $tickets  = _cleanTickets($tickets);
-    $oTickets =& xhelpGetTickets($tickets);
+    $oTickets =& Xhelp\Utility::getTickets($tickets);
 
     $depts = [];
     foreach ($oTickets as $ticket) {
@@ -394,9 +399,9 @@ function setstatus_action()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_CHANGE_STATUS);
     }
 
-    $hStatus = xhelpGetHandler('status');
+    $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
     $status  =& $hStatus->get($_POST['status']);
-    $ret     = xhelpSetStatus($tickets, $_POST['status']);
+    $ret     = Xhelp\Utility::setStatus($tickets, $_POST['status']);
     if ($ret) {
         $_eventsrv->trigger('batch_status', [&$oTickets, &$status]);
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_UPDATE_STATUS);
@@ -408,8 +413,9 @@ function setstatus_action()
 function setstatus_display()
 {
     global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser, $xoopsLogger, $xoopsUserIsAdmin, $displayName;
-    $hStatus = xhelpGetHandler('status');
-    $crit    = new Criteria('', '');
+
+    $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
+    $crit    = new \Criteria('', '');
     $crit->setOrder('ASC');
     $crit->setSort('description');
     $statuses = $hStatus->getObjects($crit);
@@ -419,9 +425,9 @@ function setstatus_display()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_TICKETS);
     }
 
-    $hDepartments = xhelpGetHandler('department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts        = $hDepartments->getObjects(null, true);
-    $oTickets     =& xhelpGetTickets($_POST['tickets']);
+    $oTickets     =& Xhelp\Utility::getTickets($_POST['tickets']);
     $all_users    = [];
     $j            = 0;
 
@@ -430,8 +436,8 @@ function setstatus_display()
 
     //Retrieve all member information for the current page
     if (count($all_users)) {
-        $crit  = new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-        $users =& xhelpGetUsers($crit, $displayName);
+        $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
+        $users =& Xhelp\Utility::getUsers($crit, $displayName);
     } else {
         $users = [];
     }
@@ -467,7 +473,7 @@ function setowner_action()
     }
     $tickets  = implode($_POST['tickets'], ',');
     $tickets  = _cleanTickets($tickets);
-    $oTickets =& xhelpGetTickets($tickets);
+    $oTickets =& Xhelp\Utility::getTickets($tickets);
 
     $depts = [];
     foreach ($oTickets as $ticket) {
@@ -478,7 +484,7 @@ function setowner_action()
     if (!$xhelp_staff->checkRoleRights(XHELP_SEC_TICKET_OWNERSHIP, $depts)) {
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_CHANGE_OWNER);
     }
-    $ret = xhelpSetOwner($tickets, $_POST['owner']);
+    $ret = Xhelp\Utility::setOwner($tickets, $_POST['owner']);
 
     if ($ret) {
         $_eventsrv->trigger('batch_owner', [&$oTickets, $_POST['owner']]);
@@ -497,13 +503,13 @@ function setowner_display()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_TICKETS);
     }
 
-    $hTickets     = xhelpGetHandler('ticket');
-    $hMember      = xhelpGetHandler('membership');
+    $hTickets     = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $hMember      = Xhelp\Helper::getInstance()->getHandler('Membership');
     $hXoopsMember = xoops_getHandler('member');
 
-    $hDepartments = xhelpGetHandler('department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts        = $hDepartments->getObjects(null, true);
-    $oTickets     =& xhelpGetTickets($_POST['tickets']);
+    $oTickets     =& Xhelp\Utility::getTickets($_POST['tickets']);
     $all_users    = [];
     $j            = 0;
 
@@ -512,8 +518,8 @@ function setowner_display()
 
     //Retrieve all member information for the current page
     if (count($all_users)) {
-        $crit  = new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-        $users =& xhelpGetUsers($crit, $displayName);
+        $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
+        $users =& Xhelp\Utility::getUsers($crit, $displayName);
     } else {
         $users = [];
     }
@@ -523,8 +529,8 @@ function setowner_display()
     foreach ($users as $uid => $user) {
         $aOwners[$uid] = $uid;
     }
-    $crit   = new Criteria('uid', '(' . implode(array_keys($aOwners), ',') . ')', 'IN');
-    $owners =& xhelpGetUsers($crit, $xoopsModuleConfig['xhelp_displayName']);
+    $crit   = new \Criteria('uid', '(' . implode(array_keys($aOwners), ',') . ')', 'IN');
+    $owners =& Xhelp\Utility::getUsers($crit, $xoopsModuleConfig['xhelp_displayName']);
 
     $a_users    = [];
     $a_users[0] = _XHELP_NO_OWNER;
@@ -559,7 +565,7 @@ function addresponse_action()
 
     $tickets  = implode($_POST['tickets'], ',');
     $tickets  = _cleanTickets($tickets);
-    $oTickets =& xhelpGetTickets($tickets);
+    $oTickets =& Xhelp\Utility::getTickets($tickets);
 
     $depts = [];
     foreach ($oTickets as $ticket) {
@@ -570,7 +576,7 @@ function addresponse_action()
     if (!$xhelp_staff->checkRoleRights(XHELP_SEC_RESPONSE_ADD, $depts)) {
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_ADD_RESPONSE);
     }
-    $ret =& xhelpAddResponse($tickets, $_POST['response'], $_POST['timespent'], $private);
+    $ret =& Xhelp\Utility::addResponse($tickets, $_POST['response'], $_POST['timespent'], $private);
     if ($ret) {
         $_xhelpSession->del('xhelp_batch_addresponse');
         $_xhelpSession->del('xhelp_batch_response');
@@ -587,7 +593,8 @@ function addresponse_action()
 function addresponse_display()
 {
     global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser, $xoopsLogger, $xoopsUserIsAdmin, $_xhelpSession, $displayName;
-    $hResponseTpl = xhelpGetHandler('responseTemplates');
+
+    $hResponseTpl = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');
     $ticketVar    = 'xhelp_batch_addresponse';
     $tpl          = 0;
     $uid          = $xoopsUser->getVar('uid');
@@ -601,9 +608,9 @@ function addresponse_display()
         $tickets = $_POST['tickets'];
     }
 
-    $hDepartments = xhelpGetHandler('department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts        = $hDepartments->getObjects(null, true);
-    $oTickets     =& xhelpGetTickets($_POST['tickets']);
+    $oTickets     =& Xhelp\Utility::getTickets($_POST['tickets']);
     $all_users    = [];
     $j            = 0;
 
@@ -612,8 +619,8 @@ function addresponse_display()
 
     //Retrieve all member information for the current page
     if (count($all_users)) {
-        $crit  = new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-        $users =& xhelpGetUsers($crit, $displayName);
+        $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
+        $users =& Xhelp\Utility::getUsers($crit, $displayName);
     } else {
         $users = [];
     }
@@ -641,7 +648,7 @@ function addresponse_display()
     $xoopsTpl->assign('xhelp_responseTpl', $tpl);
 
     //Get all staff defined templates
-    $crit = new Criteria('uid', $uid);
+    $crit = new \Criteria('uid', $uid);
     $crit->setSort('name');
     $responseTpl = $hResponseTpl->getObjects($crit, true);
 
@@ -677,7 +684,7 @@ function delete_action()
 
     $tickets  = implode($_POST['tickets'], ',');
     $tickets  = _cleanTickets($tickets);
-    $oTickets =& xhelpGetTickets($tickets);
+    $oTickets =& Xhelp\Utility::getTickets($tickets);
 
     $depts = [];
     foreach ($oTickets as $ticket) {
@@ -689,7 +696,7 @@ function delete_action()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_NO_DELETE_TICKET);
     }
 
-    $ret = xhelpDeleteTickets($tickets);
+    $ret = Xhelp\Utility::deleteTickets($tickets);
     if ($ret) {
         $_eventsrv->trigger('batch_delete_ticket', [@$oTickets]);
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _XHELP_MESSAGE_DELETE_TICKETS);
@@ -707,9 +714,9 @@ function delete_display()
         redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_MESSAGE_NO_TICKETS);
     }
 
-    $hDepartments = xhelpGetHandler('department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $depts        = $hDepartments->getObjects(null, true);
-    $oTickets     =& xhelpGetTickets($_POST['tickets']);
+    $oTickets     =& Xhelp\Utility::getTickets($_POST['tickets']);
     $all_users    = [];
     $j            = 0;
 
@@ -718,8 +725,8 @@ function delete_display()
 
     //Retrieve all member information for the current page
     if (count($all_users)) {
-        $crit  = new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-        $users =& xhelpGetUsers($crit, $displayName);
+        $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
+        $users =& Xhelp\Utility::getUsers($crit, $displayName);
     } else {
         $users = [];
     }
@@ -762,7 +769,7 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
     /** @var XoopsModuleHandler $moduleHandler */
     $moduleHandler = xoops_getHandler('module');
 
-    if (!$count = $moduleHandler->getByDirname('news') || $topicid == 0) {
+    if (!$count = $moduleHandler->getByDirname('news') || 0 == $topicid) {
         $xoopsTpl->assign('xhelp_useAnnouncements', false);
 
         return false;
@@ -785,7 +792,7 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
         $story           = [];
         $story['id']     = $sarray[$i]->storyid();
         $story['poster'] = $sarray[$i]->uname();
-        if ($story['poster'] !== false) {
+        if (false !== $story['poster']) {
             $story['poster'] = "<a href='" . XOOPS_URL . '/userinfo.php?uid=' . $sarray[$i]->uid() . "'>" . $story['poster'] . '</a>';
         } else {
             $story['poster'] = $xoopsConfig['anonymous'];
@@ -805,11 +812,11 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
         $ccount    = $sarray[$i]->comments();
         $morelink  .= '<a href="' . XOOPS_URL . '/modules/news/article.php?storyid=' . $sarray[$i]->storyid() . '';
         $morelink2 = '<a href="' . XOOPS_URL . '/modules/news/article.php?storyid=' . $sarray[$i]->storyid() . '';
-        if ($ccount == 0) {
+        if (0 == $ccount) {
             $morelink .= '">' . _XHELP_COMMMENTS . '</a>';
         } else {
             if ($fullcount < 1) {
-                if ($ccount == 1) {
+                if (1 == $ccount) {
                     $morelink .= '">' . _XHELP_ANNOUNCE_READMORE . '</a> | ' . $morelink2 . '">' . _XHELP_ANNOUNCE_ONECOMMENT . '</a>';
                 } else {
                     $morelink .= '">' . _XHELP_ANNOUNCE_READMORE . '</a> | ' . $morelink2 . '">';
@@ -817,7 +824,7 @@ function getAnnouncements($topicid, $limit = 5, $start = 0)
                     $morelink .= '</a>';
                 }
             } else {
-                if ($ccount == 1) {
+                if (1 == $ccount) {
                     $morelink .= '">' . _XHELP_ANNOUNCE_ONECOMMENT . '</a>';
                 } else {
                     $morelink .= '">';
@@ -895,16 +902,16 @@ function staffmain_display()
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _NOPERM);
     }
 
-    $xhelpConfig = xhelpGetModuleConfig();
+    $xhelpConfig = Xhelp\Utility::getModuleConfig();
     //Get Saved Searches for Current User + Searches for every user
-    $allSavedSearches = xhelpGetSavedSearches([$xoopsUser->getVar('uid'), XHELP_GLOBAL_UID]);
+    $allSavedSearches = Xhelp\Utility::getSavedSearches([$xoopsUser->getVar('uid'), XHELP_GLOBAL_UID]);
 
-    $hDepartments = xhelpGetHandler('department');
-    $hTickets     = xhelpGetHandler('ticket');
-    $hTicketList  = xhelpGetHandler('ticketList');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
+    $hTickets     = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $hTicketList  = Xhelp\Helper::getInstance()->getHandler('TicketList');
 
     //Set Number of items in each section
-    if ($limit == 0) {
+    if (0 == $limit) {
         $limit = $xhelpConfig['xhelp_staffTicketCount'];
     } elseif ($limit == -1) {
         $limit = 0;
@@ -941,12 +948,12 @@ function staffmain_display()
                 'description'    => $ticket->getVar('description'),
                 'department'     => _safeDepartmentName($dept),
                 'departmentid'   => $ticket->getVar('department'),
-                'departmenturl'  => xhelpMakeURI('index.php', [
+                'departmenturl'  => Xhelp\Utility::createURI('index.php', [
                     'op'   => 'staffViewAll',
                     'dept' => $ticket->getVar('department')
                 ]),
                 'priority'       => $ticket->getVar('priority'),
-                'status'         => xhelpGetStatus($ticket->getVar('status')),
+                'status'         => Xhelp\Utility::getStatus($ticket->getVar('status')),
                 'posted'         => $ticket->posted(),
                 'ownership'      => _XHELP_MESSAGE_NOOWNER,
                 'ownerid'        => $ticket->getVar('ownership'),
@@ -969,15 +976,15 @@ function staffmain_display()
 
     //Retrieve all member information for the current page
     if (count($all_users)) {
-        $crit  = new Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-        $users =& xhelpGetUsers($crit, $displayName);
+        $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
+        $users =& Xhelp\Utility::getUsers($crit, $displayName);
     } else {
         $users = [];
     }
 
     //Update tickets with user information
     for ($i = 0, $iMax = count($ticketLists); $i < $iMax; ++$i) {
-        for ($j = 0; $j < count($tickets[$i]['tickets']); ++$j) {
+        for ($j = 0, $jMax = count($tickets[$i]['tickets']); $j < $jMax; ++$j) {
             if (isset($users[$tickets[$i]['tickets'][$j]['uid']])) {
                 $tickets[$i]['tickets'][$j]['uname'] = $users[$tickets[$i]['tickets'][$j]['uid']];
             } else {
@@ -1047,6 +1054,7 @@ function staffviewall_display()
 {
     global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser, $xoopsLogger, $xoopsUserIsAdmin;
     global $xhelp_isStaff, $sort_order, $start, $limit, $xhelp_module_header, $state_opt, $aSavedSearches;
+
     if (!$xhelp_isStaff) {
         redirect_header(XHELP_BASE_URL . '/' . basename(__FILE__), 3, _NOPERM);
     }
@@ -1075,18 +1083,18 @@ function staffviewall_display()
     $ownership = (int)(isset($_REQUEST['ownership']) ? $_REQUEST['ownership'] : -1);
     $state     = (int)(isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
 
-    $xhelpConfig = xhelpGetModuleConfig();
-    $hTickets    = xhelpGetHandler('ticket');
-    $hMembership = xhelpGetHandler('membership');
+    $xhelpConfig = Xhelp\Utility::getModuleConfig();
+    $hTickets    = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $hMembership = Xhelp\Helper::getInstance()->getHandler('Membership');
 
-    if ($limit == 0) {
+    if (0 == $limit) {
         $limit = $xhelpConfig['xhelp_staffTicketCount'];
     } elseif ($limit == -1) {
         $limit = 0;
     }
 
     //Prepare Database Query and Querystring
-    $crit = new CriteriaCompo(new Criteria('uid', $uid, '=', 'j'));
+    $crit = new \CriteriaCompo(new \Criteria('uid', $uid, '=', 'j'));
     $qs   = [
         'op'    => 'staffViewAll', //Common Query String Values
         'start' => $start,
@@ -1095,20 +1103,20 @@ function staffviewall_display()
 
     if ($dept) {
         $qs['dept'] = $dept;
-        $crit->add(new Criteria('department', $dept, '=', 't'));
+        $crit->add(new \Criteria('department', $dept, '=', 't'));
     }
     if ($status != -1) {
         $qs['status'] = $status;
-        $crit->add(new Criteria('status', $status, '=', 't'));
+        $crit->add(new \Criteria('status', $status, '=', 't'));
     }
     if ($ownership != -1) {
         $qs['ownership'] = $ownership;
-        $crit->add(new Criteria('ownership', $ownership, '=', 't'));
+        $crit->add(new \Criteria('ownership', $ownership, '=', 't'));
     }
 
     if ($state != -1) {
         $qs['state'] = $state;
-        $crit->add(new Criteria('state', $state, '=', 's'));
+        $crit->add(new \Criteria('state', $state, '=', 's'));
     }
 
     $crit->setLimit($limit);
@@ -1129,7 +1137,7 @@ function staffviewall_display()
             $col_sortby      = false;
         }
         $tpl_cols[$col] = [
-            'url'      => xhelpMakeURI(basename(__FILE__), array_merge($qs, $col_qs)),
+            'url'      => Xhelp\Utility::createURI(basename(__FILE__), array_merge($qs, $col_qs)),
             'urltitle' => _XHELP_TEXT_SORT_TICKETS,
             'sortby'   => $col_sortby,
             'sortdir'  => strtolower($col_qs['order'])
@@ -1138,7 +1146,7 @@ function staffviewall_display()
 
     $allTickets = $hTickets->getObjectsByStaff($crit, true);
     $count      = $hTickets->getCountByStaff($crit);
-    $nav        = new XoopsPageNav($count, $limit, $start, 'start', "op=staffViewAll&amp;limit=$limit&amp;sort=$sort&amp;order=$order&amp;dept=$dept&amp;status=$status&amp;ownership=$ownership");
+    $nav        = new \XoopsPageNav($count, $limit, $start, 'start', "op=staffViewAll&amp;limit=$limit&amp;sort=$sort&amp;order=$order&amp;dept=$dept&amp;status=$status&amp;ownership=$ownership");
     $tickets    = [];
     $allUsers   = [];
     $depts      =& $hMembership->membershipByStaff($xoopsUser->getVar('uid'), true);    //All Departments for Staff Member
@@ -1153,9 +1161,9 @@ function staffviewall_display()
             'description'    => $ticket->getVar('description'),
             'department'     => _safeDepartmentName($depts[$deptid]),
             'departmentid'   => $deptid,
-            'departmenturl'  => xhelpMakeURI('index.php', ['op' => 'staffViewAll', 'dept' => $deptid]),
+            'departmenturl'  => Xhelp\Utility::createURI('index.php', ['op' => 'staffViewAll', 'dept' => $deptid]),
             'priority'       => $ticket->getVar('priority'),
-            'status'         => xhelpGetStatus($ticket->getVar('status')),
+            'status'         => Xhelp\Utility::getStatus($ticket->getVar('status')),
             'posted'         => $ticket->posted(),
             'ownership'      => _XHELP_MESSAGE_NOOWNER,
             'ownerid'        => $ticket->getVar('ownership'),
@@ -1178,11 +1186,11 @@ function staffviewall_display()
     unset($allTickets);
 
     //Get all member information needed on this page
-    $crit  = new Criteria('uid', '(' . implode(array_keys($allUsers), ',') . ')', 'IN');
-    $users =& xhelpGetUsers($crit, $xhelpConfig['xhelp_displayName']);
+    $crit  = new \Criteria('uid', '(' . implode(array_keys($allUsers), ',') . ')', 'IN');
+    $users = Xhelp\Utility::getUsers($crit, $xhelpConfig['xhelp_displayName']);
     unset($allUsers);
 
-    $staff_opt =& xhelpGetStaff($xhelpConfig['xhelp_displayName']);
+    $staff_opt =& Xhelp\Utility::getStaff($xhelpConfig['xhelp_displayName']);
 
     for ($i = 0, $iMax = count($tickets); $i < $iMax; ++$i) {
         if (isset($users[$tickets[$i]['uid']])) {
@@ -1206,14 +1214,14 @@ function staffviewall_display()
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_staff_viewall.tpl';   // Set template
     require XOOPS_ROOT_PATH . '/header.php';                     // Include the page header
 
-    $javascript = "<script type=\"text/javascript\" src=\"" . XHELP_BASE_URL . "/include/functions.js\"></script>
+    $javascript = '<script type="text/javascript" src="' . XHELP_BASE_URL . "/include/functions.js\"></script>
 <script type=\"text/javascript\" src='" . XHELP_SCRIPT_URL . "/changeSelectedState.php?client'></script>
 <script type=\"text/javascript\">
 <!--
 function states_onchange()
 {
     state = xoopsGetElementById('state');
-    var sH = new xhelpweblib(stateHandler);
+    var sH = new WebLib(stateHandler);
     sH.statusesbystate(state.value);
 }
 
@@ -1247,7 +1255,7 @@ window.setTimeout('window_onload()', 1500);
         '2' => _XHELP_PRIORITY2,
         '1' => _XHELP_PRIORITY1
     ]);
-    if ($limit != 0) {
+    if (0 != $limit) {
         $xoopsTpl->assign('xhelp_pagenav', $nav->renderNav());
     }
     $xoopsTpl->assign('xhelp_limit_options', [-1 => _XHELP_TEXT_SELECT_ALL, 10 => '10', 15 => '15', 20 => '20', 30 => '30']);
@@ -1265,8 +1273,8 @@ window.setTimeout('window_onload()', 1500);
     $xoopsTpl->append('xhelp_department_values', 0);
     $xoopsTpl->append('xhelp_department_options', _XHELP_TEXT_SELECT_ALL);
 
-    if ($xhelpConfig['xhelp_deptVisibility'] == 1) {    // Apply dept visibility to staff members?
-        $hMembership = xhelpGetHandler('membership');
+    if (1 == $xhelpConfig['xhelp_deptVisibility']) {    // Apply dept visibility to staff members?
+        $hMembership = Xhelp\Helper::getInstance()->getHandler('Membership');
         $depts       = $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
     }
 
@@ -1281,8 +1289,8 @@ window.setTimeout('window_onload()', 1500);
     $xoopsTpl->assign('xhelp_state_values', array_values($state_opt));
     $xoopsTpl->assign('xhelp_savedSearches', $aSavedSearches);
 
-    $hStatus = xhelpGetHandler('status');
-    $crit    = new Criteria('', '');
+    $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
+    $crit    = new \Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
     $statuses = $hStatus->getObjects($crit);
@@ -1310,19 +1318,19 @@ function usermain_display()
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_user_index.tpl';    // Set template
     require XOOPS_ROOT_PATH . '/header.php';                     // Include the page header
 
-    $xhelpConfig = xhelpGetModuleConfig();
-    $hStaff      = xhelpGetHandler('staff');
+    $xhelpConfig = Xhelp\Utility::getModuleConfig();
+    $hStaff      = Xhelp\Helper::getInstance()->getHandler('Staff');
 
     $staffCount = $hStaff->getObjects();
-    if (count($staffCount) == 0) {
+    if (0 == count($staffCount)) {
         $xoopsTpl->assign('xhelp_noStaff', true);
     }
     /**
      * @todo remove calls to these three classes and use the ones in beginning
      */
     $memberHandler = xoops_getHandler('member');
-    $hDepartments  = xhelpGetHandler('department');
-    $hTickets      = xhelpGetHandler('ticket');
+    $hDepartments  = Xhelp\Helper::getInstance()->getHandler('Department');
+    $hTickets      = Xhelp\Helper::getInstance()->getHandler('Ticket');
 
     $userTickets =& $hTickets->getMyUnresolvedTickets($xoopsUser->getVar('uid'), true);
 
@@ -1331,7 +1339,7 @@ function usermain_display()
             'id'       => $ticket->getVar('id'),
             'uid'      => $ticket->getVar('uid'),
             'subject'  => $ticket->getVar('subject'),
-            'status'   => xhelpGetStatus($ticket->getVar('status')),
+            'status'   => Xhelp\Utility::getStatus($ticket->getVar('status')),
             'priority' => $ticket->getVar('priority'),
             'posted'   => $ticket->posted()
         ];
@@ -1385,23 +1393,23 @@ function userviewall_display()
     $order        = (in_array(strtoupper($order), $sort_order) ? $order : $sort_columns[$sort]);
     $uid          = $xoopsUser->getVar('uid');
 
-    $hDepartments = xhelpGetHandler('department');
-    $hTickets     = xhelpGetHandler('ticket');
-    $hStaff       = xhelpGetHandler('staff');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
+    $hTickets     = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $hStaff       = Xhelp\Helper::getInstance()->getHandler('Staff');
 
     $dept   = (int)(isset($_REQUEST['dept']) ? $_REQUEST['dept'] : 0);
     $status = (int)(isset($_REQUEST['status']) ? $_REQUEST['status'] : -1);
     $state  = (int)(isset($_REQUEST['state']) ? $_REQUEST['state'] : -1);
     $depts  = $hDepartments->getObjects(null, true);
 
-    if ($limit == 0) {
+    if (0 == $limit) {
         $limit = 10;
     } elseif ($limit == -1) {
         $limit = 0;
     }
 
     //Prepare Database Query and Querystring
-    $crit = new CriteriaCompo(new Criteria('uid', $uid));
+    $crit = new \CriteriaCompo(new \Criteria('uid', $uid));
     $qs   = [
         'op'    => 'userViewAll', //Common Query String Values
         'start' => $start,
@@ -1410,16 +1418,16 @@ function userviewall_display()
 
     if ($dept) {
         $qs['dept'] = $dept;
-        $crit->add(new Criteria('department', $dept, '=', 't'));
+        $crit->add(new \Criteria('department', $dept, '=', 't'));
     }
     if ($status != -1) {
         $qs['status'] = $status;
-        $crit->add(new Criteria('status', $status, '=', 't'));
+        $crit->add(new \Criteria('status', $status, '=', 't'));
     }
 
     if ($state != -1) {
         $qs['state'] = $state;
-        $crit->add(new Criteria('state', $state, '=', 's'));
+        $crit->add(new \Criteria('state', $state, '=', 's'));
     }
 
     $crit->setLimit($limit);
@@ -1440,7 +1448,7 @@ function userviewall_display()
             $col_sortby      = false;
         }
         $tpl_cols[$col] = [
-            'url'      => xhelpMakeURI(basename(__FILE__), array_merge($qs, $col_qs)),
+            'url'      => Xhelp\Utility::createURI(basename(__FILE__), array_merge($qs, $col_qs)),
             'urltitle' => _XHELP_TEXT_SORT_TICKETS,
             'sortby'   => $col_sortby,
             'sortdir'  => strtolower($col_qs['order'])
@@ -1449,7 +1457,7 @@ function userviewall_display()
 
     $xoopsTpl->assign('xhelp_cols', $tpl_cols);
     $staffCount = $hStaff->getObjects();
-    if (count($staffCount) == 0) {
+    if (0 == count($staffCount)) {
         $xoopsTpl->assign('xhelp_noStaff', true);
     }
 
@@ -1460,10 +1468,10 @@ function userviewall_display()
             'uid'           => $ticket->getVar('uid'),
             'subject'       => xoops_substr($ticket->getVar('subject'), 0, 35),
             'full_subject'  => $ticket->getVar('subject'),
-            'status'        => xhelpGetStatus($ticket->getVar('status')),
+            'status'        => Xhelp\Utility::getStatus($ticket->getVar('status')),
             'department'    => _safeDepartmentName($depts[$ticket->getVar('department')]),
             'departmentid'  => $ticket->getVar('department'),
-            'departmenturl' => xhelpMakeURI(basename(__FILE__), ['op' => 'userViewAll', 'dept' => $ticket->getVar('department')]),
+            'departmenturl' => Xhelp\Utility::createURI(basename(__FILE__), ['op' => 'userViewAll', 'dept' => $ticket->getVar('department')]),
             'priority'      => $ticket->getVar('priority'),
             'posted'        => $ticket->posted(),
             'elapsed'       => $ticket->elapsed()
@@ -1476,14 +1484,14 @@ function userviewall_display()
         $xoopsTpl->assign('xhelp_userTickets', 0);
     }
 
-    $javascript = "<script type=\"text/javascript\" src=\"" . XHELP_BASE_URL . "/include/functions.js\"></script>
+    $javascript = '<script type="text/javascript" src="' . XHELP_BASE_URL . "/include/functions.js\"></script>
 <script type=\"text/javascript\" src='" . XHELP_SCRIPT_URL . "/changeSelectedState.php?client'></script>
 <script type=\"text/javascript\">
 <!--
 function states_onchange()
 {
     state = xoopsGetElementById('state');
-    var sH = new xhelpweblib(stateHandler);
+    var sH = new Xhelp\WebLib(stateHandler);
     sH.statusesbystate(state.value);
 }
 
@@ -1530,15 +1538,15 @@ window.setTimeout('window_onload()', 1500);
     $xoopsTpl->append('xhelp_department_options', _XHELP_TEXT_SELECT_ALL);
 
     //$depts = getVisibleDepartments($depts);
-    $hMembership = xhelpGetHandler('membership');
-    $depts       =& $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
+    $hMembership = Xhelp\Helper::getInstance()->getHandler('Membership');
+    $depts       = $hMembership->getVisibleDepartments($xoopsUser->getVar('uid'));
     foreach ($depts as $xhelp_id => $obj) {
         $xoopsTpl->append('xhelp_department_values', $xhelp_id);
         $xoopsTpl->append('xhelp_department_options', $obj->getVar('department'));
     }
 
-    $hStatus = xhelpGetHandler('status');
-    $crit    = new Criteria('', '');
+    $hStatus = Xhelp\Helper::getInstance()->getHandler('Status');
+    $crit    = new \Criteria('', '');
     $crit->setSort('description');
     $crit->setOrder('ASC');
     $statuses = $hStatus->getObjects($crit);
@@ -1583,12 +1591,12 @@ function _makeBatchTicketArray(&$oTickets, &$depts, &$all_users, &$j, $task)
                 'description'    => $ticket->getVar('description'),
                 'department'     => _safeDepartmentName($dept),
                 'departmentid'   => $ticket->getVar('department'),
-                'departmenturl'  => xhelpMakeURI('index.php', [
+                'departmenturl'  => Xhelp\Utility::createURI('index.php', [
                     'op'   => 'staffViewAll',
                     'dept' => $ticket->getVar('department')
                 ]),
                 'priority'       => $ticket->getVar('priority'),
-                'status'         => xhelpGetStatus($ticket->getVar('status')),
+                'status'         => Xhelp\Utility::getStatus($ticket->getVar('status')),
                 'posted'         => $ticket->posted(),
                 'ownership'      => _XHELP_MESSAGE_NOOWNER,
                 'ownerid'        => $ticket->getVar('ownership'),
@@ -1609,12 +1617,12 @@ function _makeBatchTicketArray(&$oTickets, &$depts, &$all_users, &$j, $task)
                 'description'    => $ticket->getVar('description'),
                 'department'     => _safeDepartmentName($dept),
                 'departmentid'   => $ticket->getVar('department'),
-                'departmenturl'  => xhelpMakeURI('index.php', [
+                'departmenturl'  => Xhelp\Utility::createURI('index.php', [
                     'op'   => 'staffViewAll',
                     'dept' => $ticket->getVar('department')
                 ]),
                 'priority'       => $ticket->getVar('priority'),
-                'status'         => xhelpGetStatus($ticket->getVar('status')),
+                'status'         => Xhelp\Utility::getStatus($ticket->getVar('status')),
                 'posted'         => $ticket->posted(),
                 'ownership'      => _XHELP_MESSAGE_NOOWNER,
                 'ownerid'        => $ticket->getVar('ownership'),
@@ -1649,7 +1657,7 @@ function _updateBatchTicketInfo(&$sortedTickets, &$users, &$j)
     //Update tickets with user information
     $aTicketTypes = ['good', 'bad'];
     foreach ($aTicketTypes as $ticketType) {
-        for ($j = 0; $j < count($sortedTickets[$ticketType]); ++$j) {
+        for ($j = 0, $jMax = count($sortedTickets[$ticketType]); $j < $jMax; ++$j) {
             if (isset($users[$sortedTickets[$ticketType][$j]['uid']])) {
                 $sortedTickets[$ticketType][$j]['uname'] = $users[$sortedTickets[$ticketType][$j]['uid']];
             } else {

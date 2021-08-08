@@ -1,74 +1,94 @@
 <?php
-//
 
-$moduleDirName = basename(dirname(__DIR__));
+use XoopsModules\Xhelp;
 
-if (false !== ($moduleHelper = Xmf\Module\Helper::getHelper($moduleDirName))) {
-} else {
-    $moduleHelper = Xmf\Module\Helper::getHelper('system');
-}
-$adminObject = \Xmf\Module\Admin::getInstance();
+require_once __DIR__ . '/../class/Helper.php';
+//require_once __DIR__ . '/../include/common.php';
+$helper = Xhelp\Helper::getInstance();
 
 $pathIcon32 = \Xmf\Module\Admin::menuIconPath('');
-//$pathModIcon32 = $moduleHelper->getModule()->getInfo('modicons32');
+$pathModIcon32 = $helper->getModule()->getInfo('modicons32');
 
-$moduleHelper->loadLanguage('modinfo');
 
-$adminObject            = [];
-$i                      = 0;
-$adminmenu[$i]['title'] = _AM_MODULEADMIN_HOME;
-$adminmenu[$i]['link']  = 'admin/index.php';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/home.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_MENU_MANAGER;
-$adminmenu[$i]['link']  = 'admin/main.php';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/manage.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_MENU_MANAGE_DEPARTMENTS;
-$adminmenu[$i]['link']  = 'admin/department.php?op=manageDepartments';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/category.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_MENU_MANAGE_FILES;
-$adminmenu[$i]['link']  = 'admin/file.php?op=manageFiles';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/content.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_MENU_MANAGE_STAFF;
-$adminmenu[$i]['link']  = 'admin/staff.php?op=manageStaff';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/users.png';
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_HOME,
+    'link'  => 'admin/index.php',
+    'icon'  => $pathIcon32 . '/home.png',
+];
 
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_TEXT_NOTIFICATIONS;
-$adminmenu[$i]['link']  = 'admin/notifications.php';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/face-smile.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_TEXT_MANAGE_STATUSES;
-$adminmenu[$i]['link']  = 'admin/status.php?op=manageStatus';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/stats.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_TEXT_MANAGE_FIELDS;
-$adminmenu[$i]['link']  = 'admin/fields.php';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/insert_table_row.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_TEXT_MANAGE_FAQ;
-$adminmenu[$i]['link']  = 'admin/faqAdapter.php';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/faq.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_MENU_CHECK_TABLES;
-$adminmenu[$i]['link']  = 'admin/upgrade.php?op=checkTables';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/index.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_MENU_MIMETYPES;
-$adminmenu[$i]['link']  = 'admin/mimetypes.php';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/type.png';
-++$i;
-$adminmenu[$i]['title'] = _MI_XHELP_MENU_MAIL_EVENTS;
-$adminmenu[$i]['link']  = 'admin/main.php?op=mailEvents';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/mail_foward.png';
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_MANAGER,
+    'link'  => 'admin/main.php',
+    'icon'  => $pathIcon32 . '/manage.png',
+];
 
-++$i;
-$adminmenu[$i]['title'] = _AM_MODULEADMIN_ABOUT;
-$adminmenu[$i]['link']  = 'admin/about.php';
-$adminmenu[$i]['icon']  = $pathIcon32 . '/about.png';
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_MANAGE_DEPARTMENTS,
+    'link'  => 'admin/department.php?op=manageDepartments',
+    'icon'  => $pathIcon32 . '/category.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_MANAGE_FILES,
+    'link'  => 'admin/file.php?op=manageFiles',
+    'icon'  => $pathIcon32 . '/content.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_MANAGE_STAFF,
+    'link'  => 'admin/staff.php?op=manageStaff',
+    'icon'  => $pathIcon32 . '/users.png',
+
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_TEXT_NOTIFICATIONS,
+    'link'  => 'admin/notifications.php',
+    'icon'  => $pathIcon32 . '/face-smile.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_TEXT_MANAGE_STATUSES,
+    'link'  => 'admin/staff.php?op=manageStatus',
+    'icon'  => $pathIcon32 . '/stats.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_TEXT_MANAGE_FIELDS,
+    'link'  => 'admin/fields.php',
+    'icon'  => $pathIcon32 . '/insert_table_row.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_TEXT_MANAGE_FAQ,
+    'link'  => 'admin/faqAdapter.php',
+    'icon'  => $pathIcon32 . '/faq.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_CHECK_TABLES,
+    'link'  => 'admin/upgrade.php?op=checkTables',
+    'icon'  => $pathIcon32 . '/index.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_MIMETYPES,
+    'link'  => 'admin/mimetypes.php',
+    'icon'  => $pathIcon32 . '/type.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_MAIL_EVENTS,
+    'link'  => 'admin/main.php?op=mailEvents',
+    'icon'  => $pathIcon32 . '/mail_foward.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_ADMIN_ABOUT,
+    'link'  => 'admin/about.php',
+    'icon'  => $pathIcon32 . '/about.png',
+];
+
 
 /*
 $oAdminButton->AddTopLink(_AM_XHELP_MENU_PREFERENCES, XOOPS_URL ."/modules/system/admin.php?fct=preferences&amp;op=showmod&amp;mod=". $module_id);

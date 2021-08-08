@@ -73,7 +73,7 @@ define('_MI_XHELP_NUM_TICKET_UPLOADS', 'Max Number of Files to Upload');
 define('_MI_XHELP_NUM_TICKET_UPLOADS_DSC', 'This is the maximum number of files that can be uploaded to a ticket on ticket submission (does not include file custom fields).');
 define('_MI_XHELP_ANNOUNCEMENTS', 'Announcements News Topic');
 //define('_MI_XHELP_ANNOUNCEMENTS_DSC','This is the news topic that pulls announcements for xhelp. Update the xHelp module to see newly added news categories');
-define('_MI_XHELP_ANNOUNCEMENTS_DSC', "This is the news topic that pulls announcements for xhelp. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateTopics\", \"xoops_module_install_xhelp\",400, 300);'>Click here</a> to update the news categories.");
+define('_MI_XHELP_ANNOUNCEMENTS_DSC', "This is the news topic that pulls announcements for xhelp. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateTopics\", \"xoops_module_install_Xhelp\",400, 300);'>Click here</a> to update the news categories.");
 define('_MI_XHELP_ANNOUNCEMENTS_NONE', '***Disable announcements***');
 define('_MI_XHELP_ALLOW_REOPEN', 'Allow Ticket Re-open');
 define('_MI_XHELP_ALLOW_REOPEN_DSC', 'Allow users to re-open a ticket after it has been closed?');
@@ -84,8 +84,10 @@ define('_MI_XHELP_STAFF_ACTIONS_DSC', 'What style would you like the staff actio
 define('_MI_XHELP_ACTION1', 'Inline-Style');
 define('_MI_XHELP_ACTION2', 'Block-Style');
 define('_MI_XHELP_DEFAULT_DEPT', 'Default Department');
-define('_MI_XHELP_DEFAULT_DEPT_DSC',
-       "This will be the default department that is selected in the list when adding a ticket. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateDepts\", \"xoops_module_install_xhelp\",400, 300);'>Click here</a> to update the departments.");
+define(
+    '_MI_XHELP_DEFAULT_DEPT_DSC',
+       "This will be the default department that is selected in the list when adding a ticket. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateDepts\", \"xoops_module_install_Xhelp\",400, 300);'>Click here</a> to update the departments."
+);
 define('_MI_XHELP_OVERDUE_TIME', 'Ticket Overdue Time');
 define('_MI_XHELP_OVERDUE_TIME_DSC', 'This determines how long the staff have to finish a ticket before it is late (in hours).');
 define('_MI_XHELP_ALLOW_ANON', 'Allow Anonymous User Ticket Submission');
@@ -99,23 +101,23 @@ define('_MI_XHELP_REALNAME', 'Real Name');
 
 // Admin Menu variables
 define('_MI_XHELP_MENU_BLOCKS', 'Manage Blocks');
-define('_MI_XHELP_MENU_MANAGE_DEPARTMENTS', 'Manage Departments');
-define('_MI_XHELP_MENU_MANAGE_STAFF', 'Manage Staff');
+define('_MI_XHELP_MENU_MANAGE_DEPARTMENTS', 'Departments');
+define('_MI_XHELP_MENU_MANAGE_STAFF', 'Staff');
 define('_MI_XHELP_MENU_MODIFY_EMLTPL', 'Modify Email Templates');
 define('_MI_XHELP_MENU_MODIFY_TICKET_FIELDS', 'Modify Ticket Fields');
-define('_MI_XHELP_MENU_GROUP_PERM', 'Group Permissions');
+define('_MI_XHELP_MENU_GROUP_PERM', 'Permissions');
 define('_MI_XHELP_MENU_ADD_STAFF', 'Add Staff');
-define('_MI_XHELP_MENU_MIMETYPES', 'Mimetype Management');
+define('_MI_XHELP_MENU_MIMETYPES', 'Mimetypes');
 define('_MI_XHELP_MENU_CHECK_TABLES', 'Check Tables');
-define('_MI_XHELP_MENU_MANAGE_ROLES', 'Manage Roles');
+define('_MI_XHELP_MENU_MANAGE_ROLES', 'Roles');
 define('_MI_XHELP_MENU_MAIL_EVENTS', 'Mail Events');
 define('_MI_XHELP_MENU_CHECK_EMAIL', 'Check Email');
-define('_MI_XHELP_MENU_MANAGE_FILES', 'Manage Files');
+define('_MI_XHELP_MENU_MANAGE_FILES', 'Files');
 define('_MI_XHELP_ADMIN_ABOUT', 'About');
-define('_MI_XHELP_TEXT_MANAGE_STATUSES', 'Manage Statuses');
+define('_MI_XHELP_TEXT_MANAGE_STATUSES', 'Statuses');
 define('_MI_XHELP_TEXT_MANAGE_FIELDS', 'Custom Fields');
-define('_MI_XHELP_TEXT_NOTIFICATIONS', 'Manage Notifications');
-define('_MI_XHELP_TEXT_MANAGE_FAQ', 'Manage FAQ');
+define('_MI_XHELP_TEXT_NOTIFICATIONS', 'Notifications');
+define('_MI_XHELP_TEXT_MANAGE_FAQ', 'FAQ');
 
 //NOTIFICATION vars
 define('_MI_XHELP_DEPT_NOTIFY', 'Department');
@@ -279,7 +281,7 @@ define('_MI_XHELP_MENU_MANAGER', 'Manager');
 
 //Help
 define('_MI_XHELP_DIRNAME', basename(dirname(dirname(__DIR__))));
-define('_MI_XHELP_HELP_HEADER', __DIR__ . '/help/helpheader.html');
+define('_MI_XHELP_HELP_HEADER', __DIR__ . '/help/helpheader.tpl');
 define('_MI_XHELP_BACK_2_ADMIN', 'Back to Administration of ');
 define('_MI_XHELP_OVERVIEW', 'Overview');
 
@@ -289,15 +291,5 @@ define('_MI_XHELP_OVERVIEW', 'Overview');
 define('_MI_XHELP_DISCLAIMER', 'Disclaimer');
 define('_MI_XHELP_LICENSE', 'License');
 define('_MI_XHELP_SUPPORT', 'Support');
-//define('_MI_XHELP_REQUIREMENTS', 'Requirements');
-//define('_MI_XHELP_CREDITS', 'Credits');
-//define('_MI_XHELP_HOWTO', 'How To');
-//define('_MI_XHELP_UPDATE', 'Update');
-//define('_MI_XHELP_INSTALL', 'Install');
-//define('_MI_XHELP_HISTORY', 'History');
-//define('_MI_XHELP_HELP1', 'YYYYY');
-//define('_MI_XHELP_HELP2', 'YYYYY');
-//define('_MI_XHELP_HELP3', 'YYYYY');
-//define('_MI_XHELP_HELP4', 'YYYYY');
-//define('_MI_XHELP_HELP5', 'YYYYY');
-//define('_MI_XHELP_HELP6', 'YYYYY');
+
+define('_MI_XHELP_MENU_HOME', 'Home');

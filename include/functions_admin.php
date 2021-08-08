@@ -1,8 +1,10 @@
 <?php
 
+use XoopsModules\Xhelp;
+
 //function xhelpAdminFooter()
 //{
-//    echo "<br><center><a target='_BLANK' href='http://www.3dev.org'><img src='".XHELP_IMAGE_URL."/3Dev_xhelp.png'></a></center>";
+//    echo "<br><div class='center;'><a target='_BLANK' href='http://www.3dev.org'><img src='".XHELP_IMAGE_URL."/3Dev_xhelp.png'></a></div>";
 //}
 
 /**
@@ -82,8 +84,8 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     $size = 0;
 
     if ($getResolved) {
-        $hTicket = xhelpGetHandler('ticket');
-        $hFile   = xhelpGetHandler('file');
+        $hTicket = Xhelp\Helper::getInstance()->getHandler('Ticket');
+        $hFile   = Xhelp\Helper::getInstance()->getHandler('File');
 
         $tickets = $hTicket->getObjectsByState(1);
 
@@ -93,7 +95,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
         }
 
         // Retrieve all unresolved ticket attachments
-        $crit   = new Criteria('ticketid', '(' . implode($aTickets, ',') . ')', 'IN');
+        $crit   = new \Criteria('ticketid', '(' . implode($aTickets, ',') . ')', 'IN');
         $files  = $hFile->getObjects($crit);
         $aFiles = [];
         foreach ($files as $f) {
@@ -102,7 +104,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     }
 
     while ($file = $dir->read()) {
-        if ($file !== '.' && $file !== '..') {
+        if ('.' !== $file && '..' !== $file) {
             if (is_dir($file)) {
                 $size += dirsize($dirName . '/' . $file);
             } else {
@@ -118,7 +120,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     }
     $dir->close();
 
-    return xhelpPrettyBytes($size);
+    return Xhelp\Utility::prettyBytes($size);
 }
 
 /**
@@ -340,26 +342,26 @@ function seemsUtf8($Str)
         if (ord($Str[$i]) < 0x80) {
             continue;
         } # 0bbbbbbb
-        elseif ((ord($Str[$i]) & 0xE0) == 0xC0) {
+        elseif (0xC0 == (ord($Str[$i]) & 0xE0)) {
             $n = 1;
         } # 110bbbbb
-        elseif ((ord($Str[$i]) & 0xF0) == 0xE0) {
+        elseif (0xE0 == (ord($Str[$i]) & 0xF0)) {
             $n = 2;
         } # 1110bbbb
-        elseif ((ord($Str[$i]) & 0xF8) == 0xF0) {
+        elseif (0xF0 == (ord($Str[$i]) & 0xF8)) {
             $n = 3;
         } # 11110bbb
-        elseif ((ord($Str[$i]) & 0xFC) == 0xF8) {
+        elseif (0xF8 == (ord($Str[$i]) & 0xFC)) {
             $n = 4;
         } # 111110bb
-        elseif ((ord($Str[$i]) & 0xFE) == 0xFC) {
+        elseif (0xFC == (ord($Str[$i]) & 0xFE)) {
             $n = 5;
         } # 1111110b
         else {
             return false;
         } # Does not match any model
         for ($j = 0; $j < $n; ++$j) { # n bytes matching 10bbbbbb follow ?
-            if ((++$i == strlen($Str)) || ((ord($Str[$i]) & 0xC0) != 0x80)) {
+            if ((++$i == strlen($Str)) || (0x80 != (ord($Str[$i]) & 0xC0))) {
                 return false;
             }
         }
@@ -391,10 +393,10 @@ function sanitizeFieldName($field)
  */
 function xhelpCreateDepartmentVisibility()
 {
-    $hDepartments = xhelpGetHandler('department');
+    $hDepartments = Xhelp\Helper::getInstance()->getHandler('Department');
     $hGroups      = xoops_getHandler('group');
     $hGroupPerm   = xoops_getHandler('groupperm');
-    $xoopsModule  = xhelpGetModule();
+    $xoopsModule  = Xhelp\Utility::getModule();
 
     $module_id = $xoopsModule->getVar('mid');
 
@@ -412,9 +414,9 @@ function xhelpCreateDepartmentVisibility()
         $deptID = $dept->getVar('id');
 
         // Remove old group permissions
-        $crit = new CriteriaCompo(new Criteria('gperm_modid', $module_id));
-        $crit->add(new Criteria('gperm_itemid', $deptID));
-        $crit->add(new Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
+        $crit = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
+        $crit->add(new \Criteria('gperm_itemid', $deptID));
+        $crit->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
         $hGroupPerm->deleteAll($crit);
 
         foreach ($aGroups as $group => $group_name) {     // Add new group permissions

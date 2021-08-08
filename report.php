@@ -1,5 +1,7 @@
 <?php
-//
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
 
@@ -7,8 +9,8 @@ if (!file_exists(XHELP_JPGRAPH_PATH . '/jpgraph.php')) {
     redirect_header(XHELP_BASE_URL . '/index.php', 5, _XHELP_TEXT_NO_JPGRAPH);
 }
 
-require_once XHELP_CLASS_PATH . '/reportFactory.php';
-require_once XHELP_CLASS_PATH . '/reportRendererFactory.php';
+// require_once XHELP_CLASS_PATH . '/reportFactory.php';
+// require_once XHELP_CLASS_PATH . '/ReportRendererFactory.php';
 
 if (!$xhelp_isStaff) {        // Is user a staff member?
     redirect_header(XHELP_BASE_URL . '/index.php', 3, _NO_PERM);
@@ -21,7 +23,7 @@ if (isset($_GET['op'])) {
 
 switch ($op) {
     case 'run':
-        if (!isset($_REQUEST['name']) && $_REQUEST['name'] == '') {
+        if (!isset($_REQUEST['name']) && '' == $_REQUEST['name']) {
             redirect_header(XHELP_BASE_URL . '/report.php', 3, _XHELP_MSG_NO_REPORT);
         }
         $reportName = $_REQUEST['name'];
@@ -34,7 +36,7 @@ switch ($op) {
         break;
 
     case 'graph':
-        if (!isset($_GET['name']) && $_GET['name'] == '') {
+        if (!isset($_GET['name']) && '' == $_GET['name']) {
             redirect_header(XHELP_BASE_URL . '/report.php', 3, _XHELP_MSG_NO_REPORT);
         }
         $reportName = $_REQUEST['name'];
@@ -45,7 +47,7 @@ switch ($op) {
         break;
 
     default:        // Display list of reports
-        $reports = xhelpReportFactory::getReports();
+        $reports = Xhelp\ReportFactory::getReports();
 
         $rptNames = [];
         foreach ($reports as $rpt => $obj) {
@@ -105,14 +107,14 @@ function runReport($reportName)
     if (count($reportParams) > 0) {
         foreach ($reportParams as $param) {
             if (isset($_REQUEST[$param->fieldname])) {
-                if ($param->controltype == XHELP_CONTROL_DATETIME) {
+                if (XHELP_CONTROL_DATETIME == $param->controltype) {
                     $param->value = strtotime($_REQUEST[$param->fieldname]);
                 } else {
                     $param->value = $_REQUEST[$param->fieldname];
                 }
             } else {
                 if (isset($paramVals[$param->fieldname])) {
-                    if ($param->controltype == XHELP_CONTROL_DATETIME) {
+                    if (XHELP_CONTROL_DATETIME == $param->controltype) {
                         $param->value = strtotime($paramVals[$param->fieldname]);
                     } else {
                         if (is_array($paramVals[$param->fieldname])) {
@@ -132,7 +134,7 @@ function runReport($reportName)
 
     generateHeader($report);
 
-    $oRenderer = xhelpReportRendererFactory::getRenderer('html', $report);
+    $oRenderer = Xhelp\ReportRendererFactory::getRenderer('html', $report);
     echo $oRenderer->render();
 
     $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');
@@ -156,7 +158,7 @@ function makeGraph($reportName)
     // Fill reportParameters with updated information
     foreach ($reportParams as $param) {
         if (isset($_REQUEST[$param->fieldname])) {
-            if ($param->controltype == XHELP_CONTROL_DATETIME) {
+            if (XHELP_CONTROL_DATETIME == $param->controltype) {
                 $param->value = strtotime($_REQUEST[$param->fieldname]);
             } else {
                 $param->value = $_REQUEST[$param->fieldname];

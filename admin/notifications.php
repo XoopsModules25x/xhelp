@@ -1,14 +1,16 @@
 <?php
-//
+
+use XoopsModules\Xhelp;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
-require_once XHELP_CLASS_PATH . '/session.php';
-$_xhelpSession = new Session();
-$hNotification = xhelpGetHandler('notification');
+// require_once XHELP_CLASS_PATH . '/session.php';
+$_xhelpSession = new Xhelp\Session();
+$hNotification = new Xhelp\NotificationHandler($GLOBALS['xoopsDB']);
 
 global $xoopsModule;
 if (!$templates = $_xhelpSession->get('xhelp_notifications')) {
-    $templates =& $xoopsModule->getInfo('_email_tpl');
+    $templates = $xoopsModule->getInfo('_email_tpl');
     $_xhelpSession->set('xhelp_notifications', $templates);
 }
 $has_notifications = count($templates);
@@ -105,7 +107,11 @@ function edit()
         redirect_header(XHELP_ADMIN_URL . '/notifications.php?op=manage', 3, _AM_XHELP_MESSAGE_NO_ID);
     }
 
-    $settings =& $hNotification->get($id);
+    $settings = $hNotification->get($id);
+
+    if (!isset($settings) || false === $settings) {
+        redirect_header(XHELP_ADMIN_URL . '/notifications.php?op=manage', 3, _AM_XHELP_EDIT_ERR);
+    }
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manNotify');
@@ -117,7 +123,7 @@ function edit()
     if (isset($_POST['save_notification'])) {
         $settings->setVar('staff_setting', (int)$_POST['staff_setting']);
         $settings->setVar('user_setting', (int)$_POST['user_setting']);
-        if ($_POST['staff_setting'] == XHELP_NOTIF_STAFF_DEPT) {
+        if (XHELP_NOTIF_STAFF_DEPT == $_POST['staff_setting']) {
             $settings->setVar('staff_options', $_POST['roles']);
         } else {
             $settings->setVar('staff_options', []);
@@ -127,16 +133,16 @@ function edit()
     }
 
     // Retrieve list of email templates
-    if (!$templates =& $_xhelpSession->get('xhelp_notifications')) {
-        $templates =& $xoopsModule->getInfo('_email_tpl');
+    if (!$templates = $_xhelpSession->get('xhelp_notifications')) {
+        $templates = $xoopsModule->getInfo('_email_tpl');
         $_xhelpSession->set('xhelp_notifications', $templates);
     }
     $notification = $aNotifications[$id];
 
-    $staff_settings = xhelpGetMeta("notify_staff{$id}");
-    $user_settings  = xhelpGetMeta("notify_user{$id}");
-    $hRoles         = xhelpGetHandler('role');
-    if ($settings->getVar('staff_setting') == XHELP_NOTIF_STAFF_DEPT) {
+    $staff_settings = Xhelp\Utility::getMeta("notify_staff{$id}");
+    $user_settings  = Xhelp\Utility::getMeta("notify_user{$id}");
+    $hRoles         = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    if (XHELP_NOTIF_STAFF_DEPT == $settings->getVar('staff_setting')) {
         $selectedRoles = $settings->getVar('staff_options');
     } else {
         $selectedRoles = [];
@@ -159,7 +165,7 @@ function edit()
         }
         echo "<input type='radio' name='staff_setting' id='staff" . $value . "' value='" . $value . "' $checked>
                           <label for='staff" . $value . "'>" . $setting . '</label>&nbsp;';
-        if ($value == XHELP_NOTIF_STAFF_DEPT) {
+        if (XHELP_NOTIF_STAFF_DEPT == $value) {
             echo "<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <select name='roles[]' multiple='multiple'>";
             foreach ($roles as $role) {
@@ -234,22 +240,24 @@ function manage()
                   <td>' . _AM_XHELP_TEXT_ACTIONS . '</td>
               </tr>';
         foreach ($aNotifications as $template_id => $template) {
-            $cSettings     = $settings[$template_id];
-            $staff_setting = $cSettings->getVar('staff_setting');
-            $user_setting  = $cSettings->getVar('user_setting');
-
+            if (isset($settings[$template_id])) {
+                $cSettings = $settings[$template_id];
+                //                if (null !== $cSettings) {
+                $staff_setting = $cSettings->getVar('staff_setting');
+                $user_setting  = $cSettings->getVar('user_setting');
+            }
             // Build text of who gets notification
-            if ($user_setting == XHELP_NOTIF_USER_YES) {
-                if ($staff_setting == XHELP_NOTIF_STAFF_NONE) {
+            if (isset($user_setting) && XHELP_NOTIF_USER_YES == $user_setting) {
+                if (XHELP_NOTIF_STAFF_NONE == $staff_setting) {
                     $sSettings = _AM_XHELP_TEXT_SUBMITTER;
                 } else {
                     $sSettings = $aStaffSettings[$staff_setting] . ' ' . _AM_XHELP_TEXT_AND . ' ' . _AM_XHELP_TEXT_SUBMITTER;
                 }
             } else {
-                if ($staff_setting == XHELP_NOTIF_STAFF_NONE) {
+                if (isset($staff_setting) && XHELP_NOTIF_STAFF_NONE == $staff_setting) {
                     $sSettings = '';
                 } else {
-                    $sSettings = $aStaffSettings[$staff_setting];
+                    $sSettings = isset($staff_setting) ? $aStaffSettings[$staff_setting] : '';
                 }
             }
             // End Build text of who gets notification
@@ -415,7 +423,7 @@ function modifyEmlTpl()
 
     $notKeys = array_keys($notNames);
 
-    while (($file = readdir($opendir)) != null) {
+    while (null != ($file = readdir($opendir))) {
         //Do not Display .
         if (is_dir($file)) {
             continue;
@@ -445,7 +453,7 @@ function modifyEmlTpl()
 
         foreach ($aFiles as $file) {
             static $rowSwitch = 0;
-            if ($rowSwitch == 0) {
+            if (0 == $rowSwitch) {
                 echo "<tr class='odd'><td><a href='" . $file['url'] . "'>" . $file['name'] . '</a></td><td>' . $file['desc'] . '</td></tr>';
                 $rowSwitch = 1;
             } else {
