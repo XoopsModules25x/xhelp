@@ -42,7 +42,7 @@
                        style="float:right;"><{$smarty.const._XHELP_TEXT_SWITCH_TO}><{$smarty.const._XHELP_TEXT_VIEW1}></a>
                 <{/if}>
                 <img src="<{$xhelp_imagePath}>addTicket.png"
-                     alt="<{$smart.const._XHELP_TITLE_ADDTICKET}>"> <{$smarty.const._XHELP_TITLE_ADDTICKET}>
+                     alt="<{$smarty.const._XHELP_TITLE_ADDTICKET}>"> <{$smarty.const._XHELP_TITLE_ADDTICKET}>
             </th>
         </tr>
         <tr>
@@ -146,7 +146,7 @@
                 </td>
                 <td class="even">
                     <textarea name="response" id="response" rows="5" cols="50"
-                              class="<{$xhelp_element_response}>"><{$xhelp_response_message}></textarea>
+                              class="<{$xhelp_element_response|default:''}>"><{$xhelp_response_message}></textarea>
                 </td>
             </tr>
             <tr>
@@ -154,8 +154,8 @@
                     <{$smarty.const._XHELP_TEXT_TIMESPENT}>
                 </td>
                 <td class="even">
-                    <input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent}>"
-                           class="<{$xhelp_element_timespent}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
+                    <input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent|default:''}>"
+                           class="<{$xhelp_element_timespent|default:''}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
                 </td>
             </tr>
             <{if $xhelp_isStaff && $xhelp_logMode neq 1}>
@@ -222,7 +222,7 @@
                 <tr class="custfld">
                     <td class="head" width="20%">
                         <{$field.name}>:
-                        <{if $field.desc != ""}>
+                        <{if $field.desc|default:'' != ''}>
                             <br>
                             <br>
                             <{$field.desc}>
