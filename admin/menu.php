@@ -1,19 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Module\Admin;
 use XoopsModules\Xhelp;
 use XoopsModules\Xhelp\Helper;
 
-require  dirname(__DIR__) . '/preloads/autoloader.php';
+require \dirname(__DIR__) . '/preloads/autoloader.php';
 
 /** @var \XoopsModules\Xhelp\Helper $helper */
+$moduleDirName      = \basename(\dirname(__DIR__));
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
+
 $helper = Helper::getInstance();
 $helper->loadLanguage('common');
 $helper->loadLanguage('feedback');
 
-$pathIcon32 = Admin::menuIconPath('');
-if (is_object($helper->getModule())) {
-    $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+$pathIcon32    = Admin::menuIconPath('');
+$pathModIcon32 = XOOPS_URL . '/modules/' . $moduleDirName . '/assets/images/icons/32/';
+if (is_object($helper->getModule()) && false !== $helper->getModule()->getInfo('modicons32')) {
+    $pathModIcon32 = $helper->url($helper->getModule()->getInfo('modicons32'));
 }
 
 $adminmenu[] = [
@@ -86,6 +90,13 @@ $adminmenu[] = [
     'title' => _MI_XHELP_MENU_MAIL_EVENTS,
     'link'  => 'admin/main.php?op=mailEvents',
     'icon'  => $pathIcon32 . '/mail_foward.png',
+];
+
+// Blocks Admin
+$adminmenu[] = [
+    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'BLOCKS'),
+    'link'  => 'admin/blocksadmin.php',
+    'icon'  => $pathIcon32 . '/block.png',
 ];
 
 $adminmenu[] = [
