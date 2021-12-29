@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 //Menu choices
 define('_AM_XHELP_ADMIN_TITLE', '%s Administrator Menu');
@@ -478,5 +478,22 @@ define('_AM_XHELP_ERROR_COLUMN', 'Could not create column in database : %s');
 define('_AM_XHELP_ERROR_BAD_XOOPS', 'This module requires XOOPS %s+ (%s installed)');
 define('_AM_XHELP_ERROR_BAD_PHP', 'This module requires PHP version %s+ (%s installed)');
 define('_AM_XHELP_ERROR_TAG_REMOVAL', 'Could not remove tags from Tag Module');
+
 //0.90
 define('_AM_XHELP_EDIT_ERR', "Error: Can't find the notification");
+
+//1.0.0
+
+define('_AM_XHELP_TOTAL_DEPARTMENTS', 'Departments');
+define('_AM_XHELP_TOTAL_FILES', 'Files');
+define('_AM_XHELP_TOTAL_LOGMESSAGES', 'Log Messages');
+define('_AM_XHELP_TOTAL_RESPONSES', 'Responses');
+define('_AM_XHELP_TOTALS_STAFF', 'Staff Members');
+define('_AM_XHELP_TOTAL_STAFF_REVIEWS', 'Staff Reviews');
+define('_AM_XHELP_TOTAL_TICKETS', 'Tickets');
+define('_AM_XHELP_TOTAL_ROLES', 'Roles');
+define('_AM_XHELP_TOTAL_NOTIFICATIONS', 'Notifications');
+define('_AM_XHELP_TOTAL_TICKET_SOLUTIONS', 'Ticket Solutions');
+
+
+

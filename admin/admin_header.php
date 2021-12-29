@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -12,34 +12,29 @@
 /**
  * @copyright    XOOPS Project (https://xoops.org)
  * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 
 use Xmf\Module\Admin;
-use XoopsModules\Xhelp\{
-    Helper,
-    Session
-};
+use XoopsModules\Xhelp\Helper;
+use XoopsModules\Xhelp\Session;
 
 /** @var Admin $adminObject */
 /** @var Helper $helper */
+require \dirname(__DIR__) . '/preloads/autoloader.php';
 
-require dirname(__DIR__) . '/preloads/autoloader.php';
-
-require dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
-require dirname(__DIR__) . '/include/common.php';
+require \dirname(__DIR__, 3) . '/include/cp_header.php';
+require \dirname(__DIR__) . '/include/common.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 
-//require_once dirname(__DIR__) . '/preloads/autoloader.php';
+//require_once \dirname(__DIR__) . '/preloads/autoloader.php';
 
-$moduleDirName = basename(dirname(__DIR__));
-$helper = Helper::getInstance();
-$adminObject = Admin::getInstance();
+$moduleDirName = \basename(\dirname(__DIR__));
+$helper        = Helper::getInstance();
+$adminObject   = Admin::getInstance();
 
 //require_once XHELP_BASE_PATH . '/admin/AdminButtons.php';
 //require_once XHELP_BASE_PATH . '/functions.php';
@@ -73,6 +68,60 @@ $oAdminButton->addTopLink(_MI_XHELP_MENU_CHECK_TABLES, XHELP_ADMIN_URL."/upgrade
 $oAdminButton->addTopLink(_AM_XHELP_ADMIN_GOTOMODULE, XHELP_BASE_URL."/index.php");
 $oAdminButton->addTopLink(_AM_XHELP_ADMIN_ABOUT, XHELP_ADMIN_URL."/index.php?op=about");
 */
+
+
+/** @var \XoopsPersistableObjectHandler $departmentHandler */
+$departmentHandler = $helper->getHandler('Department');
+/** @var \XoopsPersistableObjectHandler $fileHandler */
+$fileHandler = $helper->getHandler('File');
+/** @var \XoopsPersistableObjectHandler $logmessageHandler */
+$logmessageHandler = $helper->getHandler('Logmessage');
+/** @var \XoopsPersistableObjectHandler $responsesHandler */
+$responsesHandler = $helper->getHandler('Responses');
+/** @var \XoopsPersistableObjectHandler $staffHandler */
+$staffHandler = $helper->getHandler('Staff');
+/** @var \XoopsPersistableObjectHandler $staffreviewHandler */
+$staffreviewHandler = $helper->getHandler('Staffreview');
+/** @var \XoopsPersistableObjectHandler $ticketHandler */
+$ticketHandler = $helper->getHandler('Ticket');
+///** @var \XoopsPersistableObjectHandler $jstaffdeptHandler */
+//$jstaffdeptHandler = $helper->getHandler('Jstaffdept');
+/** @var \XoopsPersistableObjectHandler $responsetemplatesHandler */
+$responsetemplatesHandler = $helper->getHandler('Responsetemplates');
+/** @var \XoopsPersistableObjectHandler $mimetypeHandler */
+$mimetypeHandler = $helper->getHandler('Mimetype');
+/** @var \XoopsPersistableObjectHandler $department_mailboxHandler */
+$department_mailboxHandler = $helper->getHandler('DepartmentMailbox');
+/** @var \XoopsPersistableObjectHandler $roleHandler */
+$roleHandler = $helper->getHandler('Role');
+/** @var \XoopsPersistableObjectHandler $staffrolesHandler */
+$staffrolesHandler = $helper->getHandler('Staffrole');
+///** @var \XoopsPersistableObjectHandler $metaHandler */
+//$metaHandler = $helper->getHandler('Meta');
+/** @var \XoopsPersistableObjectHandler $maileventHandler */
+$maileventHandler = $helper->getHandler('Mailevent');
+/** @var \XoopsPersistableObjectHandler $ticket_submit_emailsHandler */
+$ticket_submit_emailsHandler = $helper->getHandler('TicketEmails');
+/** @var \XoopsPersistableObjectHandler $statusHandler */
+$statusHandler = $helper->getHandler('Status');
+/** @var \XoopsPersistableObjectHandler $saved_searchesHandler */
+$saved_searchesHandler = $helper->getHandler('SavedSearch');
+/** @var \XoopsPersistableObjectHandler $ticket_field_departmentsHandler */
+$ticket_field_departmentsHandler = $helper->getHandler('TicketFieldDepartment');
+/** @var \XoopsPersistableObjectHandler $notificationsHandler */
+$notificationsHandler = $helper->getHandler('Notification');
+/** @var \XoopsPersistableObjectHandler $ticket_fieldsHandler */
+$ticket_fieldsHandler = $helper->getHandler('TicketField');
+/** @var \XoopsPersistableObjectHandler $ticket_valuesHandler */
+$ticket_valuesHandler = $helper->getHandler('TicketValues');
+/** @var \XoopsPersistableObjectHandler $ticket_listsHandler */
+$ticket_listsHandler = $helper->getHandler('TicketList');
+///** @var \XoopsPersistableObjectHandler $bayes_categoriesHandler */
+//$bayes_categoriesHandler = $helper->getHandler('Bayes_categories');
+///** @var \XoopsPersistableObjectHandler $bayes_wordfreqsHandler */
+//$bayes_wordfreqsHandler = $helper->getHandler('Bayes_wordfreqs');
+/** @var \XoopsPersistableObjectHandler $ticket_solutionsHandler */
+$ticket_solutionsHandler = $helper->getHandler('TicketSolution');
 
 // Load language files
 $helper->loadLanguage('admin');
@@ -108,13 +157,13 @@ if ($overdueTime != $helper->getConfig('xhelp_overdueTime')) {
     $_xhelpSession->set('xhelp_overdueTime', $helper->getConfig('xhelp_overdueTime'));   // Set new value for overdueTime
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
-    $hTickets       = Helper::getInstance()->getHandler('Ticket');
-    $crit           = new \Criteria('status', 2, '<>');
-    $tickets        = $hTickets->getObjects($crit);
+    $ticketHandler  = Helper::getInstance()->getHandler('Ticket');
+    $crit           = new \Criteria('status', '2', '<>');
+    $tickets        = $ticketHandler->getObjects($crit);
     $updatedTickets = [];
     foreach ($tickets as $ticket) {
         $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));
-        if (!$hTickets->insert($ticket, true)) {
+        if (!$ticketHandler->insert($ticket, true)) {
             $updatedTickets[$ticket->getVar('id')] = false; // Not used anywhere
         } else {
             $updatedTickets[$ticket->getVar('id')] = true;  // Not used anywhere

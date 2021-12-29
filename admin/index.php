@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -12,104 +12,110 @@
 /**
  * @copyright    XOOPS Project (https://xoops.org)
  * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 
 use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp\{
-    Common,
+    Common\Configurator,
+    Common\TestdataButtons,
     Helper,
     Utility
 };
+
 /** @var Admin $adminObject */
 /** @var Helper $helper */
-
-require __DIR__ . '/admin_header.php';
+/** @var Utility $utility */
+require_once __DIR__ . '/admin_header.php';
 // Display Admin header
 xoops_cp_header();
 
-$moduleDirName = basename(dirname(__DIR__));
-$moduleDirNameUpper = mb_strtoupper($moduleDirName);
+$moduleDirName      = \basename(\dirname(__DIR__));
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
 $adminObject = Admin::getInstance();
+$configurator = new Configurator();
+
+
+$modStats    = [];
+$moduleStats = $utility::getModuleStats($configurator);
+
+$adminObject->addInfoBox(constant('CO_' . $moduleDirNameUpper . '_' . 'STATS_SUMMARY'));
+if (is_array($moduleStats)  && count($moduleStats) > 0) {
+    foreach ($moduleStats as $key => $value) {
+        switch ($key) {
+            case 'totaldepartments':
+                $ret = '<span style=\'font-weight: bold; color: green;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_DEPARTMENTS));
+                break;
+            case 'totalfiles':
+                $ret = '<span style=\'font-weight: bold; color: green;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_FILES));
+                break;
+            case 'totallogmessages':
+                $ret = '<span style=\'font-weight: bold; color: green;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_LOGMESSAGES));
+                break;
+            case 'totalresponses':
+                $ret = '<span style=\'font-weight: bold; color: green;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_RESPONSES));
+                break;
+            case 'totalstaff':
+                $ret = '<span style=\'font-weight: bold; color: red;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTALS_STAFF));
+                break;
+            case 'totalstaffreview':
+                $ret = '<span style=\'font-weight: bold; color: green;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_STAFF_REVIEWS));
+                break;
+            case 'totaltickets':
+                $ret = '<span style=\'font-weight: bold; color: red;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_TICKETS));
+                break;
+            case 'totalroles':
+                $ret = '<span style=\'font-weight: bold; color: green;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_ROLES));
+                break;
+            case 'totalnotifications':
+                $ret = '<span style=\'font-weight: bold; color: red;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_NOTIFICATIONS));
+                break;
+            case 'totalticketsolutions':
+                $ret = '<span style=\'font-weight: bold; color: green;\'>' . $value . '</span>';
+                $adminObject->addInfoBoxLine(sprintf($ret . ' ' . _AM_XHELP_TOTAL_TICKET_SOLUTIONS));
+                break;
+        }
+    }
+}
+
+
 $adminObject->displayNavigation(basename(__FILE__));
 
 //check for latest release
 //$newRelease = $utility->checkVerModule($helper);
-//if (!empty($newRelease)) {
+//if (null !== $newRelease) {
 //    $adminObject->addItemButton($newRelease[0], $newRelease[1], 'download', 'style="color : Red"');
 //}
 
-//------------- Test Data ----------------------------
-
+//------------- Test Data Buttons ----------------------------
 if ($helper->getConfig('displaySampleButton')) {
-    $yamlFile            = dirname(__DIR__) . '/config/admin.yml';
-    $config              = loadAdminConfig($yamlFile);
-    $displaySampleButton = $config['displaySampleButton'];
-
-    if (1 == $displaySampleButton) {
-        xoops_loadLanguage('admin/modulesadmin', 'system');
-        require_once dirname(__DIR__) . '/testdata/index.php';
-
-        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA'), '__DIR__ . /../../testdata/index.php?op=load', 'add');
-        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA'), '__DIR__ . /../../testdata/index.php?op=save', 'add');
-        //    $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'EXPORT_SCHEMA'), '__DIR__ . /../../testdata/index.php?op=exportschema', 'add');
-        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'HIDE_SAMPLEDATA_BUTTONS'), '?op=hide_buttons', 'delete');
-    } else {
-        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SHOW_SAMPLEDATA_BUTTONS'), '?op=show_buttons', 'add');
-        $displaySampleButton = $config['displaySampleButton'];
-    }
+    TestdataButtons::loadButtonConfig($adminObject);
     $adminObject->displayButton('left', '');
 }
-
-//------------- End Test Data ----------------------------
-
-$adminObject->displayIndex();
-
-/**
- * @param $yamlFile
- * @return array|bool
- */
-function loadAdminConfig($yamlFile)
-{
-    $config = \Xmf\Yaml::readWrapped($yamlFile); // work with phpmyadmin YAML dumps
-    return $config;
-}
-
-/**
- * @param $yamlFile
- */
-function hideButtons($yamlFile)
-{
-    $app['displaySampleButton'] = 0;
-    \Xmf\Yaml::save($app, $yamlFile);
-    redirect_header('index.php', 0, '');
-}
-
-/**
- * @param $yamlFile
- */
-function showButtons($yamlFile)
-{
-    $app['displaySampleButton'] = 1;
-    \Xmf\Yaml::save($app, $yamlFile);
-    redirect_header('index.php', 0, '');
-}
-
-$op = \Xmf\Request::getString('op', 0, 'GET');
-
+$op = Request::getString('op', '', 'GET');
 switch ($op) {
     case 'hide_buttons':
-        hideButtons($yamlFile);
+        TestdataButtons::hideButtons();
         break;
     case 'show_buttons':
-        showButtons($yamlFile);
+        TestdataButtons::showButtons();
         break;
 }
+//------------- End Test Data Buttons ----------------------------
 
+$adminObject->displayIndex();
 echo $utility::getServerStats();
 
-require __DIR__ . '/admin_footer.php';
-
+//codeDump(__FILE__);
+require_once __DIR__ . '/admin_footer.php';
