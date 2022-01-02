@@ -256,7 +256,7 @@ function manage()
               </tr>';
         foreach ($aNotifications as $template_id => $template) {
 //            if (isset($settings[$template_id])) {
-                $cSettings = isset( $settings[$template_id]) ? $settings[$template_id]: '';
+                $cSettings = $settings[$template_id] ?? '';
                 //                if (null !== $cSettings) {
 //                $staff_setting = $cSettings->getVar('staff_setting');
 //                $user_setting  = $cSettings->getVar('user_setting');
@@ -273,7 +273,7 @@ function manage()
             } elseif (\XHELP_NOTIF_STAFF_NONE == $staff_setting) {
                 $sSettings = '';
             } else {
-                $sSettings = isset($aStaffSettings[$staff_setting]) ? $aStaffSettings[$staff_setting] : '';
+                $sSettings = $aStaffSettings[$staff_setting] ?? '';
             }
             // End Build text of who gets notification
 
