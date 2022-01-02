@@ -1,1 +1,15 @@
-{  }
+-
+    notif_id: '3'
+    staff_setting: '2'
+    user_setting: '2'
+    staff_options: 'a:2:{i:0;s:1:"1";i:1;s:1:"2";}'
+-
+    notif_id: '4'
+    staff_setting: '3'
+    user_setting: '1'
+    staff_options: 'a:0:{}'
+-
+    notif_id: '6'
+    staff_setting: '3'
+    user_setting: '1'
+    staff_options: 'a:0:{}'

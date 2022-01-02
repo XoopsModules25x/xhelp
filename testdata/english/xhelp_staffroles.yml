@@ -1,1 +1,28 @@
-{  }
+-
+    uid: '1'
+    roleid: '1'
+    deptid: '0'
+-
+    uid: '1'
+    roleid: '1'
+    deptid: '1'
+-
+    uid: '1'
+    roleid: '1'
+    deptid: '2'
+-
+    uid: '1'
+    roleid: '2'
+    deptid: '0'
+-
+    uid: '2'
+    roleid: '2'
+    deptid: '0'
+-
+    uid: '2'
+    roleid: '2'
+    deptid: '1'
+-
+    uid: '2'
+    roleid: '2'
+    deptid: '2'

@@ -1,3 +1,9 @@
 -
     metakey: version
-    metavalue: '0.9'
+    metavalue: '1'
+-
+    metakey: default_department
+    metavalue: '1'
+-
+    metakey: default_status
+    metavalue: '1'
