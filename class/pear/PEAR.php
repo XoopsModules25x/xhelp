@@ -8,7 +8,7 @@
 // | This source file is subject to version 2.0 of the PHP license,       |
 // | that is bundled with this package in the file LICENSE, and is        |
 // | available through the world-wide-web at the following url:           |
-// | http://www.php.net/license/3_0.txt.                                  |
+// | https://www.php.net/license/3_0.txt.                                  |
 // | If you did not receive a copy of the PHP license and are unable to   |
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
@@ -60,7 +60,7 @@ $GLOBALS['_PEAR_default_error_mode']     = PEAR_ERROR_RETURN;
 $GLOBALS['_PEAR_default_error_options']  = E_USER_NOTICE;
 $GLOBALS['_PEAR_destructor_object_list'] = [];
 $GLOBALS['_PEAR_shutdown_funcs']         = [];
-$GLOBALS['_PEAR_error_handler_stack']    = [];
+$GLOBALS['_PEAR_errorHandler_stack']     = [];
 
 ini_set('track_errors', true);
 
@@ -83,62 +83,49 @@ ini_set('track_errors', true);
  *
  * @since  PHP 4.0.2
  * @author Stig Bakken <ssb@php.net>
- * @see    http://pear.php.net/manual/
+ * @see    https://pear.php.net/manual/
  */
 class PEAR
 {
     // {{{ properties
-
     /**
      * Whether to enable internal debug messages.
      *
      * @var bool
-     * @access  private
      */
     public $_debug = false;
-
     /**
      * Default error mode for this object.
      *
      * @var int
-     * @access  private
      */
     public $_default_error_mode = null;
-
     /**
      * Default error options used for this object when error mode
      * is PEAR_ERROR_TRIGGER.
      *
      * @var int
-     * @access  private
      */
     public $_default_error_options = null;
-
     /**
      * Default error handler (callback) for this object, if error mode is
      * PEAR_ERROR_CALLBACK.
      *
      * @var string
-     * @access  private
      */
-    public $_default_error_handler = '';
-
+    public $_default_errorHandler = '';
     /**
      * Which class to use for error objects.
      *
      * @var string
-     * @access  private
      */
     public $_error_class = 'PEAR_Error';
-
     /**
      * An array of expected errors.
      *
      * @var array
-     * @access  private
      */
     public $_expected_errors = [];
-
     // }}}
 
     // {{{ constructor
@@ -150,7 +137,6 @@ class PEAR
      *
      * @param null $error_class    (optional) which class to use for
      *                             error objects, defaults to PEAR_Error.
-     * @access public
      */
     public function __construct($error_class = null)
     {
@@ -182,10 +168,8 @@ class PEAR
      *
      * See the note in the class desciption about output from
      * destructors.
-     *
-     * @access public
      */
-    public function _PEAR()
+    public function _PEAR(): void
     {
         if ($this->_debug) {
             printf("PEAR destructor called, class=%s\n", get_class($this));
@@ -201,7 +185,6 @@ class PEAR
      * do this: $myVar = &PEAR::getStaticProperty('myclass', 'myVar');
      * You MUST use a reference, or they will not persist!
      *
-     * @access public
      * @param string $class  The calling classname, to prevent clashes
      * @param string $var    The variable to retrieve.
      * @return mixed  A reference to the variable. If not set it will be
@@ -221,11 +204,10 @@ class PEAR
      * Use this function to register a shutdown method for static
      * classes.
      *
-     * @access public
      * @param mixed $func The function name (or array of class/method) to call
      * @param mixed $args The arguments to pass to the function
      */
-    public function registerShutdownFunc($func, $args = [])
+    public function registerShutdownFunc($func, $args = []): void
     {
         $GLOBALS['_PEAR_shutdown_funcs'][] = [$func, $args];
     }
@@ -242,7 +224,6 @@ class PEAR
      *                     $obj->getMessage() == $code or
      *                     $code is an integer and $obj->getCode() == $code
      * @return bool  true if parameter is an error
-     * @access  public
      */
     public function isError($data, $code = null)
     {
@@ -289,7 +270,6 @@ class PEAR
      *        a printf format string used when printing the error
      *        message.
      *
-     * @access public
      * @see    PEAR_ERROR_RETURN
      * @see    PEAR_ERROR_PRINT
      * @see    PEAR_ERROR_TRIGGER
@@ -299,7 +279,7 @@ class PEAR
      *
      * @since  PHP 4.0.5
      */
-    public function setErrorHandling($mode = null, $options = null)
+    public function setErrorHandling($mode = null, $options = null): void
     {
         if (isset($this) && $this instanceof self) {
             $setmode    = &$this->_default_error_mode;
@@ -350,14 +330,13 @@ class PEAR
      * @param mixed $code a single error code or an array of error codes to expect
      *
      * @return int the new depth of the "expected errors" stack
-     * @access public
      */
     public function expectError($code = '*')
     {
         if (is_array($code)) {
-            array_push($this->_expected_errors, $code);
+            $this->_expected_errors[] = $code;
         } else {
-            array_push($this->_expected_errors, [$code]);
+            $this->_expected_errors[] = [$code];
         }
 
         return count($this->_expected_errors);
@@ -385,7 +364,6 @@ class PEAR
      *
      * @param mixed $error_code
      * @return bool true if the error code was unset, false otherwise
-     * @access private
      * @since  PHP 4.3.0
      */
     public function _checkDelExpect($error_code)
@@ -393,7 +371,7 @@ class PEAR
         $deleted = false;
 
         foreach ($this->_expected_errors as $key => $error_array) {
-            if (in_array($error_code, $error_array)) {
+            if (in_array($error_code, $error_array, true)) {
                 unset($this->_expected_errors[$key][array_search($error_code, $error_array, true)]);
                 $deleted = true;
             }
@@ -416,7 +394,6 @@ class PEAR
      *
      * @param mixed $error_code error code that should be deleted
      * @return mixed list of error codes that were deleted or error
-     * @access public
      * @since  PHP 4.3.0
      */
     public function delExpect($error_code)
@@ -484,7 +461,6 @@ class PEAR
      *                            the error message parameter will be dropped.
      *
      * @return object a PEAR error object
-     * @access public
      * @see    PEAR::setErrorHandling
      * @since  PHP 4.0.5
      */
@@ -508,8 +484,8 @@ class PEAR
 
         if (isset($this) && isset($this->_expected_errors) && count($this->_expected_errors) > 0 && count($exp = end($this->_expected_errors))) {
             if ('*' === $exp[0]
-                || (is_int(reset($exp)) && in_array($code, $exp))
-                || (is_string(reset($exp)) && in_array($message, $exp))) {
+                || (is_int(reset($exp)) && in_array($code, $exp, true))
+                || (is_string(reset($exp)) && in_array($message, $exp, true))) {
                 $mode = PEAR_ERROR_RETURN;
             }
         }
@@ -582,7 +558,7 @@ class PEAR
      */
     public function pushErrorHandling($mode, $options = null)
     {
-        $stack = &$GLOBALS['_PEAR_error_handler_stack'];
+        $stack = &$GLOBALS['_PEAR_errorHandler_stack'];
         if (isset($this) && $this instanceof self) {
             $def_mode    = &$this->_default_error_mode;
             $def_options = &$this->_default_error_options;
@@ -614,7 +590,7 @@ class PEAR
      */
     public function popErrorHandling()
     {
-        $stack = &$GLOBALS['_PEAR_error_handler_stack'];
+        $stack = &$GLOBALS['_PEAR_errorHandler_stack'];
         array_pop($stack);
         [$mode, $options] = $stack[count($stack) - 1];
         array_pop($stack);
@@ -661,19 +637,18 @@ class PEAR
 
         return true;
     }
-
     // }}}
 }
 
 // {{{ _PEAR_call_destructors()
 
-function _PEAR_call_destructors()
+function _PEAR_call_destructors(): void
 {
     global $_PEAR_destructor_object_list;
     if (is_array($_PEAR_destructor_object_list)
         && count($_PEAR_destructor_object_list)) {
         reset($_PEAR_destructor_object_list);
-        while (list($k, $objref) = each($_PEAR_destructor_object_list)) {
+        while ([$k, $objref] = each($_PEAR_destructor_object_list)) {
             $classname = get_class($objref);
             while ($classname) {
                 $destructor = "_$classname";
@@ -713,7 +688,6 @@ class PEAR_Error
     public $message              = '';
     public $userinfo             = '';
     public $backtrace            = null;
-
     // }}}
     // {{{ constructor
 
@@ -733,8 +707,6 @@ class PEAR_Error
      *                         tuple.
      *
      * @param null   $userinfo (optional) additional user/debug info
-     *
-     * @access public
      */
     public function __construct(
         $message = 'unknown error',
@@ -804,7 +776,6 @@ class PEAR_Error
      * Get the error mode from an error object.
      *
      * @return int error mode
-     * @access public
      */
     public function getMode()
     {
@@ -818,7 +789,6 @@ class PEAR_Error
      * Get the callback function/method from an error object.
      *
      * @return mixed callback function or object/method array
-     * @access public
      */
     public function getCallback()
     {
@@ -832,7 +802,6 @@ class PEAR_Error
      * Get the error message from an error object.
      *
      * @return string full error message
-     * @access public
      */
     public function getMessage()
     {
@@ -846,7 +815,6 @@ class PEAR_Error
      * Get error code from an error object
      *
      * @return int error code
-     * @access public
      */
     public function getCode()
     {
@@ -860,7 +828,6 @@ class PEAR_Error
      * Get the name of this error/exception.
      *
      * @return string error/exception name (type)
-     * @access public
      */
     public function getType()
     {
@@ -874,7 +841,6 @@ class PEAR_Error
      * Get additional user-supplied information.
      *
      * @return string user-supplied information
-     * @access public
      */
     public function getUserInfo()
     {
@@ -888,7 +854,6 @@ class PEAR_Error
      * Get additional debug information supplied by the application.
      *
      * @return string debug information
-     * @access public
      */
     public function getDebugInfo()
     {
@@ -904,7 +869,6 @@ class PEAR_Error
      *
      * @param null $frame (optional) what frame to fetch
      * @return array Backtrace, or NULL if not available.
-     * @access public
      */
     public function getBacktrace($frame = null)
     {
@@ -921,7 +885,7 @@ class PEAR_Error
     /**
      * @param $info
      */
-    public function addUserInfo($info)
+    public function addUserInfo($info): void
     {
         if (empty($this->userinfo)) {
             $this->userinfo = $info;
@@ -937,7 +901,6 @@ class PEAR_Error
      * Make a string representation of this object.
      *
      * @return string a string with an object summary
-     * @access public
      */
     public function toString()
     {
@@ -971,7 +934,6 @@ class PEAR_Error
 
         return sprintf('[%s: message="%s" code=%d mode=%s level=%s ' . 'prefix="%s" info="%s"]', get_class($this), $this->message, $this->code, implode('|', $modes), $levels[$this->level], $this->error_message_prefix, $this->userinfo);
     }
-
     // }}}
 }
 

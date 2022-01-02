@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
  * CacheService class
@@ -11,24 +10,19 @@ use XoopsModules\Xhelp;
  *
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
-class CacheService extends Xhelp\Service
+class CacheService extends Service
 {
     /**
      * Location of Xoops Cache Directory
      *
-     * @var object
-     * @access  private
+     * @var string
      */
     public $_cacheDir;
     //    public $_cookies = [];
 
     /**
      * Class Constructor
-     *
-     * @access  public
      */
     public function __construct()
     {
@@ -36,107 +30,100 @@ class CacheService extends Xhelp\Service
         $this->init();
     }
 
-    public function _attachEvents()
+    public function attachEvents()
     {
-        $this->_attachEvent('batch_status', $this);
-        $this->_attachEvent('close_ticket', $this);
-        $this->_attachEvent('delete_ticket', $this);
-        $this->_attachEvent('new_ticket', $this);
-        $this->_attachEvent('reopen_ticket', $this);
+        $this->attachEvent('batch_status', $this);
+        $this->attachEvent('close_ticket', $this);
+        $this->attachEvent('delete_ticket', $this);
+        $this->attachEvent('new_ticket', $this);
+        $this->attachEvent('reopen_ticket', $this);
     }
 
     /**
      * Reset Performance Images on 'new_ticket' event
-     * @param Xhelp\Ticket $ticket Ticket that was added
+     * @param Ticket $ticket Ticket that was added
      * @return bool        True on success, false on error
-     * @access  public
      */
-    public function new_ticket($ticket)
+    public function new_ticket(Ticket $ticket): bool
     {
-        return $this->_clearPerfImages();
+        return $this->clearPerfImages();
     }
 
     /**
      * Reset Performance Images on 'close_ticket' event
-     * @param Xhelp\Ticket $ticket Ticket that was closed
+     * @param Ticket $ticket Ticket that was closed
      * @return bool        True on success, false on error
-     * @access public
      */
-    public function close_ticket($ticket)
+    public function close_ticket(Ticket $ticket): bool
     {
-        return $this->_clearPerfImages();
+        return $this->clearPerfImages();
     }
 
     /**
      * Call Backback function for 'delete_ticket'
-     * @param Xhelp\Ticket $ticket Ticket being deleted
+     * @param Ticket $ticket Ticket being deleted
      * @return bool        True on success, false on error
-     * @access  public
      */
-    public function delete_ticket($ticket)
+    public function delete_ticket(Ticket $ticket): ?bool
     {
-        $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
-        $status  = $hStatus->get($ticket->getVar('status'));
+        $statusHandler = new StatusHandler($GLOBALS['xoopsDB']);
+        $status        = $statusHandler->get($ticket->getVar('status'));
 
         if (\XHELP_STATE_UNRESOLVED == $status->getVar('state')) {
-            return $this->_clearPerfImages();
+            return $this->clearPerfImages();
         }
     }
 
     /**
      * Reset Performance Images on 'reopen_ticket' event
-     * @param Xhelp\Ticket $ticket Ticket that was re-opened
+     * @param Ticket $ticket Ticket that was re-opened
      * @return bool        True on success, false on error
-     * @access public
      */
-    public function reopen_ticket($ticket)
+    public function reopen_ticket(Ticket $ticket): bool
     {
-        return $this->_clearPerfImages();
+        return $this->clearPerfImages();
     }
 
     /**
      * Callback function for the 'new_department' event
      * @param array $args Array of arguments passed to EventService
      * @return bool  True on success, false on error
-     * @access  public
      */
-    public function new_department($args)
+    public function new_department(array $args): bool
     {
-        return $this->_clearPerfImages();
+        return $this->clearPerfImages();
     }
 
     /**
      * Callback function for the 'delete_department' event
      * @param array $args Array of arguments passed to EventService
      * @return bool  True on success, false on error
-     * @access  public
      */
-    public function delete_department($args)
+    public function delete_department(array $args): bool
     {
-        return $this->_clearPerfImages();
+        return $this->clearPerfImages();
     }
 
     /**
      * @param $args
      * @return bool
      */
-    public function batch_status($args)
+    public function batch_status($args): bool
     {
-        return $this->_clearPerfImages();
+        return $this->clearPerfImages();
     }
 
     /**
      * Removes all cached images for the Department Performance block
      * @return bool True on success, false on error
-     * @access  private
      */
-    public function _clearPerfImages()
+    public function clearPerfImages(): bool
     {
         //Remove all cached department queue images
         $opendir = \opendir($this->_cacheDir);
 
-        while (null !== ($file = \readdir($opendir))) {
-            if (false === mb_strpos($file, 'xhelp_perf_')) {
+        while (false !== ($file = \readdir($opendir))) {
+            if (false === mb_strpos((string)$file, 'xhelp_perf_')) {
                 continue;
             }
 
@@ -149,9 +136,8 @@ class CacheService extends Xhelp\Service
     /**
      * Only have 1 instance of class used
      * @return CacheService {@link CacheService}
-     * @access  public
      */
-    public static function getInstance()
+    public static function getInstance(): CacheService
     {
         static $instance;
         if (null === $instance) {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Module\Admin;
 use Xmf\Request;
@@ -48,9 +48,9 @@ function manageFields()
 {
     global $imagearray;
 
-    $session     = Xhelp\Session::getInstance();
-    $regex_array = &_getRegexArray();
-    $hFields     = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+    $session            = Xhelp\Session::getInstance();
+    $regex_array        = &getRegexArray();
+    $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
 
     $start = $limit = 0;
 
@@ -67,14 +67,14 @@ function manageFields()
     }
 
     if (!isset($_POST['addField'])) {
-        $crit = new \Criteria('', '');
-        $crit->setLimit($limit);
-        $crit->setStart($start);
-        $crit->setSort('weight');
-        $crit->setOrder('ASC');
+        $criteria = new \Criteria('', '');
+        $criteria->setLimit($limit);
+        $criteria->setStart($start);
+        $criteria->setSort('weight');
+        $criteria->setOrder('ASC');
 
-        $count  = $hFields->getCount($crit);
-        $fields = $hFields->getObjects($crit);
+        $count  = $ticketFieldHandler->getCount($criteria);
+        $fields = $ticketFieldHandler->getObjects($criteria);
 
         //Display List of Current Fields, form for new field
         xoops_cp_header();
@@ -112,7 +112,7 @@ function manageFields()
                     $req_title                      = _AM_XHELP_MESSAGE_DEACTIVATE;
                 } else {
                     $req_link_params['setrequired'] = 1;
-                    $req_img                        = $imagearray['offline'];
+                    $req_img                        = $imagearray['offline'] ?? '';
                     $req_title                      = _AM_XHELP_MESSAGE_ACTIVATE;
                 }
 
@@ -125,9 +125,9 @@ function manageFields()
                     <td>' . $field->getVar('fieldname') . '</td>
                     <td>' . xhelpGetControlLabel($field->getVar('controltype')) . "</td>
                     <td><a href='" . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', $req_link_params) . "' title='$req_title'>$req_img</a></td>
-                    <td><a href='$edit_url'>{$imagearray['editimg']}</a>
-                        <a href='$del_url'>{$imagearray['deleteimg']}</a></td>
-                    </tr>";
+                    <td><a href='$edit_url'>" . ($imagearray['editimg'] ?? '') . "</a>
+                        <a href='$del_url'>" . ($imagearray['deleteimg'] ?? '') . '</a></td>
+                    </tr>';
             }
             echo '</table>';
             //Render Page Nav
@@ -138,9 +138,9 @@ function manageFields()
         $field_info   = $session->get('xhelp_addField');
         $field_errors = $session->get('xhelp_addFieldErrors');
 
-        $hDepts  = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $depts   = $hDepts->getObjects();
-        $deptarr = [];
+        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $depts             = $departmentHandler->getObjects();
+        $deptarr           = [];
 
         foreach ($depts as $obj) {
             $deptarr[$obj->getVar('id')] = $obj->getVar('department');
@@ -248,7 +248,7 @@ function manageFields()
         $form->addElement($values);
 
         $btn_tray = new \XoopsFormElementTray('');
-        $btn_tray->addElement(new \XoopsFormButton('', 'addField', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
+        $btn_tray->addElement(new \XoopsFormButton('', 'addField', _SUBMIT, 'submit'));
 
         $form->addElement($btn_tray);
         echo $form->render();
@@ -256,10 +256,10 @@ function manageFields()
         require_once __DIR__ . '/admin_footer.php';
     } else {
         //Validate Field Information
-        $has_errors = false;
-        $hField     = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+        $has_errors         = false;
+        $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
 
-        $values = _parseValues($_POST['fld_values']);
+        $values = parseValues($_POST['fld_values']);
 
         if (!$control = xhelpGetControl($_POST['fld_controltype'])) {
             $has_errors                  = true;
@@ -284,8 +284,8 @@ function manageFields()
         }
 
         //fieldname unique?
-        $crit = new \CriteriaCompo(new \Criteria('fieldname', $fld_fieldname));
-        if ($hField->getCount($crit)) {
+        $criteria = new \CriteriaCompo(new \Criteria('fieldname', $fld_fieldname));
+        if ($ticketFieldHandler->getCount($criteria)) {
             $has_errors                = true;
             $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME_UNIQUE;
         }
@@ -341,8 +341,8 @@ function manageFields()
         }
 
         //Save field
-        $hField = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-        $field  = $hField->create();
+        $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+        $field              = $ticketFieldHandler->create();
         $field->setVar('name', $_POST['fld_name']);
         $field->setVar('description', $_POST['fld_description']);
         $field->setVar('fieldname', $fld_fieldname);
@@ -356,8 +356,8 @@ function manageFields()
         $field->addValues($values);
         $field->addDepartments($_POST['fld_departments']);
 
-        if ($hField->insert($field)) {
-            _clearAddSessionVars();
+        if ($ticketFieldHandler->insert($field)) {
+            clearAddSessionVars();
             redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'), 3, _AM_XHELP_MSG_FIELD_ADD_OK);
         } else {
             $errors = $field->getHtmlErrors();
@@ -370,7 +370,7 @@ function manageFields()
  * @param $values_arr
  * @return string
  */
-function _formatValues($values_arr)
+function formatValues($values_arr)
 {
     $ret = '';
     foreach ($values_arr as $key => $value) {
@@ -384,7 +384,7 @@ function _formatValues($values_arr)
  * @param $raw_values
  * @return array
  */
-function &_parseValues($raw_values)
+function &parseValues($raw_values)
 {
     $_inValue = false;
     $values   = [];
@@ -399,21 +399,18 @@ function &_parseValues($raw_values)
     //Parse each line into name=value
     foreach ($lines as $line) {
         if ('' == trim($line)) {
-            continue1;
         }
         $name     = $value = '';
         $_inValue = false;
         $chrs     = mb_strlen($line);
         for ($i = 0; $i <= $chrs; ++$i) {
             $chr = mb_substr($line, $i, 1);
-            if ('=' === $chr && false === $_inValue) {
+            if ('=' === $chr && !$_inValue) {
                 $_inValue = true;
-            } else {
-                if ($_inValue) {
+            } elseif ($_inValue) {
                     $name .= $chr;
                 } else {
                     $value .= $chr;
-                }
             }
         }
         //Add value to array
@@ -448,9 +445,9 @@ function deleteField()
         xoops_confirm(['op' => 'delfield', 'id' => $id, 'ok' => 1], XHELP_ADMIN_URL . '/fields.php', sprintf(_AM_XHELP_MSG_FIELD_DEL_CFRM, $id));
         xoops_cp_footer();
     } else {
-        $hFields = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-        $field   = $hFields->get($id);
-        if ($hFields->delete($field, true)) {
+        $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+        $field              = $ticketFieldHandler->get($id);
+        if ($ticketFieldHandler->delete($field, true)) {
             $_eventsrv->trigger('delete_field', [&$field]);
             redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageFields'], false));
         }
@@ -461,21 +458,21 @@ function deleteField()
 
 function editField()
 {
-    $eventsrv    = Xhelp\Utility::createNewEventService();
+    $eventsrv    = Xhelp\EventService::getInstance();
     $session     = Xhelp\Session::getInstance();
-    $regex_array = _getRegexArray();
+    $regex_array = getRegexArray();
 
     if (!isset($_REQUEST['id'])) {
         redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
     }
 
-    $fld_id = Request::getInt('id', 0, 'REQUEST');
-    $hField = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-    if (!$field = $hField->get($fld_id)) {
+    $fld_id             = Request::getInt('id', 0, 'REQUEST');
+    $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+    if (!$field = $ticketFieldHandler->get($fld_id)) {
         redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
     }
 
-    if (!isset($_POST ['editField'])) {
+    if (!isset($_POST['editField'])) {
         //Get Custom Field From session (if exists)
         $field_info   = $session->get('xhelp_editField_' . $fld_id);
         $field_errors = $session->get('xhelp_editFieldErrors_' . $fld_id);
@@ -494,8 +491,8 @@ function editField()
             $fld_values       = $field_info['values'];
             $fld_validation   = $field_info['validation'];
         } else {
-            $hFDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
-            $depts  = $hFDept->departmentsByField($field->getVar('id'), true);
+            $ticketFieldDepartmentHandler = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+            $depts                        = $ticketFieldDepartmentHandler->departmentsByField($field->getVar('id'), true);
 
             $fld_controltype  = $field->getVar('controltype');
             $fld_datatype     = $field->getVar('datatype');
@@ -507,7 +504,7 @@ function editField()
             $fld_length       = $field->getVar('fieldlength');
             $fld_weight       = $field->getVar('weight');
             $fld_defaultvalue = $field->getVar('defaultvalue');
-            $fld_values       = _formatValues($field->getVar('fieldvalues'));
+            $fld_values       = formatValues($field->getVar('fieldvalues'));
             $fld_validation   = $field->getVar('validation');
         }
 
@@ -536,9 +533,9 @@ function editField()
         $datatype_select->setDescription(_AM_XHELP_TEXT_DATATYPE_DESC);
         $datatype_select->addOptionArray($datatypes);
 
-        $hDepts      = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $depts       = $hDepts->getObjects();
-        $dept_select = new \XoopsFormSelect(_AM_XHELP_TEXT_DEPARTMENTS, 'fld_departments', $fld_departments, 5, true);
+        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $depts             = $departmentHandler->getObjects();
+        $dept_select       = new \XoopsFormSelect(_AM_XHELP_TEXT_DEPARTMENTS, 'fld_departments', $fld_departments, 5, true);
         $dept_select->setDescription(_AM_XHELP_TEXT_DEPT_DESC);
         foreach ($depts as $obj) {
             $dept_select->addOption($obj->getVar('id'), $obj->getVar('department'));
@@ -550,13 +547,15 @@ function editField()
         }
 
         $form = new Xhelp\Form(
-            _AM_XHELP_EDIT_FIELD, 'edit_field', Xhelp\Utility::createURI(
-            XHELP_ADMIN_URL . '/fields.php',
-            [
-                'op' => 'editfield',
-                'id' => $fld_id,
-            ]
-        )
+            _AM_XHELP_EDIT_FIELD,
+            'edit_field',
+            Xhelp\Utility::createURI(
+                XHELP_ADMIN_URL . '/fields.php',
+                [
+                    'op' => 'editfield',
+                    'id' => $fld_id,
+                ]
+            )
         );
 
         $nameEle = new \XoopsFormText(_AM_XHELP_TEXT_NAME, 'fld_name', 30, 64, $fld_name);
@@ -601,9 +600,9 @@ function editField()
         $form->addElement($values);
 
         $btn_tray = new \XoopsFormElementTray('');
-        $btn_tray->addElement(new \XoopsFormButton('', 'editField', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
-        $btn_tray->addElement(new \XoopsFormButton('', 'cancel', _AM_XHELP_BUTTON_CANCEL));
-        $btn_tray->addElement(new \XoopsFormHidden('id', $fld_id));
+        $btn_tray->addElement(new \XoopsFormButton('', 'editField', _SUBMIT, 'submit'));
+        $btn_tray->addElement(new \XoopsFormButton('', 'cancel', _CANCEL));
+        $btn_tray->addElement(new \XoopsFormHidden('id', (string)$fld_id));
 
         $form->addElement($btn_tray);
         echo $form->render();
@@ -613,7 +612,7 @@ function editField()
         //Validate Field Information
         $has_errors = false;
         $errors     = [];
-        $values     = _parseValues($_POST['fld_values']);
+        $values     = parseValues($_POST['fld_values']);
 
         if (!$control = xhelpGetControl($_POST['fld_controltype'])) {
             $has_errors                  = true;
@@ -636,9 +635,9 @@ function editField()
         }
 
         //fieldname unique?
-        $crit = new \CriteriaCompo(new \Criteria('id', $fld_id, '!='));
-        $crit->add(new \Criteria('fieldname', $_POST['fld_fieldname']));
-        if ($hField->getCount($crit)) {
+        $criteria = new \CriteriaCompo(new \Criteria('id', (string)$fld_id, '!='));
+        $criteria->add(new \Criteria('fieldname', $_POST['fld_fieldname']));
+        if ($ticketFieldHandler->getCount($criteria)) {
             $has_errors                = true;
             $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME_UNIQUE;
         }
@@ -704,8 +703,8 @@ function editField()
         $field->setValues($values);
         $field->addDepartments($_POST['fld_departments']);
 
-        if ($hField->insert($field)) {
-            _clearEditSessionVars($fld_id);
+        if ($ticketFieldHandler->insert($field)) {
+            clearEditSessionVars($fld_id);
             redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'), 3, _AM_XHELP_MSG_FIELD_UPD_OK);
         } else {
             redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'editfield', 'id' => $fld_id], false), 3, _AM_XHELP_MSG_FIELD_UPD_ERR);
@@ -716,7 +715,7 @@ function editField()
 /**
  * @return array
  */
-function &_getRegexArray()
+function &getRegexArray()
 {
     $regex_array = [
         ''                                                       => _AM_XHELP_TEXT_REGEX_CUSTOM,
@@ -735,12 +734,12 @@ function setFieldRequired()
 
     $setRequired = (0 != $setRequired ? 1 : 0);
 
-    $hField = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+    $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
 
-    $field = $hField->get($id);
+    $field = $ticketFieldHandler->get($id);
     if ($field) {
         $field->setVar('required', $setRequired);
-        $ret = $hField->insert($field, true);
+        $ret = $ticketFieldHandler->insert($field, true);
         if ($ret) {
             redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'));
         } else {
@@ -753,18 +752,18 @@ function setFieldRequired()
 
 function clearAddSession()
 {
-    _clearAddSessionVars();
+    clearAddSessionVars();
     redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'));
 }
 
 function clearEditSession()
 {
     $fieldid = $_REQUEST['id'];
-    _clearEditSessionVars($fieldid);
+    clearEditSessionVars($fieldid);
     redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'editfield', 'id' => $fieldid], false));
 }
 
-function _clearAddSessionVars()
+function clearAddSessionVars()
 {
     $session = Xhelp\Session::getInstance();
     $session->del('xhelp_addField');
@@ -774,7 +773,7 @@ function _clearAddSessionVars()
 /**
  * @param $id
  */
-function _clearEditSessionVars($id)
+function clearEditSessionVars($id)
 {
     $id      = (int)$id;
     $session = Xhelp\Session::getInstance();

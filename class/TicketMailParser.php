@@ -1,35 +1,29 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
 /**
- * Xhelp\TicketMailParser class
+ * TicketMailParser class
  *
  * Part of the email submission subsystem. Converts a parsed email into a ticket
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
- * @access  public
  * @depreciated
- * @package xhelp
  */
 
-use XoopsModules\Xhelp;
 
 /**
  * Class TicketMailParser
- * @package XoopsModules\Xhelp
  */
 class TicketMailParser
 {
     /**
      * Instance of Ticket Object
-     * @access private
      */
     public $_ticket;
 
     /**
      * Class Constructor
-     * @access public
      */
     public function __construct()
     {
@@ -43,12 +37,11 @@ class TicketMailParser
      * @param mixed $department
      * @param mixed $server
      * @return bool
-     * @access public
      */
-    public function createTicket($mailParser, $xoopsUser, $department, $server)
+    public function createTicket($mailParser, $xoopsUser, $department, $server): bool
     {
         //get ticket handler
-        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticketHandler = new TicketHandler($GLOBALS['xoopsDB']);
         $ticket        = $ticketHandler->create();
 
         $ticket->setVar('uid', $xoopsUser->uid());
@@ -57,7 +50,7 @@ class TicketMailParser
         $ticket->setVar('description', $mailParser->getBody());
         $ticket->setVar('priority', 3);
         $ticket->setVar('posted', \time());
-        $ticket->setVar('userIP', _XHELP_EMAIL_SCANNER_IP_COLUMN);
+        $ticket->setVar('userIP', \_AM_XHELP_EMAIL_SCANNER_IP_COLUMN);
         $ticket->setVar('serverid', $server->getVar('id'));
         $ticket->createEmailHash($mailParser->getEmail());
 
@@ -72,7 +65,7 @@ class TicketMailParser
 
     /**
      * Returns the ticket object for this email
-     * @return object {@link Xhelp\Ticket} Ticket Object
+     * @return object {@link Ticket} Ticket Object
      */
     public function &getTicket()
     {

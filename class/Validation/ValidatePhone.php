@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Validation;
-
-use XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidatePhone
@@ -14,7 +12,6 @@ class ValidatePhone extends Validator
      * $phone the phone number to validate
      */
     public $phone;
-
     //! A constructor.
 
     /**
@@ -34,9 +31,9 @@ class ValidatePhone extends Validator
      */
     public function validate()
     {
-        $pattern = "(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$";
+        $pattern = '/(\d{3})\D*(\d{3})\D*(\d{4})\D*(\d*)$/';
         if (!\preg_match($pattern, $this->phone)) {
-            $this->setError(_XHELP_MESSAGE_INVALID);
+            $this->setError(\_XHELP_MESSAGE_INVALID);
         }
     }
 }

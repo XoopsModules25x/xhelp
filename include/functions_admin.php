@@ -1,20 +1,20 @@
-<?php
+<?php declare(strict_types=1);
 
 use XoopsModules\Xhelp;
 
 //function xhelpAdminFooter()
 //{
-//    echo "<br><div class='center;'><a target='_BLANK' href='http://www.3dev.org'><img src='".XHELP_IMAGE_URL."/3Dev_xhelp.png'></a></div>";
+//    echo "<br><div class='center;'><a target='_BLANK' href='https://www.3dev.org'><img src='".XHELP_IMAGE_URL."/3Dev_xhelp.png'></a></div>";
 //}
 
 /**
  * Check the status of the supplied directory
  * Thanks to the NewBB2 Development Team and SmartFactory
- * @param      $path
+ * @param string     $path
  * @param bool $getStatus
  * @return int|string
  */
-function xhelp_admin_getPathStatus($path, $getStatus = false)
+function xhelp_admin_getPathStatus(string $path, $getStatus = false)
 {
     if (empty($path)) {
         return false;
@@ -44,7 +44,7 @@ function xhelp_admin_getPathStatus($path, $getStatus = false)
  */
 function xhelp_admin_mkdir($target)
 {
-    // http://www.php.net/manual/en/function.mkdir.php
+    // https://www.php.net/manual/en/function.mkdir.php
     // saint at corenova.com
     // bart at cdasites dot com
     if (is_dir($target) || empty($target)) {
@@ -85,7 +85,7 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
 
     if ($getResolved) {
         $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        $hFile         = Xhelp\Helper::getInstance()->getHandler('File');
+        $fileHandler   = Xhelp\Helper::getInstance()->getHandler('File');
 
         $tickets = $ticketHandler->getObjectsByState(1);
 
@@ -95,8 +95,8 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
         }
 
         // Retrieve all unresolved ticket attachments
-        $crit   = new \Criteria('ticketid', '(' . implode(',', $aTickets) . ')', 'IN');
-        $files  = $hFile->getObjects($crit);
+        $criteria   = new \Criteria('ticketid', '(' . implode(',', $aTickets) . ')', 'IN');
+        $files  = $fileHandler->getObjects($criteria);
         $aFiles = [];
         foreach ($files as $f) {
             $aFiles[$f->getVar('id')] = $f->getVar('filename');
@@ -144,6 +144,7 @@ function xhelpGetControlLabel($control)
 function xhelpGetControl($control)
 {
     $controls = xhelpGetControlArray();
+
     return $controls[$control] ?? false;
 }
 
@@ -229,7 +230,7 @@ function xhelpRenderErrors($err_arr, $reseturl = '')
 
 /**
  * @param $string
- * @return mixed|string
+ * @return string
  */
 function removeAccents($string)
 {
@@ -338,22 +339,22 @@ function removeAccents($string)
 function seemsUtf8($Str)
 { # by bmorel at ssi dot fr
     foreach ($Str as $i => $iValue) {
-        if (ord($Str[$i]) < 0x80) {
+        if (ord($iValue) < 0x80) {
             continue;
         } # 0bbbbbbb
-        elseif (0xC0 == (ord($Str[$i]) & 0xE0)) {
+        elseif (0xC0 == (ord($iValue) & 0xE0)) {
             $n = 1;
         } # 110bbbbb
-        elseif (0xE0 == (ord($Str[$i]) & 0xF0)) {
+        elseif (0xE0 == (ord($iValue) & 0xF0)) {
             $n = 2;
         } # 1110bbbb
-        elseif (0xF0 == (ord($Str[$i]) & 0xF8)) {
+        elseif (0xF0 == (ord($iValue) & 0xF8)) {
             $n = 3;
         } # 11110bbb
-        elseif (0xF8 == (ord($Str[$i]) & 0xFC)) {
+        elseif (0xF8 == (ord($iValue) & 0xFC)) {
             $n = 4;
         } # 111110bb
-        elseif (0xFC == (ord($Str[$i]) & 0xFE)) {
+        elseif (0xFC == (ord($iValue) & 0xFE)) {
             $n = 5;
         } # 1111110b
         else {
@@ -371,12 +372,12 @@ function seemsUtf8($Str)
 
 /**
  * @param $field
- * @return mixed|string
+ * @return string
  */
 function sanitizeFieldName($field)
 {
     $field = removeAccents($field);
-    $field = mb_strtolower($field);
+    $field = \mb_strtolower($field);
     $field = preg_replace('/&.+?;/', '', $field); // kill entities
     $field = preg_replace('/[^a-z0-9 _-]/', '', $field);
     $field = preg_replace('/\s+/', ' ', $field);
@@ -392,19 +393,19 @@ function sanitizeFieldName($field)
  */
 function xhelpCreateDepartmentVisibility()
 {
-    $hDepartments     = Xhelp\Helper::getInstance()->getHandler('Department');
-    $hGroups          = xoops_getHandler('group');
+    $departmentHandler = Xhelp\Helper::getInstance()->getHandler('Department');
+    $groupHandler      = xoops_getHandler('group');
     /** @var \XoopsGroupPermHandler $grouppermHandler */
-$grouppermHandler = xoops_getHandler('groupperm');
+    $grouppermHandler = xoops_getHandler('groupperm');
     $xoopsModule      = Xhelp\Utility::getModule();
 
     $module_id = $xoopsModule->getVar('mid');
 
     // Get array of all departments
-    $departments = $hDepartments->getObjects(null, true);
+    $departments = $departmentHandler->getObjects(null, true);
 
     // Get array of groups
-    $groups  = $hGroups->getObjects(null, true);
+    $groups  = $groupHandler->getObjects(null, true);
     $aGroups = [];
     foreach ($groups as $group_id => $group) {
         $aGroups[$group_id] = $group->getVar('name');
@@ -414,10 +415,10 @@ $grouppermHandler = xoops_getHandler('groupperm');
         $deptID = $dept->getVar('id');
 
         // Remove old group permissions
-        $crit = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
-        $crit->add(new \Criteria('gperm_itemid', $deptID));
-        $crit->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $grouppermHandler->deleteAll($crit);
+        $criteria = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
+        $criteria->add(new \Criteria('gperm_itemid', $deptID));
+        $criteria->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
+        $grouppermHandler->deleteAll($criteria);
 
         foreach ($aGroups as $group => $group_name) {     // Add new group permissions
             $grouppermHandler->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);

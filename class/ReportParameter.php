@@ -1,21 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 /**
- * Xhelp\ReportParameter class
+ * ReportParameter class
  *
  * Information about an individual report parameter
  *
  * @author  Eric Juden <eric@3dev.org>
- * @access  public
- * @package xhelp
  */
 class ReportParameter
 {
@@ -29,7 +25,7 @@ class ReportParameter
     public $dbaction;
 
     /**
-     * Xhelp\ReportParameter constructor.
+     * ReportParameter constructor.
      */
     public function __construct()
     {
@@ -37,14 +33,13 @@ class ReportParameter
     }
 
     /**
-     * Create a new Xhelp\ReportParameter
+     * Create a new ReportParameter
      *
-     * @return Xhelp\ReportParameter {@link Xhelp\ReportParameter}
-     * @access  public
+     * @return ReportParameter {@link ReportParameter}
      */
-    public static function create()
+    public static function create(): ReportParameter
     {
-        $ret = new Xhelp\ReportParameter();
+        $ret = new ReportParameter();
 
         return $ret;
     }
@@ -61,8 +56,7 @@ class ReportParameter
      * @param string $dbfield
      * @param string $dbaction
      *
-     * @return object {@link Xhelp\ReportParameter}
-     * @access  public
+     * @return object {@link ReportParameter}
      */
     public static function addParam($controltype, $name, $fieldname, $value, $values, $fieldlength, $dbfield, $dbaction)
     {
@@ -73,7 +67,7 @@ class ReportParameter
         $param->value       = $value;
         $param->values      = $values;
         $param->fieldlength = $fieldlength;
-        $param->maxlength   = ($fieldlength < 50 ? $fieldlength : 50);
+        $param->maxlength   = (\min($fieldlength, 50));
         $param->dbfield     = $dbfield;
         $param->dbaction    = $dbaction;
 
@@ -85,9 +79,8 @@ class ReportParameter
      *
      * @param array $vals
      * @return string
-     * @access  public
      */
-    public function displayParam($vals = [])
+    public function displayParam($vals = []): ?string
     {
         $controltype = $this->controltype;
         $fieldlength = $this->maxlength;
@@ -139,7 +132,7 @@ class ReportParameter
                        . "1' value='1' "
                        . ((1 == $this->value) ? 'checked' : '')
                        . '>'
-                       . _XHELP_TEXT_YES
+                       . \_XHELP_TEXT_YES
                        . "<input type='radio' name='"
                        . $this->fieldname
                        . "' id='"
@@ -147,7 +140,7 @@ class ReportParameter
                        . "0' value='0' "
                        . ((1 == $this->value) ? 'checked' : '')
                        . '>'
-                       . _XHELP_TEXT_NO;
+                       . \_XHELP_TEXT_NO;
                 break;
             case \XHELP_CONTROL_RADIOBOX:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>';

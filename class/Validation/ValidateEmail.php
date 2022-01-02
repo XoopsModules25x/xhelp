@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Validation;
 
@@ -13,7 +13,6 @@ class ValidateEmail extends Validator
      * $email the email address to validate
      */
     public $email;
-
     //! A constructor.
 
     /**
@@ -33,16 +32,16 @@ class ValidateEmail extends Validator
      */
     public function validate()
     {
-        $pattern = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+([\.][a-z0-9-]+)+$/i";
+        $pattern = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+([\.][a-z0-9-]+)+$/i';
         //$pattern= "/^([a-zA-Z0-9])+([.a-zA-Z0-9_-])*@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-]+)+/";
         if (!\preg_match($pattern, $this->email)) {
-            $this->setError(_XHELP_MESSAGE_INVALID);
+            $this->setError(\_XHELP_MESSAGE_INVALID);
         }
         if (mb_strlen($this->email) > 100) {
-            $this->setError(_XHELP_MESSAGE_LONG);
+            $this->setError(\_XHELP_MESSAGE_LONG);
         }
         if (mb_strlen($this->email) < 5) {
-            $this->setError(_XHELP_MESSAGE_SHORT);
+            $this->setError(\_XHELP_MESSAGE_SHORT);
         }
     }
 }

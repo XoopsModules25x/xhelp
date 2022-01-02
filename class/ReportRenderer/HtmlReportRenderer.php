@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\ReportRenderer;
 
@@ -32,7 +32,7 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
      * @param int $graphHeight
      * @return string
      */
-    public function render($graphWidth = 500, $graphHeight = 300)
+    public function render(int $graphWidth = 500, int $graphHeight = 300)
     {
         global $paramVals;
         $report = $this->report;

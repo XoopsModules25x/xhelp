@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,29 +25,24 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Xhelp\StatusHandler class
+ * StatusHandler class
  *
- * Status Handler for Xhelp\Status class
+ * Status Handler for Status class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
- * @access  public
- * @package xhelp
  */
-class StatusHandler extends Xhelp\BaseObjectHandler
+class StatusHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = Status::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
     public $_dbtable = 'xhelp_status';
 
@@ -66,10 +57,10 @@ class StatusHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -82,10 +73,10 @@ class StatusHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -98,10 +89,10 @@ class StatusHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE ID = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
@@ -112,12 +103,12 @@ class StatusHandler extends Xhelp\BaseObjectHandler
      * @param $state
      * @return array
      */
-    public function &getStatusesByState($state)
+    public function &getStatusesByState($state): array
     {
         $aStatuses = [];
         $state     = (int)$state;
-        $crit      = new \Criteria('state', $state);
-        $aStatuses = $this->getObjects($crit, true);
+        $criteria      = new \Criteria('state', $state);
+        $aStatuses = $this->getObjects($criteria, true);
 
         return $aStatuses;
     }

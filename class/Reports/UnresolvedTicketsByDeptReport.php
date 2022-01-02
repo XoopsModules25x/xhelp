@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
@@ -35,26 +35,24 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name = 'unresolvedTicketsByDept';
-
-    public $meta = [
-        'name'        => _XHELP_UTBD_NAME,
+    public $name       = 'unresolvedTicketsByDept';
+    public $meta       = [
+        'name'        => \_XHELP_UTBD_NAME,
         'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
-        'description' => _XHELP_UTBD_DESC,
+        'description' => \_XHELP_UTBD_DESC,
         'version'     => '1.0',
         'dbFields'    => [
-            'department'     => _XHELP_UTBD_DB1,
-            'id'             => _XHELP_UTBD_DB2,
-            'subject'        => _XHELP_UTBD_DB3,
-            'status'         => _XHELP_UTBD_DB4,
-            'totalTimeSpent' => _XHELP_UTBD_DB5,
-            'postTime'       => _XHELP_UTBD_DB6,
+            'department'     => \_XHELP_UTBD_DB1,
+            'id'             => \_XHELP_UTBD_DB2,
+            'subject'        => \_XHELP_UTBD_DB3,
+            'status'         => \_XHELP_UTBD_DB4,
+            'totalTimeSpent' => \_XHELP_UTBD_DB5,
+            'postTime'       => \_XHELP_UTBD_DB6,
         ],
     ];
-
     public $parameters = [
-        _XHELP_UTBD_PARAM1 => [
+        \_XHELP_UTBD_PARAM1 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'startDate',
             'value'       => '',      // last month
@@ -63,7 +61,7 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
             'dbfield'     => 't.posted',
             'dbaction'    => '>',
         ],
-        _XHELP_UTBD_PARAM2 => [
+        \_XHELP_UTBD_PARAM2 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'endDate',
             'value'       => '',      // today
@@ -73,7 +71,6 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
             'dbaction'    => '<=',
         ],
     ];
-
     /*
      function generateReport()
      {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -9,11 +9,11 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 /** @var Xhelp\Helper $helper */
 $helper = Xhelp\Helper::getInstance();
 
-$staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-$hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-$hTickets     = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-$hSavedSearch = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
-$hFields      = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+$staffHandler       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+$departmentHandler  = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+$ticketHandler      = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$savedSearchHandler = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+$ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
 
 if (!$xoopsUser) {
     redirect_header(XOOPS_URL, 3, _NOPERM);
@@ -43,7 +43,7 @@ if ($xoopsUser) {
     }
     $limit         = $limit;
     $start         = $start;
-    $sort          = mb_strtolower($sort);
+    $sort          = \mb_strtolower($sort);
     $order         = (in_array(mb_strtoupper($order), $sort_order) ? $order : 'ASC');
     $sort_columns  = [
         'id',
@@ -96,7 +96,7 @@ if ($xoopsUser) {
             }
             $GLOBALS['xoopsOption']['template_main'] = 'xhelp_editSearch.tpl';   // Set template
             require_once XOOPS_ROOT_PATH . '/header.php';                     // Include the page header
-            $mySearch = $hSavedSearch->get($searchid);
+            $mySearch = $savedSearchHandler->get($searchid);
             $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
             if (is_object($mySearch)) {   // Go through saved search info, set values on page
                 $vars        = [
@@ -124,7 +124,7 @@ if ($xoopsUser) {
                 $ownership   = '';
                 $closedBy    = '';
 
-                $fields      = $hFields->getObjects();
+                $fields      = $ticketFieldHandler->getObjects();
                 $aFields     = [];
                 $aFieldnames = [];
                 foreach ($fields as $field) {
@@ -152,12 +152,12 @@ if ($xoopsUser) {
                 }
                 unset($fields);
 
-                $crit           = unserialize($mySearch->getVar('search'));
+                $criteria           = unserialize($mySearch->getVar('search'));
                 $pagenav_vars   = $mySearch->getVar('pagenav_vars');
-                $searchLimit    = $crit->getLimit();
-                $searchStart    = $crit->getStart();
-                $crit           = get_object_vars($crit);
-                $critElements   = $crit['criteriaElements'];
+                $searchLimit    = $criteria->getLimit();
+                $searchStart    = $criteria->getStart();
+                $criteria           = get_object_vars($criteria);
+                $critElements   = $criteria['criteriaElements'];
                 $hasSubmittedBy = false;
                 foreach ($critElements as $critEle) {
                     $critEle = get_object_vars($critEle);
@@ -231,11 +231,11 @@ if ($xoopsUser) {
                 $myDepts[-1] = _XHELP_TEXT_SELECT_ALL;
                 $xoopsTpl->assign('xhelp_depts', $myDepts);
 
-                $hStatus   = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
-                $crit_stat = new \Criteria('', '');
+                $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+                $crit_stat     = new \Criteria('', '');
                 $crit_stat->setSort('description');
                 $crit_stat->setOrder('ASC');
-                $statuses  = $hStatus->getObjects($crit_stat);
+                $statuses  = $statusHandler->getObjects($crit_stat);
                 $aStatuses = [];
                 foreach ($statuses as $status) {
                     $aStatuses[$status->getVar('id')] = $status->getVar('description');
@@ -292,17 +292,17 @@ if ($xoopsUser) {
             $date_criteria = new \CriteriaCompo();
             if (Request::hasVar('recieve_datemin', 'REQUEST') && 1 == $datemin_use) {
                 $recieve_datemin = strtotime($_REQUEST['recieve_datemin']);
-                $date_criteria->add(new \Criteria('t.posted', $recieve_datemin, '>='));
+                $date_criteria->add(new \Criteria('t.posted', (string)$recieve_datemin, '>='));
             }
             if (Request::hasVar('recieve_datemax', 'REQUEST') && 1 == $datemax_use) {
                 $recieve_datemax = strtotime($_REQUEST['recieve_datemax']) + 60 * 60 * 24 - 1;
-                $date_criteria->add(new \Criteria('t.posted', $recieve_datemax, '<='));
+                $date_criteria->add(new \Criteria('t.posted', (string)$recieve_datemax, '<='));
             }
 
             //recherche recieve_date
             xoops_load('XoopsFormLoader');
             $aff_date = new \XoopsFormElementTray('', '');
-            $date_min = new \XoopsFormTextDateSelect(_XHELP_TEXT_DATE_MIN, 'recieve_datemin', 10, strtotime($recieve_datemin));
+            $date_min = new \XoopsFormTextDateSelect(_XHELP_TEXT_DATE_MIN, 'recieve_datemin', 10, strtotime((string)$recieve_datemin));
             //No request done, set default value for form
             if (0 == $recieve_datemin) {
                 $datemin_use = 1;
@@ -310,12 +310,12 @@ if ($xoopsUser) {
             $date_min_use = new \XoopsFormCheckBox('', 'datemin_use', $datemin_use);
             $date_min_use->addOption(1, _XHELP_TEXT_USE);
             //No request done, set default value for form
-            $date_max = new \XoopsFormTextDateSelect(_XHELP_TEXT_DATE_MAX, 'recieve_datemax', 10, strtotime($recieve_datemax));
+            $date_max = new \XoopsFormTextDateSelect(_XHELP_TEXT_DATE_MAX, 'recieve_datemax', 10, strtotime((string)$recieve_datemax));
             if (0 == $recieve_datemax) {
                 $datemax_use = 1;
             }
             $date_max_use = new \XoopsFormCheckBox('', 'datemax_use', $datemax_use);
-            $date_max_use->addOption(1, _XHELP_TEXT_USE);
+            $date_max_use->addOption('1', _XHELP_TEXT_USE);
 
             $aff_date->addElement($date_min);
             $aff_date->addElement($date_min_use);
@@ -330,14 +330,14 @@ if ($xoopsUser) {
             if (Request::hasVar('search', 'POST') || isset($_GET['start']) || isset($_REQUEST['savedSearch'])) {
                 if (Request::hasVar('savedSearch', 'REQUEST') && 0 != $_REQUEST['savedSearch']) {     // If this is a saved search
                     if (!isset($_POST['delete_savedSearch'])) {   // If not deleting saved search
-                        $mySavedSearch = $hSavedSearch->get($_REQUEST['savedSearch']);
-                        $crit          = unserialize($mySavedSearch->getVar('search'));                   // Set $crit object
+                        $mySavedSearch = $savedSearchHandler->get($_REQUEST['savedSearch']);
+                        $criteria          = unserialize($mySavedSearch->getVar('search'));                   // Set $criteria object
                         $pagenav_vars  = $mySavedSearch->getVar('pagenav_vars');     // set pagenav vars
 
-                        if (0 != $crit->getLimit()) {
-                            $limit = $crit->getLimit();                         // Set limit
+                        if (0 != $criteria->getLimit()) {
+                            $limit = $criteria->getLimit();                         // Set limit
                         }
-                        $start = $crit->getStart();                         // Set start
+                        $start = $criteria->getStart();                         // Set start
 
                         $custFields = $_xhelpSession->get('xhelp_custFields');
                         if ($custFields) {     // Custom fields
@@ -348,8 +348,8 @@ if ($xoopsUser) {
                         if (XHELP_GLOBAL_UID == $mySavedSearch['uid']) {
                             redirect_header(XHELP_BASE_URL . '/search.php', 3, _XHELP_MSG_NO_DEL_SEARCH);
                         }
-                        $crit = new \Criteria('id', $mySavedSearch['id']);
-                        if ($hSavedSearch->deleteAll($crit)) {
+                        $criteria = new \Criteria('id', $mySavedSearch['id']);
+                        if ($savedSearchHandler->deleteAll($criteria)) {
                             $_xhelpSession->del('xhelp_savedSearches');
                             redirect_header(XHELP_BASE_URL . '/search.php');
                         } else {
@@ -358,7 +358,7 @@ if ($xoopsUser) {
                     }
                 } elseif (Request::hasVar('search', 'POST')
                           || isset($_GET['start'])) { // If this is a new search or next page in search results
-                    $crit = new \CriteriaCompo(new \Criteria('uid', $xoopsUser->getVar('uid'), '=', 'j'));
+                    $criteria = new \CriteriaCompo(new \Criteria('uid', $xoopsUser->getVar('uid'), '=', 'j'));
                     $vars = [
                         'ticketid',
                         'department',
@@ -372,7 +372,7 @@ if ($xoopsUser) {
                         'closedBy',
                     ];
                     //hack
-                    $crit->add($date_criteria);
+                    $criteria->add($date_criteria);
                     //end of hack
                     $custFields = $_xhelpSession->get('xhelp_custFields');
                     if ($custFields) {     // Custom fields
@@ -382,7 +382,7 @@ if ($xoopsUser) {
                             if (isset($_REQUEST[$fieldname]) && '' != $_REQUEST[$fieldname]
                                 && -1 != $_REQUEST[$fieldname]) {
                                 $hasCustFields = true;
-                                $crit->add(new \Criteria($fieldname, '%' . $_REQUEST[$fieldname] . '%', 'LIKE', 'f'));
+                                $criteria->add(new \Criteria($fieldname, '%' . $_REQUEST[$fieldname] . '%', 'LIKE', 'f'));
                             }
                         }
                     }
@@ -398,46 +398,46 @@ if ($xoopsUser) {
                     }
 
                     if (isset($ticketid) && $ticketid = (int)$ticketid) {
-                        $crit->add(new \Criteria('id', $ticketid, '=', 't'));
+                        $criteria->add(new \Criteria('id', (string)$ticketid, '=', 't'));
                         $pagenav_vars .= "&amp;ticketid=$ticketid";
                     }
 
                     if (isset($department)) {
                         if (!in_array('-1', $department)) {
                             $department = array_filter($department);
-                            $crit->add(new \Criteria('department', '(' . implode(',', $department) . ')', 'IN', 't'));
+                            $criteria->add(new \Criteria('department', '(' . implode(',', $department) . ')', 'IN', 't'));
                             $pagenav_vars .= '&amp;department[]=' . implode('&amp;department[]=', $department);
                         }
                     }
 
                     if (isset($description) && $description) {
-                        $crit->add(new \Criteria('description', "%$description%", 'LIKE', 't'));
+                        $criteria->add(new \Criteria('description', "%$description%", 'LIKE', 't'));
                         $pagenav_vars .= "&amp;description=$description";
                     }
 
                     if (isset($subject) && $subject) {
-                        $crit->add(new \Criteria('subject', "%$subject%", 'LIKE', 't'));
+                        $criteria->add(new \Criteria('subject', "%$subject%", 'LIKE', 't'));
                         $pagenav_vars .= "&amp;subject=$subject";
                     }
 
                     if (isset($priority) && (-1 != $priority)) {
                         $priority = (int)$priority;
-                        $crit->add(new \Criteria('priority', $priority, '=', 't'));
+                        $criteria->add(new \Criteria('priority', (string)$priority, '=', 't'));
                         $pagenav_vars .= "&amp;priority=$priority";
                     }
 
                     if (isset($status)) {
                         if (is_array($status)) {
                             $status = array_filter($status);
-                            $crit->add(new \Criteria('status', '(' . implode(',', $status) . ')', 'IN', 't'));
+                            $criteria->add(new \Criteria('status', '(' . implode(',', $status) . ')', 'IN', 't'));
                             $pagenav_vars .= '&amp;status[]=' . implode('&amp;status[]=', $status);
                         } else {
-                            $crit->add(new \Criteria('status', (int)$status, '=', 't'));
+                            $criteria->add(new \Criteria('status', (int)$status, '=', 't'));
                             $pagenav_vars .= "&amp;status=$status";
                         }
                     } else {        // Only evaluate if status is not set
                         if (isset($state) && -1 != $state) {
-                            $crit->add(new \Criteria('state', (int)$state, '=', 's'));
+                            $criteria->add(new \Criteria('state', (int)$state, '=', 's'));
                             $pagenav_vars .= "&amp;state=$state";
                         }
                     }
@@ -446,7 +446,7 @@ if ($xoopsUser) {
                         if (mb_strlen($submittedBy) > 0) {
                             if (!is_numeric($submittedBy)) {
                                 /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');
+                                $memberHandler = xoops_getHandler('member');
                                 $users         = $memberHandler->getUsers(new \Criteria('uname', $submittedBy));
                                 if ($users) {
                                     $submittedBy = $users[0]->getVar('uid');
@@ -457,35 +457,35 @@ $memberHandler = xoops_getHandler('member');
                                 }
                             }
                             $submittedBy = (int)$submittedBy;
-                            $crit->add(new \Criteria('uid', $submittedBy, '=', 't'));
+                            $criteria->add(new \Criteria('uid', (string)$submittedBy, '=', 't'));
                             $pagenav_vars .= "&amp;submittedBy=$submittedBy";
                         }
                     }
                     if (isset($ownership) && (-1 != $ownership)) {
                         $ownership = (int)$ownership;
-                        $crit->add(new \Criteria('ownership', $ownership, '=', 't'));
+                        $criteria->add(new \Criteria('ownership', (string)$ownership, '=', 't'));
                         $pagenav_vars .= "&amp;ownership=$ownership";
                     }
                     if (isset($closedBy) && (-1 != $closedBy)) {
                         $closedBy = (int)$closedBy;
-                        $crit->add(new \Criteria('closedBy', $closedBy, '=', 't'));
+                        $criteria->add(new \Criteria('closedBy', (string)$closedBy, '=', 't'));
                         $pagenav_vars .= "&amp;closedBy=$closedBy";
                     }
-                    $crit->setStart($start);
-                    $crit->setLimit($limit);
-                    $crit->setSort($sort);
-                    $crit->setOrder($order);
+                    $criteria->setStart($start);
+                    $criteria->setLimit($limit);
+                    $criteria->setSort($sort);
+                    $criteria->setOrder($order);
 
                     if (Request::hasVar('save', 'POST') && 1 == $_POST['save']) {
                         if (Request::hasVar('searchid', 'POST') && 0 != $_POST['searchid']) {
-                            $exSearch = $hSavedSearch->get(Request::getInt('searchid', 0, 'POST'));
+                            $exSearch = $savedSearchHandler->get(Request::getInt('searchid', 0, 'POST'));
                             $exSearch->setVar('uid', $xoopsUser->getVar('uid'));
                             $exSearch->setVar('name', $_POST['searchName']);
-                            $exSearch->setVar('search', serialize($crit));
+                            $exSearch->setVar('search', serialize($criteria));
                             $exSearch->setVar('pagenav_vars', $pagenav_vars);
                             $exSearch->setVar('hasCustFields', ($hasCustFields ? 1 : 0));
 
-                            if ($hSavedSearch->insert($exSearch)) {  // If saved, store savedSearches in a session var
+                            if ($savedSearchHandler->insert($exSearch)) {  // If saved, store savedSearches in a session var
                                 $_xhelpSession->del('xhelp_savedSearches');
                             }
                             unset($exSearch);
@@ -494,14 +494,14 @@ $memberHandler = xoops_getHandler('member');
                             }
                         } else {
                             if ('' != $_POST['searchName']) {
-                                $newSearch = $hSavedSearch->create();
+                                $newSearch = $savedSearchHandler->create();
                                 $newSearch->setVar('uid', $xoopsUser->getVar('uid'));
                                 $newSearch->setVar('name', $_POST['searchName']);
-                                $newSearch->setVar('search', serialize($crit));
+                                $newSearch->setVar('search', serialize($criteria));
                                 $newSearch->setVar('pagenav_vars', $pagenav_vars);
                                 $newSearch->setVar('hasCustFields', ($hasCustFields ? 1 : 0));
 
-                                if ($hSavedSearch->insert($newSearch)) {  // If saved, store savedSearches in a session var
+                                if ($savedSearchHandler->insert($newSearch)) {  // If saved, store savedSearches in a session var
                                     $_xhelpSession->del('xhelp_savedSearches');
                                 }
                                 unset($newSearch);
@@ -514,20 +514,20 @@ $memberHandler = xoops_getHandler('member');
                 }
                 $viewResults = true;
 
-                $tickets = $hTickets->getObjectsByStaff($crit, false, $hasCustFields);
+                $tickets = $ticketHandler->getObjectsByStaff($criteria, false, $hasCustFields);
 
-                $total = $hTickets->getCountByStaff($crit, $hasCustFields);
+                $total = $ticketHandler->getCountByStaff($criteria, $hasCustFields);
                 //$pageNav = new  XoopsPageNav($total, $limit, $start, "start", "limit=$limit&department=$search_department&description=$search_description&subject=$search_subject&priority=$search_priority&status=$search_status&submittedBy=$search_submittedBy&ownership=$search_ownership&closedBy=$search_closedBy");   // New PageNav object
                 $pageNav = new \XoopsPageNav($total, $limit, $start, 'start', $pagenav_vars);
                 $xoopsTpl->assign('xhelp_pagenav', $pageNav->renderNav());
                 unset($pageNav);
                 /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');
+                $memberHandler = xoops_getHandler('member');
                 foreach ($tickets as $ticket) {
                     $user  = $memberHandler->getUser($ticket->getVar('uid'));
                     $owner = $memberHandler->getUser($ticket->getVar('ownership'));
                     //$closer = $memberHandler->getUser($ticket->getVar('closedBy'));
-                    $department = $hDepartments->get($ticket->getVar('department'));
+                    $department = $departmentHandler->get($ticket->getVar('department'));
                     //if ($owner) {
                     $overdue = false;
                     if ($ticket->isOverdue()) {
@@ -596,7 +596,7 @@ $memberHandler = xoops_getHandler('member');
                         'url'      => "search.php?$pagenav_vars&amp;start=$start&amp;sort=$col&amp;order=$col_qs_order",
                         'urltitle' => _XHELP_TEXT_SORT_TICKETS,
                         'sortby'   => $col_sortby,
-                        'sortdir'  => mb_strtolower($col_qs_order),
+                        'sortdir'  => \mb_strtolower($col_qs_order),
                     ];
                 }
                 $xoopsTpl->assign('xhelp_cols', $tpl_cols);
@@ -635,11 +635,11 @@ $memberHandler = xoops_getHandler('member');
             $xoopsTpl->assign('xhelp_batch_form', 'index.php');
             $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
 
-            $hStatus   = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
-            $crit_stat = new \Criteria('', '');
+            $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+            $crit_stat     = new \Criteria('', '');
             $crit_stat->setSort('description');
             $crit_stat->setOrder('ASC');
-            $statuses  = $hStatus->getObjects($crit_stat);
+            $statuses  = $statusHandler->getObjects($crit_stat);
             $aStatuses = [];
             foreach ($statuses as $status) {
                 $aStatuses[$status->getVar('id')] = [
@@ -651,7 +651,7 @@ $memberHandler = xoops_getHandler('member');
             unset($statuses);
             $xoopsTpl->assign('xhelp_statuses', $aStatuses);
 
-            $fields  = $hFields->getObjects();
+            $fields  = $ticketFieldHandler->getObjects();
             $aFields = [];
             foreach ($fields as $field) {
                 $values = $field->getVar('fieldvalues');

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
@@ -33,13 +33,12 @@ class StaffInfoReport extends Xhelp\Reports\Report
          */
     }
 
-    public $name = 'staffInfo';
-
-    public $meta = [
-        'name'        => _XHELP_STAFF_INFO_NAME,
+    public $name       = 'staffInfo';
+    public $meta       = [
+        'name'        => \_XHELP_STAFF_INFO_NAME,
         'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
-        'description' => _XHELP_STAFF_INFO_DESC,
+        'description' => \_XHELP_STAFF_INFO_DESC,
         'version'     => '1.0',
         'dbFields'    => [
             'name'             => 'Name',
@@ -48,9 +47,7 @@ class StaffInfoReport extends Xhelp\Reports\Report
             'avgResponseTime'  => 'Average Response Time (in Minutes)',
         ],
     ];
-
     public $parameters = [];
-
     /*
      function generateReport()
      {
@@ -148,7 +145,7 @@ class StaffInfoReport extends Xhelp\Reports\Report
         }
 
         // Set graph background image
-        $graph->SetBackgroundImage(\XHELP_IMAGE_PATH . '/graph_bg.jpg', \BGIMG_FILLFRAME);
+        $graph->SetBackgroundImage(\XHELP_IMAGE_PATH . '/graph_bg.jpg', BGIMG_FILLFRAME);
 
         $graph->Stroke();
     }
@@ -177,7 +174,7 @@ class StaffInfoReport extends Xhelp\Reports\Report
     }
 
     /**
-     * @return array|void
+     * @return void
      */
     public function getParams()
     {

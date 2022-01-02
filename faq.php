@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -48,19 +48,19 @@ function addFaq_display()
     }
     $ticketid = Request::getInt('ticketid', 0, 'POST');
 
-    $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
-    $hResponses    = Xhelp\Helper::getInstance()->getHandler('Responses');
-    $ticket        = $ticketHandler->get($ticketid);
+    $ticketHandler    = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $responsesHandler = Xhelp\Helper::getInstance()->getHandler('Responses');
+    $ticket           = $ticketHandler->get($ticketid);
 
     if (!$hasRights = $xhelp_staff->checkRoleRights(XHELP_SEC_FAQ_ADD, $ticket->getVar('department'))) {
-        redirect_header(XHELP_BASE_URL . "/ticket.php?id=$ticketid", 3, XHELP_MESSAGE_NO_ADD_FAQ);
+        redirect_header(XHELP_BASE_URL . "/ticket.php?id=$ticketid", 3, _AM_XHELP_MESSAGE_NO_ADD_FAQ);
     }
 
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_addFaq.tpl';
     require_once XOOPS_ROOT_PATH . '/header.php';
 
-    $crit         = new \Criteria('ticketid', $ticketid);
-    $responses    = $hResponses->getObjects($crit, true);
+    $criteria         = new \Criteria('ticketid', $ticketid);
+    $responses    = $responsesHandler->getObjects($criteria, true);
     $responseText = '';
 
     $allUsers = [];
@@ -68,8 +68,8 @@ function addFaq_display()
         $allUsers[$response->getVar('uid')] = '';
     }
 
-    $crit  = new \Criteria('uid', '(' . implode(',', array_keys($allUsers)) . ')', 'IN');
-    $users = Xhelp\Utility::getUsers($crit, $helper->getConfig('xhelp_displayName'));
+    $criteria  = new \Criteria('uid', '(' . implode(',', array_keys($allUsers)) . ')', 'IN');
+    $users = Xhelp\Utility::getUsers($criteria, $helper->getConfig('xhelp_displayName'));
     unset($allUsers);
 
     foreach ($responses as $response) {

@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -17,7 +16,7 @@ class ReportFactory
      * @param $name
      * @return bool
      */
-    public function getReport($name)
+    public function getReport($name): bool
     {
         $report = false;
         if ('' != $name) {
@@ -32,7 +31,7 @@ class ReportFactory
     /**
      * @return array
      */
-    public static function getReports()
+    public static function getReports(): array
     {
         $aReports = [];
 

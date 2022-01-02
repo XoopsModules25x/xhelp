@@ -78,7 +78,7 @@
  * $email['headers'][] = 'Mime-Version: 1.0';
  *
  *
- * Further examples are available at http://www.phpguru.org
+ * Further examples are available at https://www.phpguru.org
  *
  * TODO:
  *  - Set encode() to return the $obj->encoded if encode()
@@ -87,7 +87,6 @@
  *
  * @author  Richard Heyes <richard@phpguru.org>
  * @version $Revision: 1.1 $
- * @package Mail
  */
 class Mail_mimePart
 {
@@ -96,25 +95,21 @@ class Mail_mimePart
      * @var string
      */
     public $_encoding;
-
     /**
      * An array of subparts
      * @var array
      */
     public $_subparts;
-
     /**
      * The output of this part after being built
      * @var string
      */
     public $_encoded;
-
     /**
      * Headers for this part
      * @var array
      */
     public $_headers;
-
     /**
      * The body of this part (not encoded)
      * @var string
@@ -135,7 +130,6 @@ class Mail_mimePart
      *                  dfilename    - Optional filename parameter for content disposition
      *                  description  - Content description
      *                  charset      - Character set to use
-     * @access public
      */
     public function __construct($body = '', $params = [])
     {
@@ -203,7 +197,6 @@ class Mail_mimePart
      * @return An associative array containing two elements,
      *            body and headers. The headers element is itself
      *            an indexed array.
-     * @access public
      */
     public function encode()
     {
@@ -214,7 +207,7 @@ class Mail_mimePart
             $this->_headers['Content-Type'] .= ';' . MAIL_MIMEPART_CRLF . "\t" . 'boundary="' . $boundary . '"';
 
             // Add body parts to $subparts
-            for ($i = 0, $iMax = count($this->_subparts); $i < $iMax; $i++) {
+            for ($i = 0, $iMax = count($this->_subparts); $i < $iMax; ++$i) {
                 $headers = [];
                 $tmp     = $this->_subparts[$i]->encode();
                 foreach ($tmp['headers'] as $key => $value) {
@@ -247,7 +240,6 @@ class Mail_mimePart
      *                    crucial if using multipart/* in your subparts that
      *                    you use =& in your script when calling this function,
      *                    otherwise you will not be able to add further subparts.
-     * @access public
      */
     public function &addSubPart($body, $params)
     {
@@ -264,7 +256,6 @@ class Mail_mimePart
      * @param The $data     data to encode.
      * @param The $encoding encoding type to use, 7bit, base64,
      *                      or quoted-printable.
-     * @access private
      * @return bool|string|\The
      */
     public function _getEncodedData($data, $encoding)
@@ -295,7 +286,6 @@ class Mail_mimePart
      *                      not be more than 76 chars
      *
      * @return bool|string
-     * @access private
      */
     public function _quotedPrintableEncode($input, $line_max = 76)
     {
@@ -304,11 +294,11 @@ class Mail_mimePart
         $escape = '=';
         $output = '';
 
-        while (list(, $line) = each($lines)) {
+        while ([, $line] = each($lines)) {
             $linlen  = mb_strlen($line);
             $newline = '';
 
-            for ($i = 0; $i < $linlen; $i++) {
+            for ($i = 0; $i < $linlen; ++$i) {
                 $char = mb_substr($line, $i, 1);
                 $dec  = ord($char);
 
@@ -317,7 +307,7 @@ class Mail_mimePart
                 } elseif (9 == $dec) {
                     // Do nothing if a tab.
                 } elseif ((61 == $dec) or ($dec < 32) or ($dec > 126)) {
-                    $char = $escape . mb_strtoupper(sprintf('%02s', dechex($dec)));
+                    $char = $escape . \mb_strtoupper(sprintf('%02s', dechex($dec)));
                 }
 
                 if ((mb_strlen($newline) + mb_strlen($char)) >= $line_max) {        // MAIL_MIMEPART_CRLF is not counted
@@ -329,6 +319,7 @@ class Mail_mimePart
             $output .= $newline . $eol;
         }
         $output = mb_substr($output, 0, -1 * mb_strlen($eol)); // Don't want last crlf
+
         return $output;
     }
 } // End of class

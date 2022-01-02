@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,39 +15,32 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-//require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
+//require_once  \dirname(__DIR__, 3) . '/include/cp_header.php';
 
 global $xoopsUser;
 
 /**
  * class TicketHandler
  */
-class TicketHandler extends Xhelp\BaseObjectHandler
+class TicketHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = Ticket::class;
-
     /**
      * DB Table Name
      *
      * @var string
-     * @access  private
      */
     public $_dbtable = 'xhelp_tickets';
 
@@ -65,13 +58,12 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * retrieve an object from the database, based on. use in child classes
      * @param int $id ID
      * @return mixed object if id exists, false if not
-     * @access public
      */
     public function get($id)
     {
         $id = (int)$id;
         if ($id > 0) {
-            $sql = $this->_selectQuery(new \Criteria('id', $id, '=', 't'));
+            $sql = $this->selectQuery(new \Criteria('id', $id, '=', 't'));
             if (!$result = $this->_db->query($sql)) {
                 return false;
             }
@@ -91,11 +83,10 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      *
      * @param text $hash
      * @return bool object
-     * @access public
      */
-    public function getTicketByHash($hash)
+    public function getTicketByHash($hash): ?bool
     {
-        $sql = $this->_selectQuery(new \Criteria('emailHash', $hash, '=', 't'));
+        $sql = $this->selectQuery(new \Criteria('emailHash', $hash, '=', 't'));
         if (!$result = $this->_db->query($sql)) {
             return false;
         }
@@ -111,9 +102,8 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * Retrieve the list of departments for the specified tickets
      * @param mixed $tickets can be a single value or array consisting of either ticketids or ticket objects
      * @return array array of integers representing the ids of each department
-     * @access public
      */
-    public function getTicketDepartments($tickets)
+    public function getTicketDepartments($tickets): array
     {
         $a_tickets = [];
         $a_depts   = [];
@@ -144,17 +134,17 @@ class TicketHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param      $crit
+     * @param      $criteria
      * @param bool $id_as_key
      * @param bool $hasCustFields
      * @return array
      */
-    public function &getObjectsByStaff($crit, $id_as_key = false, $hasCustFields = false)
+    public function &getObjectsByStaff($criteria, $id_as_key = false, $hasCustFields = false): array
     {
-        $sql = $this->_selectQuery($crit, true, $hasCustFields);
-        if (\is_object($crit)) {
-            $limit = $crit->getLimit();
-            $start = $crit->getStart();
+        $sql = $this->selectQuery($criteria, true, $hasCustFields);
+        if (\is_object($criteria)) {
+            $limit = $criteria->getLimit();
+            $start = $criteria->getStart();
         }
 
         $ret = $this->_db->query($sql, $limit, $start);
@@ -178,14 +168,14 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * @param bool $id_as_key
      * @return array
      */
-    public function &getMyUnresolvedTickets($uid, $id_as_key = false)
+    public function &getMyUnresolvedTickets($uid, $id_as_key = false): array
     {
         $uid = (int)$uid;
 
         // Get all ticketEmail objects where $uid is found
-        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
-        $crit          = new \Criteria('uid', $uid);
-        $ticketEmails  = $hTicketEmails->getObjectsSortedByTicket($crit);
+        $ticketEmailsHandler = new TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $criteria                = new \Criteria('uid', $uid);
+        $ticketEmails        = $ticketEmailsHandler->getObjectsSortedByTicket($criteria);
 
         // Get friendly array of all ticketids needed
         $aTicketEmails = [];
@@ -195,10 +185,10 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         unset($ticketEmails);
 
         // Get unresolved statuses and filter out the resolved statuses
-        $hStatus   = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
-        $crit      = new \Criteria('state', 1);
-        $statuses  = $hStatus->getObjects($crit, true);
-        $aStatuses = [];
+        $statusHandler = new StatusHandler($GLOBALS['xoopsDB']);
+        $criteria          = new \Criteria('state', '1');
+        $statuses      = $statusHandler->getObjects($criteria, true);
+        $aStatuses     = [];
         foreach ($statuses as $status) {
             $aStatuses[$status->getVar('id')] = $status->getVar('id');
         }
@@ -206,9 +196,9 @@ class TicketHandler extends Xhelp\BaseObjectHandler
 
         // Get array of tickets.
         // Only want tickets that are unresolved.
-        $crit = new \CriteriaCompo(new \Criteria('t.id', '(' . \implode(',', \array_keys($aTicketEmails)) . ')', 'IN'));
-        $crit->add(new \Criteria('t.status', '(' . \implode(',', \array_keys($aStatuses)) . ')', 'IN'));
-        $tickets = $this->getObjects($crit, $id_as_key);
+        $criteria = new \CriteriaCompo(new \Criteria('t.id', '(' . \implode(',', \array_keys($aTicketEmails)) . ')', 'IN'));
+        $criteria->add(new \Criteria('t.status', '(' . \implode(',', \array_keys($aStatuses)) . ')', 'IN'));
+        $tickets = $this->getObjects($criteria, $id_as_key);
 
         // Return all tickets
         return $tickets;
@@ -219,13 +209,13 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * @param bool $id_as_key
      * @return array
      */
-    public function getObjectsByState($state, $id_as_key = false)
+    public function getObjectsByState($state, $id_as_key = false): array
     {
-        $crit = new \Criteria('state', (int)$state, '=', 's');
-        $sql  = $this->_selectQuery($crit, true);
-        if (\is_object($crit)) {
-            $limit = $crit->getLimit();
-            $start = $crit->getStart();
+        $criteria = new \Criteria('state', (int)$state, '=', 's');
+        $sql  = $this->selectQuery($criteria, true);
+        if (\is_object($criteria)) {
+            $limit = $criteria->getLimit();
+            $start = $criteria->getStart();
         }
 
         $ret = $this->_db->query($sql, $limit, $start);
@@ -249,7 +239,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * @param bool $hasCustFields
      * @return int
      */
-    public function getCountByStaff($criteria, $hasCustFields = false)
+    public function getCountByStaff($criteria, $hasCustFields = false): int
     {
         if (!$hasCustFields) {
             $sql = \sprintf('SELECT COUNT(*) AS TicketCount FROM `%s` t INNER JOIN %s j ON t.department = j.department INNER JOIN %s s ON t.status = s.id', $this->_db->prefix('xhelp_tickets'), $this->_db->prefix('xhelp_jstaffdept'), $this->_db->prefix('xhelp_status'));
@@ -263,7 +253,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
             );
         }
 
-        if (null !== $criteria && \is_subclass_of($criteria, 'CriteriaElement')) {
+        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
             $sql .= ' ' . $criteria->renderWhere();
         }
 
@@ -272,7 +262,7 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         }
         [$count] = $this->_db->fetchRow($result);
 
-        return $count;
+        return (int)$count;
     }
 
     /**
@@ -283,46 +273,45 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * @param int    $limit number of records to return
      * @param string $sort  Sort Field
      * @param string $order Sort Order
-     * @return array  array of {@link Xhelp\Ticket}> objects
-     * @access public
+     * @return array  array of {@link Ticket}> objects
      * @todo   Filter by Department, Status
      */
-    public function getStaffTickets($uid, $mode = -1, $start = 0, $limit = 0, $sort = '', $order = '')
+    public function getStaffTickets($uid, $mode = -1, $start = 0, $limit = 0, $sort = '', $order = ''): array
     {
         $uid  = (int)$uid;
         $arr  = [];
-        $crit = new \CriteriaCompo();
-        $crit->setLimit((int)$limit);
-        $crit->setStart((int)$start);
+        $criteria = new \CriteriaCompo();
+        $criteria->setLimit((int)$limit);
+        $criteria->setStart((int)$start);
         switch ($mode) {
-            case XHELP_QRY_STAFF_HIGHPRIORITY:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
-                $crit->add(new \Criteria('state', 1, '=', 's'));
-                $crit->add(new \Criteria('ownership', 0, '=', 't'));
-                $crit->setSort('t.priority, t.posted');
+            case \XHELP_QRY_STAFF_HIGHPRIORITY:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
+                $criteria->add(new \Criteria('state', 1, '=', 's'));
+                $criteria->add(new \Criteria('ownership', 0, '=', 't'));
+                $criteria->setSort('t.priority, t.posted');
                 break;
-            case XHELP_QRY_STAFF_NEW:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
-                $crit->add(new \Criteria('ownership', 0, '=', 't'));
-                $crit->add(new \Criteria('state', 1, '=', 's'));
-                $crit->setSort('t.posted');
-                $crit->setOrder('DESC');
+            case \XHELP_QRY_STAFF_NEW:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
+                $criteria->add(new \Criteria('ownership', 0, '=', 't'));
+                $criteria->add(new \Criteria('state', 1, '=', 's'));
+                $criteria->setSort('t.posted');
+                $criteria->setOrder('DESC');
                 break;
-            case XHELP_QRY_STAFF_MINE:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
-                $crit->add(new \Criteria('ownership', $uid, '=', 't'));
-                $crit->add(new \Criteria('state', 1, '=', 's'));
-                $crit->setSort('t.posted');
+            case \XHELP_QRY_STAFF_MINE:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
+                $criteria->add(new \Criteria('ownership', $uid, '=', 't'));
+                $criteria->add(new \Criteria('state', 1, '=', 's'));
+                $criteria->setSort('t.posted');
                 break;
-            case XHELP_QRY_STAFF_ALL:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
+            case \XHELP_QRY_STAFF_ALL:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
                 break;
             default:
                 return $arr;
                 break;
         }
 
-        return $this->getObjectsByStaff($crit);
+        return $this->getObjectsByStaff($criteria);
     }
 
     /**
@@ -330,49 +319,48 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * @param int $uid staff user id
      * @param int $mode
      * @return int Number of tickets
-     * @access public
      * @todo   Filter by Department, Status
      */
-    public function getStaffTicketCount($uid, $mode = -1)
+    public function getStaffTicketCount($uid, $mode = -1): int
     {
-        $crit = new \CriteriaCompo();
+        $criteria = new \CriteriaCompo();
         switch ($mode) {
-            case XHELP_QRY_STAFF_HIGHPRIORITY:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
-                $crit->add(new \Criteria('status', 2, '<', 't'));
-                $crit->add(new \Criteria('ownership', 0, '=', 't'));
-                //$crit->add($crit2);
-                $crit->setSort('t.priority, t.posted');
+            case \XHELP_QRY_STAFF_HIGHPRIORITY:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
+                $criteria->add(new \Criteria('status', 2, '<', 't'));
+                $criteria->add(new \Criteria('ownership', 0, '=', 't'));
+                //$criteria->add($crit2);
+                $criteria->setSort('t.priority, t.posted');
                 break;
-            case XHELP_QRY_STAFF_NEW:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
-                $crit->add(new \Criteria('ownership', 0, '=', 't'));
-                $crit->add(new \Criteria('status', 2, '<', 't'));
-                $crit->setSort('t.posted');
-                $crit->setOrder('DESC');
+            case \XHELP_QRY_STAFF_NEW:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
+                $criteria->add(new \Criteria('ownership', 0, '=', 't'));
+                $criteria->add(new \Criteria('status', 2, '<', 't'));
+                $criteria->setSort('t.posted');
+                $criteria->setOrder('DESC');
                 break;
-            case XHELP_QRY_STAFF_MINE:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
-                $crit->add(new \Criteria('ownership', $uid, '=', 't'));
-                $crit->add(new \Criteria('status', 2, '<', 't'));
-                $crit->setSort('t.posted');
+            case \XHELP_QRY_STAFF_MINE:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
+                $criteria->add(new \Criteria('ownership', $uid, '=', 't'));
+                $criteria->add(new \Criteria('status', 2, '<', 't'));
+                $criteria->setSort('t.posted');
                 break;
-            case XHELP_QRY_STAFF_ALL:
-                $crit->add(new \Criteria('uid', $uid, '=', 'j'));
+            case \XHELP_QRY_STAFF_ALL:
+                $criteria->add(new \Criteria('uid', $uid, '=', 'j'));
                 break;
             default:
                 return 0;
                 break;
         }
 
-        return $this->getCountByStaff($crit);
+        return $this->getCountByStaff($criteria);
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -380,8 +368,8 @@ class TicketHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = \sprintf(
-            'INSERT INTO `%s` (id, uid, SUBJECT, description, department, priority, STATUS, lastUpdated, ownership, closedBy, totalTimeSpent, posted, userIP, emailHash, email, serverid, overdueTime)
-            VALUES (%u, %u, %s, %s, %u, %u, %u, %u, %u, %u, %u, %u, %s, %s, %s, %u, %u)',
+            'INSERT INTO `%s` (uid, SUBJECT, description, department, priority, STATUS, lastUpdated, ownership, closedBy, totalTimeSpent, posted, userIP, emailHash, email, serverid, overdueTime)
+            VALUES (%u, %s, %s, %u, %u, %u, %u, %u, %u, %u, %u, %s, %s, %s, %u, %u)',
             $this->_db->prefix($this->_dbtable),
             $id,
             $uid,
@@ -406,10 +394,10 @@ class TicketHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -441,10 +429,10 @@ class TicketHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
@@ -457,9 +445,8 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * @param bool                  $join
      * @param bool                  $hasCustFields
      * @return string SQL query
-     * @access  private
      */
-    public function _selectQuery(\CriteriaElement $criteria = null, $join = false, $hasCustFields = false)
+    public function selectQuery(\CriteriaElement $criteria = null, $join = false, $hasCustFields = false)
     {
         global $xoopsUser;
         if (!$join) {
@@ -491,13 +478,15 @@ class TicketHandler extends Xhelp\BaseObjectHandler
                 );
             }
         }
-        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
             if ('' != $criteria->getSort()) {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . ' ' . $criteria->getOrder();
             }
         }
-        $sql = \str_replace(\XHELP_GLOBAL_UID, $xoopsUser->getVar('uid'), $sql);
+        if (!empty($xoopsUser)) {
+            $sql = \str_replace((string)\XHELP_GLOBAL_UID, (string)$xoopsUser->getVar('uid'), $sql);
+        }
 
         return $sql;
     }
@@ -505,33 +494,32 @@ class TicketHandler extends Xhelp\BaseObjectHandler
     /**
      * delete a ticket from the database
      *
-     * @param \XoopsObject $obj       reference to the {@link Xhelp\Ticket}
+     * @param \XoopsObject $obj       reference to the {@link Ticket}
      *                                obj to delete
      * @param bool         $force
      * @return bool FALSE if failed.
-     * @access  public
      */
-    public function delete(\XoopsObject $obj, $force = false)
+    public function delete(\XoopsObject $obj, bool $force = false)
     {
         if (0 != \strcasecmp($this->classname, \get_class($obj))) {
             return false;
         }
 
         // Remove all ticket responses first
-        $hResponses = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
-        if (!$hResponses->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
+        $responsesHandler = new ResponsesHandler($GLOBALS['xoopsDB']);
+        if (!$responsesHandler->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
             return false;
         }
 
         // Remove all files associated with this ticket
-        $hFiles = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
-        if (!$hFiles->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
+        $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
+        if (!$fileHandler->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
             return false;
         }
 
         // Remove custom field values for this ticket
-        $hFieldValues = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
-        if (!$hFieldValues->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
+        $ticketValuesHandler = new TicketValuesHandler($GLOBALS['xoopsDB']);
+        if (!$ticketValuesHandler->deleteAll(new \Criteria('ticketid', $obj->getVar('id')))) {
             return false;
         }
 
@@ -547,13 +535,12 @@ class TicketHandler extends Xhelp\BaseObjectHandler
      * @param                   $fieldvalue
      * @param null              $criteria {@link CriteriaElement}
      * @return bool FALSE if deletion failed
-     * @access  public
      */
-    public function incrementAll($fieldname, $fieldvalue, $criteria = null)
+    public function incrementAll($fieldname, $fieldvalue, $criteria = null): bool
     {
         $set_clause = \is_numeric($fieldvalue) ? $fieldname . ' = ' . $fieldname . '+' . $fieldvalue : $fieldname . ' = ' . $fieldname . '+' . $this->_db->quoteString($fieldvalue);
         $sql        = 'UPDATE ' . $this->_db->prefix($this->_dbtable) . ' SET ' . $set_clause;
-        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
         if (!$result = $this->_db->query($sql)) {

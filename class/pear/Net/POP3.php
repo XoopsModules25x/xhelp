@@ -64,28 +64,24 @@ class Net_POP3
      * @var array
      */
     public $_maildrop;
-
     /*
      * Used for APOP to store the timestamp
      *
      * @var string
      */
     public $_timestamp;
-
     /*
      * Timeout that is passed to the socket object
      *
      * @var integer
      */
     public $_timeout;
-
     /*
      * Socket object
      *
      * @var object
      */
     public $_socket;
-
     /*
      * Current state of the connection. Used with the
      * constants defined above.
@@ -93,37 +89,33 @@ class Net_POP3
      * @var integer
      */
     public $_state;
-
     /*
      * Hostname to connect to
      *
      * @var string
      */
     public $_host;
-
     /*
      * Port to connect to
      *
      * @var integer
      */
     public $_port;
-
     /**
      * To allow class debuging
      * @var bool
      */
     public $_debug = false;
-
     /**
      * The auth methods this class support
      * @var array
      */
     //var $supportedAuthMethods=array('DIGEST-MD5', 'CRAM-MD5', 'APOP' , 'PLAIN' , 'LOGIN', 'USER');
     //Disabling DIGEST-MD5 for now
-    public $supportedAuthMethods = [ /*'CRAM-MD5', 'APOP' ,*/
-                                     'PLAIN',
-                                     'LOGIN',
-                                     'USER',
+    public $supportedAuthMethods = [/*'CRAM-MD5', 'APOP' ,*/
+                                    'PLAIN',
+                                    'LOGIN',
+                                    'USER',
     ];
     //var $supportedAuthMethods=array( 'CRAM-MD5', 'PLAIN' , 'LOGIN');
     //var $supportedAuthMethods=array( 'PLAIN' , 'LOGIN');
@@ -133,7 +125,6 @@ class Net_POP3
      * @var array
      */
     public $supportedSASLAuthMethods = ['DIGEST-MD5', 'CRAM-MD5'];
-
     /**
      * The capability response
      * @var array
@@ -175,7 +166,6 @@ class Net_POP3
      * Handles the errors the class can find
      * on the server
      *
-     * @access private
      * @param     $msg
      * @param int $code
      * @return PEAR_Error
@@ -192,10 +182,11 @@ class Net_POP3
      * Also looks for the timestamp in the greeting
      * needed for APOP authentication
      *
-     * @param  $host Hostname/IP address to connect to
-     * @param  $port Port to use to connect to on host
+     * @param  Hostname $host/IP address to connect to
+     * @param  Port $port to use to connect to on host
      * @return bool  Success/Failure
      */
+
     /**
      * @param string $host
      * @param int    $port
@@ -235,6 +226,7 @@ class Net_POP3
      *
      * @return bool Success/Failure
      */
+
     /**
      * @return bool
      */
@@ -247,11 +239,12 @@ class Net_POP3
      * Performs the login procedure. If there is a timestamp
      * stored, APOP will be tried first, then basic USER/PASS.
      *
-     * @param  $user Username to use
-     * @param  $pass Password to use
-     * @param  $apop Whether to try APOP first
+     * @param  Username $user to use
+     * @param  Password $pass to use
+     * @param  Whether $apop to try APOP first
      * @return mixed  true on Success/ PEAR_ERROR on error
      */
+
     /**
      * @param      $user
      * @param      $pass
@@ -277,20 +270,18 @@ class Net_POP3
     /**
      * Parses the response from the capability command. Stores
      * the result in $this->_capability
-     *
-     * @access private
      */
-    public function _parseCapability()
+    public function _parseCapability(): void
     {
         if (!PEAR::isError($data = $this->_sendCmd('CAPA'))) {
             $data = $this->_getMultiline();
         }
         $data = preg_split('/\r?\n/', $data, -1, PREG_SPLIT_NO_EMPTY);
 
-        for ($i = 0, $iMax = count($data); $i < $iMax; $i++) {
+        for ($i = 0, $iMax = count($data); $i < $iMax; ++$i) {
             $capa = '';
             if (preg_match('/^([a-z,\-]+)( ((.*))|$)$/i', $data[$i], $matches)) {
-                $capa = mb_strtolower($matches[1]);
+                $capa = \mb_strtolower($matches[1]);
                 switch ($capa) {
                     case 'implementation':
                         $this->_capability['implementation'] = $matches[3];
@@ -314,7 +305,6 @@ class Net_POP3
      * @return mixed Returns a string containing the name of the best
      *               supported authentication method or a PEAR_Error object
      *               if a failure condition is encountered.
-     * @access private
      * @since  1.0
      */
     public function _getBestAuthMethod($userMethod = null)
@@ -344,7 +334,7 @@ class Net_POP3
 
         if ((null !== $methods) && (null !== $serverMethods)) {
             foreach ($methods as $method) {
-                if (in_array($method, $serverMethods)) {
+                if (in_array($method, $serverMethods, true)) {
                     return $method;
                 }
             }
@@ -359,15 +349,16 @@ class Net_POP3
 
     /* Handles the authentication using any known method
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The method to use ( if $usermethod == '' then the class chooses the best method (the stronger is the best ) )
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
+     * @param string The method to use ( if $userMethod == '' then the class chooses the best method (the stronger is the best ) )
      *
      * @return mixed  string or PEAR_Error
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param      $uid
      * @param      $pwd
@@ -414,14 +405,15 @@ class Net_POP3
 
     /* Authenticates the user using the USER-PASS method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
+     * @param string $user The userid to authenticate as.
+     * @param string $pass The password to authenticate with.
      *
      * @return mixed    true on success or PEAR_Error on failure
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $user
      * @param $pass
@@ -441,14 +433,15 @@ class Net_POP3
 
     /* Authenticates the user using the PLAIN method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
+     * @param string $user The userid to authenticate as.
+     * @param string $pass The password to authenticate with.
      *
      * @return array Returns an array containing the response
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $user
      * @param $pass
@@ -473,14 +466,15 @@ class Net_POP3
 
     /* Authenticates the user using the PLAIN method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
+     * @param string $user The userid to authenticate as.
+     * @param string $pass The password to authenticate with.
      *
      * @return array Returns an array containing the response
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $user
      * @param $pass
@@ -521,14 +515,15 @@ class Net_POP3
 
     /* Authenticates the user using the CRAM-MD5 method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
      *
      * @return array Returns an array containing the response
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $uid
      * @param $pwd
@@ -568,8 +563,8 @@ class Net_POP3
 
     /* Authenticates the user using the DIGEST-MD5 method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
      * @param string The efective user
      *
      * @return array Returns an array containing the response
@@ -577,6 +572,7 @@ class Net_POP3
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $uid
      * @param $pwd
@@ -631,10 +627,11 @@ class Net_POP3
     /*
      * Sends the APOP command
      *
-     * @param  $user Username to send
-     * @param  $pass Password to send
+     * @param  Username $user to send
+     * @param  Password $pass to send
      * @return bool Success/Failure
      */
+
     /**
      * @param $user
      * @param $pass
@@ -659,9 +656,10 @@ class Net_POP3
     /*
      * Returns the raw headers of the specified message.
      *
-     * @param  $msg_id Message number
+     * @param  Message $msg_id number
      * @return mixed   Either raw headers or false on error
      */
+
     /**
      * @param $msg_id
      * @return false|mixed|string
@@ -682,9 +680,10 @@ class Net_POP3
      * having the same names, eg Received:, the array value will be
      * an indexed array of all the header values.
      *
-     * @param  $msg_id Message number
+     * @param  Message $msg_id number
      * @return mixed   Either array of headers or false on error
      */
+
     /**
      * @param $msg_id
      * @return false
@@ -717,9 +716,10 @@ class Net_POP3
     /*
      * Returns the body of the message with given message number.
      *
-     * @param  $msg_id Message number
+     * @param  Message $msg_id number
      * @return mixed   Either message body or false on error
      */
+
     /**
      * @param $msg_id
      * @return false|mixed|string
@@ -738,9 +738,10 @@ class Net_POP3
     /*
      * Returns the entire message with given message number.
      *
-     * @param  $msg_id Message number
+     * @param  Message $msg_id number
      * @return mixed   Either entire message or false on error
      */
+
     /**
      * @param $msg_id
      * @return false|mixed|string
@@ -759,6 +760,7 @@ class Net_POP3
      *
      * @return mixed Either size of maildrop or false on error
      */
+
     /**
      * @return false|mixed
      */
@@ -781,6 +783,7 @@ class Net_POP3
      *
      * @return mixed Either number of messages or false on error
      */
+
     /**
      * @return false|mixed
      */
@@ -802,9 +805,10 @@ class Net_POP3
      * Marks a message for deletion. Only will be deleted if the
      * disconnect() method is called.
      *
-     * @param  $msg_id Message to delete
+     * @param  Message $msg_id to delete
      * @return bool Success/Failure
      */
+
     /**
      * @param $msg_id
      * @return false|mixed|\PEAR_Error
@@ -822,9 +826,10 @@ class Net_POP3
      * Combination of LIST/UIDL commands, returns an array
      * of data
      *
-     * @param  $msg_id Optional message number
+     * @param  Optional $msg_id message number
      * @return mixed Array of data or false on error
      */
+
     /**
      * @param null $msg_id
      * @return array|false
@@ -857,9 +862,10 @@ class Net_POP3
     /*
      * Sends the USER command
      *
-     * @param  $user Username to send
+     * @param  Username $user to send
      * @return bool  Success/Failure
      */
+
     /**
      * @param $user
      * @return mixed|\PEAR_Error
@@ -876,9 +882,10 @@ class Net_POP3
     /*
      * Sends the PASS command
      *
-     * @param  $pass Password to send
+     * @param  Password $pass to send
      * @return bool  Success/Failure
      */
+
     /**
      * @param $pass
      * @return mixed|\PEAR_Error
@@ -898,6 +905,7 @@ class Net_POP3
      * @return mixed Indexed array of number of messages and
      *               maildrop size, or false on error.
      */
+
     /**
      * @return array|false
      */
@@ -919,10 +927,11 @@ class Net_POP3
     /*
      * Sends the LIST command
      *
-     * @param  $msg_id Optional message number
+     * @param  Optional $msg_id message number
      * @return mixed   Indexed array of msg_id/msg size or
      *                 false on error
      */
+
     /**
      * @param null $msg_id
      * @return array|false
@@ -959,6 +968,7 @@ class Net_POP3
      * @param  $msg_id The message number to retrieve
      * @return mixed   The message or false on error
      */
+
     /**
      * @param $msg_id
      * @return false|mixed|string
@@ -979,9 +989,10 @@ class Net_POP3
     /*
      * Sends the DELE command
      *
-     * @param  $msg_id Message number to mark as deleted
+     * @param  Message $msg_id number to mark as deleted
      * @return bool Success/Failure
      */
+
     /**
      * @param $msg_id
      * @return false|mixed|\PEAR_Error
@@ -1000,6 +1011,7 @@ class Net_POP3
      *
      * @return bool Success/Failure
      */
+
     /**
      * @return bool
      */
@@ -1019,6 +1031,7 @@ class Net_POP3
      *
      * @return bool Success/Failure
      */
+
     /**
      * @return bool
      */
@@ -1038,6 +1051,7 @@ class Net_POP3
      *
      * @return bool Success/Failure
      */
+
     /**
      * @return bool
      */
@@ -1053,10 +1067,11 @@ class Net_POP3
     /*
      * Sends the TOP command
      *
-     * @param  $msg_id    Message number
-     * @param  $num_lines Number of lines to retrieve
+     * @param  Message    $msg_id number
+     * @param  Number $num_lines of lines to retrieve
      * @return mixed Message data or false on error
      */
+
     /**
      * @param $msg_id
      * @param $num_lines
@@ -1076,9 +1091,10 @@ class Net_POP3
     /*
      * Sends the UIDL command
      *
-     * @param  $msg_id Message number
+     * @param  Message $msg_id number
      * @return mixed indexed array of msg_id/uidl or false on error
      */
+
     /**
      * @param null $msg_id
      * @return array|false
@@ -1113,9 +1129,10 @@ class Net_POP3
      * if good returns the reponse, other wise
      * returns false.
      *
-     * @param  $cmd  Command to send (\r\n will be appended)
+     * @param  Command  $cmd to send (\r\n will be appended)
      * @return mixed First line of response if successful, otherwise false
      */
+
     /**
      * @param $cmd
      * @return mixed|\PEAR_Error
@@ -1139,6 +1156,7 @@ class Net_POP3
      *
      * @return string The reponse.
      */
+
     /**
      * @return false|mixed|string
      */
@@ -1161,10 +1179,9 @@ class Net_POP3
     /**
      * Sets the bebug state
      *
-     * @access public
      * @param bool $debug
      */
-    public function setDebug($debug = true)
+    public function setDebug($debug = true): void
     {
         $this->_debug = $debug;
     }
@@ -1176,7 +1193,6 @@ class Net_POP3
      *
      * @return mixed True on success or a PEAR_Error object on failure.
      *
-     * @access  private
      * @since   1.0
      */
     public function _send($data)
@@ -1197,7 +1213,6 @@ class Net_POP3
      *
      * @return mixed a line of response on success or a PEAR_Error object on failure.
      *
-     * @access  private
      * @since   1.0
      */
     public function _recvLn()
@@ -1219,7 +1234,6 @@ class Net_POP3
      * @param $response
      * @return mixed true on success or a PEAR_Error object on failure.
      *
-     * @access  private
      * @since   1.3.3
      */
     public function _checkResponse($response)

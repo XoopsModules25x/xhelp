@@ -1,5 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/admin_header.php';
@@ -13,7 +15,7 @@ $module_id = $xoopsModule->getVar('mid');
 
 $op = 'default';
 
-if (\Xmf\Request::hasVar('op', 'REQUEST')) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -34,10 +36,10 @@ switch ($op) {
  * @param $newName
  * @return bool
  */
-function _renameTable($oldName, $newName)
+function renameTable($oldName, $newName)
 {
     global $xoopsDB;
-    $qry = _runQuery(sprintf('ALTER TABLE %s RENAME %s', $xoopsDB->prefix($oldName), $xoopsDB->prefix($newName)), sprintf(_AM_XHELP_MSG_RENAME_TABLE, $oldName, $newName), sprintf(_AM_XHELP_MSG_RENAME_TABLE_ERR, $oldName));
+    $qry = runQuery(sprintf('ALTER TABLE %s RENAME %s', $xoopsDB->prefix($oldName), $xoopsDB->prefix($newName)), sprintf(_AM_XHELP_MSG_RENAME_TABLE, $oldName, $newName), sprintf(_AM_XHELP_MSG_RENAME_TABLE_ERR, $oldName));
 
     return $qry;
 }
@@ -48,7 +50,7 @@ function _renameTable($oldName, $newName)
  * @param $badmsg
  * @return bool
  */
-function _runQuery($query, $goodmsg, $badmsg)
+function runQuery($query, $goodmsg, $badmsg)
 {
     global $xoopsDB;
     $ret = $xoopsDB->query($query);
@@ -68,15 +70,13 @@ function checkTables()
     global $xoopsModule;
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation('upgrade.php?op=checkTables');
     //1. Determine previous release
     if (!Xhelp\Utility::tableExists('xhelp_meta')) {
         $ver = '0.5';
-    } else {
-        if (!$ver = Xhelp\Utility::getMeta('version')) {
+    } elseif (!$ver = Xhelp\Utility::getMeta('version')) {
             echo('Unable to determine previous version.');
-        }
     }
 
     $currentVer = round($xoopsModule->getVar('version') / 100, 2);
@@ -114,23 +114,21 @@ function upgradeDB()
     //   *** Update this in sql/mysql.sql for each release **
     if (!Xhelp\Utility::tableExists('xhelp_meta')) {
         $ver = '0.5';
-    } else {
-        if (!$ver = Xhelp\Utility::getMeta('version')) {
+    } elseif (!$ver = Xhelp\Utility::getMeta('version')) {
             exit(_AM_XHELP_VERSION_ERR);
-        }
     }
 
     $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
     $memberHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
     $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $hXoopsMember  = xoops_getHandler('member');
-    $hRole         = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $memberHandler = xoops_getHandler('member');
+    $roleHandler   = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
     $mid = $xoopsModule->getVar('mid');
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
     echo '<h2>' . _AM_XHELP_UPDATE_DB . '</h2>';
@@ -144,7 +142,7 @@ function upgradeDB()
             echo '<ul>';
             //Create meta table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf("CREATE TABLE %s (metakey VARCHAR(50) NOT NULL DEFAULT '', metavalue VARCHAR(255) NOT NULL DEFAULT '', PRIMARY KEY (metakey)) ENGINE=MyISAM;", $xoopsDB->prefix('xhelp_meta')),
                        sprintf(_AM_XHELP_MSG_ADDTABLE, 'xhelp_meta'),
                        sprintf(_AM_XHELP_MSG_ADDTABLE_ERR, 'xhelp_meta')
@@ -155,7 +153,7 @@ function upgradeDB()
 
             //Update xhelp_responses table
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s ADD private INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_responses')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_responses'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_responses'));
+                   && runQuery(sprintf("ALTER TABLE %s ADD private INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_responses')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_responses'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_responses'));
 
             //Retrieve uid's of all staff members
             $qry = $xoopsDB->query('SELECT uid FROM ' . $xoopsDB->prefix('xhelp_staff') . ' ORDER BY uid');
@@ -167,7 +165,7 @@ function upgradeDB()
             }
             $xoopsDB->freeRecordSet($qry);
 
-            $query = 'SELECT uid, email FROM ' . $xoopsDB->prefix('users') . ' WHERE uid IN (' . implode(array_keys($staff), ',') . ')';
+            $query = 'SELECT uid, email FROM ' . $xoopsDB->prefix('users') . ' WHERE uid IN (' . implode(',', array_keys($staff)) . ')';
             $qry   = $xoopsDB->query($query);
             while (false !== ($arr = $xoopsDB->fetchArray($qry))) {
                 $staff[$arr['uid']] = $arr['email'];
@@ -176,7 +174,7 @@ function upgradeDB()
 
             //Update xhelp_staff table
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s ADD email VARCHAR(255) NOT NULL DEFAULT '' AFTER uid, ADD notify INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_staff')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_staff'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_staff'));
+                   && runQuery(sprintf("ALTER TABLE %s ADD email VARCHAR(255) NOT NULL DEFAULT '' AFTER uid, ADD notify INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_staff')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_staff'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_staff'));
 
             //Update existing staff records
             $staff_tbl = $xoopsDB->prefix('xhelp_staff');
@@ -198,7 +196,7 @@ function upgradeDB()
 
                 //Update xhelp_staff with user notifications & email address
                 $ret = $ret
-                       && _runQuery(sprintf('UPDATE `%s` SET email = %s, notify = %u WHERE uid = %u', $staff_tbl, $xoopsDB->quoteString($email), $usernotif, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid));
+                       && runQuery(sprintf('UPDATE `%s` SET email = %s, notify = %u WHERE uid = %u', $staff_tbl, $xoopsDB->quoteString($email), $usernotif, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid), sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid));
             }
             echo '</ul>';
         // no break
@@ -209,26 +207,26 @@ function upgradeDB()
 
             echo '<ul>';
             // change table names to lowercase
-            $ret = $ret && _renameTable('xhelp_logMessages', 'xhelp_logmessages');
-            $ret = $ret && _renameTable('xhelp_responseTemplates', 'xhelp_responsetemplates');
-            $ret = $ret && _renameTable('xhelp_jStaffDept', 'xhelp_jstaffdept');
-            $ret = $ret && _renameTable('xhelp_staffReview', 'xhelp_staffreview');
-            $ret = $ret && _renameTable('xhelp_emailTpl', 'xhelp_emailtpl');
+            $ret = $ret && renameTable('xhelp_logMessages', 'xhelp_logmessages');
+            $ret = $ret && renameTable('xhelp_responseTemplates', 'xhelp_responsetemplates');
+            $ret = $ret && renameTable('xhelp_jStaffDept', 'xhelp_jstaffdept');
+            $ret = $ret && renameTable('xhelp_staffReview', 'xhelp_staffreview');
+            $ret = $ret && renameTable('xhelp_emailTpl', 'xhelp_emailtpl');
 
             // Remove unused table - xhelp_emailtpl
             $ret = $ret
-                   && _runQuery(sprintf('DROP TABLE %s', $xoopsDB->prefix('xhelp_emailtpl')), sprintf(_AM_XHELP_MSG_REMOVE_TABLE, 'xhelp_emailtpl'), sprintf(_AM_XHELP_MSG_NOT_REMOVE_TABLE, 'xhelp_emailtpl'));
+                   && runQuery(sprintf('DROP TABLE %s', $xoopsDB->prefix('xhelp_emailtpl')), sprintf(_AM_XHELP_MSG_REMOVE_TABLE, 'xhelp_emailtpl'), sprintf(_AM_XHELP_MSG_NOT_REMOVE_TABLE, 'xhelp_emailtpl'));
 
             // xhelp_staff table - permTimestamp
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s ADD permTimestamp INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_staff')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_staff'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_staff'));
+                   && runQuery(sprintf("ALTER TABLE %s ADD permTimestamp INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_staff')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_staff'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_staff'));
 
             //Update xhelp_tickets table
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s MODIFY SUBJECT VARCHAR(100) NOT NULL DEFAULT ''", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
+                   && runQuery(sprintf("ALTER TABLE %s MODIFY SUBJECT VARCHAR(100) NOT NULL DEFAULT ''", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
 
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "ALTER TABLE %s ADD (serverid INT(11) DEFAULT NULL,
                                                              emailHash VARCHAR(100) DEFAULT NULL,
@@ -243,7 +241,7 @@ function upgradeDB()
 
             // Create xhelp_department_mailbox table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            'CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                           departmentid INT(11) DEFAULT NULL,
@@ -268,7 +266,7 @@ function upgradeDB()
 
             // Create xhelp_mailevent table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                            mbox_id INT(11) NOT NULL DEFAULT '0',
@@ -285,7 +283,7 @@ function upgradeDB()
 
             // Create xhelp_roles table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                           name VARCHAR(35) NOT NULL DEFAULT '',
@@ -301,7 +299,7 @@ function upgradeDB()
 
             // Create xhelp_staffroles table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (uid INT(11) NOT NULL DEFAULT '0',
                                                          roleid INT(11) NOT NULL DEFAULT '0',
@@ -367,13 +365,13 @@ function upgradeDB()
 
             //Changes for php5 compabibility
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s MODIFY lastUpdated INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_logmessages')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_logmessages'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_logmessages'));
+                   && runQuery(sprintf("ALTER TABLE %s MODIFY lastUpdated INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_logmessages')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_logmessages'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_logmessages'));
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s MODIFY department INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_jstaffdept')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_jstaffdept'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_jstaffdept'));
+                   && runQuery(sprintf("ALTER TABLE %s MODIFY department INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_jstaffdept')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_jstaffdept'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_jstaffdept'));
 
             // Create table for email template information
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (notif_id INT(11) NOT NULL DEFAULT '0',
                                                            staff_setting INT(11) NOT NULL DEFAULT '0',
@@ -389,7 +387,7 @@ function upgradeDB()
 
             // Add xhelp_status table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                            state INT(11) NOT NULL DEFAULT '0',
@@ -404,17 +402,17 @@ function upgradeDB()
                    );
 
             // Give default statuses for upgrade
-            $hStatus       = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+            $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
             $startStatuses = [_XHELP_STATUS0 => 1, _XHELP_STATUS1 => 1, _XHELP_STATUS2 => 2];
 
             $count = 1;
             set_time_limit(60);
             foreach ($startStatuses as $desc => $state) {
-                $newStatus = $hStatus->create();
+                $newStatus = $statusHandler->create();
                 $newStatus->setVar('id', $count);
                 $newStatus->setVar('description', $desc);
                 $newStatus->setVar('state', $state);
-                if (!$hStatus->insert($newStatus)) {
+                if (!$statusHandler->insert($newStatus)) {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_ADD_STATUS_ERR, $desc) . '</li>';
                 } else {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_ADD_STATUS, $desc) . '</li>';
@@ -426,8 +424,8 @@ function upgradeDB()
             $oldStatuses = [2 => 3, 1 => 2, 0 => 1];
 
             foreach ($oldStatuses as $cStatus => $newStatus) {
-                $crit    = new \Criteria('status', $cStatus);
-                $success = $ticketHandler->updateAll('status', $newStatus, $crit);
+                $criteria    = new \Criteria('status', (string)$cStatus);
+                $success = $ticketHandler->updateAll('status', $newStatus, $criteria);
             }
             if ($success) {
                 echo '<li>' . _AM_XHELP_MSG_CHANGED_STATUS . '</li>';
@@ -437,7 +435,7 @@ function upgradeDB()
 
             // Add xhelp_ticket_submit_emails table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (ticketid INT(11) NOT NULL DEFAULT '0',
                                                            uid INT(11) NOT NULL DEFAULT '0',
@@ -455,22 +453,22 @@ function upgradeDB()
             $count     = $ticketHandler->getCount();
             $batchsize = 100;
 
-            $crit = new \Criteria('', '');
-            $crit->setLimit($batchsize);
+            $criteria = new \Criteria('', '');
+            $criteria->setLimit($batchsize);
             $i = 0;
 
             while ($i <= $count) {
                 set_time_limit(60);
-                $crit->setStart($i);
-                $tickets = $ticketHandler->getObjects($crit);
+                $criteria->setStart($i);
+                $tickets = $ticketHandler->getObjects($criteria);
 
                 $all_users = [];
                 foreach ($tickets as $ticket) {
                     $all_users[$ticket->getVar('uid')] = $ticket->getVar('uid');
                 }
 
-                $crit  = new \Criteria('uid', '(' . implode(array_keys($all_users), ',') . ')', 'IN');
-                $users = $hXoopsMember->getUsers($crit, true);
+                $criteria  = new \Criteria('uid', '(' . implode(',', array_keys($all_users)) . ')', 'IN');
+                $users = $memberHandler->getUsers($criteria, true);
 
                 foreach ($users as $user) {
                     $all_users[$user->getVar('uid')] = $user->getVar('email');
@@ -492,12 +490,12 @@ function upgradeDB()
 
             set_time_limit(60);
             // Update xhelp_roles Admin record with new value (2047)
-            $crit        = new \Criteria('tasks', 511);
-            $admin_roles = $hRole->getObjects($crit);
+            $criteria        = new \Criteria('tasks', '511');
+            $admin_roles = $roleHandler->getObjects($criteria);
 
             foreach ($admin_roles as $role) {
                 $role->setVar('tasks', 2047);
-                if ($hRole->insert($role)) {
+                if ($roleHandler->insert($role)) {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_ROLE, $role->getVar('name')) . '</li>';
                 } else {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_ROLE_ERR, $role->getVar('name')) . '</li>';
@@ -506,7 +504,7 @@ function upgradeDB()
 
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            'ALTER TABLE %s ADD (active INT(11) NOT NULL DEFAULT 1,
                                                           KEY ACTIVE (ACTIVE))',
@@ -518,7 +516,7 @@ function upgradeDB()
 
             // Add xhelp_saved_searches table
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                            uid INT(11) NOT NULL DEFAULT '0',
@@ -535,7 +533,7 @@ function upgradeDB()
 
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (fieldid INT(11) NOT NULL DEFAULT '0',
                                                            deptid INT(11) NOT NULL DEFAULT '0',
@@ -548,7 +546,7 @@ function upgradeDB()
                    );
 
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (ticketid INT(11) NOT NULL DEFAULT '0',
                                                            PRIMARY KEY  (ticketid)
@@ -561,7 +559,7 @@ function upgradeDB()
 
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                            NAME VARCHAR(64) NOT NULL DEFAULT '',
@@ -599,7 +597,7 @@ function upgradeDB()
             //Update xhelp_tickets table
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s MODIFY SUBJECT VARCHAR(255) NOT NULL DEFAULT ''", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
+                   && runQuery(sprintf("ALTER TABLE %s MODIFY SUBJECT VARCHAR(255) NOT NULL DEFAULT ''", $xoopsDB->prefix('xhelp_tickets')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_tickets'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_tickets'));
 
         // no break
         case '0.75':
@@ -609,9 +607,9 @@ function upgradeDB()
             if (null !== $helper->getConfig('xhelp_defaultDept') && 0 != $helper->getConfig('xhelp_defaultDept')) {
                 $ret = Xhelp\Utility::setMeta('default_department', $helper->getConfig('xhelp_defaultDept'));
             } else {
-                $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-                $depts        = $hDepartments->getObjects();
-                $aDepts       = [];
+                $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+                $depts             = $departmentHandler->getObjects();
+                $aDepts            = [];
                 foreach ($depts as $dpt) {
                     $aDepts[] = $dpt->getVar('id');
                 }
@@ -620,28 +618,28 @@ function upgradeDB()
 
             $qry = $xoopsDB->query(sprintf('ALTER TABLE %s DROP PRIMARY KEY', $xoopsDB->prefix('xhelp_ticket_submit_emails')));
             $ret = $ret
-                   && _runQuery(sprintf('ALTER TABLE %s ADD PRIMARY KEY(ticketid, uid, email)', $xoopsDB->prefix('xhelp_ticket_submit_emails')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_ticket_submit_emails'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_ticket_submit_emails'));
+                   && runQuery(sprintf('ALTER TABLE %s ADD PRIMARY KEY(ticketid, uid, email)', $xoopsDB->prefix('xhelp_ticket_submit_emails')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_ticket_submit_emails'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_ticket_submit_emails'));
 
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s MODIFY department INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_jstaffdept')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_jstaffdept'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_jstaffdept'));
+                   && runQuery(sprintf("ALTER TABLE %s MODIFY department INT(11) NOT NULL DEFAULT '0'", $xoopsDB->prefix('xhelp_jstaffdept')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_jstaffdept'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_jstaffdept'));
 
             echo '<li>' . _AM_XHELP_MSG_CHANGED_DEFAULT_DEPT . '</li>';
 
             // Add field to xhelp_saved_searches to determine if custom fields table is needed
             $ret = $ret
-                   && _runQuery(sprintf("ALTER TABLE %s ADD (hasCustFields INT(11) NOT NULL DEFAULT '0')", $xoopsDB->prefix('xhelp_saved_searches')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_saved_searches'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_saved_searches'));
+                   && runQuery(sprintf("ALTER TABLE %s ADD (hasCustFields INT(11) NOT NULL DEFAULT '0')", $xoopsDB->prefix('xhelp_saved_searches')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_saved_searches'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_saved_searches'));
 
             // Take existing saved searches and add 'query' field
-            $hSavedSearch  = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
-            $savedSearches = $hSavedSearch->getObjects();
+            $savedSearchHandler = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+            $savedSearches      = $savedSearchHandler->getObjects();
 
             foreach ($savedSearches as $savedSearch) {
                 set_time_limit(60);
-                $crit = unserialize($savedSearch->getVar('search'));
-                if (is_object($crit)) {
-                    $savedSearch->setVar('query', $crit->render());
+                $criteria = unserialize($savedSearch->getVar('search'));
+                if (is_object($criteria)) {
+                    $savedSearch->setVar('query', $criteria->render());
 
-                    if ($hSavedSearch->insert($savedSearch)) {
+                    if ($savedSearchHandler->insert($savedSearch)) {
                         echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_SEARCH, $savedSearch->getVar('id')) . '</li>';
                     } else {
                         echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_SEARCH_ERR, $savedSearch->getVar('id')) . '</li>';
@@ -653,7 +651,7 @@ function upgradeDB()
             // Add ticket list table
             set_time_limit(60);
             $ret = $ret
-                   && _runQuery(
+                   && runQuery(
                        sprintf(
                            "CREATE TABLE %s (id INT(11) NOT NULL AUTO_INCREMENT,
                                                            uid INT(11) NOT NULL DEFAULT '0',
@@ -673,12 +671,12 @@ function upgradeDB()
 
             set_time_limit(60);
             // Update xhelp_roles Admin record with new value (4095)
-            $crit        = new \Criteria('tasks', 2047);
-            $admin_roles = $hRole->getObjects($crit);
+            $criteria        = new \Criteria('tasks', '2047');
+            $admin_roles = $roleHandler->getObjects($criteria);
 
             foreach ($admin_roles as $role) {
                 $role->setVar('tasks', 4095);
-                if ($hRole->insert($role)) {
+                if ($roleHandler->insert($role)) {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_ROLE, $role->getVar('name')) . '</li>';
                 } else {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_ROLE_ERR, $role->getVar('name')) . '</li>';
@@ -690,7 +688,6 @@ function upgradeDB()
             // No schema changes for 0.78
 
         case '0.78':
-
             echo '</ul>';
     }
 
@@ -698,7 +695,7 @@ function upgradeDB()
     //if successful, update xhelp_meta table with new ver
     if ($ret) {
         printf(_AM_XHELP_UPDATE_OK, $newversion);
-        $ret = Xhelp\Utility::setMeta('version', $newversion);
+        $ret = Xhelp\Utility::setMeta('version', (string)$newversion);
     } else {
         printf(_AM_XHELP_UPDATE_ERR, $newversion);
     }

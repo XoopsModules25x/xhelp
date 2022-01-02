@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
 
-require_once dirname(__DIR__, 3) . '/mainfile.php';
+require_once \dirname(__DIR__, 3) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -35,21 +35,21 @@ if (Request::hasVar('QUERY_STRING', 'SERVER') && 0 == strcasecmp($_SERVER['QUERY
 /**
  * class WebLib
  */
-class XHelpWebLib
+class changeSelectedState
 {
     /**
      * @param $state
      * @return array
      */
-    public function statusesByState($state)
+    public function statusesByState($state): array
     {
-        $state   = (int)$state;
-        $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+        $state         = (int)$state;
+        $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
         if (-1 == $state) {   // If select all is chosen
-            $statuses = $hStatus->getObjects(null, true);
+            $statuses = $statusHandler->getObjects(null, true);
         } else {
-            $statuses = &$hStatus->getStatusesByState($state);
+            $statuses = &$statusHandler->getStatusesByState($state);
         }
         $aStatuses   = [];
         $aStatuses[] = [

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -23,11 +23,11 @@ if ($xoopsUser) {
         if (Request::hasVar('comments', 'POST')) {
             $comments = $_POST['comments'];
         }
-        $hStaffReview  = Xhelp\Helper::getInstance()->getHandler('StaffReview');
-        $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        $hResponse     = Xhelp\Helper::getInstance()->getHandler('Responses');
+        $staffReviewHandler = Xhelp\Helper::getInstance()->getHandler('StaffReview');
+        $ticketHandler      = Xhelp\Helper::getInstance()->getHandler('Ticket');
+        $responsesHandler   = Xhelp\Helper::getInstance()->getHandler('Responses');
 
-        $review = $hStaffReview->create();
+        $review = $staffReviewHandler->create();
         $review->setVar('staffid', $staffid);
         $review->setVar('rating', $rating);
         $review->setVar('ticketid', $ticketid);
@@ -35,10 +35,10 @@ if ($xoopsUser) {
         $review->setVar('comments', $comments);
         $review->setVar('submittedBy', $xoopsUser->getVar('uid'));
         $review->setVar('userIP', getenv('REMOTE_ADDR'));
-        if ($hStaffReview->insert($review)) {
+        if ($staffReviewHandler->insert($review)) {
             $message  = _XHELP_MESSAGE_ADD_STAFFREVIEW;
             $ticket   = $ticketHandler->get($ticketid);
-            $response = $hResponse->get($responseid);
+            $response = $responsesHandler->get($responseid);
             $_eventsrv->trigger('new_response_rating', [&$review, &$ticket, &$response]);
         } else {
             $message = _XHELP_MESSAGE_ADD_STAFFREVIEW_ERROR;

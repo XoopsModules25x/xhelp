@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,11 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
+use const _XHELP_MAILBOXTYPE_POP3;
+use const _XHELP_MAILBOXTYPE_IMAP;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -34,8 +33,6 @@ if (!\defined('XHELP_CLASS_PATH')) {
  * Xhelp\DepartmentMailBox class
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
- * @access  public
- * @package xhelp
  */
 class DepartmentMailBox extends \XoopsObject
 {
@@ -48,7 +45,6 @@ class DepartmentMailBox extends \XoopsObject
      * Class Constructor
      *
      * @param mixed $id ID of Mailbox or array containing mailbox info
-     * @access public
      */
     public function __construct($id = null)
     {
@@ -60,8 +56,8 @@ class DepartmentMailBox extends \XoopsObject
         $this->initVar('username', \XOBJ_DTYPE_TXTBOX, null, false, 50);
         $this->initVar('password', \XOBJ_DTYPE_TXTBOX, null, false, 50);
         $this->initVar('priority', \XOBJ_DTYPE_INT, null, false);
-        $this->initVar('mboxtype', \XOBJ_DTYPE_INT, \_XHELP_MAILBOXTYPE_POP3, false);
-        $this->initVar('active', \XOBJ_DTYPE_INT, true, true);
+        $this->initVar('mboxtype', \XOBJ_DTYPE_INT, _XHELP_MAILBOXTYPE_POP3, false);
+        $this->initVar('active', \XOBJ_DTYPE_INT, 1, true);
 
         if (null !== $id) {
             if (\is_array($id)) {
@@ -77,26 +73,25 @@ class DepartmentMailBox extends \XoopsObject
      * Connect to Mailbox
      *
      * @return bool True if connected, False on Errors
-     * @access public
      */
-    public function connect()
+    public function connect(): bool
     {
         //Create an instance of the Proper Xhelp\MailBox object
         if (null === $this->_mBox) {
-            if (!$this->_mBox = $this->_getMailBox($this->getVar('mboxtype'))) {
-                $this->setErrors(_XHELP_MBOX_INV_BOXTYPE);
+            if (!$this->_mBox = $this->getMailBox($this->getVar('mboxtype'))) {
+                $this->setErrors(\_XHELP_MBOX_INV_BOXTYPE);
 
                 return false;
             }
         }
         if (!$this->_mBox->connect($this->getVar('server'), $this->getVar('serverport'))) {
-            $this->setErrors(_XHELP_MAILEVENT_DESC0);
+            $this->setErrors(\_XHELP_MAILEVENT_DESC0);
 
             return false;
         }
 
         if (!$this->_mBox->login($this->getVar('username'), $this->getVar('password'))) {
-            $this->setErrors(_XHELP_MBOX_ERR_LOGIN);
+            $this->setErrors(\_XHELP_MBOX_ERR_LOGIN);
 
             return false;
         }
@@ -118,7 +113,7 @@ class DepartmentMailBox extends \XoopsObject
     /**
      * @return bool
      */
-    public function hasMessages()
+    public function hasMessages(): bool
     {
         return ($this->messageCount() > 0);
     }
@@ -154,17 +149,17 @@ class DepartmentMailBox extends \XoopsObject
     }
 
     /**
-     * @param $mboxType
-     * @return bool|Xhelp\MailBoxIMAP|Xhelp\MailBoxPOP3
+     * @param string $mboxType
+     * @return bool|MailBoxIMAP|MailBoxPOP3|MailBox
      */
-    public function _getMailBox($mboxType)
+    public function getMailBox($mboxType)
     {
         switch ($mboxType) {
             case \_XHELP_MAILBOXTYPE_IMAP:
-                return new Xhelp\MailBoxIMAP();
+                return new MailBoxIMAP();
                 break;
             case \_XHELP_MAILBOXTYPE_POP3:
-                return new Xhelp\MailBoxPOP3();
+                return new MailBoxPOP3();
                 break;
             default:
                 return false;
@@ -172,10 +167,10 @@ class DepartmentMailBox extends \XoopsObject
     }
 
     /**
-     * @param $msg
+     * @param string|array $msg
      * @return bool
      */
-    public function deleteMessage($msg)
+    public function deleteMessage($msg): bool
     {
         if (\is_array($msg)) {
             if (isset($msg['index'])) {
@@ -185,7 +180,7 @@ class DepartmentMailBox extends \XoopsObject
             $msgid = (int)$msg;
         }
 
-        if (null === $msgid) {
+        if (!isset($msgid)) {
             return false;
         }
 

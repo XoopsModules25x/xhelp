@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
@@ -35,22 +35,20 @@ class TimeSpentByDeptReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name = 'timeSpentByDept';
-
-    public $meta = [
-        'name'        => _XHELP_TSBD_NAME,
+    public $name       = 'timeSpentByDept';
+    public $meta       = [
+        'name'        => \_XHELP_TSBD_NAME,
         'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
-        'description' => _XHELP_TSBD_DESC,
+        'description' => \_XHELP_TSBD_DESC,
         'version'     => '1.0',
         'dbFields'    => [
-            'department' => _XHELP_TSBD_DB1,
-            'TotalTime'  => _XHELP_TSBD_DB2,
+            'department' => \_XHELP_TSBD_DB1,
+            'TotalTime'  => \_XHELP_TSBD_DB2,
         ],
     ];
-
     public $parameters = [
-        _XHELP_TSBD_PARAM1 => [
+        \_XHELP_TSBD_PARAM1 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'startDate',
             'value'       => '',      // last month
@@ -59,7 +57,7 @@ class TimeSpentByDeptReport extends Xhelp\Reports\Report
             'dbfield'     => 'r.updateTime',
             'dbaction'    => '>',
         ],
-        _XHELP_TSBD_PARAM2 => [
+        \_XHELP_TSBD_PARAM2 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'endDate',
             'value'       => '',      // today
@@ -69,7 +67,6 @@ class TimeSpentByDeptReport extends Xhelp\Reports\Report
             'dbaction'    => '<=',
         ],
     ];
-
     /*
      function generateReport()
      {

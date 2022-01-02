@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,39 +15,30 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Xhelp\TicketEmailsHandler class
+ * TicketEmailsHandler class
  *
- * Department Handler for Xhelp\Department class
+ * Department Handler for Department class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
- * @access  public
- * @package xhelp
  */
-class TicketEmailsHandler extends Xhelp\BaseObjectHandler
+class TicketEmailsHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = TicketEmails::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
     public $_dbtable = 'xhelp_ticket_submit_emails';
 
@@ -62,10 +53,10 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -78,10 +69,10 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param null $criteria
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($criteria = null)
+    public function deleteQuery($obj = null)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('ticketid'));
 
@@ -89,10 +80,10 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -107,16 +98,15 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     /**
      * retrieve objects from the database
      *
-     * @param null $criteria  {@link CriteriaElement} conditions to be met
-     * @param bool $id_as_key Should the department ID be used as array key
-     * @return array  array of {@link Xhelp\Department} objects
-     * @access  public
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria  {@link CriteriaElement} conditions to be met
+     * @param bool                                 $id_as_key Should the department ID be used as array key
+     * @return array  array of {@link Department} objects
      */
     public function &getObjects($criteria = null, $id_as_key = false)
     {
         $ret   = [];
         $limit = $start = 0;
-        $sql   = $this->_selectQuery($criteria);
+        $sql   = $this->selectQuery($criteria);
         if (null !== $criteria) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
@@ -141,17 +131,16 @@ class TicketEmailsHandler extends Xhelp\BaseObjectHandler
     /**
      * retrieve objects from the database
      *
-     * @param null $criteria             {@link CriteriaElement} conditions to be met
-     * @return array array of <a href='psi_element://Xhelp\Department'>Xhelp\Department</a> objects
-     *                                   objects
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link CriteriaElement} conditions to be met
+     * @return array array of <a href='psi_element://Department'>Department</a> objects
+     *                                                       objects
      * @internal param bool $id_as_key Should the department ID be used as array key
-     * @access   public
      */
-    public function &getObjectsSortedByTicket($criteria = null)
+    public function &getObjectsSortedByTicket($criteria = null): array
     {
         $ret   = [];
         $limit = $start = 0;
-        $sql   = $this->_selectQuery($criteria);
+        $sql   = $this->selectQuery($criteria);
         if (null !== $criteria) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();

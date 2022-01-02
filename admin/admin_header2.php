@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use XoopsModules\Xhelp;
 
@@ -65,13 +65,13 @@ if ($overdueTime != $helper->getConfig('xhelp_overdueTime')) {
     $_xhelpSession->set('xhelp_overdueTime', $helper->getConfig('xhelp_overdueTime'));   // Set new value for overdueTime
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
-    $hTickets       = Xhelp\Helper::getInstance()->getHandler('Ticket');
-    $crit           = new \Criteria('status', 2, '<>');
-    $tickets        = $hTickets->getObjects($crit);
+    $ticketHandler  = Xhelp\Helper::getInstance()->getHandler('Ticket');
+    $criteria           = new \Criteria('status', '2', '<>');
+    $tickets        = $ticketHandler->getObjects($criteria);
     $updatedTickets = [];
     foreach ($tickets as $ticket) {
         $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));
-        if (!$hTickets->insert($ticket, true)) {
+        if (!$ticketHandler->insert($ticket, true)) {
             $updatedTickets[$ticket->getVar('id')] = false; // Not used anywhere
         } else {
             $updatedTickets[$ticket->getVar('id')] = true;  // Not used anywhere

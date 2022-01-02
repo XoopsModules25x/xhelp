@@ -1,44 +1,36 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
  * Plugin Interface
  *
  * Defines the interface for xhelp plugins
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  * @todo    Localization of meta information
  */
-class Plugin
+class Plugin implements PluginInterface
 {
     /**
      * Array of Plugin Meta Information
-     * @access private
      * @var array
      */
     public $_meta = [];
-
     /**
      * Array of subscribed events
      * @var array
-     * @access private
      */
     public $_events = [];
-
     /**
-     * A reference to a {@link Xhelp\EventService} object
+     * A reference to a {@link EventService} object
      * @var EventService
-     * @access private
      */
     public $_event_srv;
 
     /**
      * Class Constructor
-     * @param EventService $event_srv a reference to a {@link Xhelp\EventService} object
+     * @param EventService $event_srv a reference to a {@link EventService} object
      */
     public function __construct($event_srv)
     {
@@ -49,7 +41,6 @@ class Plugin
      * Retrieve the specified meta field
      * @param string $var name of variable to return
      * @return string if var is set, false if not
-     * @access public
      */
     public function getMeta($var)
     {
@@ -67,7 +58,6 @@ class Plugin
 
     /**
      * Initialization function, triggered when a plugin is "loaded" by the system
-     * @access public
      */
     public function onLoad()
     {
@@ -77,7 +67,6 @@ class Plugin
 
     /**
      * Destruction function, triggered when a plugin is "un-loaded" by the system
-     * @access public
      */
     public function onUnload()
     {
@@ -91,7 +80,6 @@ class Plugin
 
     /**
      * Add a function to be called when an event is triggered by the system
-     * @access protected
      * @param $event_ctx
      * @param $event_func
      */
@@ -106,10 +94,9 @@ class Plugin
 
     /**
      * Only have 1 instance of class used
-     * @return Plugin {@link Xhelp\Plugin}
-     * @access  public
+     * @return Plugin {@link Plugin}
      */
-    public static function getInstance()
+    public static function getInstance(): Plugin
     {
         // Declare a static variable to hold the object instance
         static $instance;

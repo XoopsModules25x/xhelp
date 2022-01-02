@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Validation;
-
-use XoopsModules\Xhelp\Validation;
 
 /**
  * Class ValidateTimestamp
@@ -14,7 +12,6 @@ class ValidateTimestamp extends Validator
      * $timestamp the date/time to validate
      */
     public $timestamp;
-
     //! A constructor.
 
     /**

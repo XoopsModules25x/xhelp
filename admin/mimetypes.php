@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Module\Admin;
 use Xmf\Request;
@@ -34,8 +34,8 @@ $aSearchBy = [
     'mime_ext'  => _AM_XHELP_MIME_EXT,
 ];
 
-$hMime = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
-$op    = 'default';
+$mimetypeHandler = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+$op              = 'default';
 
 if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
@@ -71,7 +71,7 @@ switch ($op) {
 
 function add()
 {
-    global $hMime, $limit, $start;
+    global $mimetypeHandler, $limit, $start;
 
     if (!isset($_POST['add_mime'])) {
         xoops_cp_header();
@@ -145,7 +145,7 @@ function add()
         // end of add form
 
         // Find new mimetypes table
-        echo "<form action='http://www.filext.com' method='post'>";
+        echo "<form action='https://www.filext.com' method='post'>";
         echo $GLOBALS['xoopsSecurity']->getTokenHTML();
         echo "<table width='100%' cellspacing='1' class='outer'>";
         echo "<tr><th colspan='2'>" . _AM_XHELP_MIME_FINDMIMETYPE . '</th></tr>';
@@ -195,17 +195,17 @@ function add()
             redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'add'], false));
         }
 
-        $mimetype = $hMime->create();
+        $mimetype = $mimetypeHandler->create();
         $mimetype->setVar('mime_ext', $mime_ext);
         $mimetype->setVar('mime_name', $mime_name);
         $mimetype->setVar('mime_types', $mime_types);
         $mimetype->setVar('mime_admin', $mime_admin);
         $mimetype->setVar('mime_user', $mime_user);
 
-        if (!$hMime->insert($mimetype)) {
+        if (!$mimetypeHandler->insert($mimetype)) {
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?op=manage&limit=$limit&start=$start", 3, _AM_XHELP_MESSAGE_ADD_MIME_ERROR);
         } else {
-            _clearAddSessionVars();
+            clearAddSessionVars();
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?op=manage&limit=$limit&start=$start");
         }
     }
@@ -213,15 +213,15 @@ function add()
 
 function delete()
 {
-    global $hMime, $start, $limit;
+    global $mimetypeHandler, $start, $limit;
 
     if (!isset($_REQUEST['id'])) {
         redirect_header(XHELP_ADMIN_URL . '/mimetypes.php', 3, _AM_XHELP_MESSAGE_NO_ID);
     } else {
         $mime_id = Request::getInt('id', 0, 'REQUEST');
     }
-    $mimetype = &$hMime->get($mime_id);     // Retrieve mimetype object
-    if (!$hMime->delete($mimetype, true)) {
+    $mimetype = &$mimetypeHandler->get($mime_id);     // Retrieve mimetype object
+    if (!$mimetypeHandler->delete($mimetype, true)) {
         redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?op=manage&id=$mime_id&limit=$limit&start=$start", 3, _AM_XHELP_MESSAGE_DELETE_MIME_ERROR);
     } else {
         redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?op=manage&limit=$limit&start=$start");
@@ -230,14 +230,14 @@ function delete()
 
 function edit()
 {
-    global $hMime, $start, $limit;
+    global $mimetypeHandler, $start, $limit;
 
     if (!isset($_REQUEST['id'])) {
         redirect_header(XHELP_ADMIN_URL . '/mimetypes.php', 3, _AM_XHELP_MESSAGE_NO_ID);
     } else {
         $mime_id = Request::getInt('id', 0, 'REQUEST');
     }
-    $mimetype = &$hMime->get($mime_id);     // Retrieve mimetype object
+    $mimetype = &$mimetypeHandler->get($mime_id);     // Retrieve mimetype object
 
     if (!isset($_POST['edit_mime'])) {
         $session     = Xhelp\Session::getInstance();
@@ -358,10 +358,10 @@ function edit()
         $mimetype->setVar('mime_admin', $mime_admin);
         $mimetype->setVar('mime_user', $mime_user);
 
-        if (!$hMime->insert($mimetype, true)) {
+        if (!$mimetypeHandler->insert($mimetype, true)) {
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?op=edit&id=$mime_id", 3, _AM_XHELP_MESSAGE_EDIT_MIME_ERROR);
         } else {
-            _clearEditSessionVars($mime_id);
+            clearEditSessionVars($mime_id);
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?op=manage&limit=$limit&start=$start");
         }
     }
@@ -369,14 +369,14 @@ function edit()
 
 function manage()
 {
-    global $hMime, $imagearray, $start, $limit, $aSortBy, $aOrderBy, $aLimitBy, $aSearchBy;
+    global $mimetypeHandler, $imagearray, $start, $limit, $aSortBy, $aOrderBy, $aLimitBy, $aSearchBy;
 
     if (Request::hasVar('deleteMimes', 'POST')) {
         $aMimes = $_POST['mimes'];
 
-        $crit = new \Criteria('mime_id', '(' . implode(',', $aMimes) . ')', 'IN');
+        $criteria = new \Criteria('mime_id', '(' . implode(',', $aMimes) . ')', 'IN');
 
-        if ($hMime->deleteAll($crit)) {
+        if ($mimetypeHandler->deleteAll($criteria)) {
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start");
         } else {
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start", 3, _AM_XHELP_MESSAGE_DELETE_MIME_ERROR);
@@ -394,7 +394,7 @@ function manage()
     $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
-    $crit = new \Criteria('', '');
+    $criteria = new \Criteria('', '');
     if (Request::hasVar('order', 'REQUEST')) {
         $order = $_REQUEST['order'];
     } else {
@@ -405,12 +405,12 @@ function manage()
     } else {
         $sort = 'mime_ext';
     }
-    $crit->setOrder($order);
-    $crit->setStart($start);
-    $crit->setLimit($limit);
-    $crit->setSort($sort);
-    $mimetypes  = $hMime->getObjects($crit);    // Retrieve a list of all mimetypes
-    $mime_count = $hMime->getCount();
+    $criteria->setOrder($order);
+    $criteria->setStart($start);
+    $criteria->setLimit($limit);
+    $criteria->setSort($sort);
+    $mimetypes  = $mimetypeHandler->getObjects($criteria);    // Retrieve a list of all mimetypes
+    $mime_count = $mimetypeHandler->getCount();
     $nav        = new \XoopsPageNav($mime_count, $limit, $start, 'start', "op=manage&amp;limit=$limit");
 
     echo '<script type="text/javascript" src="' . XHELP_BASE_URL . '/include/functions.js"></script>';
@@ -480,21 +480,21 @@ function manage()
                   <td>' . $mime->getVar('mime_ext') . "</td>
                   <td>
                       <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=updateMimeValue&amp;id=' . $mime->getVar('mime_id') . '&amp;mime_admin=' . $mime->getVar('mime_admin') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>
-                      " . ($mime->getVar('mime_admin') ? $imagearray['online'] : $imagearray['offline']) . "</a>
+                      " . (($mime->getVar('mime_admin') && isset($imagearray['online'])) ? $imagearray['online'] : $imagearray['offline'] ?? '') . "</a>
                   </td>
                   <td>
                       <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=updateMimeValue&amp;id=' . $mime->getVar('mime_id') . '&amp;mime_user=' . $mime->getVar('mime_user') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>
-                      " . ($mime->getVar('mime_user') ? $imagearray['online'] : $imagearray['offline']) . "</a>
+                      " . ($mime->getVar('mime_user') ? $imagearray['online'] ?? '' : $imagearray['offline'] ?? '') . "</a>
                   </td>
                   <td>
-                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=edit&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . $imagearray['editimg'] . "</a>
-                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=delete&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . $imagearray['deleteimg'] . '</a>
+                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=edit&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . ($imagearray['editimg'] ?? '') . "</a>
+                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=delete&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . ($imagearray['deleteimg'] ?? '') . '</a>
                   </td>
               </tr>';
     }
     echo "<tr class='foot'>
               <td colspan='6' valign='top'>
-                  <a href='http://www.filext.com' style='float: right;' target='_blank'>" . _AM_XHELP_MIME_FINDMIMETYPE . "</a>
+                  <a href='https://www.filext.com' style='float: right;' target='_blank'>" . _AM_XHELP_MIME_FINDMIMETYPE . "</a>
                   <input type='checkbox' name='checkAllMimes' value='0' onclick='selectAll(this.form,\"mimes[]\",this.checked);'>
                   <input type='submit' name='deleteMimes' id='deleteMimes' value='" . _AM_XHELP_BUTTON_DELETE . "'>
                   <input type='submit' name='add_mime' id='add_mime' value='" . _AM_XHELP_MIME_CREATEF . "' class='formButton'>
@@ -508,14 +508,14 @@ function manage()
 
 function search()
 {
-    global $hMime, $limit, $start, $imagearray, $aSearchBy, $aOrderBy, $aLimitBy, $aSortBy;
+    global $mimetypeHandler, $limit, $start, $imagearray, $aSearchBy, $aOrderBy, $aLimitBy, $aSortBy;
 
     if (Request::hasVar('deleteMimes', 'POST')) {
         $aMimes = $_POST['mimes'];
 
-        $crit = new \Criteria('mime_id', '(' . implode(',', $aMimes) . ')', 'IN');
+        $criteria = new \Criteria('mime_id', '(' . implode(',', $aMimes) . ')', 'IN');
 
-        if ($hMime->deleteAll($crit)) {
+        if ($mimetypeHandler->deleteAll($criteria)) {
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start");
         } else {
             redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start", 3, _AM_XHELP_MESSAGE_DELETE_MIME_ERROR);
@@ -569,13 +569,13 @@ function search()
         $search_field = $_REQUEST['search_by'];
         $search_text  = $_REQUEST['search_text'];
 
-        $crit = new \Criteria($search_field, "%$search_text%", 'LIKE');
-        $crit->setSort($sort);
-        $crit->setOrder($order);
-        $crit->setLimit($limit);
-        $crit->setStart($start);
-        $mime_count = $hMime->getCount($crit);
-        $mimetypes  = $hMime->getObjects($crit);
+        $criteria = new \Criteria($search_field, "%$search_text%", 'LIKE');
+        $criteria->setSort($sort);
+        $criteria->setOrder($order);
+        $criteria->setLimit($limit);
+        $criteria->setStart($start);
+        $mime_count = $mimetypeHandler->getCount($criteria);
+        $mimetypes  = $mimetypeHandler->getObjects($criteria);
         $nav        = new \XoopsPageNav($mime_count, $limit, $start, 'start', "op=search&amp;limit=$limit&amp;order=$order&amp;sort=$sort&amp;mime_search=1&amp;search_by=$search_field&amp;search_text=$search_text");
         // Display results
         echo '<script type="text/javascript" src="' . XHELP_BASE_URL . '/include/functions.js"></script>';
@@ -664,7 +664,7 @@ function search()
             }
             echo "<tr class='foot'>
                       <td colspan='6' valign='top'>
-                          <a href='http://www.filext.com' style='float: right;' target='_blank'>" . _AM_XHELP_MIME_FINDMIMETYPE . "</a>
+                          <a href='https://www.filext.com' style='float: right;' target='_blank'>" . _AM_XHELP_MIME_FINDMIMETYPE . "</a>
                           <input type='checkbox' name='checkAllMimes' value='0' onclick='selectAll(this.form,\"mimes[]\",this.checked);'>
                           <input type='submit' name='deleteMimes' id='deleteMimes' value='" . _AM_XHELP_BUTTON_DELETE . "'>
                           <input type='submit' name='add_mime' id='add_mime' value='" . _AM_XHELP_MIME_CREATEF . "' class='formButton'>
@@ -684,7 +684,7 @@ function search()
 
 function updateMimeValue()
 {
-    global $hMime;
+    global $mimetypeHandler;
     $start = $limit = 0;
 
     if (Request::hasVar('limit', 'GET')) {
@@ -700,19 +700,19 @@ function updateMimeValue()
         $mime_id = Request::getInt('id', 0, 'REQUEST');
     }
 
-    $mimetype = &$hMime->get($mime_id);
+    $mimetype = &$mimetypeHandler->get($mime_id);
 
     if (Request::hasVar('mime_admin', 'REQUEST')) {
         $mime_admin = Request::getInt('mime_admin', 0, 'REQUEST');
-        $mime_admin = _changeMimeValue($mime_admin);
+        $mime_admin = changeMimeValue($mime_admin);
         $mimetype->setVar('mime_admin', $mime_admin);
     }
     if (Request::hasVar('mime_user', 'REQUEST')) {
         $mime_user = Request::getInt('mime_user', 0, 'REQUEST');
-        $mime_user = _changeMimeValue($mime_user);
+        $mime_user = changeMimeValue($mime_user);
         $mimetype->setVar('mime_user', $mime_user);
     }
-    if ($hMime->insert($mimetype, true)) {
+    if ($mimetypeHandler->insert($mimetype, true)) {
         redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start");
     } else {
         redirect_header(XHELP_ADMIN_URL . "/mimetypes.php?limit=$limit&start=$start", 3);
@@ -723,7 +723,7 @@ function updateMimeValue()
  * @param $mime_value
  * @return int
  */
-function _changeMimeValue($mime_value)
+function changeMimeValue($mime_value)
 {
     if (1 == $mime_value) {
         $mime_value = 0;
@@ -734,7 +734,7 @@ function _changeMimeValue($mime_value)
     return $mime_value;
 }
 
-function _clearAddSessionVars()
+function clearAddSessionVars()
 {
     $session = Xhelp\Session::getInstance();
     $session->del('xhelp_addMime');
@@ -743,14 +743,14 @@ function _clearAddSessionVars()
 
 function clearAddSession()
 {
-    _clearAddSessionVars();
+    clearAddSessionVars();
     redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'add'], false));
 }
 
 /**
  * @param $id
  */
-function _clearEditSessionVars($id)
+function clearEditSessionVars($id)
 {
     $id      = (int)$id;
     $session = Xhelp\Session::getInstance();
@@ -761,6 +761,6 @@ function _clearEditSessionVars($id)
 function clearEditSession()
 {
     $mimeid = $_REQUEST['id'];
-    _clearEditSessionVars($mimeid);
+    clearEditSessionVars($mimeid);
     redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/mimetypes.php', ['op' => 'edit', 'id' => $mimeid], false));
 }

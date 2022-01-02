@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -21,36 +21,36 @@ if (Request::hasVar('deleteDept', 'REQUEST')) {
         xoops_confirm(['deleteDept' => 1, 'deptid' => $deptID, 'ok' => 1], XHELP_BASE_URL . '/admin/delete.php', sprintf(_AM_XHELP_MSG_DEPT_DEL_CFRM, $deptID));
         xoops_cp_footer();
     } else {
-        $hDepartments     = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
         /** @var \XoopsGroupPermHandler $grouppermHandler */
-$grouppermHandler = xoops_getHandler('groupperm');
-        $dept             = $hDepartments->get($deptID);
+        $grouppermHandler = xoops_getHandler('groupperm');
+        $dept             = $departmentHandler->get($deptID);
 
-        $crit = new \CriteriaCompo(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $crit->add(new \Criteria('gperm_itemid', $deptID));
-        $grouppermHandler->deleteAll($crit);
+        $criteria = new \CriteriaCompo(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
+        $criteria->add(new \Criteria('gperm_itemid', $deptID));
+        $grouppermHandler->deleteAll($criteria);
 
         $deptCopy = $dept;
 
-        if ($hDepartments->delete($dept)) {
+        if ($departmentHandler->delete($dept)) {
             $_eventsrv->trigger('delete_department', [&$dept]);
             $message = _XHELP_MESSAGE_DEPT_DELETE;
 
             // Remove configoption for department
-            $hConfigOption = xoops_getHandler('configoption');
-            $crit          = new \CriteriaCompo(new \Criteria('confop_name', $deptCopy->getVar('department')));
-            $crit->add(new \Criteria('confop_value', $deptCopy->getVar('id')));
-            $configOption = $hConfigOption->getObjects($crit);
+            $configOptionHandler = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
+            $criteria                = new \CriteriaCompo(new \Criteria('confop_name', $deptCopy->getVar('department')));
+            $criteria->add(new \Criteria('confop_value', $deptCopy->getVar('id')));
+            $configOption = $configOptionHandler->getObjects($criteria);
 
             if (count($configOption) > 0) {
-                if (!$hConfigOption->delete($configOption[0])) {
+                if (!$configOptionHandler->delete($configOption[0])) {
                     $message = '';
                 }
                 unset($deptCopy);
             }
 
             // Change default department
-            $depts  = $hDepartments->getObjects();
+            $depts  = $departmentHandler->getObjects();
             $aDepts = [];
             foreach ($depts as $dpt) {
                 $aDepts[] = $dpt->getVar('id');

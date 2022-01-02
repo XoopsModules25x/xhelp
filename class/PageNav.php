@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 

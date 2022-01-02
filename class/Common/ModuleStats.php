@@ -17,7 +17,7 @@ trait ModuleStats
      * @return array
      */
 
-    public static function getModuleStats($configurator)
+    public static function getModuleStats($configurator): array
     {
         $moduleStats = [];
         if (\count($configurator->moduleStats) > 0) {

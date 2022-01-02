@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
 
-require_once dirname(__DIR__, 3) . '/mainfile.php';
+require_once \dirname(__DIR__, 3) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';

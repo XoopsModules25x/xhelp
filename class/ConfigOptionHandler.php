@@ -1,6 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
+
 
 /**
  * class ConfigOptionHandler
@@ -11,16 +12,13 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      * Database connection
      *
      * @var object
-     * @access  private
      */
     public $_db;
-
     /**
      * Autoincrementing DB fieldname
      * @var string
-     * @access private
      */
-    public $_idfield = 'confop_id';
+    public $idfield = 'confop_id';
 
     /**
      * Constructor
@@ -36,22 +34,20 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      * DB table name
      *
      * @var string
-     * @access private
      */
     public $_dbtable = 'configoption';
 
     /**
      * delete configoption matching a set of conditions
      *
-     * @param null $criteria {@link CriteriaElement}
-     * @param bool $force
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link CriteriaElement}
+     * @param bool                                 $force
      * @return bool FALSE if deletion failed
-     * @access  public
      */
-    public function deleteAll($criteria = null, $force = false)
+    public function deleteAll($criteria = null, bool $force = false): bool
     {
         $sql = 'DELETE FROM ' . $this->db->prefix($this->_dbtable);
-        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
         if (!$force) {
@@ -74,9 +70,9 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      * @param bool         $force
      * @return bool TRUE if successfull.
      */
-    public function insert(\XoopsObject $confoption, $force = false)
+    public function insert(\XoopsObject $confoption, bool $force = false)
     {
-        if ('xoopsconfigoption' !== mb_strtolower(\get_class($confoption))) {
+        if ('xoopsconfigoption' !== \mb_strtolower(\get_class($confoption))) {
             return false;
         }
         if (!$confoption->isDirty()) {

@@ -120,7 +120,7 @@
                 <tr class="custfld">
                     <td class="head">
                         <{$field.name}>:
-                        <{if $field.desc != ""}>
+                        <{if $field.desc|default:'' != ''}>
                             <br>
                             <br>
                             <{$field.desc}>

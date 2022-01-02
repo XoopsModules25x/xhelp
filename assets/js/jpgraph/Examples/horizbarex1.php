@@ -1,0 +1,64 @@
+<?php
+// content="text/plain; charset=utf-8"
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_bar.php';
+
+$datay = [2, 3, 5, 8, 12, 6, 3];
+$datax = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
+
+// Size of graph
+$width  = 400;
+$height = 500;
+
+// Set the basic parameters of the graph
+$graph = new Graph($width, $height, 'auto');
+$graph->clearTheme();
+$graph->setScale('textlin');
+
+// Rotate graph 90 degrees and set margin
+$graph->set90AndMargin(50, 20, 50, 30);
+
+// Nice shadow
+$graph->setShadow();
+
+// Setup title
+$graph->title->Set('Horizontal bar graph ex 1');
+$graph->title->SetFont(FF_VERDANA, FS_BOLD, 14);
+
+// Setup X-axis
+$graph->xaxis->SetTickLabels($datax);
+$graph->xaxis->SetFont(FF_VERDANA, FS_NORMAL, 12);
+
+// Some extra margin looks nicer
+$graph->xaxis->SetLabelMargin(10);
+
+// Label align for X-axis
+$graph->xaxis->SetLabelAlign('right', 'center');
+
+// Add some grace to y-axis so the bars doesn't go
+// all the way to the end of the plot area
+$graph->yaxis->scale->SetGrace(20);
+
+// We don't want to display Y-axis
+$graph->yaxis->Hide();
+
+// Now create a bar pot
+$bplot = new BarPlot($datay);
+$bplot->SetFillColor('orange');
+$bplot->SetShadow();
+
+//You can change the width of the bars if you like
+//$bplot->SetWidth(0.5);
+
+// We want to display the value of each bar at the top
+$bplot->value->show();
+$bplot->value->setFont(FF_ARIAL, FS_BOLD, 12);
+$bplot->value->setAlign('left', 'center');
+$bplot->value->setColor('black', 'darkred');
+$bplot->value->setFormat('%.1f mkr');
+
+// Add the bar to the graph
+$graph->add($bplot);
+
+// .. and stroke the graph
+$graph->stroke();

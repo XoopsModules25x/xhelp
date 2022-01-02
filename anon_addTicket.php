@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -14,11 +14,11 @@ $language = $xoopsConfig['language'];
 require_once XOOPS_ROOT_PATH . "/language/$language/user.php";
 
 /** @var \XoopsConfigHandler $configHandler */
-$configHandler = xoops_getHandler('config');
+$configHandler   = xoops_getHandler('config');
 $xoopsConfigUser = [];
-$crit            = new \CriteriaCompo(new \Criteria('conf_name', 'allow_register'), 'OR');
-$crit->add(new \Criteria('conf_name', 'activation_type'), 'OR');
-$myConfigs = $configHandler->getConfigs($crit);
+$criteria            = new \CriteriaCompo(new \Criteria('conf_name', 'allow_register'), 'OR');
+$criteria->add(new \Criteria('conf_name', 'activation_type'), 'OR');
+$myConfigs = $configHandler->getConfigs($criteria);
 
 foreach ($myConfigs as $myConf) {
     $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
@@ -28,11 +28,11 @@ if (0 == $helper->getConfig('xhelp_allowAnonymous')) {
     redirect_header(XHELP_BASE_URL . '/error.php');
 }
 
-$ticketHandler               = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
 /** @var \XoopsGroupPermHandler $grouppermHandler */
 $grouppermHandler = xoops_getHandler('groupperm');
 /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');
+$memberHandler               = xoops_getHandler('member');
 $tickefielddepartmentHandler = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
 $module_id                   = $xoopsModule->getVar('mid');
 
@@ -48,10 +48,10 @@ if (!isset($_POST['addTicket'])) {
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_anon_addTicket.tpl';             // Always set main template before including the header
     require_once XOOPS_ROOT_PATH . '/header.php';
 
-    $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Department handler
-    $crit         = new \Criteria('', '');
-    $crit->setSort('department');
-    $departments = $hDepartments->getObjects($crit);
+    $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Department handler
+    $criteria              = new \Criteria('', '');
+    $criteria->setSort('department');
+    $departments = $departmentHandler->getObjects($criteria);
     if (0 == count($departments)) {
         $message = _XHELP_MESSAGE_NO_DEPTS;
         redirect_header(XHELP_BASE_URL . '/index.php', 3, $message);
@@ -69,10 +69,10 @@ if (!isset($_POST['addTicket'])) {
     }
     if ($helper->getConfig('xhelp_allowUpload')) {
         // Get available mimetypes for file uploading
-        $hMime     = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
-        $crit      = new \Criteria('mime_user', 1);
-        $mimetypes = $hMime->getObjects($crit);
-        $mimes     = '';
+        $mimetypeHandler = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+        $criteria            = new \Criteria('mime_user', '1');
+        $mimetypes       = $mimetypeHandler->getObjects($criteria);
+        $mimes           = '';
         foreach ($mimetypes as $mime) {
             if ('' == $mimes) {
                 $mimes = $mime->getVar('mime_ext');
@@ -327,7 +327,7 @@ window.setTimeout('window_onload()', 1500);
         $anon_user = Xhelp\Utility::getXoopsAccountFromEmail($_POST['email'], '', $password, $level);
         if ($anon_user) { // If new user created
             /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');
+            $memberHandler = xoops_getHandler('member');
             $xoopsUser     = $memberHandler->loginUserMd5($anon_user->getVar('uname'), $anon_user->getVar('pass'));
             $user_added    = true;
         } else {        // User not created
@@ -374,8 +374,8 @@ $memberHandler = xoops_getHandler('member');
         }
 
         // Add custom field values to db
-        $hTicketValues = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
-        $ticketValues  = $hTicketValues->create();
+        $ticketValuesHandler = new Xhelp\TicketValuesHandler($GLOBALS['xoopsDB']);
+        $ticketValues        = $ticketValuesHandler->create();
 
         foreach ($aFields as $field) {
             $fieldname = $field['fieldname'];
@@ -402,7 +402,7 @@ $memberHandler = xoops_getHandler('member');
         }
         $ticketValues->setVar('ticketid', $ticket->getVar('id'));
 
-        if (!$hTicketValues->insert($ticketValues)) {
+        if (!$ticketValuesHandler->insert($ticketValues)) {
             $message = _XHELP_MESSAGE_NO_CUSTFLD_ADDED;
         }
 

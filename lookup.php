@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -43,9 +43,9 @@ if (Request::hasVar('search', 'POST')) {
     $xoopsTpl->assign('xhelp_viewResults', true);
 
     $userHandler = xoops_getHandler('user');
-    $crit        = new \Criteria($subject, '%' . $text . '%', 'LIKE');
-    $crit->setSort($subject);
-    $users = $userHandler->getObjects($crit);
+    $criteria        = new \Criteria($subject, '%' . $text . '%', 'LIKE');
+    $criteria->setSort($subject);
+    $users = $userHandler->getObjects($criteria);
     foreach ($users as $user) {
         $aUsers[] = [
             'uid'   => $user->getVar('uid'),

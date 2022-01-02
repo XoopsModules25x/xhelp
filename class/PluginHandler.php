@@ -1,15 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
  * Manages the retrieval, loading, and unloading of plugins
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
 class PluginHandler
 {
@@ -17,26 +14,24 @@ class PluginHandler
      * Database connection
      *
      * @var object
-     * @access  private
      */
     public $_db;
     public $_active;
     public $_plugins;
 
     /**
-     * Xhelp\PluginHandler constructor.
-     * @param \XoopsDatabase|null $db
+     * PluginHandler constructor.
      */
     public function __construct(\XoopsDatabase $db = null)
     {
         $this->_db     = $db;
-        $this->_active = \unserialize(Xhelp\Utility::getMeta('plugins'));
+        $this->_active = \unserialize(Utility::getMeta('plugins'));
     }
 
     /**
      * @return array
      */
-    public function _pluginList()
+    public function _pluginList(): array
     {
         $plugins = [];
         //Open Directory
@@ -81,13 +76,13 @@ class PluginHandler
      * @param $filename
      * @return bool
      */
-    public function getPluginInstance($filename)
+    public function getPluginInstance($filename): bool
     {
         if (!isset($this->_plugins[$filename])) {
             if (\is_file($plug_file = XHELP_PLUGIN_PATH . '/' . $filename . '.php')) {
                 require_once $plug_file;
             }
-            $class = mb_strtolower(XHELP_DIRNAME) . \ucfirst($filename);
+            $class = \mb_strtolower(XHELP_DIRNAME) . \ucfirst($filename);
             if (\class_exists($class)) {
                 $this->_plugins[$filename] = new $class($GLOBALS['_eventsrv']);
             }

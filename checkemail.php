@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/servicemain.php';
 
 //Include xhelp Related Includes
-//require_once XHELP_INCLUDE_PATH . '/events.php';
+require_once XHELP_INCLUDE_PATH . '/events.php';
 //require_once XHELP_CLASS_PATH . '/mailboxPOP3.php';
 //require_once XHELP_CLASS_PATH . '/EmailParser.php';
 //require_once XHELP_CLASS_PATH . '/EmailStore.php';
@@ -15,16 +15,16 @@ require_once __DIR__ . '/servicemain.php';
 $helper = Xhelp\Helper::getInstance();
 
 //Initialize xhelp objects
-$msgParser     = new Xhelp\EmailParser();
-$msgStore      = new Xhelp\EmailStore();
-$hDeptBoxes    = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-$hMailEvent    = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
-$ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+$msgParser                = new Xhelp\EmailParser();
+$msgStore                 = new Xhelp\EmailStore();
+$departmentMailBoxHandler = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+$mailEventHandler         = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+$ticketHandler            = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
 
 $_eventsrv->advise('new_user_by_email', Xhelp\NotificationService::getInstance(), 'new_user_activation' . $xoopsConfigUser['activation_type']);
 
 //Get All Department Mailboxes
-$deptmboxes = $hDeptBoxes->getActiveMailboxes();
+$deptmboxes = $departmentMailBoxHandler->getActiveMailboxes();
 
 //Loop Through All Department Mailboxes
 foreach ($deptmboxes as $mbox) {
@@ -81,7 +81,7 @@ foreach ($deptmboxes as $mbox) {
                                         break;
                                 }
                                 //} else {        // If message not stored properly, log event
-                                //    $storeEvent = $hMailEvent->newEvent($mbox->getVar('id'), _XHELP_MAILEVENT_DESC2, _XHELP_MAILEVENT_CLASS2);
+                                //    $storeEvent = $mailEventHandler->newEvent($mbox->getVar('id'), _XHELP_MAILEVENT_DESC2, _XHELP_MAILEVENT_CLASS2);
                             } else {
                                 $msg_logs[_XHELP_MAILEVENT_CLASS2] = &$errors;
                             }
@@ -100,7 +100,7 @@ foreach ($deptmboxes as $mbox) {
         //Disconnect from Server
         $mbox->disconnect();
     } else {                        // If mailbox not connected properly, log event
-        $connEvent = $hMailEvent->newEvent($mbox->getVar('id'), _XHELP_MAILEVENT_DESC0, _XHELP_MAILEVENT_CLASS0);
+        $connEvent = $mailEventHandler->newEvent($mbox->getVar('id'), _XHELP_MAILEVENT_DESC0, _XHELP_MAILEVENT_CLASS0);
     }
 }
 
@@ -110,12 +110,12 @@ foreach ($deptmboxes as $mbox) {
  */
 function _logMessages($mbox, $arr)
 {
-    global $hMailEvent;
+    global $mailEventHandler;
     foreach ($arr as $class => $msg) {
         if (is_array($msg)) {
             $msg = implode("\r\n", $msg);
         }
-        $event = $hMailEvent->newEvent($mbox, $msg, $class);
+        $event = $mailEventHandler->newEvent($mbox, $msg, $class);
     }
 }
 
@@ -128,8 +128,8 @@ function _isDepartmentEmail($email)
     static $email_arr;
 
     if (null === $email_arr) {
-        global $hDeptBoxes;
-        $deptmboxes = $hDeptBoxes->getObjects();
+        global $departmentMailBoxHandler;
+        $deptmboxes = $departmentMailBoxHandler->getObjects();
         $email_arr  = [];
         foreach ($deptmboxes as $obj) {
             $email_arr[] = $obj->getVar('emailaddress');

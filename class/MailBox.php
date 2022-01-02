@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 \define('_XHELP_MAILBOXTYPE_POP3', 1);
 \define('_XHELP_MAILBOXTYPE_IMAP', 2);
@@ -14,9 +12,7 @@ use XoopsModules\Xhelp;
  * needed to interact with a mailstore
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
- * @access  public
  * @abstract
- * @package xhelp
  */
 class MailBox
 {

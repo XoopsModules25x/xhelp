@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -34,8 +30,6 @@ if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
  * Metadata that represents a custom field created for xhelp
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
 class TicketField extends \XoopsObject
 {
@@ -45,7 +39,6 @@ class TicketField extends \XoopsObject
      * Class Constructor
      *
      * @param mixed $id null for a new object, hash table for an existing object
-     * @access public
      */
     public function __construct($id = null)
     {
@@ -76,7 +69,6 @@ class TicketField extends \XoopsObject
      * @param null   $keys
      * @param string $format
      * @param int    $maxDepth
-     * @access public
      */
     public function getValues($keys = null, $format = 's', $maxDepth = 1)
     {
@@ -140,7 +132,7 @@ class TicketField extends \XoopsObject
      * @param $dept_arr
      * @return bool
      */
-    public function addDepartments($dept_arr)
+    public function addDepartments($dept_arr): ?bool
     {
         if (!\is_array($dept_arr) || 0 == \count($dept_arr)) {
             return false;
@@ -163,7 +155,7 @@ class TicketField extends \XoopsObject
     /**
      * @return array
      */
-    public function &getDepartments()
+    public function &getDepartments(): array
     {
         return $this->_departments;
     }

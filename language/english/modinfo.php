@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 define('_MI_XHELP_NAME', 'xHelp');
 define('_MI_XHELP_DESC', 'Used to store client requests for help with their problems');

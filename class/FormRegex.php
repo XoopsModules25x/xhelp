@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
  * class FormRegex
@@ -41,10 +40,10 @@ class FormRegex extends \XoopsFormElement
     }
 
     /**
-     * @param        $value
+     * @param string       $value
      * @param string $name
      */
-    public function addOption($value, $name = '')
+    public function addOption(string $value, string $name = '')
     {
         $this->_select->addOption($value, $name);
     }
@@ -68,14 +67,14 @@ class FormRegex extends \XoopsFormElement
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->_select->getOptions();
     }
 
     /**
      * @param bool $encode
-     * @return mixed
+     * @return string
      */
     public function getCaption($encode = false)
     {

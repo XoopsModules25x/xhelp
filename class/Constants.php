@@ -17,7 +17,7 @@ namespace XoopsModules\Xhelp;
  * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
  * @package
  * @since
- * @author     XOOPS Development Team
+ * @author       XOOPS Development Team
  */
 
 //defined('XOOPS_ROOT_PATH') || die('Restricted access');
@@ -32,7 +32,6 @@ interface Constants
      */
 
     public const DISALLOW = 0;
-
     /**
      * no delay XOOPS redirect delay (in seconds)
      */
@@ -50,5 +49,8 @@ interface Constants
      */
     public const REDIRECT_DELAY_LONG = 7;
 
+    public const XHELP_MAILBOXTYPE_POP3 = 1;
+
+    public const XHELP_MAILBOXTYPE_IMAP = 2;
     /**#@-*/
 }

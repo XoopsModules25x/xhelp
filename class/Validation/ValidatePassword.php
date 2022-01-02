@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Validation;
 
-use XoopsModules\Xhelp\Validation;
+use Criteria;
 
 /**
  *  ValidatorPassword subclass of Validator
@@ -15,13 +15,11 @@ class ValidatePassword extends Validator
      * $pass the password to validate
      */
     public $pass;
-
     /**
      * Private
      * $vpass the verification password to validate
      */
     public $vpass;
-
     //! A constructor.
 
     /**
@@ -43,24 +41,24 @@ class ValidatePassword extends Validator
      */
     public function validate()
     {
-        $hConfig = \xoops_getHandler('config');
-        //$xoopsConfigUser = $hConfig->getConfigsByCat(XOOPS_CONF_USER);
+        $configHandler = \xoops_getHandler('config');
+        //$xoopsConfigUser = $configHandler->getConfigsByCat(XOOPS_CONF_USER);
         $xoopsConfigUser = [];
-        $crit            = new \Criteria('conf_catid', 2);
-        $myConfigs       = $hConfig->getConfigs($crit);
+        $criteria            = new \Criteria('conf_catid', 2);
+        $myConfigs       = $configHandler->getConfigs($criteria);
         foreach ($myConfigs as $myConf) {
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
         }
 
         if (null === $this->pass || '' == $this->pass || null === $this->vpass || '' == $this->vpass) {
-            $this->setError(_XHELP_MESSAGE_NOT_SUPPLIED);
+            $this->setError(\_XHELP_MESSAGE_NOT_SUPPLIED);
             //$stop .= _US_ENTERPWD.'<br>';
         }
         if (null !== $this->pass && ($this->pass != $this->vpass)) {
-            $this->setError(_XHELP_MESSAGE_NOT_SAME);
+            $this->setError(\_XHELP_MESSAGE_NOT_SAME);
             //$stop .= _US_PASSNOTSAME.'<br>';
         } elseif (('' != $this->pass) && (mb_strlen($this->pass) < $xoopsConfigUser['minpass'])) {
-            $this->setError(\sprintf(_XHELP_MESSAGE_SHORT, $xoopsConfigUser['minpass']));
+            $this->setError(\sprintf(\_XHELP_MESSAGE_SHORT, $xoopsConfigUser['minpass']));
             //$stop .= sprintf(_US_PWDTOOSHORT,$xoopsConfigUser['minpass'])."<br>";
         }
     }

@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
  * class Faq
@@ -18,7 +17,7 @@ class Faq extends \XoopsObject
         $this->initVar('problem', \XOBJ_DTYPE_TXTAREA, null, true);
         $this->initVar('solution', \XOBJ_DTYPE_TXTAREA, null, true);
         $this->initVar('categories', \XOBJ_DTYPE_ARRAY, null, false);
-        $this->initVar('id', \XOBJ_DTYPE_INT, 0, false);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
         $this->initVar('url', \XOBJ_DTYPE_TXTBOX, null, true);
     }
 }

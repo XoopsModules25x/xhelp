@@ -1,9 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
 
-require_once dirname(__DIR__, 2) . '/mainfile.php';
+/** @var Helper $helper */
+require_once __DIR__ . '/header.php';
+
+require_once \dirname(__DIR__, 2) . '/mainfile.php';
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
@@ -50,21 +53,21 @@ function updateDepts()
     }
 
     //Retrieve list of departments
-    $hDept = Xhelp\Helper::getInstance()->getHandler('Department');
-    $depts = $hDept->getObjects();
+    $departmentHandler = Xhelp\Helper::getInstance()->getHandler('Department');
+    $depts             = $departmentHandler->getObjects();
 
     $class = 'odd';
     foreach ($depts as $dept) {
         $deptid   = $dept->getVar('id');
         $deptname = $dept->getVar('department');
 
-        $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
-        $newOption     = $hConfigOption->create();
+        $configOptionHandler = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
+        $newOption           = $configOptionHandler->create();
         $newOption->setVar('confop_name', $deptname);
         $newOption->setVar('confop_value', $deptid);
         $newOption->setVar('conf_id', $xhelp_config);
 
-        if (!$hConfigOption->insert($newOption, true)) {
+        if (!$configOptionHandler->insert($newOption, true)) {
             return false;
         }
 
@@ -85,11 +88,11 @@ function removeDepts()
     global $xoopsDB;
 
     //Needs force on delete
-    $hConfig = xoops_getHandler('config');
+    $configHandler = xoops_getHandler('config');
 
     // Select the config from the xoops_config table
-    $crit   = new \Criteria('conf_name', 'xhelp_defaultDept');
-    $config = &$hConfig->getConfigs($crit);
+    $criteria   = new \Criteria('conf_name', 'xhelp_defaultDept');
+    $config = &$configHandler->getConfigs($criteria);
 
     if (count($config) > 0) {
         $xhelp_config = $config[0]->getVar('conf_id');
@@ -98,13 +101,13 @@ function removeDepts()
     }
 
     // Remove the config options
-    $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
-    $crit          = new \Criteria('conf_id', $xhelp_config);
-    $configOptions = $hConfigOption->getObjects($crit);
+    $configOptionHandler = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
+    $criteria                = new \Criteria('conf_id', $xhelp_config);
+    $configOptions       = $configOptionHandler->getObjects($criteria);
 
     if (count($configOptions) > 0) {
         foreach ($configOptions as $option) {
-            if (!$hConfigOption->deleteAll($option, true)) {   // Remove each config option
+            if (!$configOptionHandler->deleteAll($option, true)) {   // Remove each config option
                 return false;
             }
         }
@@ -190,7 +193,6 @@ function removeTopics()
 }
 
 /**
- * @param \XoopsModule $module
  * @return bool
  */
 function xoops_module_install_xhelp(\XoopsModule $module)

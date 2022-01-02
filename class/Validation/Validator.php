@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Validation;
 
@@ -12,7 +12,6 @@ class Validator
      * $errorMsg stores error messages if not valid
      */
     public $errorMsg;
-
     //! A constructor.
 
     /**
@@ -35,7 +34,7 @@ class Validator
 
     /**
      * Adds an error message to the array
-     * @param $msg
+     * @param string $msg
      */
     public function setError($msg)
     {
@@ -48,7 +47,7 @@ class Validator
      * Returns true is string valid, false if not
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         if (\count($this->errorMsg)) {
             return false;
@@ -63,7 +62,7 @@ class Validator
      * Pops the last error message off the array
      * @return string
      */
-    public function getError()
+    public function getError(): string
     {
         return \array_pop($this->errorMsg);
     }
@@ -71,7 +70,7 @@ class Validator
     /**
      * @return array
      */
-    public function &getErrors()
+    public function &getErrors(): array
     {
         return $this->errorMsg;
     }

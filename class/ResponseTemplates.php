@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,8 +15,6 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 if (!\defined('XHELP_CLASS_PATH')) {
@@ -28,8 +26,6 @@ if (!\defined('XHELP_CLASS_PATH')) {
  * xhelpResponseTemplates class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
 class ResponseTemplates extends \XoopsObject
 {

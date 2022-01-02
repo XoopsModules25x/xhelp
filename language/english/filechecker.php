@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  You may not change or alter any portion of this comment or credits
  of supporting developers from this source code or any supporting source code
@@ -9,8 +9,8 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-$moduleDirName      = basename(dirname(__DIR__, 2));
-$moduleDirNameUpper = mb_strtoupper($moduleDirName);
+$moduleDirName      = \basename(\dirname(__DIR__, 2));
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
 define('CO_' . $moduleDirNameUpper . '_' . 'FC_AVAILABLE', "<span style='color: green;'>Available</span>");
 define('CO_' . $moduleDirNameUpper . '_' . 'FC_NOTAVAILABLE', "<span style='color: red;'>Not available</span>");

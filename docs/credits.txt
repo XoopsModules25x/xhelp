@@ -1,4 +1,9 @@
 Credits
 ===============
 
-Originally developed by ackbarr and eric_juden
+Originally developed by:
+
+Ackbarr (Brian Wahoff)
+ejuden (Eric Juden)
+
+Updated for PHP 8.1 by Michael Beck (aka Mamba)

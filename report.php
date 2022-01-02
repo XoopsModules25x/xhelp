@@ -1,5 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
@@ -13,11 +14,11 @@ if (!file_exists(XHELP_JPGRAPH_PATH . '/jpgraph.php')) {
 // require_once XHELP_CLASS_PATH . '/ReportRendererFactory.php';
 
 if (!$xhelp_isStaff) {        // Is user a staff member?
-    redirect_header(XHELP_BASE_URL . '/index.php', 3, _NO_PERM);
+    redirect_header(XHELP_BASE_URL . '/index.php', 3, _AM_XHELP_NO_PERM);
 }
 
 $op = 'default';
-if (\Xmf\Request::hasVar('op', 'GET')) {
+if (Request::hasVar('op', 'GET')) {
     $op = $_GET['op'];
 }
 

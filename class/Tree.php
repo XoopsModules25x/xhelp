@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -16,7 +16,7 @@ class Tree extends \XoopsObjectTree
      * @param string $selected
      * @param bool   $addEmptyOption
      * @param int    $key
-     * @param bool   $selectMulti
+     * @param bool   $extra
      * @return string
      */
     public function makeSelBox(
@@ -26,9 +26,9 @@ class Tree extends \XoopsObjectTree
         $selected = '',
         $addEmptyOption = false,
         $key = 0,
-        $selectMulti = false
+        $extra = false
     ) {
-        $ret = '<select name="' . $name . '[]" id="' . $name . '" ' . ($selectMulti ? 'multiple="multiple" size="6"' : '') . '>';
+        $ret = '<select name="' . $name . '[]" id="' . $name . '" ' . ($extra ? 'multiple="multiple" size="6"' : '') . '>';
         if (false !== $addEmptyOption) {
             $ret .= '<option value="0"></option>';
         }

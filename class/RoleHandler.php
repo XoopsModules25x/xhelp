@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -30,21 +26,18 @@ if (!\defined('XHELP_CLASS_PATH')) {
 /**
  * class RoleHandler
  */
-class RoleHandler extends Xhelp\BaseObjectHandler
+class RoleHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = Role::class;
-
     /**
      * DB Table Name
      *
      * @var string
-     * @access  private
      */
     public $_dbtable = 'xhelp_roles';
 
@@ -59,10 +52,10 @@ class RoleHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -75,10 +68,10 @@ class RoleHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -91,10 +84,10 @@ class RoleHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
@@ -104,17 +97,16 @@ class RoleHandler extends Xhelp\BaseObjectHandler
     /**
      * delete a role from the database
      *
-     * @param \XoopsObject $obj       reference to the {@link Xhelp\Role}
+     * @param \XoopsObject $obj       reference to the {@link Role}
      *                                obj to delete
      * @param bool         $force
      * @return bool FALSE if failed.
-     * @access  public
      */
-    public function delete(\XoopsObject $obj, $force = false)
+    public function delete(\XoopsObject $obj, bool $force = false)
     {
         // Remove staff roles from db first
-        $hStaffRole = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
-        if (!$hStaffRole->deleteAll(new \Criteria('roleid', $obj->getVar('id')))) {
+        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
+        if (!$staffRoleHandler->deleteAll(new \Criteria('roleid', $obj->getVar('id')))) {
             return false;
         }
 
@@ -127,7 +119,7 @@ class RoleHandler extends Xhelp\BaseObjectHandler
      * @param $task
      * @return array
      */
-    public function getRolesByTask($task)
+    public function getRolesByTask($task): array
     {
         $task = (int)$task;
 

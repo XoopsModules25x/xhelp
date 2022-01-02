@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 define('_XHELP_CATEGORY1', 'Assign Ownership');
 define('_XHELP_CATEGORY2', 'Delete Responses');

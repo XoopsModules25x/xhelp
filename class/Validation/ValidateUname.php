@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Validation;
-
-use XoopsModules\Xhelp\Validation;
 
 /**
  *  ValidatorUname subclass of Validator
@@ -15,7 +13,6 @@ class ValidateUname extends Validator
      * $uname the username to validate
      */
     public $uname;
-
     //! A constructor.
 
     /**
@@ -35,11 +32,11 @@ class ValidateUname extends Validator
      */
     public function validate()
     {
-        $hConfig = \xoops_getHandler('config');
-        //$xoopsConfigUser = $hConfig->getConfigsByCat(XOOPS_CONF_USER);
+        $configHandler = \xoops_getHandler('config');
+        //$xoopsConfigUser = $configHandler->getConfigsByCat(XOOPS_CONF_USER);
         $xoopsConfigUser = [];
-        $crit            = new \Criteria('conf_catid', 2);
-        $myConfigs       = $hConfig->getConfigs($crit);
+        $criteria            = new \Criteria('conf_catid', 2);
+        $myConfigs       = $configHandler->getConfigs($criteria);
         foreach ($myConfigs as $myConf) {
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');
         }
@@ -61,28 +58,28 @@ class ValidateUname extends Validator
         }
 
         if (empty($this->uname) || \preg_match($restriction, $this->uname)) {
-            $this->setError(_XHELP_MESSAGE_INVALID);
+            $this->setError(\_XHELP_MESSAGE_INVALID);
         }
         if (mb_strlen($this->uname) > $xoopsConfigUser['maxuname']) {
-            $this->setError(\sprintf(_XHELP_MESSAGE_LONG, $xoopsConfigUser['maxuname']));
+            $this->setError(\sprintf(\_XHELP_MESSAGE_LONG, $xoopsConfigUser['maxuname']));
         }
         if (mb_strlen($this->uname) < $xoopsConfigUser['minuname']) {
-            $this->setError(\sprintf(_XHELP_MESSAGE_SHORT, $xoopsConfigUser['minuname']));
+            $this->setError(\sprintf(\_XHELP_MESSAGE_SHORT, $xoopsConfigUser['minuname']));
         }
         foreach ($xoopsConfigUser['bad_unames'] as $bu) {
             if (!empty($bu) && \preg_match('/' . $bu . '/i', $this->uname)) {
-                $this->setError(_XHELP_MESSAGE_RESERVED);
+                $this->setError(\_XHELP_MESSAGE_RESERVED);
                 break;
             }
         }
         if (mb_strrpos($this->uname, ' ') > 0) {
-            $this->setError(_XHELP_MESSAGE_NO_SPACES);
+            $this->setError(\_XHELP_MESSAGE_NO_SPACES);
         }
         $sql    = 'SELECT COUNT(*) FROM ' . $xoopsDB->prefix('users') . " WHERE uname='" . \addslashes($this->uname) . "'";
         $result = $xoopsDB->query($sql);
         [$count] = $xoopsDB->fetchRow($result);
         if ($count > 0) {
-            $this->setError(_XHELP_MESSAGE_UNAME_TAKEN);
+            $this->setError(\_XHELP_MESSAGE_UNAME_TAKEN);
         }
     }
 }

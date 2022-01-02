@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -12,13 +12,10 @@ namespace XoopsModules\Xhelp;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-use XoopsModules\Xhelp;
 
 /**
- * @copyright    XOOPS Project https://xoops.org/
+ * @copyright    XOOPS Project (https://xoops.org)
  * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
- * @package
- * @since
  * @author       XOOPS Development Team, Kazumi Ono (AKA onokazu)
  */
 
@@ -69,8 +66,6 @@ use XoopsModules\Xhelp;
  * }
  * </code>
  *
- * @package       kernel
- * @subpackage    core
  * @author        Kazumi Ono <onokazu@xoops.org>
  * @copyright (c) 2000-2003 XOOPS Project (https://xoops.org)
  */
@@ -143,7 +138,7 @@ class MediaUploader
      * @return bool
      * @global       $HTTP_POST_FILES
      */
-    public function fetchMedia($media_name, $index = null)
+    public function fetchMedia($media_name, $index = null): bool
     {
         global $_FILES;
 
@@ -155,14 +150,14 @@ class MediaUploader
 
         if (\is_array($_FILES[$media_name]['name']) && null !== $index) {
             $index              = (int)$index;
-            $this->mediaName    = @\get_magic_quotes_gpc() ? \stripslashes($_FILES[$media_name]['name'][$index]) : $_FILES[$media_name]['name'][$index];
+            $this->mediaName    = @get_magic_quotes_gpc() ? \stripslashes($_FILES[$media_name]['name'][$index]) : $_FILES[$media_name]['name'][$index];
             $this->mediaType    = $_FILES[$media_name]['type'][$index];
             $this->mediaSize    = $_FILES[$media_name]['size'][$index];
             $this->mediaTmpName = $_FILES[$media_name]['tmp_name'][$index];
             $this->mediaError   = !empty($_FILES[$media_name]['error'][$index]) ? $_FILES[$media_name]['errir'][$index] : 0;
         } else {
             $media_name         = @$_FILES[$media_name];
-            $this->mediaName    = @\get_magic_quotes_gpc() ? \stripslashes($media_name['name']) : $media_name['name'];
+            $this->mediaName    = @get_magic_quotes_gpc() ? \stripslashes($media_name['name']) : $media_name['name'];
             $this->mediaName    = $media_name['name'];
             $this->mediaType    = $media_name['type'];
             $this->mediaSize    = $media_name['size'];
@@ -268,7 +263,7 @@ class MediaUploader
      *
      * @return string
      */
-    public function getMediaName()
+    public function getMediaName(): string
     {
         return $this->mediaName;
     }
@@ -278,7 +273,7 @@ class MediaUploader
      *
      * @return string
      */
-    public function getMediaType()
+    public function getMediaType(): string
     {
         return $this->mediaType;
     }
@@ -288,7 +283,7 @@ class MediaUploader
      *
      * @return int
      */
-    public function getMediaSize()
+    public function getMediaSize(): int
     {
         return $this->mediaSize;
     }
@@ -298,7 +293,7 @@ class MediaUploader
      *
      * @return string
      */
-    public function getMediaTmpName()
+    public function getMediaTmpName(): string
     {
         return $this->mediaTmpName;
     }
@@ -308,7 +303,7 @@ class MediaUploader
      *
      * @return string
      */
-    public function getSavedFileName()
+    public function getSavedFileName(): string
     {
         return $this->savedFileName;
     }
@@ -318,7 +313,7 @@ class MediaUploader
      *
      * @return string
      */
-    public function getSavedDestination()
+    public function getSavedDestination(): string
     {
         return $this->savedDestination;
     }
@@ -329,7 +324,7 @@ class MediaUploader
      * @param int $chmod
      * @return bool
      */
-    public function upload($chmod = 0644)
+    public function upload($chmod = 0644): bool
     {
         if ('' == $this->uploadDir) {
             $this->setErrors('Upload directory not set');
@@ -379,18 +374,18 @@ class MediaUploader
      * @param $chmod
      * @return bool
      */
-    public function _copyFile($chmod)
+    public function _copyFile($chmod): bool
     {
         $matched = [];
-        if (!\preg_match("/\.([a-zA-Z0-9]+)$/", $this->mediaName, $matched)) {
+        if (!\preg_match('/\.([a-zA-Z0-9]+)$/', $this->mediaName, $matched)) {
             return false;
         }
         if (null !== $this->targetFileName) {
             $this->savedFileName = $this->targetFileName;
         } elseif (null !== $this->prefix) {
-            $this->savedFileName = \uniqid($this->prefix, true) . '.' . mb_strtolower($matched[1]);
+            $this->savedFileName = \uniqid($this->prefix, true) . '.' . \mb_strtolower($matched[1]);
         } else {
-            $this->savedFileName = mb_strtolower($this->mediaName);
+            $this->savedFileName = \mb_strtolower($this->mediaName);
         }
         $this->savedFileName    = \preg_replace('!\s+!', '_', $this->savedFileName);
         $this->savedDestination = $this->uploadDir . $this->savedFileName;
@@ -412,7 +407,7 @@ class MediaUploader
      *
      * @return bool
      */
-    public function checkMaxFileSize()
+    public function checkMaxFileSize(): bool
     {
         if ($this->noadmin_sizecheck) {
             return true;
@@ -430,7 +425,7 @@ class MediaUploader
      * @param $dimension
      * @return bool
      */
-    public function checkMaxWidth($dimension)
+    public function checkMaxWidth($dimension): bool
     {
         if (null === $this->maxWidth) {
             return true;
@@ -448,7 +443,7 @@ class MediaUploader
      * @param $dimension
      * @return bool
      */
-    public function checkMaxHeight($dimension)
+    public function checkMaxHeight($dimension): bool
     {
         if (null === $this->maxHeight) {
             return true;
@@ -467,7 +462,7 @@ class MediaUploader
      *
      * @return bool
      */
-    public function checkMimeType()
+    public function checkMimeType(): bool
     {
         if (\count($this->allowedMimeTypes) > 0 && !\in_array($this->mediaType, $this->allowedMimeTypes)) {
             return false;

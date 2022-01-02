@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -10,10 +10,8 @@
  */
 
 /**
- * @copyright    XOOPS Project https://xoops.org/
+ * @copyright    XOOPS Project (https://xoops.org)
  * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
- * @package
- * @since
  * @author       XOOPS Development Team, Kazumi Ono (AKA onokazu)
  */
 
@@ -29,7 +27,7 @@ if (Request::hasVar('fct', 'POST')) {
 if (empty($fct)) {
     $fct = 'preferences';
 }
-require_once dirname(__DIR__, 3) . '/mainfile.php';
+require_once \dirname(__DIR__, 3) . '/mainfile.php';
 require_once XOOPS_ROOT_PATH . '/include/cp_functions.php';
 require_once XOOPS_ROOT_PATH . '/kernel/module.php';
 
@@ -60,7 +58,7 @@ if (0 != $admintest) {
             }
             require_once XOOPS_ROOT_PATH . '/modules/system/admin/' . $fct . '/xoops_version.php';
             /** @var \XoopsGroupPermHandler $grouppermHandler */
-$grouppermHandler = xoops_getHandler('groupperm');
+            $grouppermHandler = xoops_getHandler('groupperm');
             $category         = !empty($modversion['category']) ? (int)$modversion['category'] : 0;
             unset($modversion);
             if ($category > 0) {
@@ -101,7 +99,7 @@ if (false !== $error) {
     $all_ok = false;
     if (!in_array(XOOPS_GROUP_ADMIN, $groups)) {
         /** @var \XoopsGroupPermHandler $grouppermHandler */
-$grouppermHandler = xoops_getHandler('groupperm');
+        $grouppermHandler = xoops_getHandler('groupperm');
         $ok_syscats       = $grouppermHandler->getItemIds('system_admin', $groups);
     } else {
         $all_ok = true;
@@ -111,7 +109,7 @@ $grouppermHandler = xoops_getHandler('groupperm');
     $counter   = 0;
     $class     = 'even';
     while ($file = readdir($handle)) {
-        if ('cvs' !== mb_strtolower($file) && !preg_match('/[.]/', $file) && is_dir($admin_dir . '/' . $file)) {
+        if ('cvs' !== \mb_strtolower($file) && !preg_match('/[.]/', $file) && is_dir($admin_dir . '/' . $file)) {
             require_once $admin_dir . '/' . $file . '/xoops_version.php';
             if ($modversion['hasAdmin']) {
                 $category = isset($modversion['category']) ? (int)$modversion['category'] : 0;

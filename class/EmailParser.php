@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -21,9 +19,6 @@ require_once \XHELP_PEAR_PATH . '/Mail/mimeDecode.php';
  * Part of the email submission subsystem
  *
  * @author     Brian Wahoff <ackbarr@xoops.org>
- * @access     public
- * @package    xhelp
- * @subpackage email
  */
 class EmailParser
 {
@@ -31,7 +26,6 @@ class EmailParser
 
     /**
      * Class Constructor
-     * @access public
      */
     public function __construct()
     {
@@ -43,22 +37,22 @@ class EmailParser
 
     /**
      * Parses Message
-     * @param $msg
-     * @return Xhelp\ParsedMessage
+     * @param array $msg
+     * @return ParsedMessage
      */
-    public function &parseMessage($msg)
+    public function &parseMessage(array $msg): ParsedMessage
     {
         $struct = $this->_parseMsg($msg);
-        $newMsg = new Xhelp\ParsedMessage($struct);
+        $newMsg = new ParsedMessage($struct);
 
         return $newMsg;
     }
 
     /**
-     * @param $msg
+     * @param array $msg
      * @return array
      */
-    public function &_parseMsg($msg)
+    public function &_parseMsg(array $msg): array
     {
         $arr = [];
         //Parse out attachments/HTML
@@ -75,10 +69,10 @@ class EmailParser
     }
 
     /**
-     * @param $from
-     * @return mixed
+     * @param string $from
+     * @return array
      */
-    public function &_parseFrom($from)
+    public function &_parseFrom(string $from)
     {
         //Extract Name & Email from supplied message
         //eregi("From: (.*)\nTo:",$headers, $addr);
@@ -97,10 +91,10 @@ class EmailParser
     }
 
     /**
-     * @param $msg
+     * @param string $msg
      * @return mixed|string
      */
-    public function _parseTicketID($msg)
+    public function _parseTicketID(string $msg)
     {
         $matches = [];
         $ret     = \preg_match(MD5SIGNATUREPATTERN, $msg, $matches);
@@ -116,10 +110,10 @@ class EmailParser
     }
 
     /**
-     * @param $msg
+     * @param array $msg
      * @return mixed|string
      */
-    public function _parseBody($msg)
+    public function _parseBody(array $msg)
     {
         $msg = $this->_quoteBody($msg);
         $msg = $this->_stripMd5Key($msg);
@@ -128,16 +122,16 @@ class EmailParser
     }
 
     /**
-     * @param $msg
+     * @param array $msg
      * @return string
      */
-    public function _quoteBody($msg)
+    public function _quoteBody(array $msg): string
     {
         $current = 0;
 
         $msg = \explode("\r\n", $msg);
 
-        for ($i = 0, $iMax = \count($msg); $i < $iMax; ++$i) {
+        foreach ($msg as $i => $iValue) {
             $pattern    = [];
             $replace    = [];
             $next       = $current + 1;
@@ -171,23 +165,23 @@ class EmailParser
     }
 
     /**
-     * @param $msg
-     * @return mixed
+     * @param string $msg
+     * @return array|string|string[]|null
      */
-    public function _stripMd5Key($msg)
+    public function _stripMd5Key(string $msg)
     {
-        $pattern = '/^\*{4}\s' . _XHELP_TICKET_MD5SIGNATURE . '\s(.)*\*{4}/im';
+        $pattern = '/^\*{4}\s' . \_XHELP_TICKET_MD5SIGNATURE . '\s(.)*\*{4}/im';
 
         return \preg_replace($pattern, '', $msg);
     }
 
     /**
-     * @param        $part
+     * @param string $part
      * @param string $primary
      * @param string $secondary
      * @return bool
      */
-    public function _getBody($part, $primary = 'text', $secondary = 'plain')
+    public function _getBody(string $part, string $primary = 'text', string $secondary = 'plain'): ?bool
     {
         $body = false;
 

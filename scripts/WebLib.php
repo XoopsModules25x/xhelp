@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,8 +15,6 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 
@@ -31,7 +29,7 @@ class WebLib
      * @param $deptid
      * @return array
      */
-    public function customFieldsByDept($deptid)
+    public function customFieldsByDept($deptid): array
     {
         $deptid                      = (int)$deptid;
         $tickefielddepartmentHandler = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
@@ -50,7 +48,7 @@ class WebLib
      * @param $ticketid
      * @return array
      */
-    public function editTicketCustFields($deptid, $ticketid)
+    public function editTicketCustFields($deptid, $ticketid): array
     {
         $deptid                      = (int)$deptid;
         $tickefielddepartmentHandler = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
@@ -74,7 +72,7 @@ class WebLib
      * @param $deptid
      * @return array
      */
-    public function staffByDept($deptid)
+    public function staffByDept($deptid): array
     {
         $mc    = Xhelp\Utility::getModuleConfig();
         $field = 1 == $mc['xhelp_displayName'] ? 'uname' : 'name';
@@ -86,7 +84,7 @@ class WebLib
         $aStaff   = [];
         $aStaff[] = [
             'uid'  => 0,
-            'name' => _XHELP_MESSAGE_NOOWNER,
+            'name' => \_XHELP_MESSAGE_NOOWNER,
         ];
         foreach ($staff as $s) {
             $aStaff[] = [

@@ -8,7 +8,7 @@
 // | This source file is subject to version 2.02 of the PHP license,      |
 // | that is bundled with this package in the file LICENSE, and is        |
 // | available at through the world-wide-web at                           |
-// | http://www.php.net/license/2_02.txt.                                 |
+// | https://www.php.net/license/2_02.txt.                                 |
 // | If you did not receive a copy of the PHP license and are unable to   |
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
@@ -21,7 +21,6 @@ require_once XHELP_PEAR_PATH . '/Net/Socket.php';
  * Provides an implementation of the IMAP protocol using PEAR's
  * Net_Socket:: class.
  *
- * @package Net_IMAP/Protocol
  * @author  Damian Alejandro Fernandez Sosa <damlists@cnba.uba.ar>
  */
 class Net_IMAPProtocol
@@ -31,57 +30,47 @@ class Net_IMAPProtocol
      * @var array
      */
     public $supportedAuthMethods = ['DIGEST-MD5', 'CRAM-MD5', 'LOGIN'];
-
     /**
      * The auth methods this class support
      * @var array
      */
     public $supportedSASLAuthMethods = ['DIGEST-MD5', 'CRAM-MD5'];
-
     /**
      * _serverAuthMethods
      * @var bool
      */
     public $_serverAuthMethods = null;
-
     /**
      * The the current mailbox
      * @var string
      */
     public $currentMailbox = 'INBOX';
-
     /**
      * The socket resource being used to connect to the IMAP server.
      * @var resource
      */
     public $_socket = null;
-
     /**
      * To allow class debuging
      * @var bool
      */
-    public $_debug = false;
-
+    public $_debug    = false;
     public $dbgDialog = '';
-
     /**
      * Command Number
      * @var int
      */
     public $_cmd_counter = 1;
-
     /**
      * Command Number for IMAP commands
      * @var int
      */
     public $_lastCmdID = 1;
-
     /**
      * Command Number
      * @var bool
      */
     public $_unParsedReturn = false;
-
     /**
      * _connected: checks if there is a connection made to a imap server or not
      * @var bool
@@ -92,7 +81,6 @@ class Net_IMAPProtocol
      * @var bool
      */
     public $_serverSupportedCapabilities = null;
-
     /**
      * Use UTF-7 funcionallity
      * @var bool
@@ -131,7 +119,6 @@ class Net_IMAPProtocol
      * @param int    $port
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdConnect($host = 'localhost', $port = 143)
@@ -155,7 +142,6 @@ class Net_IMAPProtocol
      *
      * @return string Returns the CmdID and increment the counter
      *
-     * @access private
      * @since  1.0
      */
     public function _getCmdId()
@@ -171,7 +157,6 @@ class Net_IMAPProtocol
      *
      * @return string Returns the last cmdId
      *
-     * @access public
      * @since  1.0
      */
     public function getLastCmdId()
@@ -184,7 +169,6 @@ class Net_IMAPProtocol
      *
      * @return string Returns the current mailbox
      *
-     * @access public
      * @since  1.0
      */
     public function getCurrentMailbox()
@@ -197,10 +181,9 @@ class Net_IMAPProtocol
      *
      * @param mixed $debug
      *
-     * @access public
      * @since  1.0
      */
-    public function setDebug($debug = true)
+    public function setDebug($debug = true): void
     {
         $this->_debug = $debug;
     }
@@ -220,7 +203,6 @@ class Net_IMAPProtocol
      *
      * @return mixed True on success or a PEAR_Error object on failure.
      *
-     * @access  private
      * @since   1.0
      */
     public function _send($data)
@@ -246,7 +228,6 @@ class Net_IMAPProtocol
      *
      * @return mixed a line of response on success or a PEAR_Error object on failure.
      *
-     * @access  private
      * @since   1.0
      */
     public function _recvLn()
@@ -278,7 +259,6 @@ class Net_IMAPProtocol
      *
      * @return mixed The result of the _send() call.
      *
-     * @access  private
      * @since   1.0
      */
     public function _putCMD($commandId, $command, $args = '')
@@ -297,8 +277,6 @@ class Net_IMAPProtocol
      *
      * @param string $commandId
      * @return string The result response.
-     *
-     * @access  private
      */
     public function _getRawResponse($commandId = '*')
     {
@@ -319,7 +297,6 @@ class Net_IMAPProtocol
      *
      * @return bool return if the unparsed response is returned or not
      *
-     * @access public
      * @since  1.0
      */
     public function getUnparsedResponse()
@@ -332,10 +309,9 @@ class Net_IMAPProtocol
      *
      * @param bool $status : true: feature is on
      *
-     * @access public
      * @since  1.0
      */
-    public function setUnparsedResponse($status)
+    public function setUnparsedResponse($status): void
     {
         $this->_unParsedReturn = $status;
     }
@@ -348,7 +324,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdLogin($uid, $pwd)
@@ -366,7 +341,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdAuthenticate($uid, $pwd, $userMethod = null)
@@ -403,15 +377,16 @@ class Net_IMAPProtocol
 
     /* Authenticates the user using the DIGEST-MD5 method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The cmdID.
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
+     * @param string $cmdid The cmdID.
      *
      * @return array Returns an array containing the response
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $uid
      * @param $pwd
@@ -458,15 +433,16 @@ class Net_IMAPProtocol
 
     /* Authenticates the user using the CRAM-MD5 method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The cmdID.
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
+     * @param string $cmdid The cmdID.
      *
      * @return array Returns an array containing the response
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $uid
      * @param $pwd
@@ -502,15 +478,16 @@ class Net_IMAPProtocol
 
     /* Authenticates the user using the LOGIN method.
      *
-     * @param string The userid to authenticate as.
-     * @param string The password to authenticate with.
-     * @param string The cmdID.
+     * @param string $uid The userid to authenticate as.
+     * @param string $pwd The password to authenticate with.
+     * @param string $cmdid The cmdID.
      *
      * @return array Returns an array containing the response
      *
      * @access private
      * @since  1.0
      */
+
     /**
      * @param $uid
      * @param $pwd
@@ -560,7 +537,6 @@ class Net_IMAPProtocol
      * @return mixed Returns a string containing the name of the best
      *               supported authentication method or a PEAR_Error object
      *               if a failure condition is encountered.
-     * @access private
      * @since  1.0
      */
     public function _getBestAuthMethod($userMethod = null)
@@ -577,7 +553,7 @@ class Net_IMAPProtocol
 
         if ((null !== $methods) && (null !== $this->_serverAuthMethods)) {
             foreach ($methods as $method) {
-                if (in_array($method, $this->_serverAuthMethods)) {
+                if (in_array($method, $this->_serverAuthMethods, true)) {
                     return $method;
                 }
             }
@@ -595,7 +571,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdLogout()
@@ -625,7 +600,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdNoop()
@@ -638,7 +612,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdCheck()
@@ -653,7 +626,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdSelect($mailbox)
@@ -672,7 +644,6 @@ class Net_IMAPProtocol
      * @param mixed $mailbox
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdExamine($mailbox)
@@ -681,7 +652,7 @@ class Net_IMAPProtocol
         $ret          = $this->_genericCommand('EXAMINE', $mailbox_name);
         $parsed       = '';
         if (isset($ret['PARSED'])) {
-            for ($i = 0, $iMax = count($ret['PARSED']); $i < $iMax; $i++) {
+            for ($i = 0, $iMax = count($ret['PARSED']); $i < $iMax; ++$i) {
                 $command               = $ret['PARSED'][$i]['EXT'];
                 $parsed[key($command)] = $command[key($command)];
             }
@@ -696,7 +667,6 @@ class Net_IMAPProtocol
      * @param mixed $mailbox
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdCreate($mailbox)
@@ -714,7 +684,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdRename($mailbox, $new_mailbox)
@@ -732,7 +701,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdDelete($mailbox)
@@ -749,7 +717,6 @@ class Net_IMAPProtocol
      *
      * @return array Returns an array containing the response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdSubscribe($mailbox)
@@ -765,7 +732,6 @@ class Net_IMAPProtocol
      * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdUnsubscribe($mailbox)
@@ -782,7 +748,6 @@ class Net_IMAPProtocol
      * @param $fetchparam
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdFetch($msgset, $fetchparam)
@@ -795,7 +760,6 @@ class Net_IMAPProtocol
      *
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdCapability()
@@ -826,7 +790,6 @@ class Net_IMAPProtocol
      *                         UIDVALIDITY | UNSEEN
      * @return array  Returns a Parsed Response
      *
-     * @access public
      * @since  1.0
      */
     public function cmdStatus($mailbox, $request)
@@ -854,7 +817,6 @@ class Net_IMAPProtocol
      * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdList($mailbox_base, $mailbox)
@@ -872,7 +834,6 @@ class Net_IMAPProtocol
      * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdLsub($mailbox_base, $mailbox)
@@ -892,7 +853,6 @@ class Net_IMAPProtocol
      * @param string $time
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdAppend($mailbox, $msg, $flags_list = '', $time = '')
@@ -937,7 +897,6 @@ class Net_IMAPProtocol
      *
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdClose()
@@ -950,7 +909,6 @@ class Net_IMAPProtocol
      *
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdExpunge()
@@ -961,7 +919,7 @@ class Net_IMAPProtocol
             $parsed = $ret['PARSED'];
             unset($ret['PARSED']);
             foreach ($parsed as $command) {
-                if ('EXPUNGE' === mb_strtoupper($command['COMMAND'])) {
+                if ('EXPUNGE' === \mb_strtoupper($command['COMMAND'])) {
                     $ret['PARSED'][$command['COMMAND']][] = $command['NRO'];
                 } else {
                     $ret['PARSED'][$command['COMMAND']] = $command['NRO'];
@@ -978,7 +936,6 @@ class Net_IMAPProtocol
      * @param $search_cmd
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdSearch($search_cmd)
@@ -1012,7 +969,6 @@ class Net_IMAPProtocol
      * @param string $value
      * @return mixed  Returns a PEAR_Error with an error message on any
      *                             kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdStore($message_set, $dataitem, $value)
@@ -1042,7 +998,6 @@ class Net_IMAPProtocol
      * @param $mailbox
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdCopy($message_set, $mailbox)
@@ -1091,7 +1046,6 @@ class Net_IMAPProtocol
      * @param string $value
      * @return mixed  Returns a PEAR_Error with an error message on any
      *                             kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdUidStore($message_set, $dataitem, $value)
@@ -1119,7 +1073,6 @@ class Net_IMAPProtocol
      * @param $search_cmd
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdUidSearch($search_cmd)
@@ -1139,7 +1092,6 @@ class Net_IMAPProtocol
      * @param $parameters
      * @return mixed Returns a PEAR_Error with an error message on any
      *               kind of failure, or true on success.
-     * @access public
      * @since  1.0
      */
     public function cmdX($atom, $parameters)
@@ -1164,7 +1116,6 @@ class Net_IMAPProtocol
      * @param string $mailbox_name  the mailbox name to query for quota data
      * @return mixed  Returns a PEAR_Error with an error message on any
      *                              kind of failure, or quota data on success
-     * @access public
      * @since  1.0
      */
     public function cmdGetQuota($mailbox_name)
@@ -1189,7 +1140,6 @@ class Net_IMAPProtocol
      * @param string $mailbox_name  the mailbox name to query for quota data
      * @return mixed  Returns a PEAR_Error with an error message on any
      *                              kind of failure, or quota data on success
-     * @access public
      * @since  1.0
      */
     public function cmdGetQuotaRoot($mailbox_name)
@@ -1217,7 +1167,6 @@ class Net_IMAPProtocol
      * @param null   $messagesQuota  sets the max number of messages this mailbox can handle
      * @return mixed  Returns a PEAR_Error with an error message on any
      *                               kind of failure, or quota data on success
-     * @access public
      * @since  1.0
      */
     // TODO:  implement the quota by number of emails!!
@@ -1258,7 +1207,6 @@ class Net_IMAPProtocol
      * @param null   $messagesQuota  sets the max number of messages this mailbox can handle
      * @return mixed  Returns a PEAR_Error with an error message on any
      *                               kind of failure, or quota data on success
-     * @access public
      * @since  1.0
      */
     public function cmdSetQuotaRoot($mailbox_name, $storageQuota = null, $messagesQuota = null)
@@ -1508,7 +1456,6 @@ class Net_IMAPProtocol
      *
      * @return true or false
      *
-     * @access public
      * @since  1.0
      */
     public function getServerAuthMethods()
@@ -1528,7 +1475,6 @@ class Net_IMAPProtocol
      * @param $capability
      * @return true or false
      *
-     * @access public
      * @since  1.0
      */
     public function hasCapability($capability)
@@ -1537,7 +1483,7 @@ class Net_IMAPProtocol
             $this->cmdCapability();
         }
         if (null !== $this->_serverSupportedCapabilities) {
-            if (in_array($capability, $this->_serverSupportedCapabilities)) {
+            if (in_array($capability, $this->_serverSupportedCapabilities, true)) {
                 return true;
             }
         }
@@ -1550,7 +1496,6 @@ class Net_IMAPProtocol
      *
      * @return true or false
      *
-     * @access public
      * @since  1.0
      */
     public function hasQuotaSupport()
@@ -1563,7 +1508,6 @@ class Net_IMAPProtocol
      *
      * @return true or false
      *
-     * @access public
      * @since  1.0
      */
     public function hasAclSupport()
@@ -1576,7 +1520,6 @@ class Net_IMAPProtocol
      *
      * @return true or false
      *
-     * @access public
      * @since  1.0
      */
     public function hasAnnotateMoreSupport()
@@ -1591,7 +1534,6 @@ class Net_IMAPProtocol
      * @param $line
      * @param $file
      * @return string containing  the parsed response
-     * @access private
      * @since  1.0
      */
     public function _parseOneStringResponse(&$str, $line, $file)
@@ -1608,7 +1550,6 @@ class Net_IMAPProtocol
      * @param mixed $str
      *
      * @return array containing  the parsed  response
-     * @access private
      * @since  1.0
      */
     public function _parseFLAGSresponse(&$str)
@@ -1616,7 +1557,7 @@ class Net_IMAPProtocol
         $this->_parseSpace($str, __LINE__, __FILE__);
         $params_arr[] = $this->_arrayfy_content($str);
         $flags_arr    = [];
-        for ($i = 0, $iMax = count($params_arr[0]); $i < $iMax; $i++) {
+        for ($i = 0, $iMax = count($params_arr[0]); $i < $iMax; ++$i) {
             $flags_arr[] = $params_arr[0][$i];
         }
 
@@ -1629,7 +1570,6 @@ class Net_IMAPProtocol
      * @param $str
      * @param $command
      * @return array containing  the parsed  response
-     * @access private
      * @since  1.0
      */
     public function _parseBodyResponse(&$str, $command)
@@ -1648,7 +1588,6 @@ class Net_IMAPProtocol
      * @param mixed $str
      *
      * @return array containing  the parsed  response
-     * @access private
      * @since  1.0
      */
     public function _arrayfy_content(&$str)
@@ -1694,7 +1633,6 @@ class Net_IMAPProtocol
      * @param $str
      * @param $command
      * @return array containing  the parsed  response
-     * @access private
      * @since  1.0
      */
     public function _parseContentresponse(&$str, $command)
@@ -1712,7 +1650,6 @@ class Net_IMAPProtocol
      * @param mixed $str
      *
      * @return array containing  the parsed  response
-     * @access private
      * @since  1.0
      */
     public function _parseENVELOPEresponse(&$str)
@@ -1797,7 +1734,6 @@ class Net_IMAPProtocol
      * @param mixed $str
      *
      * @return array containing  the parsed  response
-     * @access private
      * @since  1.0
      */
     public function _getAddressList(&$str)
@@ -1848,7 +1784,6 @@ class Net_IMAPProtocol
      * @param string $startDelim
      * @param string $stopDelim
      * @return int containing  the pos of the closing parenthesis ")"
-     * @access private
      * @since  1.0
      */
     public function _getClosingBracesPos($str_line, $startDelim = '(', $stopDelim = ')')
@@ -1902,14 +1837,13 @@ class Net_IMAPProtocol
      * @param mixed $str
      * @param bool  $including
      * @return string containing  the string to the end of the line
-     * @access private
      * @since  1.0
      */
     public function _getToEOL(&$str, $including = true)
     {
         $len = mb_strlen($str);
         if ($including) {
-            for ($i = 0; $i < $len; $i++) {
+            for ($i = 0; $i < $len; ++$i) {
                 if ("\n" === $str[$i]) {
                     break;
                 }
@@ -1919,7 +1853,7 @@ class Net_IMAPProtocol
 
             return $content;
         }
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             if ("\n" === $str[$i] || "\r" === $str[$i]) {
                 break;
             }
@@ -1933,12 +1867,11 @@ class Net_IMAPProtocol
     /**
      * Fetches the next IMAP token or parenthesis
      *
-     * @param      $str
-     * @param      $content
-     * @param bool $parenthesisIsToken
-     * @param bool $colonIsToken
+     * @param bool  $parenthesisIsToken
+     * @param bool  $colonIsToken
+     * @param mixed $str
+     * @param mixed $content
      * @return int containing  the content size
-     * @access private
      * @since  1.0
      */
     public function _getNextToken(&$str, &$content, $parenthesisIsToken = true, $colonIsToken = true)
@@ -2099,7 +2032,6 @@ class Net_IMAPProtocol
      * @param      $file
      * @param bool $printError
      * @return string containing  the error
-     * @access private
      * @since  1.0
      */
     public function _prot_error($str, $line, $file, $printError = true)
@@ -2110,9 +2042,9 @@ class Net_IMAPProtocol
     }
 
     /**
-     * @param        $str
      * @param string $startDelim
      * @param string $stopDelim
+     * @param mixed  $str
      * @return array
      */
     public function _getEXTarray(&$str, $startDelim = '(', $stopDelim = ')')
@@ -2130,7 +2062,7 @@ class Net_IMAPProtocol
         while ($parenthesis != $stopDelim && '' != $str) {
             // The command
             $this->_getNextToken($str, $token);
-            $token = mb_strtoupper($token);
+            $token = \mb_strtoupper($token);
 
             if (false !== ($ret = $this->_retrParsedResponse($str, $token))) {
                 //$struct_arr[$token] = $ret;
@@ -2148,9 +2080,9 @@ class Net_IMAPProtocol
     }
 
     /**
-     * @param      $str
-     * @param      $token
-     * @param null $previousToken
+     * @param       $token
+     * @param null  $previousToken
+     * @param mixed $str
      * @return array|array[]|false|null[]|string|string[]|\string[][]
      */
     public function _retrParsedResponse(&$str, $token, $previousToken = null)
@@ -2470,9 +2402,9 @@ class Net_IMAPProtocol
                 //$this->_prot_error("SPACE BREAK!!!!!!!!!!!!!!!!!" , __LINE__ , __FILE__ );
                 break;
             default:
-                $body_token = mb_strtoupper(mb_substr($token, 0, 5));
+                $body_token = \mb_strtoupper(mb_substr($token, 0, 5));
                 //echo "BODYYYYYYY: $body_token\n";
-                $rfc822_token = mb_strtoupper(mb_substr($token, 0, 7));
+                $rfc822_token = \mb_strtoupper(mb_substr($token, 0, 7));
                 //echo "BODYYYYYYY: $rfc822_token|$token\n";
 
                 if ('BODY[' === $body_token || 'BODY.' === $body_token || 'RFC822.' === $rfc822_token) {
@@ -2491,11 +2423,12 @@ class Net_IMAPProtocol
     /*
      * Verifies that the next character IS a space
      */
+
     /**
-     * @param      $str
-     * @param      $line
-     * @param      $file
-     * @param bool $printError
+     * @param       $line
+     * @param       $file
+     * @param bool  $printError
+     * @param mixed $str
      * @return mixed|string
      */
     public function _parseSpace(&$str, $line, $file, $printError = true)
@@ -2526,7 +2459,7 @@ class Net_IMAPProtocol
          so i make it a function to make all the code shorter
          */
         $this->_getNextToken($str, $char_aux);
-        if (mb_strtoupper($char_aux) != mb_strtoupper($char)) {
+        if (mb_strtoupper($char_aux) != \mb_strtoupper($char)) {
             $this->_prot_error("must be a $char but is a '$char_aux' !!!!", $line, $file);
         }
 
@@ -2534,8 +2467,8 @@ class Net_IMAPProtocol
     }
 
     /**
-     * @param      $str
-     * @param null $cmdid
+     * @param null  $cmdid
+     * @param mixed $str
      * @return array
      */
     public function _genericImapResponseParser(&$str, $cmdid = null)
@@ -2593,7 +2526,7 @@ class Net_IMAPProtocol
 
             $this->_getNextToken($str, $token);
 
-            $token = mb_strtoupper($token);
+            $token = \mb_strtoupper($token);
             if ("\r\n" !== $token && '' != $token) {
                 $this->_prot_error("PARSE ERROR!!! must be a '\\r\\n' here  but is a '$token'!!!! (getting the next line)|STR:|$str|", __LINE__, __FILE__);
             }
@@ -2669,7 +2602,7 @@ class Net_IMAPProtocol
             return new PEAR_Error('error');
         }
 
-        for ($i = 0, $iMax = mb_strlen($str); $i < $iMax; $i++) {
+        for ($i = 0, $iMax = mb_strlen($str); $i < $iMax; ++$i) {
             //those chars should be base64 encoded
             if (((ord($str[$i]) >= 39) and (ord($str[$i]) <= 126)) or ((ord($str[$i]) >= 32) and (ord($str[$i]) <= 37))) {
                 if ($base64_part) {
@@ -2714,7 +2647,7 @@ class Net_IMAPProtocol
         $base64_part  = '';
         $decoded_utf7 = '';
 
-        for ($i = 0, $iMax = mb_strlen($str); $i < $iMax; $i++) {
+        for ($i = 0, $iMax = mb_strlen($str); $i < $iMax; ++$i) {
             if (mb_strlen($base64_part) > 0) {
                 if ('-' == $str[$i]) {
                     if ('&' === $base64_part) {

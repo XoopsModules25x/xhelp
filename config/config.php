@@ -16,7 +16,8 @@
  */
 
 use Xmf\Module\Admin;
-use XoopsModules\Xhelp\{Constants,
+use XoopsModules\Xhelp\{
+    Constants,
     Helper
 };
 

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format">
-<xsl:output method="text" omit-xml-declaration="yes" indent="no"/>
-<xsl:preserve-space elements="headervalue paramvalue body"/>
+    <xsl:output method="text" omit-xml-declaration="yes" indent="no"/>
+    <xsl:preserve-space elements="headervalue paramvalue body"/>
 
     <xsl:template name="mimepart">
 
         <xsl:variable name="boundary">
-                <xsl:for-each select="./header">
-                    <xsl:if test="string(./headername) = 'Content-Type'">
-                        <xsl:for-each select="./parameter">
-                            <xsl:if test="string(./paramname) = 'boundary'">
-                                <xsl:value-of select="paramvalue"/>
-                            </xsl:if>
-                        </xsl:for-each>
-                    </xsl:if>
-                </xsl:for-each>
+            <xsl:for-each select="./header">
+                <xsl:if test="string(./headername) = 'Content-Type'">
+                    <xsl:for-each select="./parameter">
+                        <xsl:if test="string(./paramname) = 'boundary'">
+                            <xsl:value-of select="paramvalue"/>
+                        </xsl:if>
+                    </xsl:for-each>
+                </xsl:if>
+            </xsl:for-each>
         </xsl:variable>
 
         <xsl:for-each select="header">
@@ -62,7 +62,7 @@
         </xsl:choose>
     </xsl:template>
 
-<!-- This is where the stylesheet really starts, matching the top level email element -->
+    <!-- This is where the stylesheet really starts, matching the top level email element -->
     <xsl:template match="email">
         <xsl:call-template name="mimepart"/>
     </xsl:template>

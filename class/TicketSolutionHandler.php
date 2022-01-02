@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -31,21 +27,18 @@ if (!\defined('XHELP_CLASS_PATH')) {
 /**
  * class TicketSolutionHandler
  */
-class TicketSolutionHandler extends Xhelp\BaseObjectHandler
+class TicketSolutionHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = TicketSolution::class;
-
     /**
      * DB Table Name
      *
      * @var string
-     * @access  private
      */
     public $_dbtable = 'xhelp_ticket_solutions';
 
@@ -60,10 +53,10 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -86,10 +79,10 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -112,10 +105,10 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
@@ -125,22 +118,21 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
     /**
      * Recommend solutions to a ticket based on similarity
      * to previous tickets and their solutions
-     * @param Xhelp\Ticket $ticket ticket to search for solutions
-     * @return array       Value 1 = bayesian likeness probability, Value 2 = Xhelp\TicketSolution object
-     * @access public
+     * @param Ticket $ticket ticket to search for solutions
+     * @return array       Value 1 = bayesian likeness probability, Value 2 = TicketSolution object
      */
-    public function &recommendSolutions($ticket)
+    public function &recommendSolutions($ticket): array
     {
         $ret = [];
 
         //1. Get list of bayesian categories(tickets) similar to current ticket
-        $bayes    = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage());
+        $bayes    = new NaiveBayesian(new NaiveBayesianStorage());
         $document = $ticket->getVar('subject') . "\r\n" . $ticket->getVar('description');
         $cats     = $bayes->categorize($document);
 
         //2. Get solutions to those tickets
-        $crit      = new \Criteria('ticketid', '(' . \implode(',', \array_keys($cats)) . ')', 'IN');
-        $solutions = $this->getObjects($crit);
+        $criteria      = new \Criteria('ticketid', '(' . \implode(',', \array_keys($cats)) . ')', 'IN');
+        $solutions = $this->getObjects($criteria);
 
         //3. Sort solutions based on likeness probability
         foreach ($solutions as $solution) {
@@ -159,12 +151,12 @@ class TicketSolutionHandler extends Xhelp\BaseObjectHandler
      * @param $solution
      * @return bool
      */
-    public function addSolution($ticket, $solution)
+    public function addSolution($ticket, $solution): bool
     {
         //1. Store solution in db for current ticket
         if ($this->insert($solution)) {
             //2. Train Bayesian DB
-            $bayes      = new Xhelp\NaiveBayesian(new Xhelp\NaiveBayesianStorage());
+            $bayes      = new NaiveBayesian(new NaiveBayesianStorage());
             $documentid = (string)$ticket->getVar('id');
             $categoryid = (string)$ticket->getVar('id');
             $document   = $ticket->getVar('subject') . "\r\n" . $ticket->getVar('description');

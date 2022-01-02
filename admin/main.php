@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Module\Admin;
 use Xmf\Request;
@@ -31,9 +31,9 @@ switch ($op) {
     case 'searchMailEvents':
         searchMailEvents();
         break;
-    case 'blocks':
-        require_once __DIR__ . '/myblocksadmin.php';
-        break;
+//    case 'blocks':
+//        require_once __DIR__ . '/myblocksadmin.php';
+//        break;
     case 'createdir':
         createdir();
         break;
@@ -90,15 +90,15 @@ function displayEvents($mailEvents, $mailboxes)
 function mailEvents()
 {
     // Will display the last 50 mail events
-    $hMailEvent = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
-    $hDeptMbox  = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-    $mailboxes  = $hDeptMbox->getObjects(null, true);
+    $mailEventHandler         = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+    $departmentMailBoxHandler = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+    $mailboxes                = $departmentMailBoxHandler->getObjects(null, true);
 
-    $crit = new \Criteria('', '');
-    $crit->setLimit(50);
-    $crit->setOrder('DESC');
-    $crit->setSort('posted');
-    $mailEvents = $hMailEvent->getObjects($crit);
+    $criteria = new \Criteria('', '');
+    $criteria->setLimit(50);
+    $criteria->setOrder('DESC');
+    $criteria->setSort('posted');
+    $mailEvents = $mailEventHandler->getObjects($criteria);
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('mailEvents');
@@ -132,13 +132,13 @@ function searchMailEvents()
         echo "<tr><td class='head'>" . _AM_XHELP_SEARCH_BEGINEGINDATE . "</td>
                   <td class='even'><input type='text' name='begin_date' id='begin_date' size='10' maxlength='10' value='" . formatTimestamp(time(), 'mysql') . "'>
                                   <a href='' onclick='return showCalendar(\"begin_date\");'><img src='" . XHELP_IMAGE_URL . "/calendar.png' alt='Calendar image' name='calendar' style='vertical-align:bottom;border:0;background:transparent;'></a>&nbsp;";
-        xhelpDrawHourSelect('begin_hour', 12);
+        xhelpDrawHourSelect('begin_hour', '12');
         xhelpDrawMinuteSelect('begin_minute');
         xhelpDrawModeSelect('begin_mode');
         echo "<tr><td class='head'>" . _AM_XHELP_SEARCH_ENDDATE . "</td>
                   <td class='even'><input type='text' name='end_date' id='end_date' size='10' maxlength='10' value='" . formatTimestamp(time(), 'mysql') . "'>
                                   <a href='' onclick='return showCalendar(\"end_date\");'><img src='" . XHELP_IMAGE_URL . "/calendar.png' alt='Calendar image' name='calendar' style='vertical-align:bottom;border:0;background:transparent;'></a>&nbsp;";
-        xhelpDrawHourSelect('end_hour', 12);
+        xhelpDrawHourSelect('end_hour', '12');
         xhelpDrawMinuteSelect('end_minute');
         xhelpDrawModeSelect('end_mode');
         echo "<tr><td class='foot' colspan='2'><input type='submit' name='searchEvents' value='" . _AM_XHELP_BUTTON_SEARCH . "'></td></tr>";
@@ -147,9 +147,9 @@ function searchMailEvents()
 
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $hMailEvent = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
-        $hDeptMbox  = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-        $mailboxes  = $hDeptMbox->getObjects(null, true);
+        $mailEventHandler         = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+        $departmentMailBoxHandler = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+        $mailboxes                = $departmentMailBoxHandler->getObjects(null, true);
 
         $begin_date = explode('-', $_POST['begin_date']);
         $end_date   = explode('-', $_POST['end_date']);
@@ -157,25 +157,25 @@ function searchMailEvents()
         $end_hour   = xhelpChangeHour($_POST['end_mode'], $_POST['end_hour']);
 
         // Get timestamps to search by
-        $begin_time = mktime($begin_hour, $_POST['begin_minute'], 0, $begin_date[1], $begin_date[2], $begin_date[0]);
-        $end_time   = mktime($end_hour, $_POST['end_minute'], 0, $end_date[1], $end_date[2], $end_date[0]);
+        $begin_time = mktime($begin_hour, Request::getInt('begin_minute', 0, 'POST'), (int)$begin_date[1], (int)$begin_date[2], (int)$begin_date[0]);
+        $end_time   = mktime($end_hour, Request::getInt('end_minute', 0, 'POST'), 0, (int)$end_date[1], (int)$end_date[2], (int)$end_date[0]);
 
-        $crit = new \CriteriaCompo(new \Criteria('posted', $begin_time, '>='));
-        $crit->add(new \Criteria('posted', $end_time, '<='));
+        $criteria = new \CriteriaCompo(new \Criteria('posted', (string)$begin_time, '>='));
+        $criteria->add(new \Criteria('posted', (string)$end_time, '<='));
         if ('' != $_POST['email']) {
             $email = $_POST['email'];
-            $crit->add(new \Criteria('emailaddress', "%$email%", 'LIKE', 'd'));
+            $criteria->add(new \Criteria('emailaddress', "%$email%", 'LIKE', 'd'));
         }
         if ('' != $_POST['description']) {
             $description = $_POST['description'];
-            $crit->add(new \Criteria('event_desc', "%$description%", 'LIKE'));
+            $criteria->add(new \Criteria('event_desc', "%$description%", 'LIKE'));
         }
-        $crit->setOrder('DESC');
-        $crit->setSort('posted');
-        if (null !== $email) {
-            $mailEvents = $hMailEvent->getObjectsJoin($crit);
+        $criteria->setOrder('DESC');
+        $criteria->setSort('posted');
+        if (isset($email)) {
+            $mailEvents = $mailEventHandler->getObjectsJoin($criteria);
         } else {
-            $mailEvents = $hMailEvent->getObjects($crit);
+            $mailEvents = $mailEventHandler->getObjects($criteria);
         }
 
         displayEvents($mailEvents, $mailboxes);
@@ -207,7 +207,7 @@ function xhelpChangeHour($mode, $hour)
 }
 
 /**
- * @param        $name
+ * @param string $name
  * @param string $lSelect
  */
 function xhelpDrawHourSelect($name, $lSelect = '-1')
@@ -244,7 +244,7 @@ function xhelpDrawMinuteSelect($name)
 }
 
 /**
- * @param        $name
+ * @param string $name
  * @param string $sSelect
  */
 function xhelpDrawModeSelect($name, $sSelect = 'AM')
@@ -275,13 +275,13 @@ function xhelp_default()
     echo '<link rel="stylesheet" type="text/css" media="all" href="' . $stylePath . '"><!--[if if lt IE 7]><script src="iepngfix.js" language="JavaScript" type="text/javascript"></script><![endif]-->';
 
     global $xoopsUser, $xoopsDB;
-    $hTickets = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $hStatus  = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
-    $crit = new \Criteria('', '');
-    $crit->setSort('description');
-    $crit->setOrder('ASC');
-    $statuses    = $hStatus->getObjects($crit);
+    $criteria = new \Criteria('', '');
+    $criteria->setSort('description');
+    $criteria->setOrder('ASC');
+    $statuses    = $statusHandler->getObjects($criteria);
     $table_class = ['odd', 'even'];
     echo "<table border='0' width='100%'>";
     echo "<tr><td width='50%' valign='top'>";
@@ -291,8 +291,8 @@ function xhelp_default()
     $class        = 'odd';
     $totalTickets = 0;
     foreach ($statuses as $status) {
-        $crit         = new \Criteria('status', $status->getVar('id'));
-        $numTickets   = $hTickets->getCount($crit);
+        $criteria         = new \Criteria('status', $status->getVar('id'));
+        $numTickets   = $ticketHandler->getCount($criteria);
         $totalTickets += $numTickets;
 
         echo "<tr class='" . $class . "'><td>" . $status->getVar('description') . '</td><td>' . $numTickets . '</td></tr>';
@@ -305,8 +305,8 @@ function xhelp_default()
     echo "<tr class='foot'><td>" . _AM_XHELP_TEXT_TOTAL_TICKETS . '</td><td>' . $totalTickets . '</td></tr>';
     echo '</table></div><br>';
 
-    $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    $hResponses   = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+    $staffHandler     = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+    $responsesHandler = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
     echo "</td><td valign='top'>";    // Outer table
     echo "<div id='timeSpent'>";    // Start inner top-left cell
     echo "<table border='0' width='100%' cellspacing='1' class='outer'>
@@ -315,7 +315,7 @@ function xhelp_default()
     $sql = sprintf('SELECT u.uid, u.uname, u.name, (s.responseTime / s.ticketsResponded) AS AvgResponseTime FROM `%s` u INNER JOIN %s s ON u.uid = s.uid WHERE ticketsResponded > 0 ORDER BY AvgResponseTime', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
     $ret = $xoopsDB->query($sql, MAX_STAFF_RESPONSETIME);
     $i   = 0;
-    while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
+    while ([$uid, $uname, $name, $avgResponseTime] = $xoopsDB->fetchRow($ret)) {
         $class = $table_class[$i % 2];
         echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . Xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
         ++$i;
@@ -326,7 +326,7 @@ function xhelp_default()
     //Get Calls Closed block
     $sql = sprintf('SELECT SUM(callsClosed) FROM `%s`', $xoopsDB->prefix('xhelp_staff'));
     $ret = $xoopsDB->query($sql);
-    if (list($totalStaffClosed) = $xoopsDB->fetchRow($ret)) {
+    if ([$totalStaffClosed] = $xoopsDB->fetchRow($ret)) {
         if ($totalStaffClosed) {
             $sql = sprintf('SELECT u.uid, u.uname, u.name, s.callsClosed FROM `%s` u INNER JOIN %s s ON u.uid = s.uid WHERE s.callsClosed > 0 ORDER BY s.callsClosed DESC', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
             $ret = $xoopsDB->query($sql, MAX_STAFF_CALLSCLOSED);
@@ -334,7 +334,7 @@ function xhelp_default()
             echo "<table border='0' width='95%' cellspacing='1' class='outer'>
                   <tr><th colspan='2'>" . _AM_XHELP_TEXT_TOP_CLOSERS . '</th></tr>';
             $i = 0;
-            while (list($uid, $uname, $name, $callsClosed) = $xoopsDB->fetchRow($ret)) {
+            while ([$uid, $uname, $name, $callsClosed] = $xoopsDB->fetchRow($ret)) {
                 $class = $table_class[$i % 2];
                 echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . $callsClosed . ' (' . round(($callsClosed / $totalStaffClosed) * 100, 2) . '%)</td></tr>';
                 ++$i;
@@ -348,7 +348,7 @@ function xhelp_default()
             echo "<table border='0' width='100%' cellspacing='1' class='outer'>
                   <tr><th colspan='2'>" . _AM_XHELP_TEXT_RESPONSE_TIME_SLOW . '</th></tr>';
             $i = 0;
-            while (list($uid, $uname, $name, $avgResponseTime) = $xoopsDB->fetchRow($ret)) {
+            while ([$uid, $uname, $name, $avgResponseTime] = $xoopsDB->fetchRow($ret)) {
                 $class = $table_class[$i % 2];
                 echo "<tr class='$class'><td>" . Xhelp\Utility::getDisplayName($displayName, $name, $uname) . "</td><td align='right'>" . Xhelp\Utility::formatTime($avgResponseTime) . '</td></tr>';
                 ++$i;
@@ -358,11 +358,11 @@ function xhelp_default()
     }
     echo '</td></tr></table><br>';   // End second cell, second row of inner table
 
-    $crit = new \Criteria('state', '2', '<>', 's');
-    $crit->setSort('priority');
-    $crit->setOrder('ASC');
-    $crit->setLimit(10);
-    $highPriority     = $hTickets->getObjects($crit);
+    $criteria = new \Criteria('state', '2', '<>', 's');
+    $criteria->setSort('priority');
+    $criteria->setOrder('ASC');
+    $criteria->setLimit(10);
+    $highPriority     = $ticketHandler->getObjects($criteria);
     $has_highPriority = (count($highPriority) > 0);
     if ($has_highPriority) {
         echo "<div id='highPriority'>";

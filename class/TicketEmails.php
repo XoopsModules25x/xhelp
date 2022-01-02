@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
@@ -28,8 +24,6 @@ use XoopsModules\Xhelp;
  * Xhelp\TicketEmails class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
 class TicketEmails extends \XoopsObject
 {

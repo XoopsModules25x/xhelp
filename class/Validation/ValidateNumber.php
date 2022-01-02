@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Validation;
 
@@ -12,9 +12,7 @@ class ValidateNumber extends Validator
      * $text the string to validate
      */
     public $text;
-
     public $forceentry;
-
     //! A constructor.
 
     /**
@@ -37,7 +35,7 @@ class ValidateNumber extends Validator
     public function validate()
     {
         if (!\is_numeric($this->text) && (mb_strlen($this->text) > 0 && !$this->forceentry)) {
-            $this->setError(_XHELP_MESSAGE_NOT_NUMERIC);
+            $this->setError(\_XHELP_MESSAGE_NOT_NUMERIC);
         }
     }
 }

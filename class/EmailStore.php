@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
  * class EmailStore
@@ -15,13 +14,13 @@ class EmailStore
     public $_errors;
 
     /**
-     * Xhelp\EmailStore constructor.
+     * EmailStore constructor.
      */
     public function __construct()
     {
-        $this->_hResponse  = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
-        $this->_hTicket    = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-        $this->_hMailEvent = new Xhelp\MailEventHandler($GLOBALS['xoopsDB']);
+        $this->_hResponse  = new ResponsesHandler($GLOBALS['xoopsDB']);
+        $this->_hTicket    = new TicketHandler($GLOBALS['xoopsDB']);
+        $this->_hMailEvent = new MailEventHandler($GLOBALS['xoopsDB']);
         $this->_errors     = [];
     }
 
@@ -61,14 +60,13 @@ class EmailStore
 
     /**
      * Store the parsed message in database
-     * @access public
-     * @param object  $msg  {@link xhelpParsedMsg} object Message to add
-     * @param object  $user {@link xoopsUser} object User that submitted message
-     * @param object  $mbox {@link Xhelp\DepartmentMailBox} object. Originating Mailbox for message
-     * @param         $errors
-     * @return mixed Returns <a href='psi_element://Xhelp\Ticket'>Xhelp\Ticket</a> object if new ticket, <a href='psi_element://Xhelp\Responses'>Xhelp\Responses</a> object if a response, and false if unable to save.
+     * @param ParsedMessage $msg  {@link ParsedMessage} object Message to add
+     * @param \XoopsUser $user {@link xoopsUser} object User that submitted message
+     * @param DepartmentMailBox $mbox {@link DepartmentMailBox} object. Originating Mailbox for message
+     * @param mixed  $errors
+     * @return array|false Returns <a href='psi_element://Ticket'>Ticket</a> object if new ticket, <a href='psi_element://Responses'>Responses</a> object if a response, and false if unable to save.
      */
-    public function storeMsg($msg, $user, $mbox, &$errors)
+    public function storeMsg(ParsedMessage $msg, \XoopsUser $user, DepartmentMailBox $mbox, &$errors)
     {
         //Remove any previous error messages
         $this->clearErrors();
@@ -86,8 +84,8 @@ class EmailStore
                 $obj->setVar('serverid', $mbox->getVar('id'));
                 $obj->setVar('userIP', 'via Email');
                 $obj->setVar('email', $user->getVar('email'));
-                if (!$status = Xhelp\Utility::getMeta('default_status')) {
-                    Xhelp\Utility::setMeta('default_status', '1');
+                if (!$status = Utility::getMeta('default_status')) {
+                    Utility::setMeta('default_status', '1');
                     $status = 1;
                 }
                 $obj->setVar('status', $status);
@@ -103,13 +101,13 @@ class EmailStore
                 break;
             case _XHELP_MSGTYPE_RESPONSE:
                 if (!$ticket = $this->_hTicket->getTicketByHash($msg->getHash())) {
-                    $this->_setError(_XHELP_RESPONSE_NO_TICKET);
+                    $this->_setError(\_XHELP_RESPONSE_NO_TICKET);
 
                     return false;
                 }
 
                 if ($msg->getEmail() != $ticket->getVar('email')) {
-                    $this->_setError(\sprintf(_XHELP_MISMATCH_EMAIL, $msg->getEmail(), $ticket->getVar('email')));
+                    $this->_setError(\sprintf(\_XHELP_MISMATCH_EMAIL, $msg->getEmail(), $ticket->getVar('email')));
 
                     return false;
                 }
@@ -139,20 +137,20 @@ class EmailStore
     }
 
     /**
-     * @param     $msg
-     * @param     $ticketid
-     * @param int $responseid
+     * @param ParsedMessage $msg
+     * @param int           $ticketid
+     * @param int           $responseid
      */
-    public function _saveAttachments($msg, $ticketid, $responseid = 0)
+    public function _saveAttachments(ParsedMessage $msg, int $ticketid, int $responseid = 0)
     {
-        /** @var Xhelp\Helper $helper */
-        $helper = Xhelp\Helper::getInstance();
+        /** @var Helper $helper */
+        $helper = Helper::getInstance();
 
         $attachments       = $msg->getAttachments();
         $dir               = XOOPS_UPLOAD_PATH . '/xhelp';
         $prefix            = (0 != $responseid ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
-        $hMime             = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
-        $allowed_mimetypes = $hMime->getArray();
+        $mimetypeHandler   = new MimetypeHandler($GLOBALS['xoopsDB']);
+        $allowed_mimetypes = $mimetypeHandler->getArray();
 
         if (!\is_dir($dir)) {
             if (!\mkdir($dir, 0757) && !\is_dir($dir)) {
@@ -163,7 +161,7 @@ class EmailStore
         $dir .= '/';
 
         if ($helper->getConfig('xhelp_allowUpload')) {
-            $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
+            $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
             foreach ($attachments as $attach) {
                 $validators = [];
 
@@ -177,29 +175,29 @@ class EmailStore
                 $validators[] = new validation\ValidateFileSize($dir . $fname, $helper->getConfig('xhelp_uploadSize'));
                 $validators[] = new validation\ValidateImageSize($dir . $fname, $helper->getConfig('xhelp_uploadWidth'), $helper->getConfig('xhelp_uploadHeight'));
 
-                if (!Xhelp\Utility::checkRules($validators, $errors)) {
+                if (!Utility::checkRules($validators, $errors)) {
                     //Remove the file
                     $this->_addAttachmentError($errors, $msg, $fname);
                     \unlink($dir . $fname);
                 } else {
                     //Add attachment to ticket
 
-                    $file = $hFile->create();
+                    $file = $fileHandler->create();
                     $file->setVar('filename', $fname);
                     $file->setVar('ticketid', $ticketid);
                     $file->setVar('mimetype', $attach['content-type']);
                     $file->setVar('responseid', $responseid);
-                    $hFile->insert($file, true);
+                    $fileHandler->insert($file, true);
                 }
             }
         } else {
-            $this->_setError(_XHELP_MESSAGE_UPLOAD_ALLOWED_ERR);   // Error: file uploading is disabled
+            $this->_setError(\_XHELP_MESSAGE_UPLOAD_ALLOWED_ERR);   // Error: file uploading is disabled
         }
     }
 
     /**
      * @param $errors
-     * @param $msg
+     * @param array $msg
      * @param $fname
      */
     public function _addAttachmentError($errors, $msg, $fname)
@@ -213,7 +211,7 @@ class EmailStore
                 $aErrors[] = $err;
             }
             $error = \implode(', ', $aErrors);
-            $this->_setError(\sprintf(_XHELP_MESSAGE_UPLOAD_ERR, $fname, $msg->getEmail(), $error));
+            $this->_setError(\sprintf(\_XHELP_MESSAGE_UPLOAD_ERR, $fname, $msg->getEmail(), $error));
         }
     }
 }

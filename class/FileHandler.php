@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,29 +25,24 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Xhelp\FileHandler class
+ * FileHandler class
  *
- * File Handler for Xhelp\File class
+ * File Handler for File class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
-class FileHandler extends Xhelp\BaseObjectHandler
+class FileHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = File::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
     public $_dbtable = 'xhelp_files';
 
@@ -66,10 +57,10 @@ class FileHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -82,10 +73,10 @@ class FileHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -98,10 +89,10 @@ class FileHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
@@ -109,11 +100,10 @@ class FileHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
-     * @param bool         $force
+     * @param bool $force
      * @return bool
      */
-    public function delete(\XoopsObject $obj, $force = false)
+    public function delete(\XoopsObject $obj, bool $force = false)
     {
         if (!$this->unlinkFile($obj->getFilePath())) {
             return false;
@@ -126,9 +116,8 @@ class FileHandler extends Xhelp\BaseObjectHandler
     /**
      * delete file matching a set of conditions
      *
-     * @param null $criteria {@link CriteriaElement}
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link \CriteriaElement}
      * @return bool   FALSE if deletion failed
-     * @access  public
      */
     public function deleteAll($criteria = null)
     {
@@ -138,7 +127,7 @@ class FileHandler extends Xhelp\BaseObjectHandler
         }
 
         $sql = 'DELETE FROM ' . $this->_db->prefix($this->_dbtable);
-        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
         if (!$result = $this->_db->queryF($sql)) {
@@ -152,7 +141,7 @@ class FileHandler extends Xhelp\BaseObjectHandler
      * @param $file
      * @return bool
      */
-    public function unlinkFile($file)
+    public function unlinkFile($file): bool
     {
         $ret = false;
         if (\is_file($file)) {

@@ -1,5 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/admin_header.php';
@@ -8,16 +10,16 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
-$limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
+$limit = Request::getInt('limit', 0, 'REQUEST');
 
-$start = \Xmf\Request::getInt('start', 15, 'REQUEST');
+$start = Request::getInt('start', 15, 'REQUEST');
 
-if (\Xmf\Request::hasVar('order', 'REQUEST')) {
+if (Request::hasVar('order', 'REQUEST')) {
     $order = $_REQUEST['order'];
 } else {
     $order = 'ASC';
 }
-if (\Xmf\Request::hasVar('sort', 'REQUEST')) {
+if (Request::hasVar('sort', 'REQUEST')) {
     $sort = $_REQUEST['sort'];
 } else {
     $sort = 'id';
@@ -34,7 +36,7 @@ $aLimitBy = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' =
 
 $op = 'default';
 
-if (\Xmf\Request::hasVar('op', 'REQUEST')) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -55,19 +57,19 @@ switch ($op) {
 
 function deleteFile()
 {
-    $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
+    $fileHandler = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
 
     if (!isset($_GET['fileid'])) {
         redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles', 3, _XHELP_MESSAGE_DELETE_FILE_ERR);
     }
-    $fileid = \Xmf\Request::getInt('fileid', 0, 'GET');
+    $fileid = Request::getInt('fileid', 0, 'GET');
     if (!isset($_POST['ok'])) {
         xoops_cp_header();
         xoops_confirm(['op' => 'deleteFile', 'ok' => 1], XHELP_ADMIN_URL . '/file.php?fileid=' . $fileid, _AM_XHELP_MSG_DELETE_FILE);
         xoops_cp_footer();
     } else {
-        $file = $hFile->get($fileid);
-        if ($hFile->delete($file, true)) {
+        $file = $fileHandler->get($fileid);
+        if ($fileHandler->delete($file, true)) {
             redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles');
         }
         redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles', 3, _XHELP_MESSAGE_DELETE_FILE_ERR);
@@ -79,14 +81,14 @@ function deleteResolved()
     if (!isset($_POST['ok'])) {
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manFiles');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation(basename(__FILE__));
 
         xoops_confirm(['op' => 'deleteResolved', 'ok' => 1], XHELP_BASE_URL . '/admin/file.php', _AM_XHELP_MSG_DELETE_RESOLVED);
         xoops_cp_footer();
     } else {
         $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-        $hFile         = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
+        $fileHandler   = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
 
         $tickets = $ticketHandler->getObjectsByState(1);     // Memory saver - unresolved should be less tickets
 
@@ -96,11 +98,11 @@ function deleteResolved()
         }
 
         // Retrieve all unresolved ticket attachments
-        $crit = new \CriteriaCompo();
+        $criteria = new \CriteriaCompo();
         foreach ($aTickets as $ticket) {
-            $crit->add(new \Criteria('ticketid', $ticket, '!='));
+            $criteria->add(new \Criteria('ticketid', $ticket, '!='));
         }
-        if ($hFile->deleteAll($crit)) {
+        if ($fileHandler->deleteAll($criteria)) {
             redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles');
         } else {
             redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles', 3, _XHELP_MESSAGE_DELETE_FILE_ERR);
@@ -118,20 +120,20 @@ function manageFiles()
         $can_upload = xhelp_admin_mkdir($xhelpUploadDir);
     }
 
-    $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
+    $fileHandler = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
 
-    if (\Xmf\Request::hasVar('deleteFiles', 'POST')) {   // Delete all selected files
+    if (Request::hasVar('deleteFiles', 'POST')) {   // Delete all selected files
         $aFiles = $_POST['files'];
-        $crit   = new \Criteria('id', '(' . implode($aFiles, ',') . ')', 'IN');
+        $criteria   = new \Criteria('id', '(' . implode(',', $aFiles) . ')', 'IN');
 
-        if ($hFile->deleteAll($crit)) {
+        if ($fileHandler->deleteAll($criteria)) {
             redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles');
         }
         redirect_header(XHELP_ADMIN_URL . '/file.php?op=manageFiles', 3, _XHELP_MESSAGE_DELETE_FILE_ERR);
     }
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manFiles');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation('file.php?op=manageFiles');
 
     echo '<script type="text/javascript" src="' . XOOPS_URL . '/modules/xhelp/include/functions.js"></script>';
@@ -158,13 +160,13 @@ function manageFiles()
           </tr>';
     echo '</table></form>';
 
-    $crit = new \Criteria('', '');
-    $crit->setOrder($order);
-    $crit->setSort($sort);
-    $crit->setLimit($limit);
-    $crit->setStart($start);
-    $files = $hFile->getObjects($crit);
-    $total = $hFile->getCount($crit);
+    $criteria = new \Criteria('', '');
+    $criteria->setOrder($order);
+    $criteria->setSort($sort);
+    $criteria->setLimit($limit);
+    $criteria->setStart($start);
+    $files = $fileHandler->getObjects($criteria);
+    $total = $fileHandler->getCount($criteria);
 
     $nav = new \XoopsPageNav($total, $limit, $start, 'start', "op=manageFiles&amp;limit=$limit");
 

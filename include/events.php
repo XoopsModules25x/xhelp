@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use XoopsModules\Xhelp;
 
@@ -16,7 +16,8 @@ if (!defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/firnService.php';
 
 //Create an instance of each event class
-$xhelpEventSrv = Xhelp\Utility::createNewEventService();
+//$xhelpEventSrv = Xhelp\Utility::createNewEventService();
+$xhelpEventSrv = Xhelp\EventService::getInstance();
 $var           = Xhelp\CacheService::getInstance();
 $var           = Xhelp\LogService::getInstance();
 $var           = Xhelp\NotificationService::getInstance();

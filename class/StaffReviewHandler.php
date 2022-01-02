@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,29 +25,24 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Xhelp\StaffReviewHandler class
+ * StaffReviewHandler class
  *
- * StaffReview Handler for Xhelp\StaffReview class
+ * StaffReview Handler for StaffReview class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
- * @access  public
- * @package xhelp
  */
-class StaffReviewHandler extends Xhelp\BaseObjectHandler
+class StaffReviewHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = StaffReview::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
     public $_dbtable = 'xhelp_staffreview';
 
@@ -70,8 +61,7 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
      * @param int $ticketid    ID of ticket
      * @param int $responseid  ID of response
      * @param int $submittedBy UID of ticket submitter
-     * @return array|bool (@link Xhelp\StaffReview}
-     * @access public
+     * @return array|bool (@link StaffReview}
      */
     public function getReview($ticketid, $responseid, $submittedBy)
     {
@@ -79,11 +69,11 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
         $responseid  = (int)$responseid;
         $submittedBy = (int)$submittedBy;
 
-        $crit = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
-        $crit->add(new \Criteria('submittedBy', $submittedBy));
-        $crit->add(new \Criteria('responseid', $responseid));
+        $criteria = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
+        $criteria->add(new \Criteria('submittedBy', $submittedBy));
+        $criteria->add(new \Criteria('responseid', $responseid));
         $review = [];
-        if (!$review = $this->getObjects($crit)) {
+        if (!$review = $this->getObjects($criteria)) {
             return false;
         }
 
@@ -91,10 +81,10 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -119,10 +109,10 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -147,10 +137,10 @@ class StaffReviewHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 

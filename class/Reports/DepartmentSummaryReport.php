@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
+use Criteria;
 use XoopsModules\Xhelp;
 
 require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
@@ -14,11 +15,11 @@ global $xoopsDB, $paramVals;
 $startDate = \date('m/d/y h:i:s A', \mktime(0, 0, 0, \date('m') - 1, \date('d'), \date('Y')));
 $endDate   = \date('m/d/y') . ' 12:00:00 AM';
 
-$hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-$crit         = new \Criteria('', '');
-$crit->setSort('department');
-$crit->setOrder('ASC');
-$departments = $hDepartments->getObjects($crit, true);
+$departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+$criteria              = new \Criteria('', '');
+$criteria->setSort('department');
+$criteria->setOrder('ASC');
+$departments = $departmentHandler->getObjects($criteria, true);
 
 $i            = 0;
 $aDepts       = [];
@@ -54,23 +55,22 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name = 'departmentSummary';
-    public $meta = [
-        'name'        => _XHELP_DS_NAME,
+    public $name       = 'departmentSummary';
+    public $meta       = [
+        'name'        => \_XHELP_DS_NAME,
         'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
-        'description' => _XHELP_DS_DESC,
+        'description' => \_XHELP_DS_DESC,
         'version'     => '1.0',
         'dbFields'    => [
-            'department'        => _XHELP_DS_DB1,
-            'totalTimeSpent'    => _XHELP_DS_DB2,
-            'resolvedTickets'   => _XHELP_DS_DB3,
-            'unresolvedTickets' => _XHELP_DS_DB4,
+            'department'        => \_XHELP_DS_DB1,
+            'totalTimeSpent'    => \_XHELP_DS_DB2,
+            'resolvedTickets'   => \_XHELP_DS_DB3,
+            'unresolvedTickets' => \_XHELP_DS_DB4,
         ],
     ];
-
     public $parameters = [
-        _XHELP_DS_PARAM1 => [
+        \_XHELP_DS_PARAM1 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'startDate',
             'value'       => '',      // last month
@@ -79,7 +79,7 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
             'dbfield'     => 't.posted',
             'dbaction'    => '>',
         ],
-        _XHELP_DS_PARAM2 => [
+        \_XHELP_DS_PARAM2 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'endDate',
             'value'       => '',      // today
@@ -88,7 +88,7 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
             'dbfield'     => 't.posted',
             'dbaction'    => '<=',
         ],
-        _XHELP_DS_PARAM3 => [
+        \_XHELP_DS_PARAM3 => [
             'controltype' => \XHELP_CONTROL_SELECT,
             'fieldname'   => 'department',
             'value'       => '',
@@ -98,7 +98,6 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
             'dbaction'    => 'IN',
         ],
     ];
-
     /*
      function generateReport()
      {
@@ -247,7 +246,7 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
         $aResults = [];
 
         foreach ($dResult as $dRes) {
-            if (\count($xoopsDB->getRowsNum($dRes) > 0)) {      // Has data?
+            if (\count($xoopsDB->getRowsNum($dRes)) > 0) {      // Has data?
                 $i        = 0;
                 $dbFields = $this->meta['dbFields'];
                 while (false !== ($myrow = $xoopsDB->fetchArray($dRes))) {    // Loop through each db record

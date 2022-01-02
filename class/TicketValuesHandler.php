@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,42 +15,35 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-$helper->LoadLanguage('admin');
+// $helper->LoadLanguage('admin');
 
 /**
  * class TicketValuesHandler
  */
-class TicketValuesHandler extends Xhelp\BaseObjectHandler
+class TicketValuesHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = TicketValues::class;
-
     /**
      * DB Table Name
      *
      * @var string
-     * @access  private
      */
     public $_dbtable = 'xhelp_ticket_values';
     public $id       = 'ticketid';
-    public $_idfield = 'ticketid';
+    public $idfield = 'ticketid';
 
     /**
      * Constructor
@@ -63,10 +56,10 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {     // Assumes cleanVars has already been called
@@ -100,10 +93,10 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -134,10 +127,10 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
 

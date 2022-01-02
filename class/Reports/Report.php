@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
+use const FF_FONT1;
 use XoopsModules\Xhelp;
+
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -11,18 +13,16 @@ if (!\defined('XHELP_CLASS_PATH')) {
 global $xoopsDB;
 
 /**
- * Xhelp\Report class
+ * Report class
  *
  * Information about an individual report
  *
  * @author  Eric Juden <eric@3dev.org>
- * @access  public
- * @package xhelp
  */
 class Report extends \XoopsObject
 {
     /**
-     * Xhelp\Report constructor.
+     * Report constructor.
      */
     public function __construct()
     {
@@ -32,16 +32,14 @@ class Report extends \XoopsObject
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 0, false);
     }
 
-    public $name = '';
-
-    public $meta = [
+    public $name       = '';
+    public $meta       = [
         'name'         => '',
         'author'       => '',
         'author_email' => '',
         'description'  => '',
         'version'      => '',
     ];
-
     public $parameters = [];
     public $extraWhere = '';
 
@@ -49,7 +47,6 @@ class Report extends \XoopsObject
      * Generate a report
      *
      * @return string report
-     * @access  public
      */
     public function generateReport()
     {
@@ -59,12 +56,12 @@ class Report extends \XoopsObject
     /**
      * @return string
      */
-    public function generateReportNoData()
+    public function generateReportNoData(): string
     {
         $myReport = '';
         $myReport .= "<div id='xhelp_report'>";
         $myReport .= '<table>';
-        $myReport .= "<tr class='even'><td>" . _XHELP_TEXT_NO_RECORDS . '</td></tr>';
+        $myReport .= "<tr class='even'><td>" . \_XHELP_TEXT_NO_RECORDS . '</td></tr>';
         $myReport .= '</table>';
         $myReport .= '</div>';
 
@@ -74,8 +71,7 @@ class Report extends \XoopsObject
     /**
      * Generate graph to go along with report
      *
-     * @return mixed bool false on no graph / draw graph
-     * @access  public
+     * @return false|void bool false on no graph / draw graph
      */
     public function generateGraph()
     {
@@ -86,8 +82,6 @@ class Report extends \XoopsObject
 
     /**
      * Set SQL query to be run, and set results for class
-     *
-     * @access  public
      */
     public function _setResults()
     {
@@ -99,7 +93,6 @@ class Report extends \XoopsObject
      *
      * @param $dResult
      * @return array
-     * @access  public
      */
     public function _arrayFromData($dResult)
     {
@@ -124,9 +117,8 @@ class Report extends \XoopsObject
      * Get meta information about the report
      *
      * @return array
-     * @access  public
      */
-    public function getMeta()
+    public function getMeta(): array
     {
         return $this->meta;
     }
@@ -135,7 +127,6 @@ class Report extends \XoopsObject
      * Get report parameters
      *
      * @return array {@link Xhelp\ReportParameter} objects
-     * @access  public
      */
     public function getParams()
     {
@@ -152,12 +143,11 @@ class Report extends \XoopsObject
     /**
      * Add additional items to where clause from report parameters for sql query string
      *
-     * @param      $params
+     * @param array $params
      * @param bool $includeAnd
-     * @return string $where (additional part of where clause)
-     * @access  public
+     * @return string (additional part of where clause)
      */
-    public function makeWhere($params, $includeAnd = true)
+    public function makeWhere($params, $includeAnd = true): string
     {
         $where = '';
         $i     = 0;
@@ -204,8 +194,8 @@ class Report extends \XoopsObject
         $length = 500,
         $width = 300,
         $hasShadow = true,
-        $fontFamily = \FF_FONT1,
-        $fontStyle = \FS_BOLD,
+        $fontFamily = FF_FONT1,
+        $fontStyle = FS_BOLD,
         $fontSize = '',
         $fontColor = 'black'
     ) {
@@ -231,14 +221,14 @@ class Report extends \XoopsObject
 
         $p1->value->SetFont($fontFamily, $fontStyle, $fontSize);
         $p1->value->SetColor($fontColor);
-        $p1->SetLabelType(\PIE_VALUE_PER);
+        $p1->SetLabelType(PIE_VALUE_PER);
 
         $a = \array_search(\max($data[$chartData_index]), $data[$chartData_index], true); //Find the position of maximum value.
         $p1->ExplodeSlice($a);
 
         // Set graph background image
         if (false !== $image) {
-            $graph->SetBackgroundImage($image, \BGIMG_FILLFRAME);
+            $graph->SetBackgroundImage($image, BGIMG_FILLFRAME);
         }
 
         $graph->Add($p1);
@@ -246,17 +236,17 @@ class Report extends \XoopsObject
     }
 
     /**
-     * @param        $data
-     * @param int    $legend_index
-     * @param bool   $image
-     * @param array  $aFillColors
-     * @param int    $length
-     * @param int    $width
-     * @param int    $fontFamily
-     * @param int    $fontStyle
-     * @param string $fontSize
-     * @param string $fontColor
-     * @param string $marginColor
+     * @param             $data
+     * @param int         $legend_index
+     * @param bool|string $image
+     * @param array       $aFillColors
+     * @param int         $length
+     * @param int         $width
+     * @param int         $fontFamily
+     * @param int         $fontStyle
+     * @param string      $fontSize
+     * @param string      $fontColor
+     * @param string      $marginColor
      */
     public function generateStackedBarGraph(
         $data,
@@ -276,8 +266,8 @@ class Report extends \XoopsObject
         ],
         $length = 500,
         $width = 300,
-        $fontFamily = \FF_FONT1,
-        $fontStyle = \FS_BOLD,
+        $fontFamily = FF_FONT1,
+        $fontStyle = FS_BOLD,
         $fontSize = '',
         $fontColor = 'black',
         $marginColor = 'white'
@@ -318,7 +308,7 @@ class Report extends \XoopsObject
         $graph->Add($ybplot);
 
         // Set graph background image
-        $graph->SetBackgroundImage($image, \BGIMG_FILLFRAME);
+        $graph->SetBackgroundImage($image, BGIMG_FILLFRAME);
 
         $graph->Stroke();
     }

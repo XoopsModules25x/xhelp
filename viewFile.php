@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
 
 //require __DIR__ . '/header.php';
-require_once dirname(__DIR__, 2) . '/mainfile.php';
+require_once \dirname(__DIR__, 2) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -22,10 +22,10 @@ if (Request::hasVar('id', 'GET')) {
 
 $viewFile = false;
 
-$hFiles        = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
+$fileHandler   = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
 $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
 $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-$file          = $hFiles->get($xhelp_id);
+$file          = $fileHandler->get($xhelp_id);
 $mimeType      = $file->getVar('mimetype');
 $ticket        = $ticketHandler->get($file->getVar('ticketid'));
 

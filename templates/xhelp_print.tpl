@@ -87,7 +87,7 @@
                 <tr>
                     <td>
                         <{foreach from=$xhelp_custFields item=field}>
-                            <{if $field.value != ""}>
+                            <{if $field.value|default:'' != ''}>
                                 <{$field.name}>: <{$field.value}>
                                 <br>
                             <{/if}>

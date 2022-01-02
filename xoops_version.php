@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * You may not change or alter any portion of this comment or credits
  * of supporting developers from this source code or any supporting source code
@@ -12,21 +12,16 @@
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-
-
 require_once __DIR__ . '/preloads/autoloader.php';
 
 $moduleDirName      = basename(__DIR__);
-$moduleDirNameUpper = mb_strtoupper($moduleDirName);
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
-$modversion['version']             = '1.00';
+$modversion['version']             = '1.0.0';
 $modversion['module_status']       = 'Alpha 1';
-$modversion['release_date']        = '2018/07/11';
+$modversion['release_date']        = '2021/12/28';
 $modversion['name']                = _MI_XHELP_NAME;
 $modversion['description']         = _MI_XHELP_DESC;
 $modversion['author']              = '3dev.org';
@@ -41,7 +36,7 @@ $modversion['modicons32']          = 'assets/images/icons/32';
 $modversion['release_file']        = XOOPS_URL . '/modules/' . $modversion['dirname'] . '/docs/changelog.txt';
 $modversion['module_website_url']  = 'www.xoops.org';
 $modversion['module_website_name'] = 'XOOPS';
-$modversion['min_php']             = '7.2';
+$modversion['min_php']             = '7.3';
 $modversion['min_xoops']           = '2.5.10';
 $modversion['min_admin']           = '1.2';
 $modversion['min_db']              = ['mysql' => '5.5'];
@@ -49,10 +44,10 @@ $modversion['min_db']              = ['mysql' => '5.5'];
 // Extra stuff for about page
 $modversion['version_info']    = 'Final';
 $modversion['creator']         = '3Dev';
-$modversion['demo_site']       = 'http://demo.3dev.org';
-$modversion['official_site']   = 'http://www.3dev.org';
-$modversion['bug_url']         = 'http://dev.xoops.org/modules/xfmod/tracker/?group_id=1058&atid=336';
-$modversion['feature_url']     = 'http://dev.xoops.org/modules/xfmod/tracker/?group_id=1058&atid=339';
+$modversion['demo_site']       = 'https://demo.3dev.org';
+$modversion['official_site']   = 'https://www.3dev.org';
+$modversion['bug_url']         = 'https://dev.xoops.org/modules/xfmod/tracker/?group_id=1058&atid=336';
+$modversion['feature_url']     = 'https://dev.xoops.org/modules/xfmod/tracker/?group_id=1058&atid=339';
 $modversion['questions_email'] = 'xhelp-questions@3dev.org';
 
 // ------------------- Help files ------------------- //
@@ -71,7 +66,7 @@ $modversion['contributors']['developers'][0]['website'] = '';
 $modversion['contributors']['developers'][1]['name']    = 'Brian Wahoff';
 $modversion['contributors']['developers'][1]['uname']   = 'ackbarr';
 $modversion['contributors']['developers'][1]['email']   = 'ackbarr@xoops.org';
-$modversion['contributors']['developers'][1]['website'] = 'http://ackbarr.greatweb.org';
+$modversion['contributors']['developers'][1]['website'] = 'https://ackbarr.greatweb.org';
 
 // Translators
 $modversion['contributors']['translators'][0]['language'] = 'Brazilian Portuguese';
@@ -132,13 +127,13 @@ $modversion['contributors']['translators'][9]['language'] = 'Simplified Chinese'
 $modversion['contributors']['translators'][9]['name']     = 'Finjon Kiang';
 $modversion['contributors']['translators'][9]['uname']    = 'kiang';
 $modversion['contributors']['translators'][9]['email']    = '';
-$modversion['contributors']['translators'][9]['website']  = 'http://twpug.net';
+$modversion['contributors']['translators'][9]['website']  = 'https://twpug.net';
 
 $modversion['contributors']['translators'][10]['language'] = 'Portuguese';
 $modversion['contributors']['translators'][10]['name']     = 'Artur Oliveira';
 $modversion['contributors']['translators'][10]['uname']    = '_Vlad_';
 $modversion['contributors']['translators'][10]['email']    = '';
-$modversion['contributors']['translators'][10]['website']  = 'http://dev.xoops.org/modules/xfmod/forum/forum.php?forum_id=561';
+$modversion['contributors']['translators'][10]['website']  = 'https://dev.xoops.org/modules/xfmod/forum/forum.php?forum_id=561';
 
 // Testers
 $modversion['contributors']['testers'][0]['name']    = 'Alan Juden';
@@ -154,7 +149,7 @@ $modversion['contributors']['testers'][1]['website'] = '';
 $modversion['contributors']['testers'][2]['name']    = 'Marc-Andr� Lanciault';
 $modversion['contributors']['testers'][2]['uname']   = 'marcan';
 $modversion['contributors']['testers'][2]['email']   = '';
-$modversion['contributors']['testers'][2]['website'] = 'http://www.smartfactory.ca';
+$modversion['contributors']['testers'][2]['website'] = 'https://www.smartfactory.ca';
 
 // Documenters
 $modversion['contributors']['documenters'][0]['name']    = 'Ryan Johnson';
@@ -170,17 +165,17 @@ $modversion['contributors']['code'][0]['website'] = '';
 $modversion['contributors']['code'][1]['name']    = 'Marc-Andr� Lanciault';
 $modversion['contributors']['code'][1]['uname']   = 'marcan';
 $modversion['contributors']['code'][1]['email']   = '';
-$modversion['contributors']['code'][1]['website'] = 'http://www.smartfactory.ca';
+$modversion['contributors']['code'][1]['website'] = 'https://www.smartfactory.ca';
 
 $modversion['contributors']['code'][2]['name']    = 'Federico Nebiolo';
 $modversion['contributors']['code'][2]['uname']   = 'iconeb';
 $modversion['contributors']['code'][2]['email']   = 'iconeb@yahoo.it';
-$modversion['contributors']['code'][2]['website'] = 'http://www.arturin.it';
+$modversion['contributors']['code'][2]['website'] = 'https://www.arturin.it';
 
 $modversion['contributors']['code'][3]['name']    = 'Ricardo Costa';
 $modversion['contributors']['code'][3]['uname']   = 'trabis';
 $modversion['contributors']['code'][3]['email']   = 'lusopoemas@gmail.com';
-$modversion['contributors']['code'][3]['website'] = 'http://www.xuups.com';
+$modversion['contributors']['code'][3]['website'] = 'https://www.xuups.com';
 
 // ------------------- Mysql ------------------- //
 $modversion['sqlfile']['mysql'] = 'sql/mysql.sql';
@@ -214,7 +209,6 @@ $modversion['tables'] = [
     $moduleDirName . '_' . 'ticket_solutions',
 ];
 
-
 // Admin things
 $modversion['hasAdmin']    = 1;
 $modversion['system_menu'] = 1;
@@ -237,7 +231,7 @@ $modversion['helpsection'] = [
     //    array('name' => _MI_XHELP_CREDITS, 'link' => 'page=__credits'),
 ];
 
-// Templates
+// ------------------- Templates ------------------- //
 
 $modversion['templates'] = [
     ['file' => 'xhelp_staff_header.tpl', 'description' => _MI_XHELP_TEMP_STAFF_HEADER],
@@ -272,11 +266,10 @@ $modversion['templates'] = [
     ['file' => 'xhelp_addFaq.tpl', 'description' => _MI_XHELP_TEMP_ADD_FAQ],
     ['file' => 'xhelp_report.tpl', 'description' => _MI_XHELP_TEMP_REPORT],
 ];
-// Blocks
+// ------------------- Blocks ------------------- //
 // Block that displays open tickets
 
 $modversion['blocks'][] = [
-
     'file'        => 'xhelp_blocks.php',
     'name'        => _MI_XHELP_BNAME1,
     'description' => _MI_XHELP_BNAME1_DESC,
@@ -323,8 +316,6 @@ $modversion['blocks'][] = [
     'edit_func'   => 'b_xhelp_mainactions_edit',
     'options'     => '0|1',
 ];
-
-
 
 // Menu
 global $xhelp_isStaff;
@@ -476,7 +467,6 @@ $modversion['config'][] = [
     'options'     => [_MI_XHELP_USERNAME => 1, _MI_XHELP_REALNAME => 2],
 ];
 
-
 /**
  * Make Sample button visible?
  */
@@ -499,7 +489,6 @@ $modversion['config'][] = [
     'valuetype'   => 'int',
     'default'     => 0,
 ];
-
 
 // Email templates
 $modversion['_email_tpl'][1]['name']          = 'new_ticket';        // Add ticket

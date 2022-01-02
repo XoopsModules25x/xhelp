@@ -1,0 +1,41 @@
+<?php
+// content="text/plain; charset=utf-8"
+require_once __DIR__ . '/jpgraph/jpgraph.php';
+require_once __DIR__ . '/jpgraph/jpgraph_scatter.php';
+
+// Make a circle with a scatterplot
+$steps = 16;
+for ($i = 0; $i < $steps; ++$i) {
+    $a         = 2 * M_PI / $steps * $i;
+    $datax[$i] = cos($a);
+    $datay[$i] = sin($a);
+}
+
+$graph = new Graph(350, 230);
+$graph->clearTheme();
+$graph->setScale('linlin');
+$graph->setShadow();
+$graph->setAxisStyle(AXSTYLE_BOXOUT);
+
+$graph->img->setMargin(50, 50, 60, 40);
+
+$graph->title->Set('Linked scatter plot');
+$graph->title->SetFont(FF_FONT1, FS_BOLD);
+$graph->subtitle->Set('(BOXOUT Axis style)');
+$graph->subtitle->SetFont(FF_FONT1, FS_NORMAL);
+
+// 10% top and bottom grace
+$graph->yscale->SetGrace(5, 5);
+$graph->xscale->SetGrace(1, 1);
+
+$sp1 = new ScatterPlot($datay, $datax);
+$sp1->mark->SetType(MARK_FILLEDCIRCLE);
+$sp1->mark->SetFillColor('red');
+$sp1->setColor('blue');
+
+$sp1->mark->SetWidth(4);
+$sp1->link->show();
+$sp1->link->setStyle('dotted');
+
+$graph->add($sp1);
+$graph->stroke();

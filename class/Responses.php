@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,9 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,16 +26,14 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Xhelp\Responses class
+ * Responses class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
 class Responses extends \XoopsObject
 {
     /**
-     * Xhelp\Responses constructor.
+     * Responses constructor.
      * @param null $id
      */
     public function __construct($id = null)
@@ -66,9 +61,8 @@ class Responses extends \XoopsObject
      *
      * @param string $format
      * @return string Formatted posted date
-     * @access public
      */
-    public function posted($format = 'l')
+    public function posted($format = 'l'): string
     {
         return \formatTimestamp($this->getVar('updateTime'), $format);
     }
@@ -77,19 +71,19 @@ class Responses extends \XoopsObject
      * @param      $post_field
      * @param null $response
      * @param null $allowed_mimetypes
-     * @return array|bool|string|\XoopsObject
+     * @return array|false|object|string|void
      */
     public function storeUpload($post_field, $response = null, $allowed_mimetypes = null)
     {
         //global $xoopsModuleConfig, $xoopsUser, $xoopsDB, $xoopsModule;
         // require_once XHELP_CLASS_PATH . '/uploader.php';
-        $config = Xhelp\Utility::getModuleConfig();
+        $config = Utility::getModuleConfig();
 
         $ticketid = $this->getVar('id');
 
         if (null === $allowed_mimetypes) {
-            $hMime             = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
-            $allowed_mimetypes = $hMime->checkMimeTypes();
+            $mimetypeHandler   = new MimetypeHandler($GLOBALS['xoopsDB']);
+            $allowed_mimetypes = $mimetypeHandler->checkMimeTypes();
             if (!$allowed_mimetypes) {
                 return false;
             }
@@ -104,7 +98,7 @@ class Responses extends \XoopsObject
             }
         }
 
-        $uploader = new Xhelp\MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
+        $uploader = new MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
         if ($uploader->fetchMedia($post_field)) {
             if (null === $response) {
                 $uploader->setTargetFileName($ticketid . '_' . $uploader->getMediaName());
@@ -112,14 +106,14 @@ class Responses extends \XoopsObject
                 $uploader->setTargetFileName($ticketid . '_' . $response . '_' . $uploader->getMediaName());
             }
             if ($uploader->upload()) {
-                $hFile = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
-                $file  = $hFile->create();
+                $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
+                $file        = $fileHandler->create();
                 $file->setVar('filename', $uploader->getSavedFileName());
                 $file->setVar('ticketid', $ticketid);
                 $file->setVar('mimetype', $allowed_mimetypes);
                 $file->setVar('responseid', (null !== $response ? (int)$response : 0));
 
-                if ($hFile->insert($file)) {
+                if ($fileHandler->insert($file)) {
                     return $file;
                 }
 
@@ -131,31 +125,31 @@ class Responses extends \XoopsObject
     }
 
     /**
-     * @param $post_field
-     * @param $allowed_mimetypes
-     * @param $errors
+     * @param string $post_field
+     * @param array $allowed_mimetypes
+     * @param array $errors
      * @return bool
      */
-    public function checkUpload($post_field, &$allowed_mimetypes, &$errors)
+    public function checkUpload($post_field, &$allowed_mimetypes, &$errors): bool
     {
         //global $xoopsModuleConfig;
         // require_once XHELP_CLASS_PATH . '/uploader.php';
-        $config        = Xhelp\Utility::getModuleConfig();
+        $config        = Utility::getModuleConfig();
         $maxfilesize   = $config['xhelp_uploadSize'];
         $maxfilewidth  = $config['xhelp_uploadWidth'];
         $maxfileheight = $config['xhelp_uploadHeight'];
         $errors        = [];
 
         if (null === $allowed_mimetypes) {
-            $hMime             = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
-            $allowed_mimetypes = $hMime->checkMimeTypes($post_field);
+            $mimetypeHandler   = new MimetypeHandler($GLOBALS['xoopsDB']);
+            $allowed_mimetypes = $mimetypeHandler->checkMimeTypes($post_field);
             if (!$allowed_mimetypes) {
-                $errors[] = _XHELP_MESSAGE_WRONG_MIMETYPE;
+                $errors[] = \_XHELP_MESSAGE_WRONG_MIMETYPE;
 
                 return false;
             }
         }
-        $uploader = new Xhelp\MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
+        $uploader = new MediaUploader(XHELP_UPLOAD_PATH . '/', $allowed_mimetypes, $maxfilesize, $maxfilewidth, $maxfileheight);
 
         if ($uploader->fetchMedia($post_field)) {
             return true;
@@ -168,12 +162,11 @@ class Responses extends \XoopsObject
 
     /**
      * Get the ticket to which the response is attached
-     * @return Xhelp\Ticket The ticket
-     * @access public
+     * @return Ticket The ticket
      */
-    public function getTicket()
+    public function getTicket(): Ticket
     {
-        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticketHandler = new TicketHandler($GLOBALS['xoopsDB']);
 
         return $ticketHandler->get($this->getVar('ticketid'));
     }

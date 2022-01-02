@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -36,7 +36,6 @@ namespace XoopsModules\Xhelp;
  ***** END LICENSE BLOCK *****
  */
 
-use XoopsModules\Xhelp;
 
 /**
  * class NaiveBayesian
@@ -74,7 +73,7 @@ class NaiveBayesian
      * @param mixed $document
      * @return array keys = category ids, values = scores
      */
-    public function categorize($document)
+    public function categorize($document): array
     {
         $scores     = [];
         $categories = $this->nbs->getCategories();
@@ -125,7 +124,7 @@ class NaiveBayesian
      * @see updateProbabilities()
      * @see untrain()
      */
-    public function train($doc_id, $category_id, $content)
+    public function train($doc_id, $category_id, $content): bool
     {
         $tokens = $this->_getTokens($content);
         //            while (list($token, $count) = each($tokens)) {
@@ -145,7 +144,7 @@ class NaiveBayesian
      * @see updateProbabilities()
      * @see untrain()
      */
-    public function untrain($doc_id)
+    public function untrain($doc_id): bool
     {
         $ref    = $this->nbs->getReference($doc_id);
         $tokens = $this->_getTokens($ref['content']);
@@ -165,7 +164,7 @@ class NaiveBayesian
      * @author Ken Williams, ken@mathforum.org
      * @see    categorize()
      */
-    public function _rescale($scores)
+    public function _rescale($scores): array
     {
         // Scale everything back to a reasonable area in
         // logspace (near zero), un-loggify, and normalize
@@ -182,13 +181,13 @@ class NaiveBayesian
         //        while (list($cat, $score) = each($scores)) {
         foreach ($scores as $cat => $score) {
             $scores[$cat] = \exp($score - $max);
-            $total        += (float)$scores[$cat] ** 2;
+            $total        += $scores[$cat] ** 2;
         }
         $total = \sqrt($total);
         //        reset($scores);
         //        while (list($cat, $score) = each($scores)) {
         foreach ($scores as $cat => $score) {
-            $scores[$cat] = (float)$scores[$cat] / $total;
+            $scores[$cat] = (float)$score / $total;
         }
         \reset($scores);
 
@@ -202,7 +201,7 @@ class NaiveBayesian
      * @see untrain()
      * @see train()
      */
-    public function updateProbabilities()
+    public function updateProbabilities(): bool
     {
         // this function is really only database manipulation
         // that is why all is done in the NaiveBayesianStorage
@@ -212,7 +211,7 @@ class NaiveBayesian
     /** Get the list of token to ignore.
      * @return array ignore list
      */
-    public function getIgnoreList()
+    public function getIgnoreList(): array
     {
         global $xhelp_noise_words;
         @$helper->LoadLanguage('noise_words');
@@ -222,14 +221,14 @@ class NaiveBayesian
 
     /** get the tokens from a string
      *
-     * @author   James Seng. [http://james.seng.cc/] (based on his perl version)
+     * @author   James Seng. [https://james.seng.cc/] (based on his perl version)
      *
      *
      * @param string $string
      * @return array tokens
      * @internal param the $string string to get the tokens from
      */
-    public function _getTokens($string)
+    public function _getTokens($string): array
     {
         $rawtokens = [];
         $tokens    = [];
@@ -261,10 +260,9 @@ class NaiveBayesian
      * @param mixed $string
      * @return string clean string
      * @author Antoine Bajolet [phpdig_at_toiletoine.net]
-     * @author SPIP [http://uzine.net/spip/]
-     *
+     * @author SPIP [https://uzine.net/spip/]
      */
-    public function _cleanString($string)
+    public function _cleanString($string): string
     {
         $diac = /* A */
             \chr(192) . \chr(193) . \chr(194) . \chr(195) . \chr(196) . \chr(197) . /* a */
@@ -280,6 +278,6 @@ class NaiveBayesian
             \chr(249) . \chr(250) . \chr(251) . \chr(252) . /* yNn */
             \chr(255) . \chr(209) . \chr(241);
 
-        return mb_strtolower(strtr($string, $diac, 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn'));
+        return \mb_strtolower(strtr($string, $diac, 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn'));
     }
 }

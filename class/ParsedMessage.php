@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -29,7 +29,6 @@ class ParsedMessage
 
     /**
      * Class Constructor
-     * @access   public
      * @param array $msg Array of message values
      */
     public function __construct($msg)
@@ -50,7 +49,7 @@ class ParsedMessage
     /**
      * @return int
      */
-    public function getMsgType()
+    public function getMsgType(): int
     {
         return $this->_msgtype;
     }
@@ -58,7 +57,7 @@ class ParsedMessage
     /**
      * @return bool
      */
-    public function getPriority()
+    public function getPriority(): ?bool
     {
         $pri = $this->getHeader(HEADER_PRIORITY);
 
@@ -104,7 +103,7 @@ class ParsedMessage
      * @param $header
      * @return bool
      */
-    public function getHeader($header)
+    public function getHeader($header): bool
     {
         return $this->_headers[$header] ?? false;
     }
@@ -125,7 +124,7 @@ class ParsedMessage
     /**
      * @return array
      */
-    public function &getAttachments()
+    public function &getAttachments(): array
     {
         return $this->_attachments;
     }
@@ -173,10 +172,9 @@ class ParsedMessage
      *
      * @param string $name Original Filename
      * @return string "cleaned" filename
-     * @access private
      * @todo   Get list of other unsafe characters by platform
      */
-    public function _cleanFilename($name)
+    public function _cleanFilename($name): string
     {
         $name = \str_replace(' ', '_', $name);
 

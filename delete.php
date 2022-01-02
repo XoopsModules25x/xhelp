@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -28,12 +28,12 @@ if ($xoopsUser) {
         redirect_header(XHELP_BASE_URL . '/index.php', 3, $message);
     } elseif (Request::hasVar('delete_responseTpl', 'POST')) {
         //Should only the owner of a template be able to delete it?
-        $hResponseTpl = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');
-        $displayTpl   = $hResponseTpl->get($_POST['tplID']);
+        $responseTemplatesHandler = Xhelp\Helper::getInstance()->getHandler('ResponseTemplates');
+        $displayTpl               = $responseTemplatesHandler->get($_POST['tplID']);
         if ($xoopsUser->getVar('uid') != $displayTpl->getVar('uid')) {
             $message = _NOPERM;
         } else {
-            if ($hResponseTpl->delete($displayTpl)) {
+            if ($responseTemplatesHandler->delete($displayTpl)) {
                 $message = _XHELP_MESSAGE_DELETE_RESPONSE_TPL;
                 $_eventsrv->trigger('delete_responseTpl', [$displayTpl]);
             } else {

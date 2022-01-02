@@ -1,48 +1,44 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/Service.php';
 
 /**
- * Xhelp\FirnService class
+ * FirnService class
  *
  * Trains the FIRN (Find It Right Now) service
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
-class FirnService extends Xhelp\Service
+class FirnService extends Service
 {
     /**
-     * Xhelp\FirnService constructor.
+     * FirnService constructor.
      */
     public function __construct()
     {
         $this->init();
     }
 
-    public function _attachEvents()
+    public function attachEvents()
     {
-        $this->_attachEvent('new_faq', $this);
+        $this->attachEvent('new_faq', $this);
     }
 
     /**
      * Event: new_faq
      * Triggered after FAQ addition
-     * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
-     * @param Xhelp\Faq    $faq    FAQ that was added
+     * @param Ticket $ticket Ticket used as base for FAQ
+     * @param Faq    $faq    FAQ that was added
      * @return bool
      */
-    public function new_faq($ticket, $faq)
+    public function new_faq(Ticket $ticket, Faq $faq): bool
     {
         global $xoopsUser;
 
         //Create a new solution from the supplied ticket / faq
-        $hTicketSol = new Xhelp\TicketSolutionHandler($GLOBALS['xoopsDB']);
+        $hTicketSol = new TicketSolutionHandler($GLOBALS['xoopsDB']);
         $sol        = $hTicketSol->create();
 
         $sol->setVar('ticketid', $ticket->getVar('id'));
@@ -55,8 +51,7 @@ class FirnService extends Xhelp\Service
 
     /**
      * Only have 1 instance of class used
-     * @return object {@link xhelp_eventService}
-     * @access  public
+     * @return EventService {@link EventService}
      */
     public static function getInstance()
     {

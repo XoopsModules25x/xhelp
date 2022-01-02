@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,29 +25,24 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Xhelp\MailEventHandler class
+ * MailEventHandler class
  *
- * MailEvent Handler for Xhelp\MailEvent class
+ * MailEvent Handler for MailEvent class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
- * @access  public
- * @package xhelp
  */
-class MailEventHandler extends Xhelp\BaseObjectHandler
+class MailEventHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = MailEvent::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
     public $_dbtable = 'xhelp_mailevent';
 
@@ -67,12 +58,11 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
 
     /**
      * Create a "select" SQL query
-     * @param null|\CriteriaElement $criteria {@link CriteriaElement} to match
+     * @param null|\CriteriaElement $criteria {@link \CriteriaElement} to match
      * @param null|bool             $join
      * @return string SQL query
-     * @access  private
      */
-    public function _selectQuery(\CriteriaElement $criteria = null, $join = null)
+    public function selectQuery(\CriteriaElement $criteria = null, $join = null)
     {
         if (!$join) {
             $sql = \sprintf('SELECT * FROM `%s`', $this->_db->prefix($this->_dbtable));
@@ -80,7 +70,7 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
             $sql = \sprintf('SELECT e.* FROM `%s` e INNER JOIN %s d ON d.id = e.mbox_id', $this->_db->prefix('xhelp_mailevent'), $this->_db->prefix('xhelp_department_mailbox'));
         }
 
-        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
             if ('' != $criteria->getSort()) {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . '
@@ -94,16 +84,15 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
     /**
      * retrieve objects from the database
      *
-     * @param null $criteria  {@link CriteriaElement} conditions to be met
-     * @param bool $id_as_key Should the MailEvent ID be used as array key
-     * @return array  array of {@link Xhelp\MailEvent} objects
-     * @access  public
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria  {@link \CriteriaElement} conditions to be met
+     * @param bool                                 $id_as_key Should the MailEvent ID be used as array key
+     * @return array  array of {@link MailEvent} objects
      */
-    public function &getObjectsJoin($criteria = null, $id_as_key = false)
+    public function &getObjectsJoin($criteria = null, $id_as_key = false): array
     {
         $ret   = [];
         $limit = $start = 0;
-        $sql   = $this->_selectQuery($criteria, true);
+        $sql   = $this->selectQuery($criteria, true);
         if (null !== $criteria) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
@@ -135,7 +124,7 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
      * @param $class
      * @return bool
      */
-    public function newEvent($mbox_id, $desc, $class)
+    public function newEvent($mbox_id, $desc, $class): bool
     {
         $event = $this->create();
         $event->setVar('mbox_id', $mbox_id);
@@ -151,10 +140,10 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -167,10 +156,10 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -183,10 +172,10 @@ class MailEventHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 

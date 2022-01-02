@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,9 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
 
 /**
  * class TicketFieldDepartmentHandler
@@ -33,15 +30,12 @@ class TicketFieldDepartmentHandler
 
     /**
      * Constructor
-     *
-     * @param \XoopsDatabase|null $db
-     * @access public
      */
     public function __construct(\XoopsDatabase $db = null)
     {
         $this->_db     = $db;
-        $this->_hField = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-        $this->_hDept  = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $this->_hField = new TicketFieldHandler($GLOBALS['xoopsDB']);
+        $this->_hDept  = new DepartmentHandler($GLOBALS['xoopsDB']);
     }
 
     /**
@@ -49,10 +43,9 @@ class TicketFieldDepartmentHandler
      *
      * @param int  $field     Field ID
      * @param bool $id_as_key Should object ID be used as array key?
-     * @return array array of {@Link Xhelp\Department} objects
-     * @access public
+     * @return array array of {@Link Department} objects
      */
-    public function departmentsByField($field, $id_as_key = false)
+    public function departmentsByField($field, $id_as_key = false): array
     {
         $field = (int)$field;
         $sql   = \sprintf('SELECT d.* FROM `%s` d INNER JOIN %s j ON d.id = j.deptid WHERE j.fieldid = %u', $this->_db->prefix('xhelp_departments'), $this->_db->prefix('xhelp_ticket_field_departments'), $field);
@@ -80,10 +73,9 @@ class TicketFieldDepartmentHandler
      *
      * @param int  $dept      Department ID
      * @param bool $id_as_key Should object ID be used as array key?
-     * @return array array of {@Link Xhelp\TicketField} objects
-     * @access public
+     * @return array array of {@Link TicketField} objects
      */
-    public function fieldsByDepartment($dept, $id_as_key = false)
+    public function fieldsByDepartment($dept, $id_as_key = false): array
     {
         $dept = (int)$dept;
         $sql  = \sprintf('SELECT f.* FROM `%s` f INNER JOIN %s j ON f.id = j.fieldid WHERE j.deptid = %u ORDER BY f.weight', $this->_db->prefix('xhelp_ticket_fields'), $this->_db->prefix('xhelp_ticket_field_departments'), $dept);
@@ -112,10 +104,9 @@ class TicketFieldDepartmentHandler
      * @param      $field
      * @param int  $deptid Department ID
      * @return bool True if successful, False if not
-     * @internal param mixed $staff single or array of uids or <a href='psi_element://Xhelp\TicketField'>Xhelp\TicketField</a> objects objects
-     * @access   public
+     * @internal param mixed $staff single or array of uids or <a href='psi_element://TicketField'>TicketField</a> objects objects
      */
-    public function addFieldToDepartment($field, $deptid)
+    public function addFieldToDepartment($field, $deptid): bool
     {
         if (!\is_array($field)) {
             $ret = $this->_addMembership($field, $deptid);
@@ -134,13 +125,12 @@ class TicketFieldDepartmentHandler
     /**
      * Add the given department(s) to the given field
      *
-     * @param mixed $dept  single or array of department id's or {@Link Xhelp\Department} objects
+     * @param mixed $dept  single or array of department id's or {@Link Department} objects
      * @param int   $field Field ID
      * @retnr  bool True if successful, False if not
-     * @access public
      * @return bool
      */
-    public function addDepartmentToField($dept, $field)
+    public function addDepartmentToField($dept, $field): bool
     {
         if (!\is_array($dept)) {
             $ret = $this->_addMembership($field, $dept);
@@ -159,12 +149,11 @@ class TicketFieldDepartmentHandler
     /**
      * Remove the given field(s) from the given department
      *
-     * @param mixed $field  single or array of field ids or {@link Xhelp\TicketField} objects
+     * @param mixed $field  single or array of field ids or {@link TicketField} objects
      * @param int   $deptid Department ID
      * @return bool  True if successful, False if not
-     * @access public
      */
-    public function removeFieldFromDept($field, $deptid)
+    public function removeFieldFromDept($field, $deptid): bool
     {
         if (!\is_array($field)) {
             $ret = $this->_removeMembership($field, $deptid);
@@ -183,12 +172,11 @@ class TicketFieldDepartmentHandler
     /**
      * Remove the given department(s) from the given field
      *
-     * @param mixed $dept  single or array of department id's or {@link Xhelp\Department} objects
+     * @param mixed $dept  single or array of department id's or {@link Department} objects
      * @param int   $field Field ID
      * @return bool  True if successful, False if not
-     * @access public
      */
-    public function removeDeptFromField($dept, $field)
+    public function removeDeptFromField($dept, $field): bool
     {
         if (!\is_array($dept)) {
             $ret = $this->_removeMembership($field, $dept);
@@ -208,13 +196,12 @@ class TicketFieldDepartmentHandler
      * Remove All Departments from a particular field
      * @param int $field Field ID
      * @return bool True if successful, False if not
-     * @access public
      */
-    public function removeFieldFromAllDept($field)
+    public function removeFieldFromAllDept($field): bool
     {
         $field = (int)$field;
-        $crit  = new \Criteria('fieldid', $field);
-        $ret   = $this->deleteAll($crit);
+        $criteria  = new \Criteria('fieldid', $field);
+        $ret   = $this->deleteAll($criteria);
 
         return $ret;
     }
@@ -224,26 +211,25 @@ class TicketFieldDepartmentHandler
      * @param $dept
      * @return bool True if successful, False if not
      * @internal param int $field Field ID
-     * @access   public
      */
-    public function removeDeptFromAllFields($dept)
+    public function removeDeptFromAllFields($dept): bool
     {
         $dept = (int)$dept;
-        $crit = new \Criteria('deptid', $dept);
-        $ret  = $this->deleteAll($crit);
+        $criteria = new \Criteria('deptid', $dept);
+        $ret  = $this->deleteAll($criteria);
 
         return $ret;
     }
 
     /**
-     * @param null $criteria
-     * @param bool $force
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria
+     * @param bool                                 $force
      * @return bool
      */
-    public function deleteAll($criteria = null, $force = false)
+    public function deleteAll($criteria = null, bool $force = false): bool
     {
         $sql = 'DELETE FROM ' . $this->_db->prefix('xhelp_ticket_field_departments');
-        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
 
@@ -262,12 +248,11 @@ class TicketFieldDepartmentHandler
     /**
      * Add a field to a department
      *
-     * @param mixed $field fieldid or {@Link Xhelp\TicketField} object
-     * @param mixed $dept  deptid or {@Link Xhelp\Department} object
+     * @param mixed $field fieldid or {@Link TicketField} object
+     * @param mixed $dept  deptid or {@Link Department} object
      * @return bool  True if Successful, False if not
-     * @access private
      */
-    public function _addMembership($field, $dept)
+    public function _addMembership($field, $dept): bool
     {
         $fieldid = $deptid = 0;
 

@@ -1,5 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/admin_header.php';
@@ -17,7 +19,7 @@ $aLimitByD = ['1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '10' => 10];
 
 $op = 'default';
 
-if (\Xmf\Request::hasVar('op', 'REQUEST')) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -71,7 +73,7 @@ function addRole()
         ];
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation('staff.php?op=addRole');
 
         echo '<script type="text/javascript" src="' . XOOPS_URL . '/modules/xhelp/include/functions.js"></script>';
@@ -105,12 +107,12 @@ function addRole()
         echo '</table></form>';
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        $roleHandler = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
-        $role = $hRole->create();
+        $role = $roleHandler->create();
         $role->setVar('name', $_POST['roleName']);
         $role->setVar('description', $_POST['roleDescription']);
-        if (\Xmf\Request::hasVar('tasks', 'POST')) {
+        if (Request::hasVar('tasks', 'POST')) {
             $tasksValue = array_sum($_POST['tasks']);
         } else {
             $tasksValue = 0;
@@ -119,7 +121,7 @@ function addRole()
 
         $lastPage = $_xhelpSession->get('xhelp_return_op');
 
-        if ($hRole->insert($role)) {
+        if ($roleHandler->insert($role)) {
             $message = _AM_XHELP_MESSAGE_ROLE_INSERT;
             redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage");
         } else {
@@ -132,7 +134,7 @@ function addRole()
 function clearOrphanedStaff()
 {
     /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');
+    $memberHandler = xoops_getHandler('member');
     $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
     $users         = $memberHandler->getUserList();
     $staff         = $staffHandler->getObjects();
@@ -145,8 +147,8 @@ $memberHandler = xoops_getHandler('member');
         }
     }
 
-    $crit = new \Criteria('uid', '(' . implode($aUsers, ',') . ')', 'IN');
-    $ret  = $staffHandler->deleteAll($crit);
+    $criteria = new \Criteria('uid', '(' . implode(',', $aUsers) . ')', 'IN');
+    $ret  = $staffHandler->deleteAll($criteria);
 
     if ($ret) {
         redirect_header(XHELP_ADMIN_URL . '/staff.php?op=manageStaff');
@@ -160,8 +162,8 @@ function clearRoles()
     // require_once XHELP_CLASS_PATH . '/session.php';
     $_xhelpSession = new Xhelp\Session();
 
-    $hDept = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-    $depts = $hDept->getObjects();
+    $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+    $depts             = $departmentHandler->getObjects();
 
     foreach ($depts as $dept) {
         $deptid    = $dept->getVar('id');
@@ -195,22 +197,22 @@ function customDept()
 
     $lastPage = $_xhelpSession->get('xhelp_return_op');
 
-    $uid = \Xmf\Request::getInt('uid', 0, 'REQUEST');
+    $uid = Request::getInt('uid', 0, 'REQUEST');
     if (0 == $uid) {
         redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$lastPage", 3, _AM_XHELP_MSG_NEED_UID);
     }
-    if (\Xmf\Request::hasVar('deptid', 'REQUEST')) {
-        $deptid = \Xmf\Request::getInt('deptid', 0, 'REQUEST');
+    if (Request::hasVar('deptid', 'REQUEST')) {
+        $deptid = Request::getInt('deptid', 0, 'REQUEST');
     }
 
     if (!isset($_POST['submit'])) {
-        if (\Xmf\Request::hasVar('addRole', 'POST')) {
+        if (Request::hasVar('addRole', 'POST')) {
             $_xhelpSession->set('xhelp_return_op2', $lastPage);
             $_xhelpSession->set('xhelp_return_op', mb_substr(mb_strstr($_SERVER['REQUEST_URI'], 'op='), 3));
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=addRole');
         }
 
-        if (\Xmf\Request::hasVar('xhelp_role', 'GET')) {
+        if (Request::hasVar('xhelp_role', 'GET')) {
             $aRoles = explode(',', $_GET['xhelp_role']);
             foreach ($aRoles as $role) {
                 $role = (int)$role;
@@ -218,7 +220,7 @@ function customDept()
             $_xhelpSession->set('xhelp_mainRoles', $aRoles);    // Store roles from the manage staff page
         }
 
-        if (\Xmf\Request::hasVar('xhelp_depts', 'GET')) {
+        if (Request::hasVar('xhelp_depts', 'GET')) {
             $aDepts = explode(',', $_GET['xhelp_depts']);
             foreach ($aDepts as $dept) {
                 $dept = (int)$dept;
@@ -226,15 +228,15 @@ function customDept()
             $_xhelpSession->set('xhelp_mainDepts', $aDepts);    // Store depts from the manage staff page
         }
 
-        $hDept = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $roleHandler       = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
-        $dept = $hDept->get($deptid);
+        $dept = $departmentHandler->get($deptid);
 
-        $crit = new \Criteria('', '');
-        $crit->setOrder('ASC');
-        $crit->setSort('name');
-        $roles = $hRole->getObjects($crit);
+        $criteria = new \Criteria('', '');
+        $criteria->setOrder('ASC');
+        $criteria->setSort('name');
+        $roles = $roleHandler->getObjects($criteria);
 
         $lastPage = $_xhelpSession->get('xhelp_return_op');
         xoops_cp_header();
@@ -317,11 +319,11 @@ function customDept()
         echo '</table>';
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        $roleHandler = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
-        if (\Xmf\Request::hasVar('roles', 'POST')) {
+        if (Request::hasVar('roles', 'POST')) {
             foreach ($_POST['roles'] as $role) {
-                $thisRole     = $hRole->get($role);
+                $thisRole     = $roleHandler->get($role);
                 $aRoleNames[] = $thisRole->getVar('name');
             }
         }
@@ -349,7 +351,7 @@ function customDept()
         if ($mainDepts) {
             if ($xhelp_has_deptRoles) {           // If dept has roles
                 if (!in_array($deptid, $mainDepts)) {     // Does dept already exist in array?
-                    array_push($mainDepts, $deptid);    // Add dept to array
+                    $mainDepts[] = $deptid;    // Add dept to array
                     $_xhelpSession->set('xhelp_mainDepts', $mainDepts); // Set session with new dept value
                 }
             } else {
@@ -361,10 +363,10 @@ function customDept()
                 }
                 $_xhelpSession->set('xhelp_mainDepts', $mainDepts);
             }
-        } else {                        // If mainDepts is not set
-            if ($xhelp_has_deptRoles) {   // If dept has any roles
+            // If mainDepts is not set
+        } elseif ($xhelp_has_deptRoles) {   // If dept has any roles
                 $_xhelpSession->set('xhelp_mainDepts', [$deptid]);
-            }
+
         }
 
         if (!$lastPage = $_xhelpSession->get('xhelp_return_op2')) {
@@ -382,10 +384,10 @@ function deleteRole($xhelp_id, $return_op)
 {
     $xhelp_id = (int)$xhelp_id;
 
-    $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
-    $role  = $hRole->get($xhelp_id);
+    $roleHandler = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $role        = $roleHandler->get($xhelp_id);
 
-    if ($hRole->delete($role, true)) {
+    if ($roleHandler->delete($role, true)) {
         $message = _AM_XHELP_MESSAGE_ROLE_DELETE;
         redirect_header(XHELP_ADMIN_URL . "/staff.php?op=$return_op");
     } else {
@@ -401,16 +403,16 @@ function editRole()
 
     $lastPage = $_xhelpSession->get('xhelp_return_op');
 
-    if (\Xmf\Request::hasVar('id', 'REQUEST')) {
-        $xhelp_id = \Xmf\Request::getInt('id', 0, 'REQUEST');
+    if (Request::hasVar('id', 'REQUEST')) {
+        $xhelp_id = Request::getInt('id', 0, 'REQUEST');
     }
 
-    $uid = \Xmf\Request::getInt('uid', 0, 'REQUEST');
+    $uid = Request::getInt('uid', 0, 'REQUEST');
 
-    $hRole = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
-    $role  = $hRole->get($xhelp_id);
+    $roleHandler = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    $role        = $roleHandler->get($xhelp_id);
 
-    if (\Xmf\Request::hasVar('deleteRole', 'POST')) {
+    if (Request::hasVar('deleteRole', 'POST')) {
         deleteRole($xhelp_id, 'manageStaff');
         exit();
     }
@@ -437,7 +439,7 @@ function editRole()
         ];
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation('staff.php?op=editRole');
 
         echo '<script type="text/javascript" src="' . XOOPS_URL . '/modules/xhelp/include/functions.js"></script>';
@@ -479,7 +481,7 @@ function editRole()
     } else {
         $role->setVar('name', $_POST['roleName']);
         $role->setVar('description', $_POST['roleDescription']);
-        if (\Xmf\Request::hasVar('tasks', 'POST')) {
+        if (Request::hasVar('tasks', 'POST')) {
             $tasksValue = array_sum($_POST['tasks']);
         } else {
             $tasksValue = 0;
@@ -490,7 +492,7 @@ function editRole()
             $lastPage = $_xhelpSession->get('xhelp_return_op');
         }
 
-        if ($hRole->insert($role)) {
+        if ($roleHandler->insert($role)) {
             Xhelp\Utility::resetStaffUpdatedTime();
 
             $message = _AM_XHELP_MESSAGE_ROLE_UPDATE;
@@ -508,7 +510,7 @@ function editStaff()
     // require_once XHELP_CLASS_PATH . '/session.php';
     $_xhelpSession = new Xhelp\Session();
 
-    if (\Xmf\Request::hasVar('uid', 'REQUEST')) {
+    if (Request::hasVar('uid', 'REQUEST')) {
         $uid = $_REQUEST['uid'];
     }
     /*
@@ -516,7 +518,7 @@ function editStaff()
      $uid = $_REQUEST['user'];
      }
      */
-    if (\Xmf\Request::hasVar('clearRoles', 'POST')) {
+    if (Request::hasVar('clearRoles', 'POST')) {
         redirect_header(XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
     }
 
@@ -525,21 +527,21 @@ function editStaff()
     if (!isset($_POST['updateStaff'])) {
         //xoops_cp_header();
         /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');          // Get member handler
+        $memberHandler = xoops_getHandler('member');          // Get member handler
         $member        = $memberHandler->getUser($uid);
 
-        $hRoles = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
-        $crit   = new \Criteria('', '');
-        $crit->setOrder('ASC');
-        $crit->setSort('name');
-        $roles = $hRoles->getObjects($crit, true);
+        $roleHandler = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        $criteria        = new \Criteria('', '');
+        $criteria->setOrder('ASC');
+        $criteria->setSort('name');
+        $roles = $roleHandler->getObjects($criteria, true);
 
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Get department handler
-        $crit         = new \Criteria('', '');
-        $crit->setSort('department');
-        $crit->setOrder('ASC');
-        $total          = $hDepartments->getCount($crit);
-        $departmentInfo = $hDepartments->getObjects($crit);
+        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Get department handler
+        $criteria              = new \Criteria('', '');
+        $criteria->setSort('department');
+        $criteria->setOrder('ASC');
+        $total          = $departmentHandler->getCount($criteria);
+        $departmentInfo = $departmentHandler->getObjects($criteria);
 
         $staffHandler      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
         $staff             = $staffHandler->getByUid($uid);
@@ -560,7 +562,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
         //$myRoles =& $staffHandler->getRoles($staff->getVar('uid'));
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation('staff.php?op=editStaff');
 
         echo '<script type="text/javascript" src="' . XOOPS_URL . '/modules/xhelp/include/functions.js"></script>';
@@ -641,8 +643,8 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
             $deptname = $dept->getVar('department');
             $inDept   = false;  //Is the user a member of the dept
 
-            $deptroleids   = '';
-            $deptrolenames = '';
+            $deptroleids   = [];
+            $deptrolenames = [];
 
             $sess_roles = $_xhelpSession->get("xhelp_dept_$deptid");
             if ($sess_roles) {  //Customized roles stored in session?
@@ -656,7 +658,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
                     $deptroleids = implode(',', $sess_roles['roles']);  // Put all roles into 1 string separated by a ','
 
                     //An empty string means dept roles match global roles
-                    if (mb_strlen($deptroleids) > 0) { //Customized Roles
+                    if ('' !== $deptroleids) { //Customized Roles
                         $deptrolenames = implode(', ', $sess_roles['roleNames']);
                     }
                 } else {                                //Not a member of the dept
@@ -666,17 +668,18 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
                 $inDept = true;
 
                 if ($staffroles[$deptid]['roles'] == $staffroles[0]['roles']) { // If global roles same as dept roles
-                    $deptrolenames = '';
-                    $deptroleids   = [];
+                    //                    $deptrolenames = [];
+                    //                    $deptroleids   = [];
                     foreach ($staffroles[$deptid]['roles'] as $roleid => $tasks) {
                         if (isset($roles[$roleid])) {
                             $deptroleids[] = $roleid;
                         }
                     }
                     $deptroleids = implode(',', $deptroleids);
+                    $deptrolenames = '';
                 } else {
-                    $deptrolenames = [];
-                    $deptroleids   = [];
+                    //                    $deptrolenames = [];
+                    //                    $deptroleids   = [];
                     foreach ($staffroles[$deptid]['roles'] as $roleid => $tasks) {
                         if (isset($roles[$roleid])) {
                             $deptroleids[]   = $roleid;
@@ -731,7 +734,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
 
         require_once __DIR__ . '/admin_footer.php';
     } else {
-        $uid       = \Xmf\Request::getInt('uid', 0, 'POST');
+        $uid       = Request::getInt('uid', 0, 'POST');
         $depts     = $_POST['departments'];
         $roles     = $_POST['roles'];
         $custroles = $_POST['custrole'];
@@ -762,7 +765,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
 
         //Add Department Specific Roles
         foreach ($depts as $dept) {
-            if (mb_strlen($custroles[$dept]) > 0) {
+            if ('' != $custroles[$dept]) {
                 $dept_roles = explode(',', $custroles[$dept]);
             } else {
                 $dept_roles = $roles;
@@ -795,25 +798,25 @@ function manageStaff()
     $staff_search = false;
     $dept_search  = false;
 
-    if (\Xmf\Request::hasVar('addRole', 'POST')) {
+    if (Request::hasVar('addRole', 'POST')) {
         redirect_header(XHELP_ADMIN_URL . '/staff.php?op=addRole');
     }
-    if (\Xmf\Request::hasVar('clearRoles', 'POST')) {
+    if (Request::hasVar('clearRoles', 'POST')) {
         redirect_header(XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
     }
 
-    if (\Xmf\Request::hasVar('limit', 'REQUEST')) {
-        $limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
+    if (Request::hasVar('limit', 'REQUEST')) {
+        $limit = Request::getInt('limit', 0, 'REQUEST');
     }
 
-    if (\Xmf\Request::hasVar('start', 'REQUEST')) {
-        $start = \Xmf\Request::getInt('start', 0, 'REQUEST');
+    if (Request::hasVar('start', 'REQUEST')) {
+        $start = Request::getInt('start', 0, 'REQUEST');
     }
-    if (\Xmf\Request::hasVar('staff_search', 'REQUEST')) {
+    if (Request::hasVar('staff_search', 'REQUEST')) {
         $staff_search = $_REQUEST['staff_search'];
     }
 
-    if (\Xmf\Request::hasVar('dept_search', 'REQUEST')) {
+    if (Request::hasVar('dept_search', 'REQUEST')) {
         $dept_search = $_REQUEST['dept_search'];
     }
 
@@ -821,12 +824,12 @@ function manageStaff()
         $limit = 20;
     }
 
-    if (\Xmf\Request::hasVar('dlimit', 'REQUEST')) {
-        $dlimit = \Xmf\Request::getInt('dlimit', 0, 'REQUEST');
+    if (Request::hasVar('dlimit', 'REQUEST')) {
+        $dlimit = Request::getInt('dlimit', 0, 'REQUEST');
     }
 
-    if (\Xmf\Request::hasVar('dstart', 'REQUEST')) {
-        $dstart = \Xmf\Request::getInt('dstart', 0, 'REQUEST');
+    if (Request::hasVar('dstart', 'REQUEST')) {
+        $dstart = Request::getInt('dstart', 0, 'REQUEST');
     }
 
     if (!$dlimit) {
@@ -837,25 +840,25 @@ function manageStaff()
 
     if (!isset($_POST['addStaff'])) {
         /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');          // Get member handler
-        $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
-        $hDepartments  = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Get department handler
-        $hRoles        = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        $memberHandler     = xoops_getHandler('member');          // Get member handler
+        $staffHandler      = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);       // Get staff handler
+        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);    // Get department handler
+        $roleHandler       = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
 
         //Get List of depts in system
-        $crit = new \Criteria('', '');
-        $crit->setSort('department');
-        $crit->setOrder('ASC');
+        $criteria = new \Criteria('', '');
+        $criteria->setSort('department');
+        $criteria->setOrder('ASC');
 
-        $dept_count = $hDepartments->getCount($crit);
-        $dept_obj   = $hDepartments->getObjects($crit);
+        $dept_count = $departmentHandler->getCount($criteria);
+        $dept_obj   = $departmentHandler->getObjects($criteria);
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manStaff');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation('staff.php?op=manageStaff');
 
-        if (\Xmf\Request::hasVar('uid', 'GET')) {
-            $userid = \Xmf\Request::getInt('uid', 0, 'GET');
+        if (Request::hasVar('uid', 'GET')) {
+            $userid = Request::getInt('uid', 0, 'GET');
             $uname  = $xoopsUser::getUnameFromId($userid);
         } else {
             $userid = 0;
@@ -863,24 +866,24 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
         }
 
         if ($dept_count > 0) {
-            $userid = \Xmf\Request::getInt('uid', 0, 'GET');
+            $userid = Request::getInt('uid', 0, 'GET');
 
             //Get List of staff members
-            $crit = new \Criteria('', '');
-            $crit->setStart($start);
-            $crit->setLimit($limit);
+            $criteria = new \Criteria('', '');
+            $criteria->setStart($start);
+            $criteria->setLimit($limit);
 
-            $staff_obj   = $staffHandler->getObjects($crit);
-            $staff_count = $staffHandler->getCount($crit);
+            $staff_obj   = $staffHandler->getObjects($criteria);
+            $staff_count = $staffHandler->getCount($criteria);
             $user_count  = $memberHandler->getUserCount();
 
             $nav = new Xhelp\PageNav($staff_count, $limit, $start, 'start', "op=manageStaff&amp;limit=$limit");
 
             //Get List of Staff Roles
-            $crit = new \Criteria('', '');
-            $crit->setOrder('ASC');
-            $crit->setSort('name');
-            $roles = $hRoles->getObjects($crit);
+            $criteria = new \Criteria('', '');
+            $criteria->setOrder('ASC');
+            $criteria->setSort('name');
+            $roles = $roleHandler->getObjects($criteria);
 
             echo '<script type="text/javascript" src="' . XOOPS_URL . '/modules/xhelp/include/functions.js"></script>';
             echo "<form method='post' id='manageStaff' name='manageStaff' action='staff.php?op=manageStaff'>";
@@ -946,7 +949,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
                 foreach ($dept_obj as $dept) {
                     $deptid     = $dept->getVar('id');
                     $aDept      = $_xhelpSession->get("xhelp_dept_$deptid");
-                    $aDeptRoles = $aDept['roleNames'];
+                    $aDeptRoles = $aDept['roleNames'] ?? '';
                     if (!empty($aDeptRoles)) {
                         $deptRoles = implode(', ', $aDeptRoles);
                     } else {
@@ -984,24 +987,24 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
                     $staff_uids[] = $obj->getVar('uid');
                 }
                 if (false === $staff_search) {
-                    $crit = new \Criteria('uid', '(' . implode(',', $staff_uids) . ')', 'IN');
+                    $criteria = new \Criteria('uid', '(' . implode(',', $staff_uids) . ')', 'IN');
                 } else {
-                    $crit = new \CriteriaCompo(new \Criteria('uname', "%$staff_search%", 'LIKE'), 'OR');
-                    $crit->add(new \Criteria('name', "%$staff_search%", 'LIKE'), 'OR');
-                    $crit->add(new \Criteria('email', "%$staff_search%", 'LIKE'), 'OR');
+                    $criteria = new \CriteriaCompo(new \Criteria('uname', "%$staff_search%", 'LIKE'), 'OR');
+                    $criteria->add(new \Criteria('name', "%$staff_search%", 'LIKE'), 'OR');
+                    $criteria->add(new \Criteria('email', "%$staff_search%", 'LIKE'), 'OR');
                 }
-                $staff_users = $memberHandler->getUsers($crit);
+                $staff_users = $memberHandler->getUsers($criteria);
 
                 if (false === $dept_search) {
-                    $crit = new \Criteria('', '');
+                    $criteria = new \Criteria('', '');
                 } else {
-                    $crit = new \Criteria('department', "%$dept_search%", 'LIKE');
+                    $criteria = new \Criteria('department', "%$dept_search%", 'LIKE');
                 }
-                $crit->setStart($dstart);
-                $crit->setLimit($dlimit);
+                $criteria->setStart($dstart);
+                $criteria->setLimit($dlimit);
 
-                $allDepts = $hDepartments->getObjects($crit, true);
-                $dnav     = new Xhelp\PageNav($hDepartments->getCount($crit), $dlimit, $dstart, 'dstart', "op=manageStaff&amp;start=$start&amp;limit=$limit&amp;dlimit=$dlimit", 'tblManageStaff');
+                $allDepts = $departmentHandler->getObjects($criteria, true);
+                $dnav     = new Xhelp\PageNav($departmentHandler->getCount($criteria), $dlimit, $dstart, 'dstart', "op=manageStaff&amp;start=$start&amp;limit=$limit&amp;dlimit=$dlimit", 'tblManageStaff');
 
                 echo "<form action='" . XHELP_ADMIN_URL . "/staff.php?op=manageStaff' style='margin:0; padding:0;' method='post'>";
                 echo $GLOBALS['xoopsSecurity']->getTokenHTML();
@@ -1038,7 +1041,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
                 }
                 echo '</tr>';
                 $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-                $hStaffRole        = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
+                $staffRoleHandler  = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
                 foreach ($staff_users as $staff) {
                     $departments = $membershipHandler->membershipByStaff($staff->getVar('uid'), true);
                     echo "<tr class='even'><td>" . $staff->getVar('uid') . '</td><td>' . $staff->getVar('uname') . '</td>';
@@ -1065,7 +1068,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
     } else {
         $uid   = $_POST['user_id'];
         $depts = $_POST['departments'];
-        $roles = $_POST['roles'];
+        $roles = $_POST['roles'] ?? null;
         //$selectAll = $_POST['selectall'];
 
         $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
@@ -1084,7 +1087,7 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
         }
 
         /** @var \XoopsMemberHandler $memberHandler */
-$memberHandler = xoops_getHandler('member');          // Get member handler
+        $memberHandler = xoops_getHandler('member');          // Get member handler
         $newUser       = $memberHandler->getUser($uid);
 
         $email = $newUser->getVar('email');
@@ -1124,8 +1127,8 @@ $memberHandler = xoops_getHandler('member');          // Get member handler
                     }
                 }
             }
-            $hTicketList    = new Xhelp\TicketListHandler($GLOBALS['xoopsDB']);
-            $hasTicketLists = $hTicketList->createStaffGlobalLists($uid);
+            $ticketListHandler = new Xhelp\TicketListHandler($GLOBALS['xoopsDB']);
+            $hasTicketLists    = $ticketListHandler->createStaffGlobalLists($uid);
 
             redirect_header(XHELP_ADMIN_URL . '/staff.php?op=clearRoles');
         } else {

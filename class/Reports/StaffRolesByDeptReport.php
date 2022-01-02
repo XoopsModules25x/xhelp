@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
@@ -28,18 +28,17 @@ class StaffRolesByDeptReport extends Xhelp\Reports\Report
     }
 
     public $meta = [
-        'name'         => _XHELP_SRD_NAME,
+        'name'         => \_XHELP_SRD_NAME,
         'author'       => 'Eric Juden',
         'author_email' => 'eric@3dev.org',
-        'description'  => _XHELP_SRD_DESC,
+        'description'  => \_XHELP_SRD_DESC,
         'version'      => '1.0',
         'dbFields'     => [
-            'Department' => _XHELP_SRD_DB3,
-            'Role'       => _XHELP_SRD_DB2,
-            'name'       => _XHELP_SRD_DB1,
+            'Department' => \_XHELP_SRD_DB3,
+            'Role'       => \_XHELP_SRD_DB2,
+            'name'       => \_XHELP_SRD_DB1,
         ],
     ];
-
     /*
      function generateReport()
      {
@@ -99,7 +98,7 @@ class StaffRolesByDeptReport extends Xhelp\Reports\Report
      */
 
     /**
-     * @return false|mixed|void
+     * @return void
      */
     public function generateGraph()
     {

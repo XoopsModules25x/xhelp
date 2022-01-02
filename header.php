@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 use XoopsModules\Xhelp;
 
-require_once dirname(__DIR__, 2) . '/mainfile.php';
+require_once \dirname(__DIR__, 2) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -10,6 +10,16 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 
 require_once __DIR__ . '/preloads/autoloader.php';
 require_once __DIR__ . '/include/common.php';
+
+global $xoopsUser, $xoopsConfig, $xoopsModule, $xoopsModuleConfig, $xoopsTpl, $xoopsLogger, $xoopsUserIsAdmin;
+
+$helper = Xhelp\Helper::getInstance();
+
+// Load language files
+$helper->loadLanguage('admin');
+$helper->loadLanguage('modinfo');
+$helper->loadLanguage('main');
+$helper->loadLanguage('common');
 
 //require_once XHELP_BASE_PATH . '/functions.php';
 // require_once XHELP_CLASS_PATH . '/session.php';

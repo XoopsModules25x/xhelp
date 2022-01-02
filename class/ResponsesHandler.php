@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -29,29 +25,24 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Xhelp\ResponsesHandler class
+ * ResponsesHandler class
  *
- * Response Handler for Xhelp\Responses class
+ * Response Handler for Responses class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
- * @access  public
- * @package xhelp
  */
-class ResponsesHandler extends Xhelp\BaseObjectHandler
+class ResponsesHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = Responses::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
     public $_dbtable = 'xhelp_responses';
 
@@ -66,10 +57,10 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -94,10 +85,10 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -122,10 +113,10 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
 
@@ -139,15 +130,14 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
      *                                obj to delete
      * @param bool         $force
      * @return bool FALSE if failed.
-     * @access  public
      */
-    public function delete(\XoopsObject $obj, $force = false)
+    public function delete(\XoopsObject $obj, bool $force = false)
     {
         // Remove file associated with this response
-        $hFiles = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
-        $crit   = new \CriteriaCompo(new \Criteria('ticketid', $obj->getVar('ticketid')));
-        $crit->add(new \Criteria('responseid', $obj->getVar('responseid')));
-        if (!$hFiles->deleteAll($crit)) {
+        $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
+        $criteria        = new \CriteriaCompo(new \Criteria('ticketid', $obj->getVar('ticketid')));
+        $criteria->add(new \Criteria('responseid', $obj->getVar('responseid')));
+        if (!$fileHandler->deleteAll($criteria)) {
             return false;
         }
 
@@ -161,9 +151,8 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
      *
      * @param int $ticketid ticket to get count
      * @return int Number of staff responses
-     * @access  public
      */
-    public function getStaffResponseCount($ticketid)
+    public function getStaffResponseCount($ticketid): int
     {
         $sql = \sprintf('SELECT COUNT(*) FROM `%s` r INNER JOIN %s s ON r.uid = s.uid WHERE r.ticketid = %u', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_staff'), $ticketid);
 
@@ -178,13 +167,12 @@ class ResponsesHandler extends Xhelp\BaseObjectHandler
      * Get number of responses by ticketid
      *
      * @param array $tickets where ticketid is key
-     * @return array key = ticketid, value = response count
-     * @access public
+     * @return bool|array key = ticketid, value = response count
      */
     public function getResponseCounts($tickets)
     {
         if (\is_array($tickets)) {
-            //$crit = new \Criteria('ticketid', "(". implode(array_keys($tickets), ',') .")", 'IN');
+            //$criteria = new \Criteria('ticketid', "(". implode(array_keys($tickets), ',') .")", 'IN');
             $sql = \sprintf('SELECT COUNT(*) AS numresponses, ticketid FROM `%s` WHERE ticketid IN (%s) GROUP BY ticketid', $this->_db->prefix($this->_dbtable), \implode(',', \array_keys($tickets)));
         } else {
             return false;

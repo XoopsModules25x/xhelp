@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -12,19 +10,16 @@ if (!\defined('XHELP_CLASS_PATH')) {
 require_once \XHELP_PEAR_PATH . '/Net/POP3.php';
 
 /**
- * Xhelp\MailBoxPop3 class
+ * MailBoxPop3 class
  *
  * Part of the email submission subsystem. Implements access to a POP3 Mailbox
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
- * @access  public
- * @package xhelp
  */
-class MailBoxPOP3 extends Xhelp\MailBox
+class MailBoxPOP3 extends MailBox
 {
     /**
      * Instances of PEAR::POP3 class
-     * @access private
      */
     public $_pop3;
 

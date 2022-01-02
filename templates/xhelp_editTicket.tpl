@@ -129,7 +129,7 @@
                     <{else}>
                         <!-- else is for XHELP_CONTROL_FILE-->
                         <!--<input type="file" name="<{$field.fieldname}>" id="<{$field.fieldname}>" value="" size="<{$field.fieldlength}>">-->
-                        <{if $field.filename != ""}>
+                        <{if $field.filename|default:'' != ''}>
                             <a href="<{$smarty.const.XHELP_BASE_URL}>/viewFile.php?id=<{$field.fileid}>"><{$field.filename}></a>
                             <a href="ticket.php?op=deleteFile&amp;id=<{$xhelp_ticketID}>&amp;fileid=<{$field.fileid}>&amp;field=<{$field.fieldname}>"><img
                                         src="<{$xhelp_imagePath}>button_delete.png"

@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 /**
  * Class MembershipHandler
@@ -10,35 +8,31 @@ use XoopsModules\Xhelp;
 class MembershipHandler
 {
     public $_db;
-    public $_hStaff;
+    public $staffHandler;
     public $_hDept;
 
     /**
      * Constructor
-     *
-     * @param \XoopsDatabase|null $db
-     * @access public
      */
     public function __construct(\XoopsDatabase $db = null)
     {
         //Constructor
         $this->_db      = $db;
-        $this->_hStaff  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        $this->_hDept   = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $this->_hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $this->staffHandler  = new StaffHandler($GLOBALS['xoopsDB']);
+        $this->_hDept   = new DepartmentHandler($GLOBALS['xoopsDB']);
+        $this->_hTicket = new TicketHandler($GLOBALS['xoopsDB']);
     }
 
     /**
      * count objects matching a criteria
      *
-     * @param null $criteria {@link CriteriaElement} to match
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link \CriteriaElement} to match
      * @return int    count of objects
-     * @access public
      */
-    public function getCount($criteria = null)
+    public function getCount($criteria = null): int
     {
         $sql = \sprintf('SELECT COUNT(*) FROM `%s` s INNER JOIN %s j ON s.uid = j.uid', $this->_db->prefix('xhelp_staff'), $this->_db->prefix('xhelp_jstaffdept'));
-        if (null !== $criteria && $criteria instanceof \CriteriaElement) {
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
         if (!$result = $this->_db->query($sql)) {
@@ -46,7 +40,7 @@ class MembershipHandler
         }
         [$count] = $this->_db->fetchRow($result);
 
-        return $count;
+        return (int)$count;
     }
 
     /**
@@ -54,11 +48,10 @@ class MembershipHandler
      *
      * @param int  $uid staff user id
      * @param bool $id_as_key
-     * @return array array of <a href='psi_element://Xhelp\Department'>Xhelp\Department</a> objects
+     * @return array array of <a href='psi_element://Department'>Department</a> objects
      *                  objects
-     * @access public
      */
-    public function &membershipByStaff($uid, $id_as_key = false)
+    public function &membershipByStaff($uid, $id_as_key = false): array
     {
         $uid = (int)$uid;
         $sql = \sprintf('SELECT d.* FROM `%s` d INNER JOIN %s j ON d.id = j.department WHERE j.uid = %u', $this->_db->prefix('xhelp_departments'), $this->_db->prefix('xhelp_jstaffdept'), $uid);
@@ -84,16 +77,16 @@ class MembershipHandler
      * @param $uid
      * @return array
      */
-    public function &getVisibleDepartments($uid)
+    public function &getVisibleDepartments($uid): array
     {
         $uid           = (int)$uid;
-        $xoopsModule   = Xhelp\Utility::getModule();
+        $xoopsModule   = Utility::getModule();
         $module_id     = $xoopsModule->getVar('mid');
         $memberHandler = \xoops_getHandler('member');
         $groups        = $memberHandler->getGroupsByUser($uid);
         $group_string  = '(' . \implode(',', \array_values($groups)) . ')';
 
-        $sql = \sprintf("SELECT d.* FROM `%s` d INNER JOIN %s g ON d.id = g.gperm_itemid WHERE g.gperm_name = '%s' AND g.gperm_modid = '%s' AND g.gperm_groupid IN %s", $this->_db->prefix('xhelp_departments'), $this->_db->prefix('group_permission'), _XHELP_GROUP_PERM_DEPT, $module_id, $group_string);
+        $sql = \sprintf("SELECT d.* FROM `%s` d INNER JOIN %s g ON d.id = g.gperm_itemid WHERE g.gperm_name = '%s' AND g.gperm_modid = '%s' AND g.gperm_groupid IN %s", $this->_db->prefix('xhelp_departments'), $this->_db->prefix('group_permission'), \_XHELP_GROUP_PERM_DEPT, $module_id, $group_string);
         $ret = $this->_db->query($sql);
         $arr = [];
 
@@ -112,7 +105,7 @@ class MembershipHandler
      * @param $deptid
      * @return bool
      */
-    public function isStaffMember($uid, $deptid)
+    public function isStaffMember($uid, $deptid): bool
     {
         $sql = \sprintf('SELECT COUNT(*) AS MemberCount FROM `%s` WHERE uid = %u AND department = %u', $this->_db->prefix('xhelp_jstaffdept'), $uid, $deptid);
         $ret = $this->_db->query($sql);
@@ -127,11 +120,10 @@ class MembershipHandler
      * @param int|array $deptid department id
      * @param int       $limit
      * @param int       $start
-     * @return array array of <a href='psi_element://Xhelp\Staff'>Xhelp\Staff</a> objects
+     * @return array array of <a href='psi_element://Staff'>Staff</a> objects
      *                          objects
-     * @access public
      */
-    public function &membershipByDept($deptid, $limit = 0, $start = 0)
+    public function &membershipByDept($deptid, $limit = 0, $start = 0): array
     {
         $limit   = (int)$limit;
         $start   = (int)$start;
@@ -163,7 +155,7 @@ class MembershipHandler
         $arr = [];
 
         while (false !== ($temp = $this->_db->fetchArray($ret))) {
-            $staff = $this->_hStaff->create();
+            $staff = $this->staffHandler->create();
             $staff->assignVars($temp);
             $arr[$staff->getVar('uid')] = $staff;
             unset($temp);
@@ -178,12 +170,12 @@ class MembershipHandler
      * @param int $start
      * @return array
      */
-    public function &xoopsUsersByDept($deptid, $limit = 0, $start = 0)
+    public function &xoopsUsersByDept($deptid, $limit = 0, $start = 0): array
     {
-        $limit   = (int)$limit;
-        $start   = (int)$start;
-        $a_depts = [];
-        $hUser   = \xoops_getHandler('user');
+        $limit       = (int)$limit;
+        $start       = (int)$start;
+        $a_depts     = [];
+        $userHandler = \xoops_getHandler('user');
 
         if (\is_array($deptid)) {
             foreach ($deptid as $dept) {
@@ -211,7 +203,7 @@ class MembershipHandler
         $arr = [];
 
         while (false !== ($temp = $this->_db->fetchArray($ret))) {
-            $staff = $hUser->create();
+            $staff = $userHandler->create();
             $staff->assignVars($temp);
             $arr[$staff->getVar('uid')] = $staff;
             unset($temp);
@@ -224,10 +216,10 @@ class MembershipHandler
      * @param $staffDepts
      * @return bool
      */
-    public function inAllDepts($staffDepts)
+    public function inAllDepts($staffDepts): bool
     {
-        $hDept    = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $allDepts = $hDept->getCount();
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
+        $allDepts          = $departmentHandler->getCount();
 
         $numDepts = 0;
         foreach ($staffDepts as $dept) {
@@ -244,12 +236,11 @@ class MembershipHandler
     /**
      * Add the given staff member(s) to the given department
      *
-     * @param mixed $staff  single or array of uids or {@link Xhelp\Staff} objects
+     * @param mixed $staff  single or array of uids or {@link Staff} objects
      * @param int   $deptid Department ID
      * @return bool  True if successful, False if not
-     * @access public
      */
-    public function addStaffToDept($staff, $deptid)
+    public function addStaffToDept($staff, $deptid): bool
     {
         if (!\is_array($staff)) {
             return $this->_addMembership($staff, $deptid);
@@ -268,12 +259,11 @@ class MembershipHandler
     /**
      * Add the given department(s) to the given user
      *
-     * @param mixed $dept single or array of department id's or {@link Xhelp\Department} objects
+     * @param mixed $dept single or array of department id's or {@link Department} objects
      * @param int   $uid  User ID
      * @return bool  True if successful, False if not
-     * @access public
      */
-    public function addDeptToStaff($dept, $uid)
+    public function addDeptToStaff($dept, $uid): bool
     {
         if (!\is_array($dept)) {
             return $this->_addMembership($uid, $dept);
@@ -292,12 +282,11 @@ class MembershipHandler
     /**
      * Remove the given staff member(s) to the given department
      *
-     * @param mixed $staff  single or array of uids or {@link Xhelp\Staff} objects
+     * @param mixed $staff  single or array of uids or {@link Staff} objects
      * @param int   $deptid Department ID
      * @return bool  True if successful, False if not
-     * @access public
      */
-    public function removeStaffFromDept($staff, $deptid)
+    public function removeStaffFromDept($staff, $deptid): bool
     {
         if (!\is_array($staff)) {
             return $this->_removeMembership($staff, $deptid);
@@ -316,12 +305,11 @@ class MembershipHandler
     /**
      * Remove the given user from the given department(s)
      *
-     * @param mixed $dept single or array of department id's or {@link Xhelp\Department} objects
+     * @param mixed $dept single or array of department id's or {@link Department} objects
      * @param int   $uid  User ID
      * @return bool  True if successful, False if not
-     * @access public
      */
-    public function removeDeptFromStaff($dept, $uid)
+    public function removeDeptFromStaff($dept, $uid): bool
     {
         if (!\is_array($dept)) {
             return $this->_removeMembership($uid, $dept);
@@ -342,9 +330,8 @@ class MembershipHandler
      *
      * @param int $uid User ID
      * @return bool True if successful, False if not
-     * @access public
      */
-    public function clearStaffMembership($uid)
+    public function clearStaffMembership($uid): bool
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE uid=%u', $this->_db->prefix('xhelp_jstaffdept'), $uid);
 
@@ -356,9 +343,8 @@ class MembershipHandler
      *
      * @param int $deptid Department ID
      * @return bool True if successful, False if not
-     * @access public
      */
-    public function clearDeptMembership($deptid)
+    public function clearDeptMembership($deptid): bool
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE department=%u', $this->_db->prefix('xhelp_jstaffdept'), $deptid);
 
@@ -368,12 +354,11 @@ class MembershipHandler
     /**
      * Add a staff member to a department
      *
-     * @param mixed $staff uid or {@link Xhelp\Staff} object
-     * @param mixed $dept  department id or {@link Xhelp\Department} object
+     * @param mixed $staff uid or {@link Staff} object
+     * @param mixed $dept  department id or {@link Department} object
      * @return bool  True if successful, False if not
-     * @access private
      */
-    public function _addMembership($staff, $dept)
+    public function _addMembership($staff, $dept): bool
     {
         $deptid  = 0;
         $staffid = 0;
@@ -399,9 +384,8 @@ class MembershipHandler
      * @param int $staffid user id
      * @param int $deptid  department id
      * @return bool True if successful, False if not
-     * @access private
      */
-    public function _addJoinerRecord($staffid, $deptid)
+    public function _addJoinerRecord($staffid, $deptid): bool
     {
         $sql = \sprintf('INSERT INTO `%s` (uid, department) VALUES(%u, %u)', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
 
@@ -411,12 +395,11 @@ class MembershipHandler
     /**
      * Remove a staff member from a department
      *
-     * @param mixed $staff uid or {@link Xhelp\Staff} object
-     * @param mixed $dept  department id or {@link Xhelp\Department} object
+     * @param mixed $staff uid or {@link Staff} object
+     * @param mixed $dept  department id or {@link Department} object
      * @return bool  True if successful, False if not
-     * @access private
      */
-    public function _removeMembership($staff, $dept)
+    public function _removeMembership($staff, $dept): bool
     {
         $deptid  = 0;
         $staffid = 0;
@@ -442,9 +425,8 @@ class MembershipHandler
      * @param int $staffid user id
      * @param int $deptid  department id
      * @return bool True if successful, False if not
-     * @access private
      */
-    public function _removeJoinerRecord($staffid, $deptid)
+    public function _removeJoinerRecord($staffid, $deptid): bool
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE uid=%u AND department=%u', $this->_db->prefix('xhelp_jstaffdept'), $staffid, $deptid);
 
@@ -455,7 +437,7 @@ class MembershipHandler
      * @param $depts
      * @return array
      */
-    public function &_uidsInDepts($depts)
+    public function &_uidsInDepts($depts): array
     {
         $sql = \sprintf('SELECT j.uid FROM `%s` j WHERE j.department IN (%s) GROUP BY j.uid HAVING COUNT(*) = %u', $this->_db->prefix('xhelp_jstaffdept'), \implode(',', $depts), \count($depts));
 
@@ -475,28 +457,28 @@ class MembershipHandler
 
 1. Get all departments for a user
 $uid = 14;
-$membershipHandler &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$membershipHandler &= new MembershipHandler($GLOBALS['xoopsDB']);
 $depts &= $membershipHandler->membershipByStaff($uid);
 
 2. Get all staff members of a dept
 $deptid = 5;
-$membershipHandler &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$membershipHandler &= new MembershipHandler($GLOBALS['xoopsDB']);
 $staff &= $membershipHandler->membershipByDept($deptid);
 
 3. Add the current user to a department
 $dept = 5;
-$membershipHandler &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$membershipHandler &= new MembershipHandler($GLOBALS['xoopsDB']);
 $bRet = $membershipHandler->addStaffToDept($xoopsUser, $dept);
 
 or
 
 $dept = 5;
-$membershipHandler &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$membershipHandler &= new MembershipHandler($GLOBALS['xoopsDB']);
 $bRet = $membershipHandler->addStaffToDept($xoopsUser->getVar('uid'), $dept);
 
 4. Add an array of users to a department
 $dept = 5;
 $arr = array(5, 14, 18); //Array of uid's to add
-$membershipHandler &= new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+$membershipHandler &= new MembershipHandler($GLOBALS['xoopsDB']);
 $bRet = $membershipHandler->addStaffToDept($arr, $dept);
 */

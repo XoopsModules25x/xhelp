@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
@@ -35,22 +35,20 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name = 'ticketsByDept';
-
-    public $meta = [
-        'name'        => _XHELP_TBD_NAME,
+    public $name       = 'ticketsByDept';
+    public $meta       = [
+        'name'        => \_XHELP_TBD_NAME,
         'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
-        'description' => _XHELP_TBD_DESC,
+        'description' => \_XHELP_TBD_DESC,
         'version'     => '1.0',
         'dbFields'    => [
-            'department'  => _XHELP_TBD_DB1,
-            'TicketCount' => _XHELP_TBD_DB2,
+            'department'  => \_XHELP_TBD_DB1,
+            'TicketCount' => \_XHELP_TBD_DB2,
         ],
     ];
-
     public $parameters = [
-        _XHELP_TBD_PARAM1 => [
+        \_XHELP_TBD_PARAM1 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'startDate',
             'value'       => '',      // last month
@@ -59,7 +57,7 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
             'dbfield'     => 't.posted',
             'dbaction'    => '>',
         ],
-        _XHELP_TBD_PARAM2 => [
+        \_XHELP_TBD_PARAM2 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'endDate',
             'value'       => '',      // today
@@ -69,7 +67,6 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
             'dbaction'    => '<=',
         ],
     ];
-
     /*
      function generateReport()
      {
@@ -133,7 +130,7 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
      */
 
     /**
-     * @return false|mixed|void
+     * @return void
      */
     public function generateGraph()
     {

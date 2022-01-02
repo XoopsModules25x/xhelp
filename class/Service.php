@@ -1,18 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
- * Xhelp\Service class
+ * Service class
  *
  * Part of the Messaging Subsystem. Provides the base interface for subscribing, unsubcribing from events
  *
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
 class Service
 {
@@ -23,18 +20,18 @@ class Service
      * @param $eventName
      * @param $callback
      */
-    public function _attachEvent($eventName, $callback)
+    public function attachEvent($eventName, $callback)
     {
         $this->_addCookie($eventName, $this->_eventSrv->advise($eventName, $callback));
     }
 
     public function init()
     {
-        $this->_eventSrv = Xhelp\Utility::createNewEventService();
-        $this->_attachEvents();
+        $this->_eventSrv = EventService::getInstance();
+        $this->attachEvents();
     }
 
-    public function _attachEvents()
+    public function attachEvents()
     {
         //Do nothing (must implement this function in subclasses)
     }

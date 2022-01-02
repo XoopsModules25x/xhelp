@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * File: calendar.php | (c) dynarch.com 2004
@@ -14,10 +14,9 @@ define('NEWLINE', "\n");
 /**
  * Class DHTML_Calendar
  */
-class DHTML_Calendar
+class _calendar
 {
     public $calendar_lib_path;
-
     public $calendar_file;
     public $calendar_lang_file;
     public $calendar_setup_file;
@@ -77,7 +76,7 @@ class DHTML_Calendar
      * DHTML_Calendar::get_load_files_code()
      * @return string
      */
-    public function get_load_files_code()
+    public function get_load_files_code(): ?string
     {
         if (isset($GLOBALS['xo_Theme'])) {
             $GLOBALS['xo_Theme']->addStylesheet($this->calendar_theme_url . $this->calendar_theme_file);
@@ -101,7 +100,7 @@ class DHTML_Calendar
      * @param array $other_options
      * @return string
      */
-    public function _make_calendar($other_options = [])
+    public function _make_calendar($other_options = []): string
     {
         $js_options = $this->_make_js_hash(array_merge($this->calendar_options, $other_options));
         $code       = '<script type="text/javascript">Calendar.setup({' . $js_options . '});</script>';
@@ -117,7 +116,7 @@ class DHTML_Calendar
      * @param mixed $show
      * @return string
      */
-    public function make_input_field($cal_options = [], $field_attributes = [], $show = true)
+    public function make_input_field($cal_options = [], $field_attributes = [], $show = true): string
     {
         $id      = $this->_gen_id();
         $attrstr = $this->_make_html_attr(array_merge($field_attributes, ['id' => $this->_field_id($id), 'type' => 'text']));
@@ -140,7 +139,7 @@ class DHTML_Calendar
      * @param $id
      * @return string
      */
-    public function _field_id($id)
+    public function _field_id($id): string
     {
         return 'f-calendar-field-' . $id;
     }
@@ -149,7 +148,7 @@ class DHTML_Calendar
      * @param $id
      * @return string
      */
-    public function _trigger_id($id)
+    public function _trigger_id($id): string
     {
         return 'f-calendar-trigger-' . $id;
     }
@@ -157,7 +156,7 @@ class DHTML_Calendar
     /**
      * @return int
      */
-    public function _gen_id()
+    public function _gen_id(): int
     {
         static $id = 0;
 
@@ -168,7 +167,7 @@ class DHTML_Calendar
      * @param $array
      * @return string
      */
-    public function _make_js_hash($array)
+    public function _make_js_hash($array): string
     {
         $jstr = '';
         //        reset($array);
@@ -192,7 +191,7 @@ class DHTML_Calendar
      * @param $array
      * @return string
      */
-    public function _make_html_attr($array)
+    public function _make_html_attr($array): string
     {
         $attrstr = '';
         //        reset($array);

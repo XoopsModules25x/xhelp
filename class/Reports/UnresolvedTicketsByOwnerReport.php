@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
@@ -35,27 +35,25 @@ class UnresolvedTicketsByOwnerReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name = 'unresolvedTicketsByOwner';
-
-    public $meta = [
-        'name'        => _XHELP_UTBO_NAME,
+    public $name       = 'unresolvedTicketsByOwner';
+    public $meta       = [
+        'name'        => \_XHELP_UTBO_NAME,
         'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
-        'description' => _XHELP_UTBO_DESC,
+        'description' => \_XHELP_UTBO_DESC,
         'version'     => '1.0',
         'dbFields'    => [
-            'owner'          => _XHELP_UTBO_DB1,
-            'id'             => _XHELP_UTBO_DB2,
-            'subject'        => _XHELP_UTBO_DB3,
-            'status'         => _XHELP_UTBO_DB4,
-            'department'     => _XHELP_UTBO_DB5,
-            'totalTimeSpent' => _XHELP_UTBO_DB6,
-            'postTime'       => _XHELP_UTBO_DB7,
+            'owner'          => \_XHELP_UTBO_DB1,
+            'id'             => \_XHELP_UTBO_DB2,
+            'subject'        => \_XHELP_UTBO_DB3,
+            'status'         => \_XHELP_UTBO_DB4,
+            'department'     => \_XHELP_UTBO_DB5,
+            'totalTimeSpent' => \_XHELP_UTBO_DB6,
+            'postTime'       => \_XHELP_UTBO_DB7,
         ],
     ];
-
     public $parameters = [
-        _XHELP_UTBO_PARAM1 => [
+        \_XHELP_UTBO_PARAM1 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'startDate',
             'value'       => '',      // last month
@@ -64,7 +62,7 @@ class UnresolvedTicketsByOwnerReport extends Xhelp\Reports\Report
             'dbfield'     => 't.posted',
             'dbaction'    => '>',
         ],
-        _XHELP_UTBO_PARAM2 => [
+        \_XHELP_UTBO_PARAM2 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'endDate',
             'value'       => '',      // today

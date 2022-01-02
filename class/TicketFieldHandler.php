@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,9 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -31,21 +28,18 @@ if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
 /**
  * class TicketFieldHandler
  */
-class TicketFieldHandler extends Xhelp\BaseObjectHandler
+class TicketFieldHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = TicketField::class;
-
     /**
      * DB Table Name
      *
      * @var string
-     * @access  private
      */
     public $_dbtable = 'xhelp_ticket_fields';
     public $id       = 'id';
@@ -61,10 +55,10 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -93,10 +87,10 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery($obj)
     {
         // Copy all object vars into local variables
         foreach ($obj->cleanVars as $k => $v) {
@@ -125,10 +119,10 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery($obj)
     {
         $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
 
@@ -136,13 +130,12 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
-     * @param bool         $force
-     * @return bool|void
+     * @param bool $force
+     * @return bool
      */
-    public function insert(\XoopsObject $obj, $force = false)
+    public function insert(\XoopsObject $obj, bool $force = false)
     {
-        $hFDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+        $ticketFieldDepartmentHandler = new TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
         if (!$obj->isNew()) {
             $old_obj = $this->get($obj->getVar('id'));
 
@@ -163,20 +156,20 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
         $ret = parent::insert($obj, $force);
         if ($ret) {
             //Update Joiner Records
-            $ret2 = $hFDept->removeFieldFromAllDept($obj->getVar('id'));
+            $ret2 = $ticketFieldDepartmentHandler->removeFieldFromAllDept($obj->getVar('id'));
 
             $depts = $obj->getDepartments();
 
             if (\count($depts)) {
-                $ret = $hFDept->addDepartmentToField($depts, $obj->getVar('id'));
+                $ret = $ticketFieldDepartmentHandler->addDepartmentToField($depts, $obj->getVar('id'));
             }
 
             $mysql = $this->_mysqlDBType($obj);
 
             if ($add_field) {
-                Xhelp\Utility::addDBField('xhelp_ticket_values', $fieldname, $mysql['fieldtype'], $mysql['length']);
+                Utility::addDBField('xhelp_ticket_values', $fieldname, $mysql['fieldtype'], $mysql['length']);
             } elseif ($alter_table) {
-                Xhelp\Utility::renameDBField('xhelp_ticket_values', $old_name, $new_name, $mysql['fieldtype'], $mysql['length']);
+                Utility::renameDBField('xhelp_ticket_values', $old_name, $new_name, $mysql['fieldtype'], $mysql['length']);
             }
         }
 
@@ -184,20 +177,19 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
-     * @param bool         $force
-     * @return bool|resource
+     * @param bool $force
+     * @return bool
      */
-    public function delete(\XoopsObject $obj, $force = false)
+    public function delete(\XoopsObject $obj, bool $force = false)
     {
         //Remove FieldDepartment Records
-        $hFDept = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
-        if (!$ret = $hFDept->removeFieldFromAllDept($obj, $force)) {
+        $ticketFieldDepartmentHandler = new TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+        if (!$ret = $ticketFieldDepartmentHandler->removeFieldFromAllDept($obj, $force)) {
             $obj->setErrors('Unable to remove field from departments');
         }
 
         //Remove values from ticket values table
-        if (!$ret = Xhelp\Utility::removeDBField('xhelp_ticket_values', $obj->getVar('fieldname'))) {
+        if (!$ret = Utility::removeDBField('xhelp_ticket_values', $obj->getVar('fieldname'))) {
             $obj->setErrors('Unable to remove field from ticket values table');
         }
 
@@ -209,21 +201,21 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
 
     /**
      * @param $dept
-     * @return mixed
+     * @return array
      */
     public function getByDept($dept)
     {
-        $tickefielddepartmentHandler = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
+        $tickefielddepartmentHandler = new TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
         $ret                         = $tickefielddepartmentHandler->fieldsByDepartment($dept);
 
         return $ret;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $obj
      * @return array
      */
-    public function _mysqlDBType($obj)
+    public function _mysqlDBType($obj): array
     {
         $controltype = $obj->getVar('controltype');
         $datatype    = $obj->getVar('datatype');
@@ -235,7 +227,7 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
             case \XHELP_CONTROL_TXTBOX:
 
                 switch ($datatype) {
-                    case _XHELP_DATATYPE_TEXT:
+                    case \_XHELP_DATATYPE_TEXT:
                         if ($fieldlength <= 255) {
                             $mysqldb['fieldtype'] = 'VARCHAR';
                         } elseif ($fieldlength <= 65535) {
@@ -246,11 +238,11 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
                             $mysqldb['fieldtype'] = 'LONGTEXT';
                         }
                         break;
-                    case _XHELP_DATATYPE_NUMBER_INT:
+                    case \_XHELP_DATATYPE_NUMBER_INT:
                         $mysqldb['fieldtype'] = 'INT';
                         $mysqldb['length']    = 0;
                         break;
-                    case _XHELP_DATATYPE_NUMBER_DEC:
+                    case \_XHELP_DATATYPE_NUMBER_DEC:
                         $mysqldb['fieldtype'] = 'DECIMAL';
                         $mysqldb['length']    = '7,4';
 
@@ -277,7 +269,7 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
                 break;
             case \XHELP_CONTROL_SELECT:
                 switch ($datatype) {
-                    case _XHELP_DATATYPE_TEXT:
+                    case \_XHELP_DATATYPE_TEXT:
                         if ($fieldlength <= 255) {
                             $mysqldb['fieldtype'] = 'VARCHAR';
                         } elseif ($fieldlength <= 65535) {
@@ -288,11 +280,11 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
                             $mysqldb['fieldtype'] = 'LONGTEXT';
                         }
                         break;
-                    case _XHELP_DATATYPE_NUMBER_INT:
+                    case \_XHELP_DATATYPE_NUMBER_INT:
                         $mysqldb['fieldtype'] = 'INT';
                         $mysqldb['length']    = 0;
                         break;
-                    case _XHELP_DATATYPE_NUMBER_DEC:
+                    case \_XHELP_DATATYPE_NUMBER_DEC:
                         $mysqldb['fieldtype'] = 'DECIMAL';
                         $mysqldb['length']    = '7,4';
 
@@ -309,7 +301,7 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
                 break;
             case \XHELP_CONTROL_RADIOBOX:
                 switch ($datatype) {
-                    case _XHELP_DATATYPE_TEXT:
+                    case \_XHELP_DATATYPE_TEXT:
                         if ($fieldlength <= 255) {
                             $mysqldb['fieldtype'] = 'VARCHAR';
                         } elseif ($fieldlength <= 65535) {
@@ -320,11 +312,11 @@ class TicketFieldHandler extends Xhelp\BaseObjectHandler
                             $mysqldb['fieldtype'] = 'LONGTEXT';
                         }
                         break;
-                    case _XHELP_DATATYPE_NUMBER_INT:
+                    case \_XHELP_DATATYPE_NUMBER_INT:
                         $mysqldb['fieldtype'] = 'INT';
                         $mysqldb['length']    = 0;
                         break;
-                    case _XHELP_DATATYPE_NUMBER_DEC:
+                    case \_XHELP_DATATYPE_NUMBER_DEC:
                         $mysqldb['fieldtype'] = 'DECIMAL';
                         $mysqldb['length']    = '7,4';
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -26,11 +26,11 @@ class AdminButtons
 
     /**
      * AdminButtons constructor.
-     * @param        $linkname
-     * @param        $url
+     * @param string $linkname
+     * @param string $url
      * @param string $key
      */
-    public function __construct($linkname, $url, $key = '')
+    public function __construct(string $linkname, string $url, string $key = '')
     {
         if (!$key) {
             $this->arrLinks[] = $linkname;
@@ -42,8 +42,8 @@ class AdminButtons
     }
 
     /**
-     * @param        $linkname
-     * @param        $url
+     * @param string $linkname
+     * @param string $url
      * @param string $key
      */
     public function addTopLink($linkname, $url, $key = '')
@@ -69,7 +69,7 @@ class AdminButtons
      * @param int $selectedtab
      * @return string
      */
-    public function renderButtons($selectedtab = 0)
+    public function renderButtons(int $selectedtab = 0): string
     {
         $section = '';
         $i       = 0;
@@ -85,7 +85,7 @@ class AdminButtons
         $section .= "<div id=\"buttonNav\">\n";
         $section .= '<h2 id="appTitle">' . $this->admintitle . "</h2>\n";
         $section .= "<ul id=\"linkMenu\">\n";
-        for ($i = 0, $iMax = count($this->arrTopLinks); $i < $iMax; ++$i) {
+        for ($i = 0, $iMax = \count($this->arrTopLinks); $i < $iMax; ++$i) {
             if ($i) {
                 $section .= '<li>';
             } else {

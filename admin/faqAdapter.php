@@ -1,5 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/admin_header.php';
@@ -9,7 +11,7 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 $op = 'default';
 
-if (\Xmf\Request::hasVar('op', 'REQUEST')) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -30,7 +32,7 @@ function manage()
     $myAdapter   = Xhelp\FaqAdapterFactory::getFaqAdapter();
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manFaqAdapters');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
     echo "<form method='post' action='" . XHELP_ADMIN_URL . "/faqAdapter.php?op=updateActive'>";

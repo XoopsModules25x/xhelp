@@ -1,11 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
 
 /**
- * xhelp_eventService class
+ * EventService class
  *
  * Messaging Subsystem.  Notifies objects when events occur in the system
  *
@@ -20,8 +19,6 @@ use XoopsModules\Xhelp;
  * </code>
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
 class EventService
 {
@@ -29,14 +26,11 @@ class EventService
      * Array of all function callbacks
      *
      * @var array
-     * @access  private
      */
     public $_ctx = [];
 
     /**
      * Class Constructor
-     *
-     * @access  public
      */
     public function __construct()
     {
@@ -46,12 +40,11 @@ class EventService
     /**
      * Add a new class function to be notified
      * @param string   $context  Event used for callback
-     * @param callback $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
+     * @param callable $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
      * @param int      $priority Order that callback should be triggered
      * @return int      Event cookie, used for unadvise
-     * @access  public
      */
-    public function advise($context, $callback, $priority = 10)
+    public function advise(string $context, $callback, int $priority = 10): int
     {
         $clbk = $callback;
         if (!\is_array($callback) && \is_object($callback)) {
@@ -70,17 +63,15 @@ class EventService
      * @param string $context Event used for callback
      * @param int    $cookie  The Event ID returned by xhelp_eventService::advise()
      * @param int    $priority
-     * @access  public
      */
-    public function unadvise($context, $cookie, $priority = 10)
+    public function unadvise(string $context, int $cookie, int $priority = 10)
     {
         $this->_ctx[$context][(string)$priority][$cookie] = false;
     }
 
     /**
      * Only have 1 instance of class used
-     * @return object {@link xhelp_eventService}
-     * @access  public
+     * @return EventService {@link EventService}
      */
     public static function getInstance()
     {
@@ -96,9 +87,8 @@ class EventService
      * Tell subscribed objects an event occurred in the system
      * @param string $context Event raised by the system
      * @param array  $args    Any arguments that need to be passed to the callback functions
-     * @access  public
      */
-    public function trigger($context, $args)
+    public function trigger(string $context, array $args)
     {
         if (isset($this->_ctx[$context])) {
             \ksort($this->_ctx[$context]);

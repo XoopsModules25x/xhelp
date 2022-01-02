@@ -1,6 +1,6 @@
 //1. Get the custom fields for a given department
-$hTicketCustField = $helper->getHandler('TicketCustomField');
-$fields =& $hTicketCustField->getByDept($deptid);
+$ticketCustomFieldHandler = $helper->getHandler('TicketCustomField');
+$fields =& $ticketCustomFieldHandler->getByDept($deptid);
 
 foreach($fields as $field) {
     echo $field->getVar('name'); //Display Pretty Name for field
@@ -19,8 +19,8 @@ foreach($fields as $field) {
 }
 
 //2. Create a new custom field
-$hTicketCustField = $helper->getHandler('TicketCustomField');
-$field =& $hTicketCustField->create();
+$ticketCustomFieldHandler = $helper->getHandler('TicketCustomField');
+$field =& $ticketCustomFieldHandler->create();
 $field->setVar('name', $name);
 $field->setVar('description', $description);
 //... additional code
@@ -33,7 +33,7 @@ $field->addDepartment(4);
 
 $field->removeDepartment(5);
 
-$ret = $hTicketCustField->insert($field);
+$ret = $ticketCustomFieldHandler->insert($field);
 
 //3. Retriving a custom ticket var from form submission storing it in the ticket
 

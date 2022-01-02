@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -15,12 +15,8 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
  * @author       XOOPS Development Team
  */
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -30,11 +26,9 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/NotificationService.php';
 
 /**
- * Xhelp\Staff class
+ * Staff class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
 
 // require_once XHELP_CLASS_PATH . '/session.php';
@@ -45,7 +39,7 @@ if (!\defined('XHELP_CLASS_PATH')) {
 class Staff extends \XoopsObject
 {
     /**
-     * Xhelp\Staff constructor.
+     * Staff constructor.
      * @param null $id
      */
     public function __construct($id = null)
@@ -78,11 +72,9 @@ class Staff extends \XoopsObject
      * @param int   $task
      * @param mixed $depts integer/array of department id(s)
      *
-     * @return true if success, FALSE if failure
-     *
-     * @access public
+     * @return bool true if success, FALSE if failure
      */
-    public function checkRoleRights($task, $depts = 0)
+    public function checkRoleRights($task, $depts = 0): bool
     {
         $task = (int)$task;
         if (!\is_array($depts)) { // Integer value, change $depts to an array with 1 element
@@ -92,7 +84,7 @@ class Staff extends \XoopsObject
             $depts[] = $dept_id;
         }
 
-        $_xhelpSession = new Xhelp\Session();
+        $_xhelpSession = new Session();
 
         if (!$rights = $_xhelpSession->get('xhelp_staffRights')) {
             $rights = $this->getAllRoleRights();
@@ -117,12 +109,12 @@ class Staff extends \XoopsObject
     /**
      * Retrieve all role rights for current user
      */
-    public function getAllRoleRights()
+    public function getAllRoleRights(): array
     {
         $perms        = [];
-        $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        $hRole        = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
-        $roles        = $hRole->getObjects(null, true);
+        $staffHandler = new StaffHandler($GLOBALS['xoopsDB']);
+        $roleHandler  = new RoleHandler($GLOBALS['xoopsDB']);
+        $roles        = $roleHandler->getObjects(null, true);
         $staffRoles   = $staffHandler->getRoles($this->getVar('uid'));
         foreach ($staffRoles as $role) {
             $deptid = $role->getVar('deptid');
@@ -144,9 +136,9 @@ class Staff extends \XoopsObject
     /**
      * @return bool
      */
-    public function resetRoleRights()
+    public function resetRoleRights(): bool
     {
-        $_xhelpSession = new Xhelp\Session();
+        $_xhelpSession = new Session();
         $_xhelpSession->del('xhelp_staffRights');
 
         return true;

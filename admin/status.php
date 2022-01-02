@@ -1,5 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/admin_header.php';
@@ -9,18 +11,18 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
-$limit = \Xmf\Request::getInt('limit', 0, 'REQUEST');
-$start = \Xmf\Request::getInt('start', 0, 'REQUEST');
+$limit = Request::getInt('limit', 0, 'REQUEST');
+$start = Request::getInt('start', 0, 'REQUEST');
 
 if (!$limit) {
     $limit = 15;
 }
-if (\Xmf\Request::hasVar('order', 'REQUEST')) {
+if (Request::hasVar('order', 'REQUEST')) {
     $order = $_REQUEST['order'];
 } else {
     $order = 'ASC';
 }
-if (\Xmf\Request::hasVar('sort', 'REQUEST')) {
+if (Request::hasVar('sort', 'REQUEST')) {
     $sort = $_REQUEST['sort'];
 } else {
     $sort = 'id';
@@ -36,7 +38,7 @@ $aLimitBy = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' =
 
 $op = 'default';
 
-if (\Xmf\Request::hasVar('op', 'REQUEST')) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -57,25 +59,25 @@ switch ($op) {
 
 function deleteStatus()
 {
-    if (\Xmf\Request::hasVar('statusid', 'GET')) {
-        $statusid = \Xmf\Request::getInt('statusid', 0, 'GET');
+    if (Request::hasVar('statusid', 'GET')) {
+        $statusid = Request::getInt('statusid', 0, 'GET');
     } else {
         redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
-    $hTickets = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $hStatus  = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
-    $status   = $hStatus->get($statusid);
+    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $status        = $statusHandler->get($statusid);
 
     // Check for tickets with this status first
-    $crit        = new \Criteria('status', $statusid);
-    $ticketCount = $hTickets->getCount($crit);
+    $criteria        = new \Criteria('status', (string)$statusid);
+    $ticketCount = $ticketHandler->getCount($criteria);
 
     if ($ticketCount > 0) {
         redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, _AM_XHELP_STATUS_HASTICKETS_ERR);
     }
 
-    if ($hStatus->delete($status, true)) {
+    if ($statusHandler->delete($status, true)) {
         redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     } else {
         $message = _AM_XHELP_DEL_STATUS_ERR;
@@ -85,19 +87,19 @@ function deleteStatus()
 
 function editStatus()
 {
-    if (\Xmf\Request::hasVar('statusid', 'REQUEST')) {
-        $statusid = \Xmf\Request::getInt('statusid', 0, 'REQUEST');
+    if (Request::hasVar('statusid', 'REQUEST')) {
+        $statusid = Request::getInt('statusid', 0, 'REQUEST');
     } else {
         redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
     }
 
-    $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
-    $status  = $hStatus->get($statusid);
+    $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $status        = $statusHandler->get($statusid);
 
     if (!isset($_POST['updateStatus'])) {
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('modTpl');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation('status.php?op=editStatus');
 
         echo "<form method='post' action='" . XHELP_ADMIN_URL . '/status.php?op=editStatus&amp;statusid=' . $statusid . "'>";
@@ -130,7 +132,7 @@ function editStatus()
 
         $status->setVar('description', $_POST['desc']);
         $status->setVar('state', $_POST['state']);
-        if ($hStatus->insert($status)) {
+        if ($statusHandler->insert($status)) {
             redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
         } else {
             $message = _AM_MESSAGE_EDIT_STATUS_ERR;
@@ -142,22 +144,22 @@ function editStatus()
 function manageStatus()
 {
     global $aSortBy, $aOrderBy, $aLimitBy, $order, $limit, $start, $sort;
-    $hStatus = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
 
-    if (\Xmf\Request::hasVar('changeDefaultStatus', 'POST')) {
+    if (Request::hasVar('changeDefaultStatus', 'POST')) {
         Xhelp\Utility::setMeta('default_status', $_POST['default']);
     }
 
-    if (\Xmf\Request::hasVar('newStatus', 'POST')) {
+    if (Request::hasVar('newStatus', 'POST')) {
         if ('' == $_POST['desc']) {  // If no description supplied
             $message = _AM_XHELP_MESSAGE_NO_DESC;
             redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
         }
-        $newStatus = $hStatus->create();
+        $newStatus = $statusHandler->create();
 
-        $newStatus->setVar('state', \Xmf\Request::getInt('state', 0, 'POST'));
+        $newStatus->setVar('state', Request::getInt('state', 0, 'POST'));
         $newStatus->setVar('description', $_POST['desc']);
-        if ($hStatus->insert($newStatus)) {
+        if ($statusHandler->insert($newStatus)) {
             redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
         } else {
             $message = _AM_MESSAGE_ADD_STATUS_ERR;
@@ -166,7 +168,7 @@ function manageStatus()
     }
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manStatus');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation('status.php?op=manageStatus');
 
     echo "<form method='post' action='" . XHELP_ADMIN_URL . "/status.php?op=manageStatus'>";
@@ -186,13 +188,13 @@ function manageStatus()
     echo '</table></form>';
 
     // Get list of existing statuses
-    $crit = new \Criteria('', '');
-    $crit->setOrder($order);
-    $crit->setSort($sort);
-    $crit->setLimit($limit);
-    $crit->setStart($start);
-    $statuses = $hStatus->getObjects($crit);
-    $total    = $hStatus->getCount($crit);
+    $criteria = new \Criteria('', '');
+    $criteria->setOrder($order);
+    $criteria->setSort($sort);
+    $criteria->setLimit($limit);
+    $criteria->setStart($start);
+    $statuses = $statusHandler->getObjects($criteria);
+    $total    = $statusHandler->getCount($criteria);
 
     $aStatuses = [];
     foreach ($statuses as $status) {
@@ -207,7 +209,7 @@ function manageStatus()
     $status_select = new \XoopsFormSelect(_AM_XHELP_TEXT_STATUS, 'default', $default_status);
     $status_select->addOptionArray($aStatuses);
     $btn_tray = new \XoopsFormElementTray('');
-    $btn_tray->addElement(new \XoopsFormButton('', 'changeDefaultStatus', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
+    $btn_tray->addElement(new \XoopsFormButton('', 'changeDefaultStatus', _SUBMIT, 'submit'));
     $form->addElement($status_select);
     $form->addElement($btn_tray);
     $form->setLabelWidth('20%');

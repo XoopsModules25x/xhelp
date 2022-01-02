@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 require_once __DIR__ . '/admin_header.php';
 xoops_cp_header();
@@ -41,12 +41,10 @@ if (isset($contributors['translators']) && (count($contributors['translators']) 
     foreach ($translators as $tran) {
         if ('' != $tran['website']) {
             $tran_contact = "<a href='" . $tran['website'] . "'>" . $tran['uname'] . '</a>';
-        } else {
-            if ('' != $tran['email']) {
+        } elseif ('' != $tran['email']) {
                 $tran_contact = "<a href='mailto: " . $tran['email'] . "'>" . $tran['uname'] . '</a>';
             } else {
                 $tran_contact = $tran['uname'];
-            }
         }
         echo '<tr><td>' . $tran_contact . ' (' . $tran['language'] . ')</td>
                   </tr>';
@@ -63,12 +61,10 @@ if (isset($contributors['testers']) && (count($contributors['testers']) > 0)) {
     foreach ($testers as $tester) {
         if ('' != $tester['website']) {
             $tester_contact = "<a href='" . $tester['website'] . "'>" . $tester['uname'] . '</a>';
-        } else {
-            if ('' != $tester['email']) {
+        } elseif ('' != $tester['email']) {
                 $tester_contact = "<a href='mailto: " . $tester['email'] . "'>" . $tester['uname'] . '</a>';
             } else {
                 $tester_contact = $tester['uname'];
-            }
         }
         echo '<tr><td>' . $tester_contact . ' (' . $tester['name'] . ')</td>
                   </tr>';
@@ -85,12 +81,10 @@ if (isset($contributors['documenters']) && (count($contributors['documenters']) 
     foreach ($documenters as $doc) {
         if ('' != $doc['website']) {
             $doc_contact = "<a href='" . $doc['website'] . "'>" . $doc['uname'] . '</a>';
-        } else {
-            if ('' != $doc['email']) {
+        } elseif ('' != $doc['email']) {
                 $doc_contact = "<a href='mailto: " . $doc['email'] . "'>" . $doc['uname'] . '</a>';
             } else {
                 $doc_contact = $doc['uname'];
-            }
         }
         echo '<tr><td>' . $doc_contact . ' (' . $doc['name'] . ')</td>
                   </tr>';
@@ -107,12 +101,10 @@ if (isset($contributors['code']) && (count($contributors['code']) > 0)) {
     foreach ($coders as $coder) {
         if ('' != $coder['website']) {
             $coder_contact = "<a href='" . $coder['website'] . "'>" . $coder['uname'] . '</a>';
-        } else {
-            if ('' != $coder['email']) {
+        } elseif ('' != $coder['email']) {
                 $coder_contact = "<a href='mailto: " . $coder['email'] . "'>" . $coder['uname'] . '</a>';
             } else {
                 $coder_contact = $coder['uname'];
-            }
         }
         echo '<tr><td>' . $coder_contact . ' (' . $coder['name'] . ')</td>
                   </tr>';

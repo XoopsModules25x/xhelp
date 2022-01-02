@@ -18,6 +18,7 @@
 use Xmf\Module\Admin;
 use XoopsModules\Xhelp\Helper;
 use XoopsModules\Xhelp\Session;
+use XoopsModules\Xhelp\Constants;
 
 /** @var Admin $adminObject */
 /** @var Helper $helper */
@@ -108,8 +109,8 @@ $statusHandler = $helper->getHandler('Status');
 $saved_searchesHandler = $helper->getHandler('SavedSearch');
 /** @var \XoopsPersistableObjectHandler $ticket_field_departmentsHandler */
 $ticket_field_departmentsHandler = $helper->getHandler('TicketFieldDepartment');
-/** @var \XoopsPersistableObjectHandler $notificationsHandler */
-$notificationsHandler = $helper->getHandler('Notification');
+/** @var \XoopsPersistableObjectHandler $notificationHandler */
+$notificationHandler = $helper->getHandler('Notification');
 /** @var \XoopsPersistableObjectHandler $ticket_fieldsHandler */
 $ticket_fieldsHandler = $helper->getHandler('TicketField');
 /** @var \XoopsPersistableObjectHandler $ticket_valuesHandler */
@@ -158,8 +159,8 @@ if ($overdueTime != $helper->getConfig('xhelp_overdueTime')) {
 
     // Change overdueTime in all of tickets (OPEN & HOLD)
     $ticketHandler  = Helper::getInstance()->getHandler('Ticket');
-    $crit           = new \Criteria('status', '2', '<>');
-    $tickets        = $ticketHandler->getObjects($crit);
+    $criteria           = new \Criteria('status', '2', '<>');
+    $tickets        = $ticketHandler->getObjects($criteria);
     $updatedTickets = [];
     foreach ($tickets as $ticket) {
         $ticket->setVar('overdueTime', $ticket->getVar('posted') + ($helper->getConfig('xhelp_overdueTime') * 60 * 60));

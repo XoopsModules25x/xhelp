@@ -496,4 +496,21 @@ define('_AM_XHELP_TOTAL_NOTIFICATIONS', 'Notifications');
 define('_AM_XHELP_TOTAL_TICKET_SOLUTIONS', 'Ticket Solutions');
 
 
+define('_AM_XHELP_MESSAGE_NO_FIELD', 'There are no extra fields');
 
+//define('_XHELP_EMAIL_SCANNER_IP_COLUMN', 'IP Column');
+//define('_XHELP_MESSAGE_NO_DELETE_FILE', 'File not deleted');
+//define('_XHELP_MESSAGE_NO_DEPARTMENT', 'No Department');
+//define('_XHELP_MESSAGE_NO_OWNER', 'No Owner');
+//define('_XHELP_MESSAGE_NO_RESPONSE', 'No Response');
+//define('_XHELP_MESSAGE_NO_STATUS', 'No Status');
+//define('XHELP_MESSAGE_NO_ADD_FAQ', 'No FAQ added');
+
+define('_AM_XHELP_EMAIL_SCANNER_IP_COLUMN', 'IP Column');
+define('_AM_XHELP_MESSAGE_NO_DELETE_FILE', 'File not deleted');
+define('_AM_XHELP_MESSAGE_NO_DEPARTMENT', 'No Department');
+define('_AM_XHELP_MESSAGE_NO_OWNER', 'No Owner');
+define('_AM_XHELP_MESSAGE_NO_RESPONSE', 'No Response');
+define('_AM_XHELP_MESSAGE_NO_STATUS', 'No Status');
+define('_AM_XHELP_MESSAGE_NO_ADD_FAQ', 'No FAQ added');
+define('_AM_XHELP_NO_PERM', 'You do not have the permission for this action');

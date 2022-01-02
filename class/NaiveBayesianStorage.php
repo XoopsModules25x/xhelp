@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -36,7 +36,6 @@ namespace XoopsModules\Xhelp;
  ***** END LICENSE BLOCK *****
  */
 
-use XoopsModules\Xhelp;
 
 /** Access to the storage of the data for the filter.
  *
@@ -55,7 +54,7 @@ class NaiveBayesianStorage
     public $myts = null;
 
     /**
-     * Xhelp\NaiveBayesianStorage constructor.
+     * NaiveBayesianStorage constructor.
      */
     public function __construct()
     {
@@ -69,7 +68,7 @@ class NaiveBayesianStorage
      *
      * @return array key = category ids, values = array(keys = 'probability', 'word_count')
      */
-    public function getCategories()
+    public function getCategories(): array
     {
         $categories = [];
 
@@ -89,11 +88,11 @@ class NaiveBayesianStorage
      * @param mixed $word
      * @return bool
      */
-    public function wordExists($word)
+    public function wordExists($word): bool
     {
-        $crit = new \Criteria('word', $word);
+        $criteria = new \Criteria('word', $word);
 
-        $ret = $this->con->query('SELECT COUNT(*) AS WordCount FROM ' . $this->con->prefix('xhelp_bayes_wordfreqs') . $crit->renderWhere());
+        $ret = $this->con->query('SELECT COUNT(*) AS WordCount FROM ' . $this->con->prefix('xhelp_bayes_wordfreqs') . $criteria->renderWhere());
 
         if (!$ret) {
             return false;
@@ -109,13 +108,13 @@ class NaiveBayesianStorage
      * @param mixed $category_id
      * @return array ('count' => count)
      */
-    public function getWord($word, $category_id)
+    public function getWord($word, $category_id): array
     {
         $details = [];
-        $crit    = new \CriteriaCompo(new \Criteria('word', $word));
-        $crit->add(new \Criteria('category_id', $category_id));
+        $criteria    = new \CriteriaCompo(new \Criteria('word', $word));
+        $criteria->add(new \Criteria('category_id', $category_id));
 
-        $ret = $this->con->query('SELECT count FROM ' . $this->con->prefix('xhelp_bayes_wordfreqs') . $crit->renderWhere());
+        $ret = $this->con->query('SELECT count FROM ' . $this->con->prefix('xhelp_bayes_wordfreqs') . $criteria->renderWhere());
 
         if (!$ret) {
             $details['count'] = 0;
@@ -138,7 +137,7 @@ class NaiveBayesianStorage
      * @internal param count $int
      * @paran    string category id
      */
-    public function updateWord($word, $count, $category_id)
+    public function updateWord($word, $count, $category_id): bool
     {
         $oldword = $this->getWord($word, $category_id);
         if (0 == $oldword['count']) {
@@ -163,7 +162,7 @@ class NaiveBayesianStorage
      * @param mixed $category_id
      * @return bool success
      */
-    public function removeWord($word, $count, $category_id)
+    public function removeWord($word, $count, $category_id): bool
     {
         $oldword = $this->getWord($word, $category_id);
         if (0 != $oldword['count'] && 0 >= ($oldword['count'] - $count)) {
@@ -185,7 +184,7 @@ class NaiveBayesianStorage
      *
      * @return bool sucess
      */
-    public function updateProbabilities()
+    public function updateProbabilities(): bool
     {
         // first update the word count of each category
         $ret         = $this->con->query('SELECT category_id, SUM(count) AS total FROM ' . $this->con->prefix('xhelp_bayes_wordfreqs') . ' GROUP BY category_id');
@@ -215,7 +214,7 @@ class NaiveBayesianStorage
      * @param mixed $content
      * @return bool success
      */
-    public function saveReference($doc_id, $category_id, $content)
+    public function saveReference($doc_id, $category_id, $content): bool
     {
         return true;
     }
@@ -225,9 +224,9 @@ class NaiveBayesianStorage
      * @param mixed $doc_id
      * @return array reference( category_id => ...., content => ....)
      */
-    public function getReference($doc_id)
+    public function getReference($doc_id): array
     {
-        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticketHandler = new TicketHandler($GLOBALS['xoopsDB']);
         $ticket        = $ticketHandler->get($doc_id);
         $ref           = [];
 
@@ -247,14 +246,14 @@ class NaiveBayesianStorage
      * @param mixed $doc_id
      * @return bool sucess
      */
-    public function removeReference($doc_id)
+    public function removeReference($doc_id): bool
     {
         return true;
     }
 
     /**
      * @param $var
-     * @return mixed
+     * @return string
      */
     public function _cleanVar($var)
     {

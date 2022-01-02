@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
@@ -12,95 +10,79 @@ if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
 // require_once XHELP_CLASS_PATH . '/Service.php';
 
 /**
- * xhelp_notificationService class
+ * NotificationService class
  *
  * Part of the Messaging Subsystem.  Uses the xoopsNotificationHandler class to send emails to users
  *
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
-class NotificationService extends Xhelp\Service
+class NotificationService extends Service
 {
     /**
      * Instance of the staff object
      *
      * @var object
-     * @access private
      */
-    public $_hStaff;
-
+    public $staffHandler;
     /**
      * Instance of the xoops text sanitizer
      *
      * @var object
-     * @access private
      */
-    public $_ts;
-
+    public $myTextSanitizer;
     /**
      * Path to the mail_template directory
      *
      * @var string
-     * @access private
      */
-    public $_template_dir = '';
-
+    public $templateDir = '';
     /**
      * Instance of the module object
      *
      * @var object
-     * @access private
      */
-    public $_module;
-
+    public $module;
     /**
      * Instance of the notification object
      *
      * @var object
-     * @access private
      */
-    public $_hNotification;
-
+    public $notificationHandler;
     /**
      * Instance of the status object
      *
      * @var object
-     * @access private
      */
-    public $_hStatus;
+    public $statusHandler;
 
     /**
      * Class Constructor
-     *
-     * @access  public
      */
     public function __construct()
     {
         global $xoopsConfig, $xoopsModule;
-        $db                   = \XoopsDatabaseFactory::getDatabaseConnection();
-        $this->_ts            = \MyTextSanitizer::getInstance();
-        $this->_template_dir  = $this->_getTemplateDir($xoopsConfig['language']);
-        $this->_module        = Xhelp\Utility::getModule();
-        $this->_hStaff        = new Xhelp\StaffHandler($db);
-        $this->_hNotification = new Xhelp\NotificationHandler($db);
-        $this->_hStatus       = new Xhelp\StatusHandler($db);
+        $db                        = \XoopsDatabaseFactory::getDatabaseConnection();
+        $this->myTextSanitizer     = \MyTextSanitizer::getInstance();
+        $this->templateDir         = $this->getTemplateDir($xoopsConfig['language']);
+        $this->module              = Utility::getModule();
+        $this->staffHandler        = new StaffHandler($db);
+        $this->notificationHandler = new NotificationHandler($db);
+        $this->statusHandler       = new StatusHandler($db);
         $this->init();
     }
 
     /**
      * Retrieve the email_template object that is requested
      *
-     * @param int    $category ID of item
-     * @param string $event    name of event
-     * @param object $module   $xoopsModule object
+     * @param string|int $category ID or name of item
+     * @param string     $event    name of event
+     * @param object     $module   $xoopsModule object
+     * @param mixed      $template_id
      *
-     * @param        $template_id
-     * @return bool
-     * @access private
+     * @return bool|array
      */
-    public function _getEmailTpl($category, $event, $module, &$template_id)
+    public function getEmailTpl($category, $event, $module, &$template_id)
     {
         $templates = $module->getInfo('_email_tpl');   // Gets $modversion['_email_tpl'] array from xoops_version.php
 
@@ -127,16 +109,16 @@ class NotificationService extends Xhelp\Service
     /**
      * @param $dept
      * @param $aMembers
-     * @return mixed
+     * @return array
      */
-    public function &_getStaffRoles($dept, $aMembers)
+    public function &getStaffRoles($dept, $aMembers)
     {
-        $hStaffRole = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
+        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
 
         // Retrieve roles of all members
-        $crit = new \CriteriaCompo(new \Criteria('uid', '(' . \implode(',', $aMembers) . ')', 'IN'));
-        $crit->add(new \Criteria('deptid', $dept));
-        $staffRoles = $hStaffRole->getObjects($crit, false);    // array of staff role objects
+        $criteria = new \CriteriaCompo(new \Criteria('uid', '(' . \implode(',', $aMembers) . ')', 'IN'));
+        $criteria->add(new \Criteria('deptid', $dept));
+        $staffRoles = $staffRoleHandler->getObjects($criteria, false);    // array of staff role objects
 
         return $staffRoles;
     }
@@ -157,7 +139,7 @@ class NotificationService extends Xhelp\Service
      * @param $staff_options
      * @return array
      */
-    public function &_getEnabledStaff($staffRoles, $aMembers, $staff_options)
+    public function &getEnabledStaff($staffRoles, $aMembers, $staff_options): array
     {
         // Get only staff members that have permission for this notification
         $enabled_staff = [];
@@ -183,60 +165,50 @@ class NotificationService extends Xhelp\Service
      */
 
     /**
-     * @param      $enabled_staff
+     * @param array $enabled_staff
      * @param bool $active_only
      * @return array
      */
-    public function &_getXoopsUsers($enabled_staff, $active_only = true)
+    public function &getXoopsUsers($enabled_staff, $active_only = true): array
     {
         $xoopsUsers    = [];
         $memberHandler = \xoops_getHandler('member');
         if (\count($enabled_staff) > 0) {
-            $crit = new \CriteriaCompo(new \Criteria('uid', '(' . \implode(',', $enabled_staff) . ')', 'IN'));
+            $criteria = new \CriteriaCompo(new \Criteria('uid', '(' . \implode(',', $enabled_staff) . ')', 'IN'));
         } else {
             return $xoopsUsers;
         }
         if ($active_only) {
-            $crit->add(new \Criteria('level', 0, '>'));
+            $criteria->add(new \Criteria('level', '0', '>'));
         }
-        $xoopsUsers = $memberHandler->getUsers($crit, true);      // xoopsUser objects
+        $xoopsUsers = $memberHandler->getUsers($criteria, true);      // xoopsUser objects
         unset($enabled_staff);
 
         return $xoopsUsers;
     }
 
-    /*
+
+    /**
      * Returns only the accepted staff members after having their permissions checked
-     *
      * @param  array  $aMembers    array of all possible staff members
      * @param  object $ticket      xhelp_ticket object
      * @param  object $settings    xhelp_notification object
      * @param  int    $submittedBy ID of ticket submitter
      * @return array  of XoopsUser objects
-     *
-     * @access private
      */
-
-    /**
-     * @param $aMembers
-     * @param $ticket
-     * @param $settings
-     * @param $submittedBy
-     * @return array
-     */
-    public function &_checkStaffSetting($aMembers, $ticket, $settings, $submittedBy)
+    public function &checkStaffSetting($aMembers, $ticket, $settings, $submittedBy): array
     {
         $submittedBy = (int)$submittedBy;
         $dept        = $ticket;
         if (\is_object($ticket)) {
             $dept = $ticket->getVar('department');
         }
-        $staff_setting = $settings->getVar('staff_setting');
-        $staff_options = $settings->getVar('staff_options');
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $staff_options = $settings->getVar('staff_options')??'';
 
-        $staffRoles    = $this->_getStaffRoles($dept, $aMembers);     // Get list of the staff members' roles
-        $enabled_staff = $this->_getEnabledStaff($staffRoles, $aMembers, $staff_options);
-        $xoopsUsers    = $this->_getXoopsUsers($enabled_staff);
+        $staffRoles    = $this->getStaffRoles($dept, $aMembers);     // Get list of the staff members' roles
+        $enabled_staff = $this->getEnabledStaff($staffRoles, $aMembers, $staff_options);
+        $xoopsUsers    = $this->getXoopsUsers($enabled_staff);
 
         return $xoopsUsers;
     }
@@ -256,7 +228,7 @@ class NotificationService extends Xhelp\Service
      * @param bool $removeSubmitter
      * @return array
      */
-    public function &_makeMemberArray($members, $submittedBy, $removeSubmitter = false)
+    public function &makeMemberArray($members, $submittedBy, $removeSubmitter = false): array
     {
         $aMembers    = [];
         $submittedBy = (int)$submittedBy;
@@ -278,20 +250,19 @@ class NotificationService extends Xhelp\Service
     /**
      * Returns emails of staff belonging to an event
      *
-     * @param      $ticket
-     * @param int  $event_id    bit_value of event
-     * @param      $settings
-     * @param null $submittedBy ID of user submitting event - should only be used when there is a response
+     * @param Ticket $ticket
+     * @param int    $event_id    bit_value of event
+     * @param array  $settings
+     * @param null   $submittedBy ID of user submitting event - should only be used when there is a response
      * @return array
      * @internal param int $dept ID of department
-     * @access   private
      */
-    public function &_getSubscribedStaff($ticket, $event_id, $settings, $submittedBy = null)
+    public function &getSubscribedStaff($ticket, $event_id, $settings, $submittedBy = null): array
     {
         global $xoopsUser;
 
         $arr               = [];
-        $membershipHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+        $membershipHandler = new MembershipHandler($GLOBALS['xoopsDB']);
         $memberHandler     = \xoops_getHandler('member');
 
         if (\is_object($ticket)) {
@@ -305,25 +276,25 @@ class NotificationService extends Xhelp\Service
         }
         $submittedBy = (int)$submittedBy;
 
-        $staff_setting = $settings->getVar('staff_setting');
-        $staff_options = $settings->getVar('staff_options');
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $staff_options = $settings->getVar('staff_options')??'';
         switch ($staff_setting) {
             case \XHELP_NOTIF_STAFF_DEPT:   // Department Staff can receive notification
-                $members    = $membershipHandler->membershipByDept($dept);  // Xhelp\Staff objects
-                $aMembers   = $this->_makeMemberArray($members, $submittedBy, true);
-                $xoopsUsers = $this->_checkStaffSetting($aMembers, $ticket, $settings, $submittedBy);
+                $members    = $membershipHandler->membershipByDept($dept);  // Staff objects
+                $aMembers   = $this->makeMemberArray($members, $submittedBy, true);
+                $xoopsUsers = $this->checkStaffSetting($aMembers, $ticket, $settings, $submittedBy);
                 break;
             case \XHELP_NOTIF_STAFF_OWNER:   // Ticket Owner can receive notification
                 $members = $membershipHandler->membershipByDept($dept);
                 if (0 != $ticket->getVar('ownership')) {      // If there is a ticket owner
                     $ticket_owner            = $ticket->getVar('ownership');
                     $aMembers[$ticket_owner] = $ticket_owner;
-                    $crit                    = new \Criteria('uid', '(' . \implode(',', $aMembers) . ')', 'IN');
+                    $criteria                    = new \Criteria('uid', '(' . \implode(',', $aMembers) . ')', 'IN');
                     unset($aMembers);
-                    $xoopsUsers = $memberHandler->getUsers($crit, true);      // xoopsUser objects
+                    $xoopsUsers = $memberHandler->getUsers($criteria, true);      // xoopsUser objects
                 } else {                                    // If no ticket owner, send to dept staff
-                    $aMembers   = $this->_makeMemberArray($members, true);
-                    $xoopsUsers = $this->_checkStaffSetting($aMembers, $ticket, $settings, $submittedBy);
+                    $aMembers   = $this->makeMemberArray($members, true);
+                    $xoopsUsers = $this->checkStaffSetting($aMembers, $ticket, $settings, $submittedBy);
                 }
                 break;
             case \XHELP_NOTIF_STAFF_NONE:   // Notification is turned off
@@ -336,7 +307,7 @@ class NotificationService extends Xhelp\Service
             $cMember = $members[$xUser->getVar('uid')];
 
             if (null !== $cMember && ($xUser->uid() != $xoopsUser->uid())) {
-                if ($this->_isSubscribed($cMember, $event_id)) {
+                if ($this->isSubscribed($cMember, $event_id)) {
                     if (2 == $xUser->getVar('notify_method')) {       // Send by email
                         $arr['email'][] = $members[$xUser->getVar('uid')]->getVar('email');
                     } elseif (1 == $xUser->getVar('notify_method')) { // Send by pm
@@ -353,24 +324,23 @@ class NotificationService extends Xhelp\Service
      * Returns emails of users belonging to a ticket
      *
      * @param int $ticketid ID of ticket
-     * @access private
      * @return array
      */
-    public function &_getSubscribedUsers($ticketid)
+    public function &getSubscribedUsers($ticketid): array
     {
         global $xoopsUser;
 
         $ticketid = (int)$ticketid;
 
-        $hTicketEmails = new Xhelp\TicketEmailsHandler($GLOBALS['xoopsDB']);
-        $memberHandler = \xoops_getHandler('member');
+        $ticketEmailsHandler = new TicketEmailsHandler($GLOBALS['xoopsDB']);
+        $memberHandler       = \xoops_getHandler('member');
 
         //Get all Subscribed users, except for the current user
-        $crit = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
-        $crit->add(new \Criteria('suppress', 0));
-        $crit->add(new \Criteria('email', $xoopsUser->email(), '<>'));
+        $criteria = new \CriteriaCompo(new \Criteria('ticketid', (string)$ticketid));
+        $criteria->add(new \Criteria('suppress', '0'));
+        $criteria->add(new \Criteria('email', $xoopsUser->email(), '<>'));
 
-        $users = $hTicketEmails->getObjects($crit);    // xhelp_ticketEmail objects
+        $users = $ticketEmailsHandler->getObjects($criteria);    // xhelp_ticketEmail objects
 
         $aUsers = [];
         $arr    = [];
@@ -385,8 +355,8 @@ class NotificationService extends Xhelp\Service
 
         $xoopsUsers = [];
         if (!empty($aUsers)) {
-            $crit       = new \Criteria('uid', '(' . \implode(',', $aUsers) . ')', 'IN');
-            $xoopsUsers = $memberHandler->getUsers($crit, true);  // xoopsUser objects
+            $criteria       = new \Criteria('uid', '(' . \implode(',', $aUsers) . ')', 'IN');
+            $xoopsUsers = $memberHandler->getUsers($criteria, true);  // xoopsUser objects
         }
         unset($aUsers);
 
@@ -409,15 +379,13 @@ class NotificationService extends Xhelp\Service
      * @param int       /object $user     userid/staff object of staff member
      * @param int $event_id value of the the event
      * @return bool              true is suscribed, false if not
-     *
-     * @access private
      */
-    public function _isSubscribed($user, $event_id)
+    public function isSubscribed($user, $event_id): bool
     {
         if (!\is_object($user)) {          //If user is not an object, retrieve a staff object using the uid
             if (\is_numeric($user)) {
                 $uid          = $user;
-                $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+                $staffHandler = new StaffHandler($GLOBALS['xoopsDB']);
                 if (!$user = $staffHandler->getByUid($uid)) {
                     return false;
                 }
@@ -431,11 +399,9 @@ class NotificationService extends Xhelp\Service
      * Retrieve a user's email address
      *
      * @param int $uid user's id
-     * @return array $member's email
-     *
-     * @access private
+     * @return array's email
      */
-    public function _getUserEmail($uid)
+    public function getUserEmail($uid): array
     {
         global $xoopsUser;
         $arr = [];
@@ -470,11 +436,9 @@ class NotificationService extends Xhelp\Service
      * @param int  $uid user's id
      * @param      $dept
      * @param      $staff_options
-     * @return array $staff member's email
-     *
-     * @access private
+     * @return array member's email
      */
-    public function _getStaffEmail($uid, $dept, $staff_options)
+    public function getStaffEmail($uid, $dept, $staff_options): array
     {
         $uid           = (int)$uid;
         $dept          = (int)$dept;
@@ -482,7 +446,7 @@ class NotificationService extends Xhelp\Service
         $arr           = [];
 
         // Check staff roles to staff options making sure the staff has permission
-        $staffRoles = $this->_hStaff->getRolesByDept($uid, $dept, true);
+        $staffRoles = $this->staffHandler->getRolesByDept($uid, $dept, true);
         $bFound     = true;
         foreach ($staff_options as $option) {
             if (\array_key_exists($option, $staffRoles)) {
@@ -496,7 +460,7 @@ class NotificationService extends Xhelp\Service
             return $arr;
         }
 
-        $staff = $this->_hStaff->getByUid($uid);
+        $staff = $this->staffHandler->getByUid($uid);
         if ($staff) {
             $member = $memberHandler->getUser($uid);
             if ($member) {
@@ -518,23 +482,21 @@ class NotificationService extends Xhelp\Service
     /**
      * Send pm and email notifications to selected users
      *
-     * @param object $email_tpl object returned from _getEmailTpl() function
-     * @param array  $sendTo    emails and xoopsUser objects
-     * @param array  $tags      array of notification information
-     * @param string $fromEmail
+     * @param object|array $email_tpl object returned from getEmailTpl() function
+     * @param array        $sendTo    emails and xoopsUser objects
+     * @param array        $tags      array of notification information
+     * @param string       $fromEmail
      * @return bool TRUE if success, FALSE if no success
-     *
-     * @access private
      */
-    public function _sendEvents($email_tpl, $sendTo, $tags, $fromEmail = '')
+    public function sendEvents($email_tpl, $sendTo, $tags, $fromEmail = ''): bool
     {
         $ret = true;
         if (\array_key_exists('pm', $sendTo)) {
-            $ret = $ret && $this->_sendEventPM($email_tpl, $sendTo, $tags, $fromEmail);
+            $ret = $ret && $this->sendEventPM($email_tpl, $sendTo, $tags, $fromEmail);
         }
 
         if (\array_key_exists('email', $sendTo)) {
-            $ret = $ret && $this->_sendEventEmail($email_tpl, $sendTo, $tags, $fromEmail);
+            $ret = $ret && $this->sendEventEmail($email_tpl, $sendTo, $tags, $fromEmail);
         }
 
         return $ret;
@@ -543,29 +505,27 @@ class NotificationService extends Xhelp\Service
     /**
      * Send the pm notification to selected users
      *
-     * @param object $email_tpl object returned from _getEmailTpl() function
-     * @param array  $sendTo    xoopsUser objects
-     * @param array  $tags      array of notification information
-     * @param string $fromEmail
+     * @param object|array $email_tpl object returned from getEmailTpl() function
+     * @param array        $sendTo    xoopsUser objects
+     * @param array        $tags      array of notification information
+     * @param string       $fromEmail
      * @return bool TRUE if success, FALSE if no success
-     *
-     * @access private
      */
-    public function _sendEventPM($email_tpl, $sendTo, $tags, $fromEmail = '')
+    public function sendEventPM($email_tpl, $sendTo, $tags, $fromEmail = ''): bool
     {
         $notify_pm = '';
         global $xoopsConfig, $xoopsUser;
 
         $notify_pm = $sendTo['pm'];
 
-        $tags        = \array_merge($tags, $this->_getCommonTplVars());          // Retrieve the common template vars and add to array
+        $tags        = \array_merge($tags, $this->getCommonTplVars());          // Retrieve the common template vars and add to array
         $xoopsMailer = \xoops_getMailer();
         $xoopsMailer->usePM();
 
         foreach ($tags as $k => $v) {
             $xoopsMailer->assign($k, \preg_replace('/&amp;/i', '&', $v));
         }
-        $xoopsMailer->setTemplateDir($this->_template_dir);             // Set template dir
+        $xoopsMailer->setTemplateDir($this->templateDir);             // Set template dir
         $xoopsMailer->setTemplate($email_tpl['mail_template'] . '.tpl'); // Set the template to be used
 
         $configHandler     = \xoops_getHandler('config');
@@ -583,29 +543,27 @@ class NotificationService extends Xhelp\Service
     /**
      * Send the mail notification to selected users
      *
-     * @param object $email_tpl object returned from _getEmailTpl() function
-     * @param array  $sendTo    emails returned from _getSubscribedStaff() function
-     * @param array  $tags      array of notification information
-     * @param string $fromEmail
+     * @param object|array $email_tpl object returned from getEmailTpl() function
+     * @param array        $sendTo    emails returned from getSubscribedStaff() function
+     * @param array        $tags      array of notification information
+     * @param string       $fromEmail
      * @return bool TRUE if success, FALSE if no success
-     *
-     * @access private
      */
-    public function _sendEventEmail($email_tpl, $sendTo, $tags, $fromEmail = '')
+    public function sendEventEmail($email_tpl, $sendTo, $tags, $fromEmail = ''): bool
     {
         $notify_email = '';
         global $xoopsConfig;
 
         $notify_email = $sendTo['email'];
 
-        $tags        = \array_merge($tags, $this->_getCommonTplVars());          // Retrieve the common template vars and add to array
+        $tags        = \array_merge($tags, $this->getCommonTplVars());          // Retrieve the common template vars and add to array
         $xoopsMailer = \xoops_getMailer();
         $xoopsMailer->useMail();
 
         foreach ($tags as $k => $v) {
             $xoopsMailer->assign($k, \preg_replace('/&amp;/i', '&', $v));
         }
-        $xoopsMailer->setTemplateDir($this->_template_dir);             // Set template dir
+        $xoopsMailer->setTemplateDir($this->templateDir);             // Set template dir
         $xoopsMailer->setTemplate($email_tpl['mail_template'] . '.tpl'); // Set the template to be used
         if (mb_strlen($fromEmail) > 0) {
             $xoopsMailer->setFromEmail($fromEmail);
@@ -621,16 +579,14 @@ class NotificationService extends Xhelp\Service
     /**
      * Get a list of the common constants required for notifications
      *
-     * @return array $tags
-     *
-     * @access private
+     * @return array
      */
-    public function &_getCommonTplVars()
+    public function &getCommonTplVars(): array
     {
         global $xoopsConfig;
         $tags                 = [];
-        $tags['X_MODULE']     = $this->_module->getVar('name');
-        $tags['X_SITEURL']    = XHELP_SITE_URL;
+        $tags['X_MODULE']     = $this->module->getVar('name');
+        $tags['X_SITEURL']    = \XHELP_SITE_URL;
         $tags['X_SITENAME']   = $xoopsConfig['sitename'];
         $tags['X_ADMINMAIL']  = $xoopsConfig['adminmail'];
         $tags['X_MODULE_URL'] = \XHELP_BASE_URL . '/';
@@ -642,11 +598,9 @@ class NotificationService extends Xhelp\Service
      * Retrieve the directory where mail templates are stored
      *
      * @param string $language language used for xoops
-     * @return string $template_dir
-     *
-     * @access private
+     * @return string
      */
-    public function _getTemplateDir($language)
+    public function getTemplateDir($language): string
     {
         $path = XOOPS_ROOT_PATH . '/modules/xhelp/language/' . $language . '/mail_template';
         if (\is_dir($path)) {
@@ -659,14 +613,12 @@ class NotificationService extends Xhelp\Service
     /**
      * Returns the number of department notifications
      *
-     * @return int $num number of department notifications
-     *
-     * @access public
+     * @return int number of department notifications
      */
-    public function getNumDeptNotifications()
+    public function getNumDeptNotifications(): int
     {
         $num       = 0;
-        $templates = $this->_module->getInfo('_email_tpl');
+        $templates = $this->module->getInfo('_email_tpl');
         foreach ($templates as $template) {
             if ('dept' === $template['category']) {
                 ++$num;
@@ -681,75 +633,73 @@ class NotificationService extends Xhelp\Service
      *
      * @param int $uid uid of the user
      * @return array email of user
-     *
-     * @access private
      */
-    public function _getEmail($uid)
+    public function getEmail($uid): array
     {
-        if (!$isStaff = $this->_hStaff->isStaff($uid)) {
-            return $this->_getUserEmail($uid);
+        if (!$isStaff = $this->staffHandler->isStaff($uid)) {
+            return $this->getUserEmail($uid);
         }
 
-        return $this->_getStaffEmail($uid);
+        return $this->getStaffEmail($uid);
     }
 
     /**
      * Confirm submission to user and notify staff members when new_ticket is triggered
-     * @param Xhelp\Ticket $ticket Ticket that was added
-     * @access  public
+     * @param Ticket $ticket Ticket that was added
      */
     public function new_ticket($ticket)
     {
         global $xhelp_isStaff;
         global $xoopsUser;
-        /** @var Xhelp\Helper $helper */
-        $helper = Xhelp\Helper::getInstance();
+        /** @var Helper $helper */
+        $helper = Helper::getInstance();
 
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $displayName  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
+        $displayName       = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
-        $tags['TICKET_SUBJECT']     = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
-        $tags['TICKET_DESCRIPTION'] = $this->_ts->stripSlashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_SUBJECT']     = ($ticket->getVar('subject', 'n'));
+        $tags['TICKET_DESCRIPTION'] = ($ticket->getVar('description', 'n'));
+        $tags['TICKET_PRIORITY']    = Utility::getPriority($ticket->getVar('priority'));
         $tags['TICKET_POSTED']      = $ticket->posted();
-        $tags['TICKET_CREATED']     = Xhelp\Utility::getUsername($ticket->getVar('uid'), $displayName);
+        $tags['TICKET_CREATED']     = Utility::getUsername($ticket->getVar('uid'), $displayName);
         $tags['TICKET_SUPPORT_KEY'] = ($ticket->getVar('serverid') ? '{' . $ticket->getVar('emailHash') . '}' : '');
         $tags['TICKET_URL']         = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
-        $tags['TICKET_DEPARTMENT']  = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_DEPARTMENT']  = ($departmentHandler->getNameById($ticket->getVar('department')));
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_NEWTICKET);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_NEWTICKET);
+//        $settings      = $this->notificationHandler->create();
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {    // If staff notification is enabled
-            $email_tpl = $this->_getEmailTpl('dept', 'new_ticket', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('dept', 'new_ticket', $this->module, $template_id);
             if ($email_tpl) {  // Send email to dept members
-                $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
         if (\XHELP_NOTIF_USER_NO != $user_setting) {     // If user notification is enabled
             if ($ticket->getVar('serverid') > 0) {
                 //this ticket has been submitted by email
                 //get department email address
-                $hServer = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-                $server  = $hServer->get($ticket->getVar('serverid'));
+                $departmentMailBoxHandler = new DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+                $server                   = $departmentMailBoxHandler->get($ticket->getVar('serverid'));
 
                 $tags['TICKET_SUPPORT_EMAIL'] = $server->getVar('emailaddress');
 
-                $email_tpl = $this->_getEmailTpl('ticket', 'new_this_ticket_via_email', $this->_module, $template_id);
+                $email_tpl = $this->getEmailTpl('ticket', 'new_this_ticket_via_email', $this->module, $template_id);
                 if ($email_tpl) {
-                    $sendTo  = $this->_getUserEmail($ticket->getVar('uid'));
-                    $success = $this->_sendEvents($email_tpl, $sendTo, $tags, $server->getVar('emailaddress'));
+                    $sendTo  = $this->getUserEmail($ticket->getVar('uid'));
+                    $success = $this->sendEvents($email_tpl, $sendTo, $tags, $server->getVar('emailaddress'));
                 }
             } else { //this ticket has been submitted via the website
                 if (!$xhelp_isStaff) {
-                    $email_tpl = $this->_getEmailTpl('ticket', 'new_this_ticket', $this->_module, $template_id);
+                    $email_tpl = $this->getEmailTpl('ticket', 'new_this_ticket', $this->module, $template_id);
                     if ($email_tpl) {    // Send confirm email to submitter
-                        $sendTo  = $this->_getUserEmail($ticket->getVar('uid'));   // Will be the only person subscribed
-                        $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                        $sendTo  = $this->getUserEmail($ticket->getVar('uid'));   // Will be the only person subscribed
+                        $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                     }
                 }
             }
@@ -772,12 +722,12 @@ class NotificationService extends Xhelp\Service
         $tags['XOOPS_USER_EMAIL']    = $user->getVar('email');
         $tags['XOOPS_USER_ID']       = $user->getVar('uname');
         $tags['XOOPS_USER_PASSWORD'] = $password;
-        $tags['X_UACTLINK']          = XHELP_SITE_URL . '/user.php?op=actv&id=' . $user->getVar('uid') . '&actkey=' . $user->getVar('actkey');
+        $tags['X_UACTLINK']          = \XHELP_SITE_URL . '/user.php?op=actv&id=' . $user->getVar('uid') . '&actkey=' . $user->getVar('actkey');
 
-        $email_tpl = $this->_getEmailTpl('ticket', 'new_user_byemail', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('ticket', 'new_user_byemail', $this->module, $template_id);
         if ($email_tpl) {
-            $sendTo  = $this->_getUserEmail($user->getVar('uid'));
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            $sendTo  = $this->getUserEmail($user->getVar('uid'));
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
     }
 
@@ -799,12 +749,12 @@ class NotificationService extends Xhelp\Service
         $tags['XOOPS_USER_EMAIL']    = $newuser->getVar('email');
         $tags['XOOPS_USER_ID']       = $newuser->getVar('uname');
         $tags['XOOPS_USER_PASSWORD'] = $password;
-        $tags['X_UACTLINK']          = XHELP_SITE_URL . '/user.php?op=actv&id=' . $newuser->getVar('uid') . '&actkey=' . $newuser->getVar('actkey');
+        $tags['X_UACTLINK']          = \XHELP_SITE_URL . '/user.php?op=actv&id=' . $newuser->getVar('uid') . '&actkey=' . $newuser->getVar('actkey');
 
-        $email_tpl = $this->_getEmailTpl('ticket', 'new_user_byemail', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('ticket', 'new_user_byemail', $this->module, $template_id);
         if ($email_tpl) {
-            $sendTo  = $this->_getUserEmail($newuser->getVar('uid'));
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            $sendTo  = $this->getUserEmail($newuser->getVar('uid'));
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
     }
 
@@ -822,10 +772,10 @@ class NotificationService extends Xhelp\Service
         $tags['XOOPS_USER_ID']       = $user->getVar('uname');
         $tags['XOOPS_USER_PASSWORD'] = $password;
 
-        $email_tpl = $this->_getEmailTpl('ticket', 'new_user_activation1', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('ticket', 'new_user_activation1', $this->module, $template_id);
         if ($email_tpl) {
-            $sendTo  = _getUserEmail($user->getVar('uid'));
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            $sendTo  = getUserEmail($user->getVar('uid'));
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
 
         $_POST['uname'] = $user->getVar('uname');
@@ -868,18 +818,18 @@ class NotificationService extends Xhelp\Service
         $tags['XOOPS_USER_ID']       = $user->getVar('uname');
         $tags['XOOPS_USER_PASSWORD'] = $password;
 
-        $email_tpl = $this->_getEmailTpl('ticket', 'new_user_activation2', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('ticket', 'new_user_activation2', $this->module, $template_id);
         if ($email_tpl) {
-            $sendTo  = _getUserEmail($user->getVar('uid'));
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            $sendTo  = getUserEmail($user->getVar('uid'));
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
     }
 
     /**
      * Event: new_response
      * Triggered after a response has been added to a ticket
-     * @param Xhelp\Ticket    $ticket   Ticket containing response
-     * @param Xhelp\Responses $response Response that was added
+     * @param Ticket    $ticket   Ticket containing response
+     * @param Responses $response Response that was added
      */
     public function new_response($ticket, $response)
     {
@@ -887,13 +837,13 @@ class NotificationService extends Xhelp\Service
         // If response is from submitter, send message to owner, if no owner, send to department
 
         global $xoopsUser, $xoopsConfig;
-        /** @var Xhelp\Helper $helper */
-        $helper = Xhelp\Helper::getInstance();
+        /** @var Helper $helper */
+        $helper = Helper::getInstance();
 
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         if (!\is_object($ticket) && 0 == $ticket) {
-            $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+            $ticketHandler = new TicketHandler($GLOBALS['xoopsDB']);
             $ticket        = $ticketHandler->get($response->getVar('ticketid'));
         }
 
@@ -903,20 +853,20 @@ class NotificationService extends Xhelp\Service
         $tags                         = [];
         $tags['TICKET_ID']            = $ticket->getVar('id');
         $tags['TICKET_URL']           = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
-        $tags['TICKET_RESPONSE']      = $this->_ts->stripSlashesGPC($response->getVar('message', 'n'));
-        $tags['TICKET_SUBJECT']       = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
+        $tags['TICKET_RESPONSE']      = ($response->getVar('message', 'n'));
+        $tags['TICKET_SUBJECT']       = ($ticket->getVar('subject', 'n'));
         $tags['TICKET_TIMESPENT']     = $response->getVar('timeSpent');
-        $tags['TICKET_STATUS']        = Xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_STATUS']        = Utility::getStatus($ticket->getVar('status'));
         $displayName                  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
-        $tags['TICKET_RESPONDER']     = Xhelp\Utility::getUsername($xoopsUser->getVar('uid'), $displayName);
+        $tags['TICKET_RESPONDER']     = Utility::getUsername($xoopsUser->getVar('uid'), $displayName);
         $tags['TICKET_POSTED']        = $response->posted('m');
         $tags['TICKET_SUPPORT_KEY']   = '';
         $tags['TICKET_SUPPORT_EMAIL'] = $xoopsConfig['adminmail'];
 
         if ($ticket->getVar('serverid') > 0) {
-            $hServer = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+            $departmentMailBoxHandler = new DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
 
-            $server = $hServer->get($ticket->getVar('serverid'));
+            $server = $departmentMailBoxHandler->get($ticket->getVar('serverid'));
             if ($server) {
                 $from                         = $server->getVar('emailaddress');
                 $tags['TICKET_SUPPORT_KEY']   = '{' . $ticket->getVar('emailHash') . '}';
@@ -925,29 +875,29 @@ class NotificationService extends Xhelp\Service
         }
         $owner = $ticket->getVar('ownership');
         if (0 == $owner) {
-            $tags['TICKET_OWNERSHIP'] = _XHELP_NO_OWNER;
+            $tags['TICKET_OWNERSHIP'] = \_XHELP_NO_OWNER;
         } else {
-            $tags['TICKET_OWNERSHIP'] = Xhelp\Utility::getUsername($owner, $displayName);
+            $tags['TICKET_OWNERSHIP'] = Utility::getUsername($owner, $displayName);
         }
-        $tags['TICKET_DEPARTMENT'] = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_DEPARTMENT'] = ($departmentHandler->getNameById($ticket->getVar('department')));
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_NEWRESPONSE);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_NEWRESPONSE);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         $sendTo         = [];
         $memberHandler  = \xoops_getHandler('member');
         $response_user  = $memberHandler->getUser($response->getVar('uid'));
         $response_email = $response_user->getVar('email');
 
-        $aUsers = $this->_getSubscribedUsers($ticket->getVar('id'));
+        $aUsers = $this->getSubscribedUsers($ticket->getVar('id'));
 
         if (\in_array($response_email, $aUsers)) {  // If response from a submitter, send to staff and other submitters
             if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {        // Staff notification is enabled
-                $email_tpl = $this->_getEmailTpl('dept', 'new_response', $this->_module, $template_id);
+                $email_tpl = $this->getEmailTpl('dept', 'new_response', $this->module, $template_id);
                 if ($email_tpl) {       // Send to staff members
-                    $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings, $response->getVar('uid'));
-                    $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                    $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings, $response->getVar('uid'));
+                    $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                 }
             }
             unset($aUsers[$ticket->getVar('uid')]); // Remove response submitter from array
@@ -955,20 +905,20 @@ class NotificationService extends Xhelp\Service
         } else {    // If response from staff, send to submitters
             // Also send to staff members if no owner
             if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {    // If notification is on
-                $email_tpl = $this->_getEmailTpl('dept', 'new_response', $this->_module, $template_id);
+                $email_tpl = $this->getEmailTpl('dept', 'new_response', $this->module, $template_id);
                 if ($email_tpl) {       // Send to staff members
                     if (0 == $ticket->getVar('ownership')) {
-                        $sendTo = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings, $response->getVar('uid'));
+                        $sendTo = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings, $response->getVar('uid'));
                     }
-                    $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                    $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                 }
             }
             $sendTo = $aUsers;
         }
         if (2 != $user_setting && 0 == $response->getVar('private')) {
-            $email_tpl = $this->_getEmailTpl('ticket', 'new_this_response', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('ticket', 'new_this_response', $this->module, $template_id);
             if ($email_tpl) {    // Send to users
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags, $from);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags, $from);
             }
         }
     }
@@ -977,7 +927,7 @@ class NotificationService extends Xhelp\Service
      * Event: update_priority
      * Triggered after a ticket priority is modified
      * Also See: batch_priority
-     * @param Xhelp\Ticket $ticket      Ticket that was modified
+     * @param Ticket $ticket      Ticket that was modified
      * @param int          $oldpriority Previous ticket priority
      */
     public function update_priority($ticket, $oldpriority)
@@ -986,32 +936,32 @@ class NotificationService extends Xhelp\Service
         //notify submitter
         global $xoopsUser;
 
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags               = [];
         $tags['TICKET_ID']  = $ticket->getVar('id');
         $tags['TICKET_URL'] = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
         // Added by marcan to get the ticket's subject available in the mail template
-        $tags['TICKET_SUBJECT'] = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
+        $tags['TICKET_SUBJECT'] = ($ticket->getVar('subject', 'n'));
         // End of addition by marcan
-        $tags['TICKET_OLD_PRIORITY'] = Xhelp\Utility::getPriority($oldpriority);
-        $tags['TICKET_PRIORITY']     = Xhelp\Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_OLD_PRIORITY'] = Utility::getPriority($oldpriority);
+        $tags['TICKET_PRIORITY']     = Utility::getPriority($ticket->getVar('priority'));
         $tags['TICKET_UPDATEDBY']    = $xoopsUser->getVar('uname');
-        $tags['TICKET_DEPARTMENT']   = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_DEPARTMENT']   = ($departmentHandler->getNameById($ticket->getVar('department')));
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITPRIORITY);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITPRIORITY);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
-        $email_tpl = $this->_getEmailTpl('dept', 'changed_priority', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('dept', 'changed_priority', $this->module, $template_id);
         if ($email_tpl) {   // Notify staff dept
-            $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
-        $email_tpl = $this->_getEmailTpl('ticket', 'changed_this_priority', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('ticket', 'changed_this_priority', $this->module, $template_id);
         if ($email_tpl) {    // Notify submitter
-            $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
     }
 
@@ -1019,44 +969,44 @@ class NotificationService extends Xhelp\Service
      * Event: update_status
      * Triggered after a ticket status change
      * Also See: batch_status, close_ticket, reopen_ticket
-     * @param Xhelp\Ticket $ticket    The ticket that was modified
-     * @param Xhelp\Status $oldstatus The previous ticket status
-     * @param Xhelp\Status $newstatus The new ticket status
+     * @param Ticket $ticket    The ticket that was modified
+     * @param Status $oldstatus The previous ticket status
+     * @param Status $newstatus The new ticket status
      */
     public function update_status($ticket, $oldstatus, $newstatus)
     {
         //notify staff department of change
         //notify submitter
         global $xoopsUser;
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags               = [];
         $tags['TICKET_ID']  = $ticket->getVar('id');
         $tags['TICKET_URL'] = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
         // Added by marcan to get the ticket's subject available in the mail template
-        $tags['TICKET_SUBJECT'] = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
+        $tags['TICKET_SUBJECT'] = ($ticket->getVar('subject', 'n'));
         // End of addition by marcan
         $tags['TICKET_OLD_STATUS'] = $oldstatus->getVar('description');
-        $tags['TICKET_OLD_STATE']  = Xhelp\Utility::getState($oldstatus->getVar('state'));
+        $tags['TICKET_OLD_STATE']  = Utility::getState($oldstatus->getVar('state'));
         $tags['TICKET_STATUS']     = $newstatus->getVar('description');
-        $tags['TICKET_STATE']      = Xhelp\Utility::getState($newstatus->getVar('state'));
+        $tags['TICKET_STATE']      = Utility::getState($newstatus->getVar('state'));
         $tags['TICKET_UPDATEDBY']  = $xoopsUser->getVar('uname');
-        $tags['TICKET_DEPARTMENT'] = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_DEPARTMENT'] = ($departmentHandler->getNameById($ticket->getVar('department')));
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITSTATUS);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITSTATUS);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
-        $email_tpl = $this->_getEmailTpl('dept', 'changed_status', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('dept', 'changed_status', $this->module, $template_id);
         if ($email_tpl) {
-            $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
-        $email_tpl = $this->_getEmailTpl('ticket', 'changed_this_status', $this->_module, $template_id);
+        $email_tpl = $this->getEmailTpl('ticket', 'changed_this_status', $this->module, $template_id);
         if ($email_tpl) {
-            //$sendTo = $this->_getEmail($ticket->getVar('uid'));
-            $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-            $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+            //$sendTo = $this->getEmail($ticket->getVar('uid'));
+            $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+            $success = $this->sendEvents($email_tpl, $sendTo, $tags);
         }
     }
 
@@ -1064,7 +1014,7 @@ class NotificationService extends Xhelp\Service
      * Event: update_owner
      * Triggered after ticket ownership change (Individual)
      * Also See: batch_owner
-     * @param Xhelp\Ticket $ticket   Ticket that was changed
+     * @param Ticket $ticket   Ticket that was changed
      * @param int          $oldOwner UID of previous owner
      * @param int          $newOwner UID of new owner
      */
@@ -1074,64 +1024,64 @@ class NotificationService extends Xhelp\Service
         //notify new owner
         //notify submitter
         global $xoopsUser;
-        /** @var Xhelp\Helper $helper */
-        $helper = Xhelp\Helper::getInstance();
+        /** @var Helper $helper */
+        $helper = Helper::getInstance();
 
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
         $tags['TICKET_URL']         = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
-        $tags['TICKET_SUBJECT']     = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
-        $tags['TICKET_DESCRIPTION'] = $this->_ts->stripSlashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_OWNER']       = Xhelp\Utility::getUsername($ticket->getVar('ownership'), $displayName);
+        $tags['TICKET_SUBJECT']     = ($ticket->getVar('subject', 'n'));
+        $tags['TICKET_DESCRIPTION'] = ($ticket->getVar('description', 'n'));
+        $tags['TICKET_OWNER']       = Utility::getUsername($ticket->getVar('ownership'), $displayName);
         $tags['SUBMITTED_OWNER']    = $xoopsUser->getVar('uname');
-        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
-        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
-        $tags['TICKET_DEPARTMENT']  = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_STATUS']      = Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_PRIORITY']    = Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_DEPARTMENT']  = ($departmentHandler->getNameById($ticket->getVar('department')));
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITOWNER);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
-        $staff_options = $settings->getVar('staff_options');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITOWNER);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
+        $staff_options = $settings->getVar('staff_options')??'';
 
         $sendTo = [];
         if (\XHELP_NOTIF_STAFF_OWNER == $staff_setting) {
             if (null !== $oldOwner
-                && _XHELP_NO_OWNER != $oldOwner) {                               // If there was an owner
-                $email_tpl = $this->_getEmailTpl('dept', 'new_owner', $this->_module, $template_id);
+                && \_XHELP_NO_OWNER != $oldOwner) {                               // If there was an owner
+                $email_tpl = $this->getEmailTpl('dept', 'new_owner', $this->module, $template_id);
                 if ($email_tpl) {      // Send them an email
-                    if ($this->_isSubscribed($oldOwner, $email_tpl['bit_value'])) {    // Check if the owner is subscribed
-                        $sendTo  = $this->_getStaffEmail($oldOwner, $ticket->getVar('department'), $staff_options);
-                        $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                    if ($this->isSubscribed($oldOwner, $email_tpl['bit_value'])) {    // Check if the owner is subscribed
+                        $sendTo  = $this->getStaffEmail($oldOwner, $ticket->getVar('department'), $staff_options);
+                        $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                     }
                 }
             }
             if ($ticket->getVar('ownership') != $xoopsUser->getVar('uid')
                 && 0 != $ticket->getVar('ownership')) { // If owner is not current user
-                $email_tpl = $this->_getEmailTpl('dept', 'new_owner', $this->_module, $template_id);
+                $email_tpl = $this->getEmailTpl('dept', 'new_owner', $this->module, $template_id);
                 if ($email_tpl) {      // Send new owner email
-                    if ($this->_isSubscribed($ticket->getVar('ownership'), $email_tpl['bit_value'])) {    // Check if the owner is subscribed
-                        $sendTo  = $this->_getStaffEmail($ticket->getVar('ownership'), $ticket->getVar('department'), $staff_options);
-                        $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                    if ($this->isSubscribed($ticket->getVar('ownership'), $email_tpl['bit_value'])) {    // Check if the owner is subscribed
+                        $sendTo  = $this->getStaffEmail($ticket->getVar('ownership'), $ticket->getVar('department'), $staff_options);
+                        $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                     }
                 }
             }
         } elseif (\XHELP_NOTIF_STAFF_DEPT == $staff_setting) { // Notify entire department
-            $email_tpl = $this->_getEmailTpl('dept', 'new_owner', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('dept', 'new_owner', $this->module, $template_id);
             if ($email_tpl) {
-                $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
 
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $email_tpl = $this->_getEmailTpl('ticket', 'new_this_owner', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('ticket', 'new_this_owner', $this->module, $template_id);
             if ($email_tpl) {   // Send to ticket submitter
-                $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
     }
@@ -1142,42 +1092,42 @@ class NotificationService extends Xhelp\Service
      * with a state of XHELP_STATE_UNRESOLVED to a status
      * with a state of XHELP_STATE_RESOLVED
      * Also See: update_status, reopen_ticket
-     * @param Xhelp\Ticket $ticket The ticket that was closed
+     * @param Ticket $ticket The ticket that was closed
      */
     public function close_ticket($ticket)
     {
         global $xoopsUser;
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
-        $tags['TICKET_SUBJECT']     = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
-        $tags['TICKET_DESCRIPTION'] = $this->_ts->stripSlashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_SUBJECT']     = ($ticket->getVar('subject', 'n'));
+        $tags['TICKET_DESCRIPTION'] = ($ticket->getVar('description', 'n'));
+        $tags['TICKET_STATUS']      = Utility::getStatus($ticket->getVar('status'));
         $tags['TICKET_CLOSEDBY']    = $xoopsUser->getVar('uname');
         $tags['TICKET_URL']         = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
-        $tags['TICKET_DEPARTMENT']  = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_DEPARTMENT']  = ($departmentHandler->getNameById($ticket->getVar('department')));
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_CLOSETICKET);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_CLOSETICKET);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         $sendTo = [];
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $email_tpl = $this->_getEmailTpl('dept', 'close_ticket', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('dept', 'close_ticket', $this->module, $template_id);
             if ($email_tpl) {        // Send to department, not to staff member
-                $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
 
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
             if ($xoopsUser->getVar('uid') != $ticket->getVar('uid')) {        // If not closed by submitter
-                $email_tpl = $this->_getEmailTpl('ticket', 'close_this_ticket', $this->_module, $template_id);
+                $email_tpl = $this->getEmailTpl('ticket', 'close_this_ticket', $this->module, $template_id);
                 if ($email_tpl) {        // Send to submitter
-                    //$sendTo = $this->_getEmail($ticket->getVar('uid'));
-                    $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                    $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                    //$sendTo = $this->getEmail($ticket->getVar('uid'));
+                    $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                    $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                 }
             }
         }
@@ -1186,45 +1136,45 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: delete_ticket
      * Triggered after a ticket is deleted
-     * @param Xhelp\Ticket $ticket Ticket that was deleted
+     * @param Ticket $ticket Ticket that was deleted
      */
     public function delete_ticket($ticket)
     {
         //notify staff department
         //notify submitter
         global $xoopsUser, $xoopsModule;
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags                       = [];
         $tags['TICKET_ID']          = $ticket->getVar('id');
-        $tags['TICKET_SUBJECT']     = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
-        $tags['TICKET_DESCRIPTION'] = $this->_ts->stripSlashesGPC($ticket->getVar('description', 'n'));
-        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
-        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_SUBJECT']     = ($ticket->getVar('subject', 'n'));
+        $tags['TICKET_DESCRIPTION'] = ($ticket->getVar('description', 'n'));
+        $tags['TICKET_PRIORITY']    = Utility::getPriority($ticket->getVar('priority'));
+        $tags['TICKET_STATUS']      = Utility::getStatus($ticket->getVar('status'));
         $tags['TICKET_POSTED']      = $ticket->posted();
         $tags['TICKET_DELETEDBY']   = $xoopsUser->getVar('uname');
-        $tags['TICKET_DEPARTMENT']  = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_DEPARTMENT']  = ($departmentHandler->getNameById($ticket->getVar('department')));
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_DELTICKET);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_DELTICKET);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $email_tpl = $this->_getEmailTpl('dept', 'removed_ticket', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('dept', 'removed_ticket', $this->module, $template_id);
             if ($email_tpl) { // Send to dept staff
-                $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
 
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $status = $this->_hStatus->get($ticket->getVar('status'));
+            $status = $this->statusHandler->get($ticket->getVar('status'));
             if (2 != $status->getVar('state')) {
-                $email_tpl = $this->_getEmailTpl('ticket', 'removed_this_ticket', $this->_module, $template_id);
+                $email_tpl = $this->getEmailTpl('ticket', 'removed_this_ticket', $this->module, $template_id);
                 if ($email_tpl) {  // Send to submitter
-                    //$sendTo = $this->_getEmail($ticket->getVar('uid'));
-                    $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                    $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                    //$sendTo = $this->getEmail($ticket->getVar('uid'));
+                    $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                    $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                 }
             }
         }
@@ -1233,54 +1183,54 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: edit_ticket
      * Triggered after a ticket is modified
-     * @param Xhelp\Ticket $oldTicket  Ticket information before modifications
-     * @param Xhelp\Ticket $ticketInfo Ticket information after modifications
+     * @param Ticket $oldTicket  Ticket information before modifications
+     * @param Ticket $ticketInfo Ticket information after modifications
      */
     public function edit_ticket($oldTicket, $ticketInfo)
     {
         //notify staff department of change
         //notify submitter
         global $xoopsUser;
-        $hDept = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         $tags                           = [];
         $tags['TICKET_URL']             = \XHELP_BASE_URL . '/ticket.php?id=' . $ticketInfo->getVar('id');
-        $tags['TICKET_OLD_SUBJECT']     = $this->_ts->stripSlashesGPC($oldTicket['subject']);
-        $tags['TICKET_OLD_DESCRIPTION'] = $this->_ts->stripSlashesGPC($oldTicket['description']);
-        $tags['TICKET_OLD_PRIORITY']    = Xhelp\Utility::getPriority($oldTicket['priority']);
+        $tags['TICKET_OLD_SUBJECT']     = ($oldTicket['subject']);
+        $tags['TICKET_OLD_DESCRIPTION'] = ($oldTicket['description']);
+        $tags['TICKET_OLD_PRIORITY']    = Utility::getPriority($oldTicket['priority']);
         $tags['TICKET_OLD_STATUS']      = $oldTicket['status'];
         $tags['TICKET_OLD_DEPARTMENT']  = $oldTicket['department'];
         $tags['TICKET_OLD_DEPTID']      = $oldTicket['department_id'];
 
         $tags['TICKET_ID']          = $ticketInfo->getVar('id');
-        $tags['TICKET_SUBJECT']     = $this->_ts->stripSlashesGPC($ticketInfo->getVar('subject', 'n'));
-        $tags['TICKET_DESCRIPTION'] = $this->_ts->stripSlashesGPC($ticketInfo->getVar('description', 'n'));
-        $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticketInfo->getVar('priority'));
-        $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticketInfo->getVar('status'));
+        $tags['TICKET_SUBJECT']     = ($ticketInfo->getVar('subject', 'n'));
+        $tags['TICKET_DESCRIPTION'] = ($ticketInfo->getVar('description', 'n'));
+        $tags['TICKET_PRIORITY']    = Utility::getPriority($ticketInfo->getVar('priority'));
+        $tags['TICKET_STATUS']      = Utility::getStatus($ticketInfo->getVar('status'));
         $tags['TICKET_MODIFIED']    = $xoopsUser->getVar('uname');
         if ($tags['TICKET_OLD_DEPTID'] != $ticketInfo->getVar('department')) {
-            $department                = $hDept->get($ticketInfo->getVar('department'));
+            $department                = $departmentHandler->get($ticketInfo->getVar('department'));
             $tags['TICKET_DEPARTMENT'] = $department->getVar('department');
         } else {
             $tags['TICKET_DEPARTMENT'] = $tags['TICKET_OLD_DEPARTMENT'];
         }
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITTICKET);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITTICKET);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $email_tpl = $this->_getEmailTpl('dept', 'modified_ticket', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('dept', 'modified_ticket', $this->module, $template_id);
             if ($email_tpl) {            // Send to dept staff
-                $sendTo  = $this->_getSubscribedStaff($ticketInfo, $email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticketInfo, $email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $email_tpl = $this->_getEmailTpl('ticket', 'modified_this_ticket', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('ticket', 'modified_this_ticket', $this->module, $template_id);
             if ($email_tpl) {     // Send to ticket submitter
-                $sendTo  = $this->_getSubscribedUsers($ticketInfo->getVar('id'));
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedUsers($ticketInfo->getVar('id'));
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
     }
@@ -1290,63 +1240,63 @@ class NotificationService extends Xhelp\Service
      * Triggered after a response has been modified
      * Also See: new_response
      * @param                 $ticket
-     * @param Xhelp\Responses $response    Modified response
-     * @param Xhelp\Ticket    $oldticket   Ticket before modifications
-     * @param Xhelp\Responses $oldresponse Response modifications
-     * @internal param Xhelp\Ticket $nticket Ticket after modifications
+     * @param Responses $response    Modified response
+     * @param Ticket    $oldticket   Ticket before modifications
+     * @param Responses $oldresponse Response modifications
+     * @internal param Ticket $nticket Ticket after modifications
      */
     public function edit_response($ticket, $response, $oldticket, $oldresponse)
     {
         //if not modified by response submitter, notify response submitter
         //notify ticket submitter
         global $xoopsUser;
-        /** @var Xhelp\Helper $helper */
-        $helper = Xhelp\Helper::getInstance();
+        /** @var Helper $helper */
+        $helper = Helper::getInstance();
 
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $displayName  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
+        $displayName       = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
         $tags                         = [];
         $tags['TICKET_URL']           = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
-        $tags['TICKET_OLD_RESPONSE']  = $this->_ts->stripSlashesGPC($oldresponse->getVar('message', 'n'));
+        $tags['TICKET_OLD_RESPONSE']  = ($oldresponse->getVar('message', 'n'));
         $tags['TICKET_OLD_TIMESPENT'] = $oldresponse->getVar('timeSpent');
-        $tags['TICKET_OLD_STATUS']    = Xhelp\Utility::getStatus($oldticket->getVar('status'));
-        $tags['TICKET_OLD_RESPONDER'] = Xhelp\Utility::getUsername($oldresponse->getVar('uid'), $displayName);
+        $tags['TICKET_OLD_STATUS']    = Utility::getStatus($oldticket->getVar('status'));
+        $tags['TICKET_OLD_RESPONDER'] = Utility::getUsername($oldresponse->getVar('uid'), $displayName);
         $owner                        = $oldticket->getVar('ownership');
-        $tags['TICKET_OLD_OWNERSHIP'] = ($owner = 0 ? _XHELP_NO_OWNER : Xhelp\Utility::getUsername($owner, $displayName));
+        $tags['TICKET_OLD_OWNERSHIP'] = ($owner = 0 ? \_XHELP_NO_OWNER : Utility::getUsername($owner, $displayName));
         $tags['TICKET_ID']            = $ticket->getVar('id');
         $tags['RESPONSE_ID']          = $response->getVar('id');
-        $tags['TICKET_RESPONSE']      = $this->_ts->stripSlashesGPC($response->getVar('message', 'n'));
+        $tags['TICKET_RESPONSE']      = ($response->getVar('message', 'n'));
         $tags['TICKET_TIMESPENT']     = $response->getVar('timeSpent');
-        $tags['TICKET_STATUS']        = Xhelp\Utility::getStatus($ticket->getVar('status'));
+        $tags['TICKET_STATUS']        = Utility::getStatus($ticket->getVar('status'));
         $tags['TICKET_RESPONDER']     = $xoopsUser->getVar('uname');
         $tags['TICKET_POSTED']        = $response->posted();
         $owner                        = $ticket->getVar('ownership');
-        $tags['TICKET_OWNERSHIP']     = ($owner = 0 ? _XHELP_NO_OWNER : Xhelp\Utility::getUsername($owner, $displayName));
-        $tags['TICKET_DEPARTMENT']    = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+        $tags['TICKET_OWNERSHIP']     = ($owner = 0 ? \_XHELP_NO_OWNER : Utility::getUsername($owner, $displayName));
+        $tags['TICKET_DEPARTMENT']    = ($departmentHandler->getNameById($ticket->getVar('department')));
 
         // Added by marcan to get the ticket's subject available in the mail template
-        $tags['TICKET_SUBJECT'] = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
+        $tags['TICKET_SUBJECT'] = ($ticket->getVar('subject', 'n'));
         // End of addition by marcan
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITRESPONSE);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITRESPONSE);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $email_tpl = $this->_getEmailTpl('dept', 'modified_response', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('dept', 'modified_response', $this->module, $template_id);
             if ($email_tpl) {  // Notify dept staff
-                $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings, $response->getVar('uid'));
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings, $response->getVar('uid'));
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
 
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
             if (0 == $response->getVar('private')) {  // Make sure if response is private, don't sent to user
-                $email_tpl = $this->_getEmailTpl('ticket', 'modified_this_response', $this->_module, $template_id);
+                $email_tpl = $this->getEmailTpl('ticket', 'modified_this_response', $this->module, $template_id);
                 if ($email_tpl) {   // Notify ticket submitter
-                    $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                    $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                    $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                    $success = $this->sendEvents($email_tpl, $sendTo, $tags);
                 }
             }
         }
@@ -1355,25 +1305,25 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: batch_dept
      * Triggered after a batch ticket department change
-     * @param array $oldTickets The Xhelp\Ticket objects that were modified
+     * @param array $oldTickets The Ticket objects that were modified
      * @param int   $dept       The new department for the tickets
      * @return bool
      */
-    public function batch_dept($oldTickets, $dept)
+    public function batch_dept($oldTickets, $dept): bool
     {
         global $xoopsUser;
 
-        $hDept = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        $sDept = $hDept->getNameById($dept);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
+        $sDept             = $departmentHandler->getNameById($dept);
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITTICKET);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITTICKET);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $dept_email_tpl = $this->_getEmailTpl('dept', 'modified_ticket', $this->_module, $template_id);
+            $dept_email_tpl = $this->getEmailTpl('dept', 'modified_ticket', $this->module, $template_id);
             if ($dept_email_tpl) {            // Send to dept staff
-                $deptEmails = $this->_getSubscribedStaff($dept, $dept_email_tpl['bit_value'], $settings, $xoopsUser->getVar('uid'));
+                $deptEmails = $this->getSubscribedStaff($dept, $dept_email_tpl['bit_value'], $settings, $xoopsUser->getVar('uid'));
             }
         } else {
             $dept_email_tpl = false;
@@ -1381,16 +1331,16 @@ class NotificationService extends Xhelp\Service
 
         $user_email_tpl = false;
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $user_email_tpl = $this->_getEmailTpl('ticket', 'modified_this_ticket', $this->_module, $template_id);
+            $user_email_tpl = $this->getEmailTpl('ticket', 'modified_this_ticket', $this->module, $template_id);
         }
 
         foreach ($oldTickets as $oldTicket) {
             $tags                           = [];
-            $tags['TICKET_OLD_SUBJECT']     = $this->_ts->stripSlashesGPC($oldTicket->getVar('subject', 'n'));
-            $tags['TICKET_OLD_DESCRIPTION'] = $this->_ts->stripSlashesGPC($oldTicket->getVar('description', 'n'));
-            $tags['TICKET_OLD_PRIORITY']    = Xhelp\Utility::getPriority($oldTicket->getVar('priority'));
-            $tags['TICKET_OLD_STATUS']      = Xhelp\Utility::getStatus($oldTicket->getVar('status'));
-            $tags['TICKET_OLD_DEPARTMENT']  = $hDept->getNameById($oldTicket->getVar('department'));
+            $tags['TICKET_OLD_SUBJECT']     = ($oldTicket->getVar('subject', 'n'));
+            $tags['TICKET_OLD_DESCRIPTION'] = ($oldTicket->getVar('description', 'n'));
+            $tags['TICKET_OLD_PRIORITY']    = Utility::getPriority($oldTicket->getVar('priority'));
+            $tags['TICKET_OLD_STATUS']      = Utility::getStatus($oldTicket->getVar('status'));
+            $tags['TICKET_OLD_DEPARTMENT']  = $departmentHandler->getNameById($oldTicket->getVar('department'));
             $tags['TICKET_OLD_DEPTID']      = $oldTicket->getVar('department');
 
             $tags['TICKET_ID']          = $oldTicket->getVar('id');
@@ -1403,13 +1353,13 @@ class NotificationService extends Xhelp\Service
             $tags['TICKET_URL']         = \XHELP_BASE_URL . '/ticket.php?id=' . $oldTicket->getVar('id');
 
             if ($dept_email_tpl) {
-                $deptEmails = $this->_getSubscribedStaff($oldTicket, $dept_email_tpl['bit_value'], $settings, $xoopsUser->getVar('uid'));
-                $success    = $this->_sendEvents($dept_email_tpl, $deptEmails, $tags);
+                $deptEmails = $this->getSubscribedStaff($oldTicket, $dept_email_tpl['bit_value'], $settings, $xoopsUser->getVar('uid'));
+                $success    = $this->sendEvents($dept_email_tpl, $deptEmails, $tags);
             }
             if ($user_email_tpl) {
-                //$sendTo = $this->_getEmail($oldTicket->getVar('uid'));
-                $sendTo  = $this->_getSubscribedUsers($oldTicket->getVar('id'));
-                $success = $this->_sendEvents($user_email_tpl, $sendTo, $tags);
+                //$sendTo = $this->getEmail($oldTicket->getVar('uid'));
+                $sendTo  = $this->getSubscribedUsers($oldTicket->getVar('id'));
+                $success = $this->sendEvents($user_email_tpl, $sendTo, $tags);
             }
         }
 
@@ -1419,7 +1369,7 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: batch_priority
      * Triggered after a batch ticket priority change
-     * @param array $tickets  The Xhelp\Ticket objects that were modified
+     * @param array $tickets  The Ticket objects that were modified
      * @param int   $priority The new ticket priority
      */
     public function batch_priority($tickets, $priority)
@@ -1427,47 +1377,47 @@ class NotificationService extends Xhelp\Service
         global $xoopsUser;
 
         [$tickets, $priority] = $args;
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITPRIORITY);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITPRIORITY);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $dept_email_tpl = $this->_getEmailTpl('dept', 'changed_priority', $this->_module, $template_id);
+            $dept_email_tpl = $this->getEmailTpl('dept', 'changed_priority', $this->module, $template_id);
         } else {
             $dept_email_tpl = false;
         }
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $user_email_tpl = $this->_getEmailTpl('ticket', 'changed_this_priority', $this->_module, $template_id);
+            $user_email_tpl = $this->getEmailTpl('ticket', 'changed_this_priority', $this->module, $template_id);
         } else {
             $user_email_tpl = false;
         }
         $uname    = $xoopsUser->getVar('uname');
         $uid      = $xoopsUser->getVar('uid');
-        $priority = Xhelp\Utility::getPriority($priority);
+        $priority = Utility::getPriority($priority);
 
         foreach ($tickets as $ticket) {
             $tags                        = [];
             $tags['TICKET_ID']           = $ticket->getVar('id');
-            $tags['TICKET_OLD_PRIORITY'] = Xhelp\Utility::getPriority($ticket->getVar('priority'));
+            $tags['TICKET_OLD_PRIORITY'] = Utility::getPriority($ticket->getVar('priority'));
             $tags['TICKET_PRIORITY']     = $priority;
             $tags['TICKET_UPDATEDBY']    = $uname;
             $tags['TICKET_URL']          = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
             // Added by marcan to get the ticket's subject available in the mail template
-            $tags['TICKET_SUBJECT'] = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
+            $tags['TICKET_SUBJECT'] = ($ticket->getVar('subject', 'n'));
             // End of addition by marcan
-            $tags['TICKET_DEPARTMENT'] = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+            $tags['TICKET_DEPARTMENT'] = ($departmentHandler->getNameById($ticket->getVar('department')));
 
             if ($dept_email_tpl) {
-                $sendTo  = $this->_getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($dept_email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($dept_email_tpl, $sendTo, $tags);
             }
 
             if ($user_email_tpl) {
-                //$sendTo = $this->_getEmail($ticket->getVar('uid'));
-                $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                $success = $this->_sendEvents($user_email_tpl, $sendTo, $tags);
+                //$sendTo = $this->getEmail($ticket->getVar('uid'));
+                $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                $success = $this->sendEvents($user_email_tpl, $sendTo, $tags);
             }
             unset($tags);
         }
@@ -1476,75 +1426,75 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: batch_owner
      * Triggered after a batch ticket ownership change
-     * @param array $tickets The Xhelp\Ticket objects that were modified
+     * @param array $tickets The Ticket objects that were modified
      * @param int   $owner   The XOOPS UID of the new owner
      * @return bool
      */
-    public function batch_owner($tickets, $owner)
+    public function batch_owner($tickets, $owner): bool
     {
         //notify old owner, if assigned
         //notify new owner
         //notify submitter
         global $xoopsUser;
-        /** @var Xhelp\Helper $helper */
-        $helper = Xhelp\Helper::getInstance();
+        /** @var Helper $helper */
+        $helper = Helper::getInstance();
 
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
         $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITOWNER);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
-        $staff_options = $settings->getVar('staff_options');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITOWNER);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
+        $staff_options = $settings->getVar('staff_options')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $dept_email_tpl = $this->_getEmailTpl('dept', 'new_owner', $this->_module, $template_id);
+            $dept_email_tpl = $this->getEmailTpl('dept', 'new_owner', $this->module, $template_id);
         } else {
             $dept_email_tpl = false;
         }
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $user_email_tpl = $this->_getEmailTpl('ticket', 'new_this_owner', $this->_module, $template_id);
+            $user_email_tpl = $this->getEmailTpl('ticket', 'new_this_owner', $this->module, $template_id);
         } else {
             $user_email_tpl = false;
         }
-        $new_owner    = Xhelp\Utility::getUsername($owner, $displayName);
+        $new_owner    = Utility::getUsername($owner, $displayName);
         $submitted_by = $xoopsUser->getVar('uname');
         $uid          = $xoopsUser->getVar('uid');
 
         foreach ($tickets as $ticket) {
             $tags                       = [];
             $tags['TICKET_ID']          = $ticket->getVar('id');
-            $tags['TICKET_SUBJECT']     = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
-            $tags['TICKET_DESCRIPTION'] = $this->_ts->stripSlashesGPC($ticket->getVar('description', 'n'));
+            $tags['TICKET_SUBJECT']     = ($ticket->getVar('subject', 'n'));
+            $tags['TICKET_DESCRIPTION'] = ($ticket->getVar('description', 'n'));
             $tags['TICKET_OWNER']       = $new_owner;
             $tags['SUBMITTED_OWNER']    = $submitted_by;
-            $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
-            $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
+            $tags['TICKET_STATUS']      = Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_PRIORITY']    = Utility::getPriority($ticket->getVar('priority'));
             $tags['TICKET_URL']         = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
-            $tags['TICKET_DEPARTMENT']  = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+            $tags['TICKET_DEPARTMENT']  = ($departmentHandler->getNameById($ticket->getVar('department')));
 
             $sendTo = [];
             if (0 != $ticket->getVar('ownership')) {                               // If there was an owner
                 if ($dept_email_tpl) {      // Send them an email
-                    if ($this->_isSubscribed($ticket->getVar('ownership'), $dept_email_tpl['bit_value'])) {    // Check if the owner is subscribed
-                        $sendTo  = $this->_getStaffEmail($ticket->getVar('ownership'), $ticket->getVar('department'), $staff_options);
-                        $success = $this->_sendEvents($dept_email_tpl, $sendTo, $tags);
+                    if ($this->isSubscribed($ticket->getVar('ownership'), $dept_email_tpl['bit_value'])) {    // Check if the owner is subscribed
+                        $sendTo  = $this->getStaffEmail($ticket->getVar('ownership'), $ticket->getVar('department'), $staff_options);
+                        $success = $this->sendEvents($dept_email_tpl, $sendTo, $tags);
                     }
                 }
             }
             if ($owner != $uid) {
                 if ($dept_email_tpl) { // Send new owner email
-                    if ($this->_isSubscribed($owner, $dept_email_tpl['bit_value'])) {    // Check if the owner is subscribed
-                        $sendTo  = $this->_getStaffEmail($owner, $ticket->getVar('department'), $staff_options);
-                        $success = $this->_sendEvents($dept_email_tpl, $sendTo, $tags);
+                    if ($this->isSubscribed($owner, $dept_email_tpl['bit_value'])) {    // Check if the owner is subscribed
+                        $sendTo  = $this->getStaffEmail($owner, $ticket->getVar('department'), $staff_options);
+                        $success = $this->sendEvents($dept_email_tpl, $sendTo, $tags);
                     }
                 }
             }
             if ($user_email_tpl) {
-                //$sendTo = $this->_getEmail($ticket->getVar('uid'));
-                $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                $success = $this->_sendEvents($user_email_tpl, $sendTo, $tags);
+                //$sendTo = $this->getEmail($ticket->getVar('uid'));
+                $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                $success = $this->sendEvents($user_email_tpl, $sendTo, $tags);
             }
         }
 
@@ -1554,32 +1504,32 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: batch_status
      * Triggered after a batch ticket status change
-     * @param array        $tickets   The Xhelp\Ticket objects that were modified
-     * @param Xhelp\Status $newstatus The new ticket status
+     * @param array        $tickets   The Ticket objects that were modified
+     * @param Status $newstatus The new ticket status
      * @return bool
      */
-    public function batch_status($tickets, $newstatus)
+    public function batch_status($tickets, $newstatus): bool
     {
         //notify staff department of change
         //notify submitter
         global $xoopsUser;
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_EDITSTATUS);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_EDITSTATUS);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $dept_email_tpl = $this->_getEmailTpl('dept', 'changed_status', $this->_module, $template_id);
+            $dept_email_tpl = $this->getEmailTpl('dept', 'changed_status', $this->module, $template_id);
         } else {
             $dept_email_tpl = false;
         }
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $user_email_tpl = $this->_getEmailTpl('ticket', 'changed_this_status', $this->_module, $template_id);
+            $user_email_tpl = $this->getEmailTpl('ticket', 'changed_this_status', $this->module, $template_id);
         } else {
             $user_email_tpl = false;
         }
-        $sStatus = Xhelp\Utility::getStatus($newstatus);
+        $sStatus = Utility::getStatus($newstatus);
         $uname   = $xoopsUser->getVar('uname');
         $uid     = $xoopsUser->getVar('uid');
 
@@ -1589,21 +1539,21 @@ class NotificationService extends Xhelp\Service
             $tags['TICKET_URL'] = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
 
             // Added by marcan to get the ticket's subject available in the mail template
-            $tags['TICKET_SUBJECT'] = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
+            $tags['TICKET_SUBJECT'] = ($ticket->getVar('subject', 'n'));
             // End of addition by marcan
 
-            $tags['TICKET_OLD_STATUS'] = Xhelp\Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_OLD_STATUS'] = Utility::getStatus($ticket->getVar('status'));
             $tags['TICKET_STATUS']     = $sStatus;
             $tags['TICKET_UPDATEDBY']  = $uname;
-            $tags['TICKET_DEPARTMENT'] = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+            $tags['TICKET_DEPARTMENT'] = ($departmentHandler->getNameById($ticket->getVar('department')));
 
             if ($dept_email_tpl) {
-                $sendTo  = $this->_getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($dept_email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($dept_email_tpl, $sendTo, $tags);
             }
             if ($user_email_tpl) {
-                $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                $success = $this->_sendEvents($user_email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                $success = $this->sendEvents($user_email_tpl, $sendTo, $tags);
             }
         }
 
@@ -1613,32 +1563,32 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: batch_delete_ticket
      * Triggered after a batch ticket deletion
-     * @param array $tickets The Xhelp\Ticket objects that were deleted
+     * @param array $tickets The Ticket objects that were deleted
      * @return bool
      */
-    public function batch_delete_ticket($tickets)
+    public function batch_delete_ticket($tickets): bool
     {
         //notify staff department
         //notify submitter (if ticket is not closed)
         global $xoopsUser, $xoopsModule;
 
-        $uname        = $xoopsUser->getVar('uname');
-        $uid          = $xoopsUser->getVar('uid');
-        $staffHandler = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-        $isStaff      = $staffHandler->isStaff($uid);
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $uname             = $xoopsUser->getVar('uname');
+        $uid               = $xoopsUser->getVar('uid');
+        $staffHandler      = new StaffHandler($GLOBALS['xoopsDB']);
+        $isStaff           = $staffHandler->isStaff($uid);
+        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_DELTICKET);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_DELTICKET);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $dept_email_tpl = $this->_getEmailTpl('dept', 'removed_ticket', $this->_module, $template_id);
+            $dept_email_tpl = $this->getEmailTpl('dept', 'removed_ticket', $this->module, $template_id);
         } else {
             $dept_email_tpl = false;
         }
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $user_email_tpl = $this->_getEmailTpl('ticket', 'removed_this_ticket', $this->_module, $template_id);
+            $user_email_tpl = $this->getEmailTpl('ticket', 'removed_this_ticket', $this->module, $template_id);
         } else {
             $user_email_tpl = false;
         }
@@ -1646,25 +1596,25 @@ class NotificationService extends Xhelp\Service
         foreach ($tickets as $ticket) {
             $tags                       = [];
             $tags['TICKET_ID']          = $ticket->getVar('id');
-            $tags['TICKET_SUBJECT']     = $this->_ts->stripSlashesGPC($ticket->getVar('subject', 'n'));
-            $tags['TICKET_DESCRIPTION'] = $this->_ts->stripSlashesGPC($ticket->getVar('description', 'n'));
-            $tags['TICKET_PRIORITY']    = Xhelp\Utility::getPriority($ticket->getVar('priority'));
-            $tags['TICKET_STATUS']      = Xhelp\Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_SUBJECT']     = ($ticket->getVar('subject', 'n'));
+            $tags['TICKET_DESCRIPTION'] = ($ticket->getVar('description', 'n'));
+            $tags['TICKET_PRIORITY']    = Utility::getPriority($ticket->getVar('priority'));
+            $tags['TICKET_STATUS']      = Utility::getStatus($ticket->getVar('status'));
             $tags['TICKET_POSTED']      = $ticket->posted();
             $tags['TICKET_DELETEDBY']   = $uname;
-            $tags['TICKET_DEPARTMENT']  = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+            $tags['TICKET_DEPARTMENT']  = ($departmentHandler->getNameById($ticket->getVar('department')));
 
             if ($dept_email_tpl) {
-                $sendTo  = $this->_getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($dept_email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($dept_email_tpl, $sendTo, $tags);
             }
 
             if ($user_email_tpl) {
-                $status = $this->_hStatus->get($ticket->getVar('status'));
+                $status = $this->statusHandler->get($ticket->getVar('status'));
                 if ((!$isStaff && 2 != $status->getVar('state')) || $isStaff) {           // Send to ticket submitter
-                    //$sendTo = $this->_getEmail($ticket->getVar('uid'));
-                    $sendTo  = $this->_getSubscribedUsers($ticket->getVar('id'));
-                    $success = $this->_sendEvents($user_email_tpl, $sendTo, $tags);
+                    //$sendTo = $this->getEmail($ticket->getVar('uid'));
+                    $sendTo  = $this->getSubscribedUsers($ticket->getVar('id'));
+                    $success = $this->sendEvents($user_email_tpl, $sendTo, $tags);
                 }
             }
         }
@@ -1676,37 +1626,37 @@ class NotificationService extends Xhelp\Service
      * Event: batch_response
      * Triggered after a batch response addition
      * Note: the $response->getVar('ticketid') field is empty for this function
-     * @param array           $tickets  The Xhelp\Ticket objects that were modified
-     * @param Xhelp\Responses $response The response added to each ticket
+     * @param array           $tickets  The Ticket objects that were modified
+     * @param Responses $response The response added to each ticket
      */
     public function batch_response($tickets, $response)
     {
         global $xoopsUser, $xoopsConfig;
-        /** @var Xhelp\Helper $helper */
-        $helper = Xhelp\Helper::getInstance();
+        /** @var Helper $helper */
+        $helper = Helper::getInstance();
 
-        $displayName  = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
-        $responseText = $this->_ts->stripSlashesGPC($response->getVar('message', 'n'));
-        $uname        = $xoopsUser->getVar('uname');
-        $uid          = $xoopsUser->getVar('uid');
-        $updated      = \formatTimestamp(\time(), 'm');
-        $private      = $response->getVar('private');
-        $hMBoxes      = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-        $mBoxes       = $hMBoxes->getObjects(null, true);
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        $displayName              = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
+        $responseText             = ($response->getVar('message', 'n'));
+        $uname                    = $xoopsUser->getVar('uname');
+        $uid                      = $xoopsUser->getVar('uid');
+        $updated                  = \formatTimestamp(\time(), 'm');
+        $private                  = $response->getVar('private');
+        $departmentMailBoxHandler = new DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
+        $mBoxes                   = $departmentMailBoxHandler->getObjects(null, true);
+        $departmentHandler        = new DepartmentHandler($GLOBALS['xoopsDB']);
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_NEWRESPONSE);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
-        $staff_options = $settings->getVar('staff_options');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_NEWRESPONSE);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
+        $staff_options = $settings->getVar('staff_options')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $dept_email_tpl = $this->_getEmailTpl('dept', 'new_response', $this->_module, $template_id);
+            $dept_email_tpl = $this->getEmailTpl('dept', 'new_response', $this->module, $template_id);
         } else {
             $dept_email_tpl = false;
         }
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $user_email_tpl = $this->_getEmailTpl('ticket', 'new_this_response', $this->_module, $template_id);
+            $user_email_tpl = $this->getEmailTpl('ticket', 'new_this_response', $this->module, $template_id);
         } else {
             $user_email_tpl = false;
         }
@@ -1718,17 +1668,17 @@ class NotificationService extends Xhelp\Service
             $tags['TICKET_RESPONSE']   = $responseText;
             $tags['TICKET_SUBJECT']    = $ticket->getVar('subject');
             $tags['TICKET_TIMESPENT']  = $response->getVar('timeSpent');
-            $tags['TICKET_STATUS']     = Xhelp\Utility::getStatus($ticket->getVar('status'));
+            $tags['TICKET_STATUS']     = Utility::getStatus($ticket->getVar('status'));
             $tags['TICKET_RESPONDER']  = $uname;
             $tags['TICKET_POSTED']     = $updated;
             $tags['TICKET_URL']        = \XHELP_BASE_URL . '/ticket.php?id=' . $ticket->getVar('id');
-            $tags['TICKET_DEPARTMENT'] = $this->_ts->stripSlashesGPC($hDepartments->getNameById($ticket->getVar('department')));
+            $tags['TICKET_DEPARTMENT'] = ($departmentHandler->getNameById($ticket->getVar('department')));
 
             $owner = $ticket->getVar('ownership');
             if (0 == $owner) {
-                $tags['TICKET_OWNERSHIP'] = _XHELP_NO_OWNER;
+                $tags['TICKET_OWNERSHIP'] = \_XHELP_NO_OWNER;
             } else {
-                $tags['TICKET_OWNERSHIP'] = Xhelp\Utility::getUsername($owner, $displayName);
+                $tags['TICKET_OWNERSHIP'] = Utility::getUsername($owner, $displayName);
             }
 
             if ($ticket->getVar('serverid') > 0) {
@@ -1753,28 +1703,28 @@ class NotificationService extends Xhelp\Service
             if ($ticket->getVar('uid') != $uid && 0 == $response->getVar('private')) { // If response from staff member
                 if (0 == $private) {
                     if ($user_email_tpl) {
-                        $sendTo  = $this->_getUserEmail($ticket->getVar('uid'));
-                        $success = $this->_sendEvents($user_email_tpl, $sendTo, $tags, $from);
+                        $sendTo  = $this->getUserEmail($ticket->getVar('uid'));
+                        $success = $this->sendEvents($user_email_tpl, $sendTo, $tags, $from);
                     }
                 } else {
                     if ($dept_email_tpl) {
                         if (0 != $ticket->getVar('ownership')) {
-                            $sendTo = $this->_getStaffEmail($owner, $ticket->getVar('department'), $staff_options);
+                            $sendTo = $this->getStaffEmail($owner, $ticket->getVar('department'), $staff_options);
                         } else {
-                            $sendTo = $this->_getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
+                            $sendTo = $this->getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
                         }
                     }
                 }
             } else {        // If response from submitter
                 if ($dept_email_tpl) {
                     if (0 != $ticket->getVar('ownership')) {  // If ticket has owner, send to owner
-                        if ($this->_isSubscribed($owner, $email_tpl['bit_value'])) {    // Check if the owner is subscribed
-                            $sendTo = $this->_getStaffEmail($owner, $ticket->getVar('department'), $staff_options);
+                        if ($this->isSubscribed($owner, $email_tpl['bit_value'])) {    // Check if the owner is subscribed
+                            $sendTo = $this->getStaffEmail($owner, $ticket->getVar('department'), $staff_options);
                         }
                     } else {                                    // If ticket has no owner, send to department
-                        $sendTo = $this->_getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
+                        $sendTo = $this->getSubscribedStaff($ticket, $dept_email_tpl['bit_value'], $settings);
                     }
-                    $success = $this->_sendEvents($dept_email_tpl, $sendTo, $tags);
+                    $success = $this->sendEvents($dept_email_tpl, $sendTo, $tags);
                 }
             }
         }
@@ -1790,7 +1740,7 @@ class NotificationService extends Xhelp\Service
     public function merge_tickets($ticket1, $ticket2, $newTicket)
     {
         global $xoopsUser;
-        $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticketHandler = new TicketHandler($GLOBALS['xoopsDB']);
         $ticket        = $ticketHandler->get($newTicket);
 
         $tags                  = [];
@@ -1799,24 +1749,24 @@ class NotificationService extends Xhelp\Service
         $tags['TICKET2']       = $ticket2;
         $tags['TICKET_URL']    = \XHELP_BASE_URL . '/ticket.php?id=' . $newTicket;
 
-        $settings      = $this->_hNotification->get(\XHELP_NOTIF_MERGETICKET);
-        $staff_setting = $settings->getVar('staff_setting');
-        $user_setting  = $settings->getVar('user_setting');
+        $settings      = $this->notificationHandler->get(\XHELP_NOTIF_MERGETICKET);
+        $staff_setting = $settings->getVar('staff_setting')??'';
+        $user_setting  = $settings->getVar('user_setting')??'';
 
         if (\XHELP_NOTIF_STAFF_NONE != $staff_setting) {
-            $email_tpl = $this->_getEmailTpl('dept', 'merge_ticket', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('dept', 'merge_ticket', $this->module, $template_id);
             if ($email_tpl) {   // Send email to dept members
-                $sendTo  = $this->_getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                $sendTo  = $this->getSubscribedStaff($ticket, $email_tpl['bit_value'], $settings);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
 
         if (\XHELP_NOTIF_USER_NO != $user_setting) {
-            $email_tpl = $this->_getEmailTpl('ticket', 'merge_this_ticket', $this->_module, $template_id);
+            $email_tpl = $this->getEmailTpl('ticket', 'merge_this_ticket', $this->module, $template_id);
             if ($email_tpl) {    // Send confirm email to submitter
-                //$sendTo = $this->_getEmail($ticket->getVar('uid'));
-                $sendTo  = $this->_getSubscribedUsers($newTicket);
-                $success = $this->_sendEvents($email_tpl, $sendTo, $tags);
+                //$sendTo = $this->getEmail($ticket->getVar('uid'));
+                $sendTo  = $this->getSubscribedUsers($newTicket);
+                $success = $this->sendEvents($email_tpl, $sendTo, $tags);
             }
         }
     }
@@ -1824,8 +1774,8 @@ class NotificationService extends Xhelp\Service
     /**
      * Event: new_faq
      * Triggered after FAQ addition
-     * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
-     * @param Xhelp\Faq    $faq    FAQ that was added
+     * @param Ticket $ticket Ticket used as base for FAQ
+     * @param Faq    $faq    FAQ that was added
      */
     public function new_faq($ticket, $faq)
     {
@@ -1833,8 +1783,7 @@ class NotificationService extends Xhelp\Service
 
     /**
      * Only have 1 instance of class used
-     * @return object {@link xhelp_notificationService}
-     * @access  public
+     * @return NotificationService {@link NotificationService}
      */
     public static function getInstance()
     {
@@ -1846,23 +1795,23 @@ class NotificationService extends Xhelp\Service
         return $instance;
     }
 
-    public function _attachEvents()
+    public function attachEvents()
     {
-        $this->_attachEvent('batch_delete_ticket', $this);
-        $this->_attachEvent('batch_dept', $this);
-        $this->_attachEvent('batch_owner', $this);
-        $this->_attachEvent('batch_priority', $this);
-        $this->_attachEvent('batch_response', $this);
-        $this->_attachEvent('batch_status', $this);
-        $this->_attachEvent('close_ticket', $this);
-        $this->_attachEvent('delete_ticket', $this);
-        $this->_attachEvent('edit_response', $this);
-        $this->_attachEvent('edit_ticket', $this);
-        $this->_attachEvent('merge_tickets', $this);
-        $this->_attachEvent('new_response', $this);
-        $this->_attachEvent('new_ticket', $this);
-        $this->_attachEvent('update_owner', $this);
-        $this->_attachEvent('update_priority', $this);
-        $this->_attachEvent('update_status', $this);
+        $this->attachEvent('batch_delete_ticket', $this);
+        $this->attachEvent('batch_dept', $this);
+        $this->attachEvent('batch_owner', $this);
+        $this->attachEvent('batch_priority', $this);
+        $this->attachEvent('batch_response', $this);
+        $this->attachEvent('batch_status', $this);
+        $this->attachEvent('close_ticket', $this);
+        $this->attachEvent('delete_ticket', $this);
+        $this->attachEvent('edit_response', $this);
+        $this->attachEvent('edit_ticket', $this);
+        $this->attachEvent('merge_tickets', $this);
+        $this->attachEvent('new_response', $this);
+        $this->attachEvent('new_ticket', $this);
+        $this->attachEvent('update_owner', $this);
+        $this->attachEvent('update_priority', $this);
+        $this->attachEvent('update_status', $this);
     }
 }

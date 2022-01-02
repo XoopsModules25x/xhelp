@@ -46,17 +46,17 @@
                 <b><{$xhelp_ticket_subject}></b><br>
                 <{$xhelp_ticket_description}>
 
-                <{if $xhelp_hasCustFields}>
+                <{if $xhelp_hasCustFields|default:''}>
                     <div id="custFields">
                         <br><br>
                         <b><{$smarty.const._XHELP_TEXT_ADDITIONAL_INFO}></b><br>
                         <{foreach from=$xhelp_custFields item=field}>
-                            <{if $field.value != ""}>
+                            <{if $field.value|default:'' != ''}>
                                 <{if $smarty.const.XHELP_CONTROL_FILE == $field.controltype}>
                                     <b><{$field.name}></b>
                                     :
                                     <a href="<{$xhelp_baseURL}>/viewFile.php?id=<{$field.fileid}>"><{$field.filename}></a>
-                                    <{if $xhelp_has_deleteFile}>
+                                    <{if $xhelp_has_deleteFile|default:''}>
                                         <a href="<{$xhelp_baseURL}>/ticket.php?op=deleteFile&amp;id=<{$xhelp_ticketID}>&amp;fileid=<{$field.fileid}>&amp;field=<{$field.fieldname}>"><img
                                                     src="<{$xhelp_imagePath}>button_delete.png"
                                                     alt="<{$smarty.const._XHELP_BUTTON_DELETE}>"></a>
@@ -71,7 +71,7 @@
                     </div>
                 <{/if}>
 
-                <{if $xhelp_hasTicketFiles}>
+                <{if $xhelp_hasTicketFiles|default:''}>
                     <br>
                     <br>
                     <div id="Xhelp\Files">
@@ -97,7 +97,7 @@
                                             <{$aFile.size}>
                                         </td>
                                         <td>
-                                            <{if $xhelp_has_deleteFile}>
+                                            <{if $xhelp_has_deleteFile|default:''}>
                                                 <a href="<{$xhelp_baseURL}>/ticket.php?op=deleteFile&amp;id=<{$xhelp_ticketID}>&amp;fileid=<{$aFile.id}>"><img
                                                             src="<{$xhelp_imagePath}>button_delete.png"
                                                             alt="<{$smarty.const._XHELP_BUTTON_DELETE}>"></a>
@@ -128,7 +128,7 @@
                 <{$smarty.const._XHELP_TEXT_OWNER}>
             </td>
             <td class="even">
-                <{if $xhelp_ticket_ownership neq ''}>
+                <{if $xhelp_ticket_ownership|default:'' neq ''}>
                     <a href="<{$xhelp_ownerinfo}>"><{$xhelp_ticket_ownership}></a>
                 <{else}>
                     <{$smarty.const._XHELP_NO_OWNER}>
@@ -154,7 +154,7 @@
     </table>
 </div>
 
-<{if $xhelp_showActions eq 1}>
+<{if $xhelp_showActions|default:'' eq 1}>
     <br>
     <div id="actions">
         <table width="100%" border="1" cellpadding="0" cellspacing="2" class="outer">
@@ -163,7 +163,7 @@
                                      alt="<{$smarty.const._XHELP_TEXT_ACTIONS2}>"><{$smarty.const._XHELP_TEXT_ACTIONS2}>
                 </th>
             </tr>
-            <{if $xhelp_has_changeOwner}>
+            <{if $xhelp_has_changeOwner|default:''}>
                 <tr>
                     <td class="head" width="20%">
                         <{$smarty.const._XHELP_TEXT_OWNERSHIP}>
@@ -184,7 +184,7 @@
                         </form>
                     </td>
                     <td class="even" colspan="2" nowrap="nowrap">
-                        <{if $xhelp_has_takeOwnership}>
+                        <{if $xhelp_has_takeOwnership|default:''}>
                             <form method="post" action="<{$xhelp_baseURL}>/ticket.php?id=<{$xhelp_ticketID}>&amp;op=ownership">
                                 <{securityToken}><{*//mb*}>
                                 <input type="hidden" value="<{$xhelp_claimOwner}>" name="uid">
@@ -219,7 +219,7 @@
                 <td class="head" width="20%">
                     <{$smarty.const._XHELP_TEXT_TICKET}>
                 </td>
-                <{if $xhelp_has_addResponse}>
+                <{if $xhelp_has_addResponse|default:''}>
                     <td class="even center">
                         <a href="<{$xhelp_baseURL}>/response.php?id=<{$xhelp_ticketID}>&amp;op=staffFrm"><img
                                     src="<{$xhelp_imagePath}>response.png"
@@ -227,14 +227,14 @@
                         <br><{$smarty.const._XHELP_TEXT_ADD_RESPONSE}>
                     </td>
                 <{/if}>
-                <{if $xhelp_has_editTicket}>
+                <{if $xhelp_has_editTicket|default:''}>
                     <td class="even center">
                         <a href="<{$xhelp_baseURL}>/ticket.php?id=<{$xhelp_ticketID}>&amp;op=edit"><img
                                     src="<{$xhelp_imagePath}>edit.png" alt="<{$smarty.const._XHELP_TEXT_EDIT_TICKET}>"></a>
                         <br><{$smarty.const._XHELP_TEXT_EDIT_TICKET}>
                     </td>
                 <{/if}>
-                <{if $xhelp_has_deleteTicket}>
+                <{if $xhelp_has_deleteTicket|default:''}>
                     <td class="even center">
                         <form method="post" action="<{$xhelp_baseURL}>/ticket.php?id=<{$xhelp_ticketID}>&amp;op=delete">
                             <{securityToken}><{*//mb*}>
@@ -248,7 +248,7 @@
                         </form>
                     </td>
                 <{/if}>
-                <{if $xhelp_has_mergeTicket}>
+                <{if $xhelp_has_mergeTicket|default:''}>
                     <td class="even center">
                         <form method="post" action="<{$xhelp_baseURL}>/ticket.php?id=<{$xhelp_ticketID}>&amp;op=merge">
                             <input type="text" name="ticket2" size="8" title="<{$smarty.const._XHELP_TEXT_MERGE_TITLE}>"
@@ -267,7 +267,7 @@
                     <br><{$smarty.const._XHELP_TEXT_PRINT_TICKET}>
                 </td>
             </tr>
-            <{if $xhelp_has_changePriority}>
+            <{if $xhelp_has_changePriority|default:''}>
                 <tr>
                     <td class="head" width="20%">
                         <{$smarty.const._XHELP_TEXT_UPDATE_PRIORITY}>
@@ -288,7 +288,7 @@
                     </td>
                 </tr>
             <{/if}>
-            <{if $xhelp_has_changeStatus || $xhelp_has_addResponse}>
+            <{if $xhelp_has_changeStatus|default:'' || $xhelp_has_addResponse|default:''}>
                 <tr>
                     <td class="head" width="20%">
                         <{if $xhelp_has_changeStatus}><{$smarty.const._XHELP_TEXT_UPDATE_STATUS}><{/if}><{if $xhelp_has_changeStatus && $xhelp_has_addResponse}> / <{/if}><{if $xhelp_has_addResponse}><{$smarty.const._XHELP_TEXT_ADD_RESPONSE}><{/if}>
@@ -313,7 +313,7 @@
                         </form>
                     </td>
                 </tr>
-                <{if $xhelp_has_faqAdd}>
+                <{if $xhelp_has_faqAdd|default:''}>
                     <tr>
                         <td class="head" width="20%">
                             <{$smarty.const._XHELP_TEXT_FAQ}>
@@ -344,7 +344,7 @@
                      alt="<{$smarty.const._XHELP_TEXT_RESPONSES}>"><{$smarty.const._XHELP_TEXT_RESPONSES}>
             </th>
         </tr>
-        <{if $xhelp_hasResponses eq true}>
+        <{if $xhelp_hasResponses|default:false eq true}>
             <{foreach from=$xhelp_aResponses item=response}>
                 <tr>
                     <td width="20%" class="head">
@@ -359,13 +359,13 @@
                         <div class="comUserStat">
                             <{$smarty.const._XHELP_TEXT_USER_RATING}> <{$response.staffRating}>
                         </div>
-                        <{if $xhelp_has_editResponse}>
+                        <{if $xhelp_has_editResponse|default:''}>
                             <br>
                             <a href="<{$xhelp_baseURL}>/response.php?op=staffEdit&amp;id=<{$xhelp_ticketID}>&amp;responseid=<{$response.id}>"><{$smarty.const._XHELP_TEXT_EDIT_RESPONSE}></a>
                         <{/if}>
                     </td>
                     <td class="<{cycle name="message" values="odd, even"}>">
-                        <{if $response.private eq true}>
+                        <{if $response.private|default:false eq true}>
                             <b><{$smarty.const._XHELP_TEXT_PRIVATE}></b>
                             <br>
                             <br>
@@ -376,7 +376,7 @@
                             <{$response.user_sig}>
                         <{/if}>
                         <br><br>
-                        <{if $response.hasFiles eq true}>
+                        <{if $response.hasFiles|default:false eq true}>
                             <table border="0" class="outer">
                                 <tr class="head">
                                     <td>
@@ -445,20 +445,20 @@
         <{foreach from=$xhelp_logMessages item=message}>
             <tr class="<{cycle values="odd, even"}>">
                 <td>
-                    <{$message.lastUpdated}>
+                    <{$message.lastUpdated|default:''}>
                 </td>
                 <td>
-                    <{$message.uname}>
+                    <{$message.uname|default:''}>
                 </td>
                 <td>
-                    <{$message.action}>
+                    <{$message.action|default:''}>
                 </td>
             </tr>
         <{/foreach}>
     </table>
 </div>
 
-<{if $xhelp_has_lastSubmitted}>
+<{if $xhelp_has_lastSubmitted|default:''}>
     <br>
     <table width="100%" border="1" cellpadding="0" cellspacing="2" class="outer">
         <tr>

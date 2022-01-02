@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
-use XoopsModules\Xhelp;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -14,7 +12,7 @@ if (!\defined('XHELP_CLASS_PATH')) {
 class ReportRendererFactory
 {
     /**
-     * Xhelp\ReportRendererFactory constructor.
+     * ReportRendererFactory constructor.
      */
     public function __construct()
     {
@@ -26,7 +24,7 @@ class ReportRendererFactory
      * @param $report
      * @return bool
      */
-    public static function getRenderer($type, $report)
+    public static function getRenderer($type, $report): bool
     {
         $ret = false;
         if ('' == $type) {
@@ -57,7 +55,7 @@ class ReportRendererFactory
      * @param $type
      * @return bool
      */
-    public static function _rendererValid($type)
+    public static function _rendererValid($type): bool
     {
         // Make sure this is a valid file
         if (\is_file(\XHELP_RPT_RENDERER_PATH . '/' . $type . 'ReportRenderer.php')) {

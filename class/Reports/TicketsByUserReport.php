@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp\Reports;
 
@@ -37,22 +37,20 @@ class TicketsByUserReport extends Xhelp\Reports\Report
 
     // Required
     public $name = 'ticketsByUser';
-
     // Required
-    public $meta = [
-        'name'        => _XHELP_TBU_NAME,
+    public $meta       = [
+        'name'        => \_XHELP_TBU_NAME,
         'author'      => 'Eric Juden',
         'authorEmail' => 'eric@3dev.org',
-        'description' => _XHELP_TBU_DESC,
+        'description' => \_XHELP_TBU_DESC,
         'version'     => '1.0',
         'dbFields'    => [
-            'name'        => _XHELP_TBU_DB1,
-            'TicketCount' => _XHELP_TBU_DB2,
+            'name'        => \_XHELP_TBU_DB1,
+            'TicketCount' => \_XHELP_TBU_DB2,
         ],
     ];
-
     public $parameters = [
-        _XHELP_TBU_PARAM1 => [
+        \_XHELP_TBU_PARAM1 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'startDate',
             'value'       => '',      // last month
@@ -61,7 +59,7 @@ class TicketsByUserReport extends Xhelp\Reports\Report
             'dbfield'     => 't.posted',
             'dbaction'    => '>',
         ],
-        _XHELP_TBU_PARAM2 => [
+        \_XHELP_TBU_PARAM2 => [
             'controltype' => \XHELP_CONTROL_DATETIME,
             'fieldname'   => 'endDate',
             'value'       => '',      // today
@@ -71,7 +69,6 @@ class TicketsByUserReport extends Xhelp\Reports\Report
             'dbaction'    => '<=',
         ],
     ];
-
     /*
      function generateReport()
      {
@@ -135,7 +132,7 @@ class TicketsByUserReport extends Xhelp\Reports\Report
      */
 
     /**
-     * @return false|mixed|void
+     * @return void
      */
     public function generateGraph()
     {
