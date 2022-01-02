@@ -78,7 +78,7 @@ class JPSpan_Serializer
      * @return string data as Javascript
      * @static
      */
-    public function serialize($data)
+    public function serialize($data): string
     {
         JPSpan_getTmpVar(true);
         $code = new JPSpan_CodeWriter();
@@ -144,7 +144,7 @@ class JPSpan_Serializer
  * @param bool $refresh
  * @return string e.g. t2
  */
-function JPSpan_getTmpVar($refresh = false)
+function JPSpan_getTmpVar($refresh = false): string
 {
     static $count = 1;
     if (!$refresh) {
@@ -230,7 +230,7 @@ class JPSpan_SerializedElement
      * Called from JPSpan_RootElement::generate
      * @return string
      */
-    public function getReturn()
+    public function getReturn(): string
     {
         return 'return ' . $this->tmpName . ';';
     }
@@ -504,7 +504,7 @@ class JPSpan_SerializedError
      * Errors do no return - exception thrown
      * @ return string empty
      */
-    public function getReturn()
+    public function getReturn(): string
     {
         return '';
     }

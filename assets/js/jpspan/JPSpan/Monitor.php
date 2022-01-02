@@ -66,7 +66,7 @@ class JPSpan_Monitor
      * Captures data about the current environment, before a notification
      * @return array
      */
-    public function prepareData()
+    public function prepareData(): array
     {
         $http_raw_post_data = file_get_contents('php://input');
 

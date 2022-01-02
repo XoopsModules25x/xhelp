@@ -40,7 +40,7 @@ class JPSpan_Generator
      * @access public
      * @todo   This method needs to die - just setup the ClientGenerator object
      */
-    public function init(&$ClientGenerator, &$descriptions, $serverUrl, $encoding)
+    public function init(&$ClientGenerator, &$descriptions, $serverUrl, $encoding): void
     {
         $this->ClientGenerator                  = &$ClientGenerator;
         $this->ClientGenerator->descriptions    = &$descriptions;
@@ -53,7 +53,7 @@ class JPSpan_Generator
      * @return string Javascript
      * @access public
      */
-    public function getClient()
+    public function getClient(): string
     {
         require_once JPSPAN . 'CodeWriter.php';
         $Code = new JPSpan_CodeWriter();
@@ -81,7 +81,7 @@ class JPSpan_Generator_AdHoc
     /**
      * @param $description
      */
-    public function addDescription($description)
+    public function addDescription($description): void
     {
         $this->descriptions[$description->jsClass] = $description;
     }
@@ -91,7 +91,7 @@ class JPSpan_Generator_AdHoc
      * @param mixed $Code
      * @access public
      */
-    public function generate($Code)
+    public function generate($Code): void
     {
         switch ($this->RequestMethod) {
             case 'rawpost':
@@ -129,7 +129,7 @@ class JPSpan_Generator_AdHoc
      * @param mixed $Code
      * @access private
      */
-    public function generateScriptHeader($Code)
+    public function generateScriptHeader($Code): void
     {
         ob_start(); ?>
         /**@ * require_once __DIR__   . '/remoteobject.js';
@@ -159,8 +159,7 @@ class JPSpan_Generator_AdHoc
         } ?>
         */
         <?php
-        $Code->append(ob_get_contents());
-        ob_end_clean();
+        $Code->append(ob_get_clean());
     }
 
     /**
@@ -169,7 +168,7 @@ class JPSpan_Generator_AdHoc
      * @param mixed $Description
      * @access private
      */
-    public function generateJsClass($Code, $Description)
+    public function generateJsClass($Code, $Description): void
     {
         ob_start(); ?>
 
@@ -200,14 +199,13 @@ class JPSpan_Generator_AdHoc
         return oParent; }
 
         <?php
-        $Code->append(ob_get_contents());
-        ob_end_clean();
+        $Code->append(ob_get_clean());
     }
 
     /**
      * @return string
      */
-    public function getClient()
+    public function getClient(): string
     {
         require_once JPSPAN . 'CodeWriter.php';
         $Code = new JPSpan_CodeWriter();
@@ -215,7 +213,7 @@ class JPSpan_Generator_AdHoc
         $client = $Code->toString();
 
         require_once JPSPAN . 'Include.php';
-        $I = &(new JPSpan_include))->instance(;
+        $I = (new JPSpan_include()))->instance(;
 
         // HACK - this needs to change
         $I->loadString(__FILE__, $client);

@@ -47,7 +47,7 @@ class JPSpan_Server_PostOffice extends JPSpan_Server
      * @param mixed $sendHeaders
      * @return bool FALSE if failed (invalid request - see errors)
      */
-    public function serve($sendHeaders = true)
+    public function serve($sendHeaders = true): bool
     {
         require_once JPSPAN . 'Monitor.php';
         $M = &(new JPSpan_Monitor())->instance();
@@ -119,14 +119,14 @@ class JPSpan_Server_PostOffice extends JPSpan_Server
      * locally
      * @return bool FALSE if failed (invalid request - see errors)
      */
-    public function resolveCall()
+    public function resolveCall(): bool
     {
         // Hack between server.php?class/method and server.php/class/method
         $uriPath = $_SERVER['QUERY_STRING'];
 
         if ($uriPath) {
             if (preg_match('/\/$/', $uriPath)) {
-                $uriPath = mb_substr($uriPath, 0, mb_strlen($uriPath) - 1);
+                $uriPath = mb_substr($uriPath, 0, -1);
             }
         } else {
             $uriPath = JPSpan_Server::getUriPath();
@@ -175,7 +175,7 @@ class JPSpan_Server_PostOffice extends JPSpan_Server
      * @param mixed $args
      * @return bool TRUE if request had args
      */
-    public function getArgs(&$args)
+    public function getArgs(&$args): bool
     {
         require_once JPSPAN . 'RequestData.php';
 
@@ -196,7 +196,7 @@ class JPSpan_Server_PostOffice extends JPSpan_Server
      * Get the Javascript client generator
      * @return JPSpan_Generator
      */
-    public function &getGenerator()
+    public function &getGenerator(): JPSpan_Generator
     {
         require_once JPSPAN . 'Generator.php';
         $G = new JPSpan_Generator();
@@ -261,8 +261,7 @@ class JPSpan_PostOffice_Generator
         } ?>
         */
         <?php
-        $Code->append(ob_get_contents());
-        ob_end_clean();
+        $Code->append(ob_get_clean());
     }
 
     /**
@@ -311,7 +310,6 @@ class JPSpan_PostOffice_Generator
         return oParent; }
 
         <?php
-        $Code->append(ob_get_contents());
-        ob_end_clean();
+        $Code->append(ob_get_clean());
     }
 }

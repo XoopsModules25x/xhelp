@@ -13,7 +13,7 @@ class JPSpan_Script
      * @return string Javascript (compressed)
      * @static
      */
-    public function compress($script)
+    public function compress($script): string
     {
         //remove windows cariage returns
         $script = str_replace("\r", '', $script);

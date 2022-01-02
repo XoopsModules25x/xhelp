@@ -21,7 +21,7 @@ class JPSpan_Handle
      * @return bool FALSE if handle not resolved
      * @static
      */
-    public function resolve(&$Handle)
+    public function resolve(&$Handle): bool
     {
         switch (gettype($Handle)) {
             case 'array':
@@ -76,7 +76,7 @@ class JPSpan_Handle
      * @see    https://wact.sourceforge.net/index.php/ResolveHandle
      * @todo   Cases where Handle not array, string or object?
      * @param mixed $Handle
-     * @return mixed JPSpan_HandleDescription or FALSE if invalid handle
+     * @return false|\JPSpan_HandleDescription JPSpan_HandleDescription or FALSE if invalid handle
      * @static
      */
     public function examine($Handle)

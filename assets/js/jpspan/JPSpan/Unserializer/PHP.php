@@ -10,12 +10,14 @@
  * and includes them where needed. Throws an E_USER_ERROR if not found and dies
  * @param string $className classname (passed by PHP)
  * @param bool   $getFailed set to TRUE to get back the name of the last failed class
- * @return mixed void unless getFailed param is true
+ * @return void|null void unless getFailed param is true
  */
 function JPSpan_Unserializer_PHP_Callback($className, $getFailed = false)
 {
     static $failedClass = null;
-    if (!$getFailed) {
+    if ($getFailed) {
+        return $failedClass;
+    } else {
         $className = \mb_strtolower($className);
         if (array_key_exists($className, $GLOBALS['_JPSPAN_UNSERIALIZER_MAP'])) {
             if (null !== $GLOBALS['_JPSPAN_UNSERIALIZER_MAP'][$className]) {
@@ -24,8 +26,6 @@ function JPSpan_Unserializer_PHP_Callback($className, $getFailed = false)
         } else {
             $failedClass = \mb_strtolower($className);
         }
-    } else {
-        return $failedClass;
     }
 }
 
@@ -74,7 +74,7 @@ class JPSpan_Unserializer_PHP
      * @param mixed $data
      * @return bool TRUE if valid
      */
-    public function validateClasses($data)
+    public function validateClasses($data): bool
     {
         foreach ($this->getClasses($data) as $class) {
             if (!array_key_exists(mb_strtolower($class), $GLOBALS['_JPSPAN_UNSERIALIZER_MAP'])) {
@@ -93,7 +93,7 @@ class JPSpan_Unserializer_PHP
      * @return array list of classes found
      * @internal param serialized $string string to parse
      */
-    public function getClasses($string)
+    public function getClasses($string): array
     {
         // Stip any string representations (which might contain object syntax)
         $string = preg_replace('/s:[0-9]+:".*"/Us', '', $string);

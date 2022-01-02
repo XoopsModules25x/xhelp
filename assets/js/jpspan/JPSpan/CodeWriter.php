@@ -45,7 +45,7 @@ class JPSpan_CodeWriter
      * Return all the written code
      * @return string Javascript
      */
-    public function toString()
+    public function toString(): string
     {
         return $this->code;
     }

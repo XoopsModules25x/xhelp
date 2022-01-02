@@ -6,6 +6,7 @@
 function JPSpan_Request(encoder) {
     this.encoder = encoder;
 }
+
 JPSpan_Request.prototype = {
 
     // Instance of an encoder

@@ -123,11 +123,11 @@ function JPSpan_ExceptionHandler($exception): void
     $name = 'Server_Error';
     $file = addcslashes($exception->getFile(), "\000\042\047\134");
 
-    if (!JPSPAN_ERROR_MESSAGES) {
-        $message = 'Server unable to respond';
-    } else {
+    if (JPSPAN_ERROR_MESSAGES) {
         $message = strip_tags($exception->getMessage());
         $message = wordwrap($message, 60, '\n', 1);
+    } else {
+        $message = 'Server unable to respond';
     }
 
     $code = 2005;

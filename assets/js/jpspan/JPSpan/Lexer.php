@@ -63,7 +63,7 @@ class JPSpan_LexerParallelRegex
      *                          subject.
      * @return bool True on success.
      */
-    public function match($subject, &$match)
+    public function match($subject, &$match): bool
     {
         if (0 == count($this->_patterns)) {
             return false;
@@ -91,7 +91,7 @@ class JPSpan_LexerParallelRegex
      * @return null|string
      * @internal param array $patterns List of patterns in order.
      */
-    public function _getCompoundedRegex()
+    public function _getCompoundedRegex(): ?string
     {
         if (null === $this->_regex) {
             for ($i = 0, $iMax = count($this->_patterns); $i < $iMax; ++$i) {
@@ -107,7 +107,7 @@ class JPSpan_LexerParallelRegex
      *    Accessor for perl regex mode flags to use.
      * @return string Perl regex flags.
      */
-    public function _getPerlMatchingFlags()
+    public function _getPerlMatchingFlags(): string
     {
         return ($this->_case ? 'msS' : 'msSi');
     }
@@ -133,7 +133,7 @@ class JPSpan_LexerStateStack
      *    Accessor for current state.
      * @return string State.
      */
-    public function getCurrent()
+    public function getCurrent(): string
     {
         return $this->_stack[count($this->_stack) - 1];
     }
@@ -154,7 +154,7 @@ class JPSpan_LexerStateStack
      * @return bool False if we drop off
      *                 the bottom of the list.
      */
-    public function leave()
+    public function leave(): bool
     {
         if (1 == count($this->_stack)) {
             return false;
@@ -288,7 +288,7 @@ class JPSpan_Lexer
      * @param string $raw Raw HTML text.
      * @return bool True on success, else false.
      */
-    public function parse($raw)
+    public function parse($raw): bool
     {
         if (!isset($this->_parser)) {
             return false;
@@ -322,7 +322,7 @@ class JPSpan_Lexer
      * @return bool False if there was any error
      *                               from the parser.
      */
-    public function _dispatchTokens($unmatched, $matched, $mode = false)
+    public function _dispatchTokens($unmatched, $matched, $mode = false): bool
     {
         if (!$this->_invokeParser($unmatched, JPSPAN_LEXER_UNMATCHED)) {
             return false;
@@ -358,7 +358,7 @@ class JPSpan_Lexer
      * @param string $mode Mode to test.
      * @return bool True if this is the exit mode.
      */
-    public function _isModeEnd($mode)
+    public function _isModeEnd($mode): bool
     {
         return ('__exit' === $mode);
     }
@@ -370,7 +370,7 @@ class JPSpan_Lexer
      * @param string $mode Mode to test.
      * @return bool True if this is the exit mode.
      */
-    public function _isSpecialMode($mode)
+    public function _isSpecialMode($mode): bool
     {
         return (0 == strncmp($mode, '_', 1));
     }
@@ -381,7 +381,7 @@ class JPSpan_Lexer
      * @param string $mode Mode to decode.
      * @return string Underlying mode name.
      */
-    public function _decodeSpecial($mode)
+    public function _decodeSpecial($mode): string
     {
         return mb_substr($mode, 1);
     }
@@ -395,7 +395,7 @@ class JPSpan_Lexer
      *                          than unparsed data.
      * @return bool
      */
-    public function _invokeParser($content, $is_match)
+    public function _invokeParser($content, $is_match): bool
     {
         if (('' === $content) || (false === $content)) {
             return true;

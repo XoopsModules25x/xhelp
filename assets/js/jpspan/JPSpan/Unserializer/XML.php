@@ -236,7 +236,10 @@ class JPSpan_Unserializer_XML_Root extends JPSpan_Unserializer_XML_Node
      */
     public function add($child): void
     {
-        if (!$this->hasValue) {
+        if ($this->hasValue) {
+            $errorMsg = 'Root node can only contain a single child node';
+            $this->Handler->raiseError($errorMsg);
+        } else {
             if (!$child->isElement) {
                 $this->value    = $child->value;
                 $this->hasValue = true;
@@ -244,9 +247,6 @@ class JPSpan_Unserializer_XML_Root extends JPSpan_Unserializer_XML_Node
                 $errorMsg = 'Element nodes can only be placed inside array or object nodes';
                 $this->Handler->raiseError($errorMsg);
             }
-        } else {
-            $errorMsg = 'Root node can only contain a single child node';
-            $this->Handler->raiseError($errorMsg);
         }
     }
 }
@@ -499,11 +499,11 @@ class JPSpan_Unserializer_XML_Element extends JPSpan_Unserializer_XML_Node
      */
     public function add($child): void
     {
-        if (!$child->isElement) {
-            $this->value = $child->value;
-        } else {
+        if ($child->isElement) {
             $errorMsg = 'Element nodes can only be placed inside array or object nodes';
             $this->Handler->raiseError($errorMsg);
+        } else {
+            $this->value = $child->value;
         }
     }
 }

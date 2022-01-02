@@ -68,7 +68,7 @@ class JPSpan_Server
      * @param mixed $serverUrl
      * @access public
      */
-    public function setServerUrl($serverUrl)
+    public function setServerUrl($serverUrl): void
     {
         $this->serverUrl = $serverUrl;
     }
@@ -78,7 +78,7 @@ class JPSpan_Server
      * @return string server url (where the server is public)
      * @access public
      */
-    public function getServerUrl()
+    public function getServerUrl(): string
     {
         return $this->serverUrl;
     }
@@ -122,7 +122,7 @@ class JPSpan_Server
      * @internal param handle $mixed to user class
      * @access   public
      */
-    public function addHandler(&$Handle, $Description = null)
+    public function addHandler(&$Handle, $Description = null): void
     {
         if (null === $Description) {
             if (false !== ($Description = (new JPSpan_Handle())->examine($Handle))) {
@@ -170,7 +170,7 @@ class JPSpan_Server
      * @access public
      * @static
      */
-    public function getUriPath()
+    public function getUriPath(): string
     {
         $basePath = explode('/', $this->resolveScriptName());
         $script   = array_pop($basePath);
@@ -199,7 +199,7 @@ class JPSpan_Server
      * @return string script name
      * @access public
      */
-    public function resolveScriptName()
+    public function resolveScriptName(): string
     {
         if (Request::hasVar('PATH_INFO', 'SERVER') && $_SERVER['PATH_INFO'] == $_SERVER['SCRIPT_NAME']) {
             $script_name = $_SERVER['PATH_INFO'];
@@ -222,7 +222,7 @@ class JPSpan_Server
      * @todo     Break this function up
      * @access   public
      */
-    public function loadErrorReader($lang = 'en', $app = [], $ser = [], $cli = [])
+    public function loadErrorReader($lang = 'en', $app = [], $ser = [], $cli = []): void
     {
         require_once JPSPAN . 'Include.php';
         JPSpan_Include_ErrorReader($lang, $app, $ser, $cli);
@@ -232,12 +232,12 @@ class JPSpan_Server
      * Display the Javascript client and exit
      * @access public
      */
-    public function displayClient()
+    public function displayClient(): void
     {
         $G = $this->getGenerator();
         require_once JPSPAN . 'Include.php';
-//        $I = new JPSpan_Include()->instance();
-        $I = & JPSpan_Include::instance();
+        //        $I = new JPSpan_Include()->instance();
+        $I = &JPSpan_Include::instance();
 
         // HACK - this needs to change
         $I->loadString(__FILE__, $G->getClient());

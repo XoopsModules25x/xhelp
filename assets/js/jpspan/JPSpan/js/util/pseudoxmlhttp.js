@@ -98,7 +98,7 @@ PseudoXmlHttpRequest.prototype = {
         }
         ;
 
-        var requestDoc = (this.__browser == "IE" )
+        var requestDoc = (this.__browser == "IE")
             ? this.__requestFrame.document : this.__requestFrame.contentDocument;
 
         requestDoc.open();
@@ -106,7 +106,7 @@ PseudoXmlHttpRequest.prototype = {
         requestDoc.close();
         requestDoc.forms['PseudoXmlHttpForm'].submit();
 
-        var responseDoc = (this.__browser == "IE" )
+        var responseDoc = (this.__browser == "IE")
             ? this.__responseFrame.document : this.__responseFrame.contentDocument;
         var self = this;
 

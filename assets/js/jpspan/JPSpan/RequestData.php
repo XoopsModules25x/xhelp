@@ -48,7 +48,7 @@ class JPSpan_RequestData_Post
      * Returns the data, making sure they are unserialized and removing magic
      * quotes if enabled
      * @param $encoding
-     * @return mixed
+     * @return array
      * @static
      */
     public function fetch($encoding)
@@ -88,7 +88,7 @@ class JPSpan_RequestData_Get
      * Returns the data, making sure they are unserialized and removing magic
      * quotes if enabled
      * @param $encoding
-     * @return mixed
+     * @return array
      * @static
      */
     public function fetch($encoding)

@@ -6,9 +6,9 @@ function JPSpan_Util_typeof(vExpression) {
 
     if (sTypeOf == "function") {
         var sFunction = vExpression.toString();
-        if (( /^\/.*\/$/ ).test(sFunction)) {
+        if ((/^\/.*\/$/).test(sFunction)) {
             return "regexp";
-        } else if (( /^\[object.*\]$/i ).test(sFunction)) {
+        } else if ((/^\[object.*\]$/i).test(sFunction)) {
             sTypeOf = "object"
         }
     }
@@ -26,7 +26,7 @@ function JPSpan_Util_typeof(vExpression) {
             return "event";
     }
 
-    if (window.event && ( event.type == vExpression.type )) {
+    if (window.event && (event.type == vExpression.type)) {
         return "event";
     }
 
