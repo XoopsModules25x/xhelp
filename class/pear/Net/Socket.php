@@ -68,14 +68,14 @@ class Net_Socket extends PEAR
      * Connect to the specified port. If called when the socket is
      * already connected, it disconnects and connects again.
      *
-     * @param string $addr       IP address or host name
-     * @param int    $port       TCP port number
-     * @param null   $persistent (optional) whether the connection is
-     *                           persistent (kept open between requests by the web server)
-     * @param null   $timeout    (optional) how long to wait for data
-     * @return mixed true on success or error object
+     * @param string    $addr       IP address or host name
+     * @param int       $port       TCP port number
+     * @param bool|null $persistent (optional) whether the connection is
+     *                              persistent (kept open between requests by the web server)
+     * @param int|null  $timeout    (optional) how long to wait for data
+     * @return bool|object|\PEAR_Error true on success or error object
      */
-    public function connect($addr, $port, $persistent = null, $timeout = null)
+    public function connect(string $addr, int $port, $persistent = null, $timeout = null)
     {
         if (is_resource($this->fp)) {
             @fclose($this->fp);
@@ -119,7 +119,7 @@ class Net_Socket extends PEAR
     /**
      * Disconnects from the peer, closes the socket.
      *
-     * @return mixed true on success or an error object otherwise
+     * @return bool|object|\PEAR_Error true on success or an error object otherwise
      */
     public function disconnect()
     {
@@ -142,7 +142,7 @@ class Net_Socket extends PEAR
      *
      * @return bool the current blocking mode.
      */
-    public function isBlocking()
+    public function isBlocking(): bool
     {
         return $this->blocking;
     }
@@ -158,9 +158,9 @@ class Net_Socket extends PEAR
      * is data for blocking sockets.
      *
      * @param bool $mode true for blocking sockets, false for nonblocking
-     * @return mixed true on success or an error object otherwise
+     * @return bool|object|\PEAR_Error true on success or an error object otherwise
      */
-    public function setBlocking($mode)
+    public function setBlocking(bool $mode)
     {
         if (is_resource($this->fp)) {
             $this->blocking = $mode;
@@ -182,9 +182,9 @@ class Net_Socket extends PEAR
      *
      * @param int $seconds      seconds
      * @param int $microseconds microseconds
-     * @return mixed true on success or an error object otherwise
+     * @return bool|object|\PEAR_Error true on success or an error object otherwise
      */
-    public function setTimeout($seconds, $microseconds)
+    public function setTimeout(int $seconds, int $microseconds)
     {
         if (is_resource($this->fp)) {
             stream_set_timeout($this->fp, $seconds, $microseconds);
@@ -210,7 +210,7 @@ class Net_Socket extends PEAR
      * unread_bytes (int) - Number of bytes left in the socket buffer<br>
      * </p>
      *
-     * @return mixed Array containing information about existing socket resource or an error object otherwise
+     * @return array|object|\PEAR_Error Array containing information about existing socket resource or an error object otherwise
      */
     public function getStatus()
     {
@@ -251,11 +251,10 @@ class Net_Socket extends PEAR
      * chunk; if you know the size of the data you're getting
      * beforehand, this is definitely the way to go.
      *
-     * @param The $size number of bytes to read from the socket.
-     * @return bool|object|string bytes of data from the socket, or a PEAR_Error if
-     *                  not connected.
+     * @param int $size number of bytes to read from the socket.
+     * @return bool|object|string|PEAR_Error bytes of data from the socket, or a PEAR_Error if not connected.
      */
-    public function read($size)
+    public function read(int $size)
     {
         if (is_resource($this->fp)) {
             return fread($this->fp, $size);
@@ -271,10 +270,10 @@ class Net_Socket extends PEAR
     /**
      * Write a specified amount of data.
      *
-     * @param $data
-     * @return mixed true on success or an error object otherwise
+     * @param string $data
+     * @return false|int|object|\PEAR_Error true on success or an error object otherwise
      */
-    public function write($data)
+    public function write(string $data)
     {
         if (is_resource($this->fp)) {
             return fwrite($this->fp, $data);
@@ -290,10 +289,10 @@ class Net_Socket extends PEAR
     /**
      * Write a line of data to the socket, followed by a trailing "\r\n".
      *
-     * @param $data
-     * @return mixed fputs result, or an error
+     * @param string $data
+     * @return false|int|object|\PEAR_Error fputs result, or an error
      */
-    public function writeLine($data)
+    public function writeLine(string $data)
     {
         if (is_resource($this->fp)) {
             return $this->write($data . "\r\n");
@@ -311,7 +310,7 @@ class Net_Socket extends PEAR
      *
      * @return bool
      */
-    public function eof()
+    public function eof(): bool
     {
         return (is_resource($this->fp) && feof($this->fp));
     }
@@ -387,7 +386,7 @@ class Net_Socket extends PEAR
      * @return string, or a PEAR_Error if
      *                 not connected.
      */
-    public function readString()
+    public function readString(): string
     {
         if (is_resource($this->fp)) {
             $string = '';
@@ -408,7 +407,7 @@ class Net_Socket extends PEAR
     /**
      * Reads an IP Address and returns it in a dot formated string
      *
-     * @return Dot formated string, or a PEAR_Error if
+     * @return string|\PEAR_Error Dot formated string, or a PEAR_Error if
      *             not connected.
      */
     public function readIPAddress()
@@ -430,7 +429,7 @@ class Net_Socket extends PEAR
      * Read until either the end of the socket or a newline, whichever
      * comes first. Strips the trailing newline from the returned data.
      *
-     * @return All available data up to a newline, without that
+     * @return object|\PEAR_Error|string  All available data up to a newline, without that
      *             newline, or until the end of the socket, or a PEAR_Error if
      *             not connected.
      */
@@ -462,7 +461,7 @@ class Net_Socket extends PEAR
      * Read until the socket closes. THIS FUNCTION WILL NOT EXIT if the
      * socket is in blocking mode until the socket closes.
      *
-     * @return All data until the socket closes, or a PEAR_Error if
+     * @return object|PEAR_Error|string All data until the socket closes, or a PEAR_Error if
      *             not connected.
      */
     public function readAll()

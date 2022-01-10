@@ -17,13 +17,14 @@ if (!defined('XHELP_CLASS_PATH')) {
 
 //Create an instance of each event class
 //$xhelpEventSrv = Xhelp\Utility::createNewEventService();
-$xhelpEventSrv = Xhelp\EventService::getInstance();
-$var           = Xhelp\CacheService::getInstance();
-$var           = Xhelp\LogService::getInstance();
-$var           = Xhelp\NotificationService::getInstance();
-$var           = Xhelp\StaffService::getInstance();
-$var           = Xhelp\FirnService::getInstance();
-unset($var);
+
+//$eventService        = Xhelp\EventService::getInstance();
+//$cacheService        = Xhelp\CacheService::getInstance();
+//$logService          = Xhelp\LogService::getInstance();
+//$notificationService = Xhelp\NotificationService::getInstance();
+//$staffService        = Xhelp\StaffService::getInstance();
+//$firnService         = Xhelp\FirnService::getInstance();
+//unset($var);
 
 // @todo - update every reference to $_eventsrv to use the new $xhelpEventSrv object
-$_eventsrv = &$xhelpEventSrv;
+//$_eventsrv = &$xhelpEventSrv;

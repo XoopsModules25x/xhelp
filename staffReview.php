@@ -5,6 +5,7 @@ use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
+$eventService = Xhelp\EventService::getInstance();
 
 if ($xoopsUser) {
     if (Request::hasVar('submit', 'POST')) {
@@ -23,9 +24,12 @@ if ($xoopsUser) {
         if (Request::hasVar('comments', 'POST')) {
             $comments = $_POST['comments'];
         }
-        $staffReviewHandler = Xhelp\Helper::getInstance()->getHandler('StaffReview');
-        $ticketHandler      = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        $responsesHandler   = Xhelp\Helper::getInstance()->getHandler('Responses');
+        $staffReviewHandler = Xhelp\Helper::getInstance()
+            ->getHandler('StaffReview');
+        $ticketHandler      = Xhelp\Helper::getInstance()
+            ->getHandler('Ticket');
+        $responseHandler    = Xhelp\Helper::getInstance()
+            ->getHandler('Response');
 
         $review = $staffReviewHandler->create();
         $review->setVar('staffid', $staffid);
@@ -38,15 +42,15 @@ if ($xoopsUser) {
         if ($staffReviewHandler->insert($review)) {
             $message  = _XHELP_MESSAGE_ADD_STAFFREVIEW;
             $ticket   = $ticketHandler->get($ticketid);
-            $response = $responsesHandler->get($responseid);
-            $_eventsrv->trigger('new_response_rating', [&$review, &$ticket, &$response]);
+            $response = $responseHandler->get($responseid);
+            $eventService->trigger('new_response_rating', [&$review, &$ticket, &$response]);
         } else {
             $message = _XHELP_MESSAGE_ADD_STAFFREVIEW_ERROR;
         }
-        redirect_header(XHELP_BASE_URL . "/ticket.php?id=$ticketid", 3, $message);
+        $helper->redirect("ticket.php?id=$ticketid", 3, $message);
     } else {
         $GLOBALS['xoopsOption']['template_main'] = 'xhelp_staffReview.tpl';   // Set template
-        require_once XOOPS_ROOT_PATH . '/header.php';                     // Include
+        require_once XOOPS_ROOT_PATH . '/header.php';                         // Include
 
         if (Request::hasVar('staff', 'GET')) {
             $xoopsTpl->assign('xhelp_staffid', Request::getInt('staff', 0, 'GET'));

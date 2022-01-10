@@ -53,7 +53,7 @@ class StaffHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_staff';
+    public $dbtable = 'xhelp_staff';
 
     /**
      * Constructor
@@ -62,24 +62,25 @@ class StaffHandler extends BaseObjectHandler
      */
     public function __construct(\XoopsDatabase $db = null)
     {
+        $this->helper = Helper::getInstance();
         parent::init($db);
     }
 
     /**
      * retrieve a staff object from the database
      * @param int $uid user id
-     * @return bool|Staff <a href='psi_element://Staff'>Staff</a>
+     * @return bool|Staff
      */
-    public function &getByUid($uid)
+    public function &getByUid(int $uid)
     {
         $ret = false;
-        $uid = (int)$uid;
+        $uid = $uid;
         if ($uid > 0) {
-            $sql = $this->selectQuery(new \Criteria('uid', $uid));
-            if (!$result = $this->_db->query($sql)) {
+            $sql = $this->selectQuery(new \Criteria('uid', (string)$uid));
+            if (!$result = $this->db->query($sql)) {
                 return $ret;
             }
-            $arr = $this->_db->fetchArray($result);
+            $arr = $this->db->fetchArray($result);
             if ($arr) {
                 $ret = new $this->classname($arr);
 
@@ -99,9 +100,9 @@ class StaffHandler extends BaseObjectHandler
      *
      * @return bool true if success, FALSE if failure
      */
-    public function addStaffRole($uid, $roleid, $deptid): bool
+    public function addStaffRole(int $uid, int $roleid, int $deptid): bool
     {
-        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
+        $staffRoleHandler = $this->helper->getHandler('StaffRole');
         $role             = $staffRoleHandler->create();
         $role->setVar('uid', $uid);
         $role->setVar('roleid', $roleid);
@@ -114,17 +115,17 @@ class StaffHandler extends BaseObjectHandler
     }
 
     /**
-     * Retrive all of the roles of current staff member
+     * Retrive all roles of the current staff member
      *
-     * @param      $uid
+     * @param int  $uid
      * @param bool $id_as_key
-     * @return array|bool <a href='psi_element://StaffRoles'>StaffRoles</a>, FALSE if failure
-     * FALSE if failure
+     * @return array|bool StaffRoles or FALSE if failure
      */
-    public function getRoles($uid, $id_as_key = false)
+    public function getRoles(int $uid, bool $id_as_key = false)
     {
-        $uid              = (int)$uid;
-        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
+        $uid = $uid;
+        /** @var \XoopsModules\Xhelp\StaffRoleHandler $staffRoleHandler */
+        $staffRoleHandler = $this->helper->getHandler('StaffRole');
 
         if (!$roles = $staffRoleHandler->getObjectsByStaff($uid, $id_as_key)) {
             return false;
@@ -138,11 +139,11 @@ class StaffHandler extends BaseObjectHandler
      */
     public function clearRoles(): bool
     {
-        $_xhelpSession = new Session();
+        $session = Session::getInstance();
 
-        $myRoles = $_xhelpSession->get('xhelp_hasRights');
+        $myRoles = $session->get('xhelp_hasRights');
         if ($myRoles) {
-            $_xhelpSession->del('xhelp_hasRights');
+            $session->del('xhelp_hasRights');
 
             return true;
         }
@@ -153,23 +154,23 @@ class StaffHandler extends BaseObjectHandler
     /**
      * Retrieve all of the roles of current department for staff member
      *
-     * @param      $uid
-     * @param      $deptid
+     * @param int  $uid
+     * @param int  $deptid
      * @param bool $id_as_key
-     * @return array|bool <a href='psi_element://StaffRoles'>StaffRoles</a>, FALSE if failure
-     * FALSE if failure
+     * @return array|bool array of StaffRoles or FALSE if failure
      */
-    public function getRolesByDept($uid, $deptid, $id_as_key = false)
+    public function getRolesByDept(int $uid, int $deptid, bool $id_as_key = false)
     {
-        $uid              = (int)$uid;
-        $deptid           = (int)$deptid;
-        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
+        $ret              = false;
+        $uid              = $uid;
+        $deptid           = $deptid;
+        $staffRoleHandler = $this->helper->getHandler('StaffRole');
 
-        $criteria = new \CriteriaCompo(new \Criteria('uid', $uid));
-        $criteria->add(new \Criteria('deptid', $deptid));
+        $criteria = new \CriteriaCompo(new \Criteria('uid', (string)$uid));
+        $criteria->add(new \Criteria('deptid', (string)$deptid));
 
         if (!$roles = $staffRoleHandler->getObjects($criteria, $id_as_key)) {
-            return false;
+            return $ret;
         }
 
         return $roles;
@@ -183,10 +184,10 @@ class StaffHandler extends BaseObjectHandler
      * @internal param int $roleid role id
      * @internal param int $deptid department id
      */
-    public function removeStaffRoles($uid): bool
+    public function removeStaffRoles(int $uid): bool
     {
-        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
-        $criteria             = new \Criteria('uid', $uid);
+        $staffRoleHandler = $this->helper->getHandler('StaffRole');
+        $criteria         = new \Criteria('uid', (string)$uid);
 
         return $staffRoleHandler->deleteAll($criteria);
     }
@@ -199,9 +200,9 @@ class StaffHandler extends BaseObjectHandler
      *
      * @return bool true on success, FALSE on failure
      */
-    public function staffInRole($uid, $roleid): bool
+    public function staffInRole(int $uid, int $roleid): bool
     {
-        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
+        $staffRoleHandler = $this->helper->getHandler('StaffRole');
         if (!$inRole = $staffRoleHandler->staffInRole($uid, $roleid)) {
             return false;
         }
@@ -214,15 +215,15 @@ class StaffHandler extends BaseObjectHandler
      * @param int $uid user id
      * @return int
      */
-    public function &getTimeSpent($uid = 0): int
+    public function &getTimeSpent(int $uid = 0): int
     {
-        $responsesHandler = new ResponsesHandler($GLOBALS['xoopsDB']);
+        $responseHandler = $this->helper->getHandler('Response');
         if (0 == !$uid) {
-            $uid       = (int)$uid;
-            $criteria      = new \Criteria('uid', $uid);
-            $responses = $responsesHandler->getObjects($criteria);
+            $uid       = $uid;
+            $criteria  = new \Criteria('uid', (string)$uid);
+            $responses = $responseHandler->getObjects($criteria);
         } else {
-            $responses = $responsesHandler->getObjects();
+            $responses = $responseHandler->getObjects();
         }
         $timeSpent = 0;
         foreach ($responses as $response) {
@@ -238,7 +239,7 @@ class StaffHandler extends BaseObjectHandler
      */
     public function &getByAllDepts(): array
     {
-        $ret = $this->getObjects(new \Criteria('allDepartments', 1), true);
+        $ret = $this->getObjects(new \Criteria('allDepartments', '1'), true);
 
         return $ret;
     }
@@ -246,14 +247,16 @@ class StaffHandler extends BaseObjectHandler
     /**
      * creates new staff member
      *
-     * @param $uid
-     * @param $email
+     * @param int    $uid
+     * @param string $email
      * @return bool
      */
-    public function addStaff($uid, $email) //, $allDepts = 0
+    public function addStaff(int $uid, string $email) //, $allDepts = 0
+    : bool
     {
         $notify = new NotificationService();
-        $staff  = $this->create();
+        /** @var \XoopsModules\Xhelp\Staff $staff */
+        $staff = $this->create();
         $staff->setVar('uid', $uid);
         $staff->setVar('email', $email);
         $numNotify = $notify->getNumDeptNotifications();
@@ -269,30 +272,31 @@ class StaffHandler extends BaseObjectHandler
      * @param int $uid User ID to look for
      * @return bool TRUE if user is a staff member, false if not
      */
-    public function isStaff($uid): bool
+    public function isStaff(int $uid): bool
     {
-        $count = $this->getCount(new \Criteria('uid', (int)$uid));
+        $count = $this->getCount(new \Criteria('uid', (string)$uid));
 
         return ($count > 0);
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'INSERT INTO `%s` (id, uid, email, responseTime, numReviews, callsClosed, attachSig, rating, allDepartments, ticketsResponded, notify, permTimestamp) VALUES (%u, %u, %s, %u, %u, %u, %u, %u, %u, %u, %u, %u)',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $id,
             $uid,
-            $this->_db->quoteString($email),
+            $this->db->quoteString($email),
             $responseTime,
             $numReviews,
             $callsClosed,
@@ -308,21 +312,22 @@ class StaffHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'UPDATE `%s` SET uid = %u, email = %s, responseTime = %u, numReviews = %u, callsClosed = %u, attachSig = %u, rating = %u, allDepartments = %u, ticketsResponded = %u, notify = %u, permTimestamp = %u WHERE id = %u',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $uid,
-            $this->_db->quoteString($email),
+            $this->db->quoteString($email),
             $responseTime,
             $numReviews,
             $callsClosed,
@@ -339,12 +344,12 @@ class StaffHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }
@@ -352,42 +357,43 @@ class StaffHandler extends BaseObjectHandler
     /**
      * delete a staff member from the database
      *
-     * @param \XoopsObject $obj       reference to the {@link Staff}
+     * @param \XoopsObject $object    reference to the {@link Staff}
      *                                obj to delete
      * @param bool         $force
      * @return bool FALSE if failed.
      */
-    public function delete(\XoopsObject $obj, bool $force = false)
+    public function delete(\XoopsObject $object, $force = false): bool
     {
-        if (0 != \strcasecmp($this->classname, \get_class($obj))) {
+        if (0 != \strcasecmp($this->classname, \get_class($object))) {
             return false;
         }
 
         // Clear Department Membership
-        $membershipHandler = new MembershipHandler($GLOBALS['xoopsDB']);
-        if (!$membershipHandler->clearStaffMembership($obj->getVar('uid'))) {
+        /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+        $membershipHandler = $this->helper->getHandler('Membership');
+        if (!$membershipHandler->clearStaffMembership($object->getVar('uid'))) {
             return false;
         }
 
         // Remove ticket lists
-        $ticketListHandler = new TicketListHandler($GLOBALS['xoopsDB']);
-        $criteria              = new \Criteria('uid', $obj->getVar('uid'));
+        $ticketListHandler = $this->helper->getHandler('TicketList');
+        $criteria          = new \Criteria('uid', $object->getVar('uid'));
         if (!$ticketListHandler->deleteAll($criteria)) {
             return false;
         }
 
         // Remove saved searches
-        $savedSearchHandler = new SavedSearchHandler($GLOBALS['xoopsDB']);
+        $savedSearchHandler = $this->helper->getHandler('SavedSearch');
         if (!$savedSearchHandler->deleteAll($criteria)) {   // use existing crit object
             return false;
         }
 
         // Clear permission roles
-        if (!$this->removeStaffRoles($obj->getVar('uid'))) {
+        if (!$this->removeStaffRoles($object->getVar('uid'))) {
             return false;
         }
 
-        $ret = parent::delete($obj, $force);
+        $ret = parent::delete($object, $force);
 
         return $ret;
     }
@@ -399,14 +405,14 @@ class StaffHandler extends BaseObjectHandler
      * @param int $offset Number of tickets to add to current call count (Negative for decrementing)
      * @return bool FALSE if query failed
      */
-    public function increaseCallsClosed($uid, $offset = 1): bool
+    public function increaseCallsClosed(int $uid, int $offset = 1): bool
     {
         if ($offset < 0) {
-            $sql = \sprintf('UPDATE `%s` SET callsClosed = callsClosed - %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), \abs($offset), $uid);
+            $sql = \sprintf('UPDATE `%s` SET callsClosed = callsClosed - %u WHERE uid = %u', $this->db->prefix($this->dbtable), \abs($offset), $uid);
         } else {
-            $sql = \sprintf('UPDATE `%s` SET callsClosed = callsClosed + %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $offset, $uid);
+            $sql = \sprintf('UPDATE `%s` SET callsClosed = callsClosed + %u WHERE uid = %u', $this->db->prefix($this->dbtable), $offset, $uid);
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return false;
         }
 
@@ -421,16 +427,16 @@ class StaffHandler extends BaseObjectHandler
      * @param int $ticketCount  If = 0, increments 'responseTime' and 'ticketsResponded' otherwise, total # of tickets
      * @return bool FALSE if query failed
      */
-    public function updateResponseTime($uid, $responseTime, $ticketCount = 0): bool
+    public function updateResponseTime(int $uid, int $responseTime, int $ticketCount = 0): bool
     {
         if (0 == $ticketCount) {
             //Incrementing responseTime
-            $sql = \sprintf('UPDATE `%s` SET responseTime = responseTime + %u, ticketsResponded = ticketsResponded + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $uid);
+            $sql = \sprintf('UPDATE `%s` SET responseTime = responseTime + %u, ticketsResponded = ticketsResponded + 1 WHERE uid = %u', $this->db->prefix($this->dbtable), $responseTime, $uid);
         } else {
             //Setting responseTime, ticketsResponded
-            $sql = \sprintf('UPDATE `%s` SET responseTime = %u, ticketsResponded = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $responseTime, $ticketCount, $uid);
+            $sql = \sprintf('UPDATE `%s` SET responseTime = %u, ticketsResponded = %u WHERE uid = %u', $this->db->prefix($this->dbtable), $responseTime, $ticketCount, $uid);
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return false;
         }
 
@@ -445,16 +451,16 @@ class StaffHandler extends BaseObjectHandler
      * @param int $numReviews If = 0, increments 'rating' and 'numReviews', otherwise total # of reviews
      * @return bool FALSE if query failed
      */
-    public function updateRating($uid, $rating, $numReviews = 0): bool
+    public function updateRating(int $uid, int $rating, int $numReviews = 0): bool
     {
         if (0 == $numReviews) {
             //Add New Review
-            $sql = \sprintf('UPDATE `%s` SET rating = rating + %u, numReviews = numReviews + 1 WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $uid);
+            $sql = \sprintf('UPDATE `%s` SET rating = rating + %u, numReviews = numReviews + 1 WHERE uid = %u', $this->db->prefix($this->dbtable), $rating, $uid);
         } else {
             //Set rating, numReviews to supplied values
-            $sql = \sprintf('UPDATE `%s` SET rating = %u, numReviews = %u WHERE uid = %u', $this->_db->prefix($this->_dbtable), $rating, $numReviews, $uid);
+            $sql = \sprintf('UPDATE `%s` SET rating = %u, numReviews = %u WHERE uid = %u', $this->db->prefix($this->dbtable), $rating, $numReviews, $uid);
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return false;
         }
 
@@ -463,20 +469,20 @@ class StaffHandler extends BaseObjectHandler
 
     /**
      * Retrieve array of all staff with permission for current task
-     * @param      $task
+     * @param int  $task
      * @param int  $deptid
      * @param bool $id_as_key
      * @return array
      */
-    public function getStaffByTask($task, $deptid = 0, $id_as_key = false): array
+    public function getStaffByTask(int $task, int $deptid = 0, bool $id_as_key = false): array
     {
-        $task = (int)$task;
+        $task = $task;
         if (null !== $deptid) {
-            $deptid = (int)$deptid;
+            $deptid = $deptid;
         }
 
         // Get roles with $task value set
-        $roleHandler = new RoleHandler($GLOBALS['xoopsDB']);
+        $roleHandler = $this->helper->getHandler('Role');
         $roles       = $roleHandler->getRolesByTask($task);
         $aRoles      = [];
         foreach ($roles as $role) {
@@ -484,8 +490,8 @@ class StaffHandler extends BaseObjectHandler
         }
 
         // Get staff roles by dept
-        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
-        $criteria             = new \CriteriaCompo(new \Criteria('deptid', $deptid));
+        $staffRoleHandler = $this->helper->getHandler('StaffRole');
+        $criteria         = new \CriteriaCompo(new \Criteria('deptid', (string)$deptid));
         $criteria->add(new \Criteria('roleid', '(' . \implode(',', \array_keys($aRoles)) . ')', 'IN'));
         unset($aRoles);
 
@@ -496,8 +502,8 @@ class StaffHandler extends BaseObjectHandler
         }
 
         // Get staff objects
-        $criteria         = new \Criteria('uid', '(' . \implode(',', \array_keys($aStaffID)) . ')', 'IN');
-        $staffHandler = new StaffHandler($GLOBALS['xoopsDB']);
+        $criteria     = new \Criteria('uid', '(' . \implode(',', \array_keys($aStaffID)) . ')', 'IN');
+        $staffHandler = $this->helper->getHandler('Staff');
 
         return $staffHandler->getObjects($criteria, $id_as_key);
     }

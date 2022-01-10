@@ -1,85 +1,68 @@
--
-    gperm_groupid: '1'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_approve
--
-    gperm_groupid: '4'
-    gperm_itemid: '2'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '3'
-    gperm_itemid: '2'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '1'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '2'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '5'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '6'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '4'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '3'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '6'
-    gperm_itemid: '2'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '5'
-    gperm_itemid: '2'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '2'
-    gperm_itemid: '2'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '1'
-    gperm_itemid: '2'
-    gperm_modid: '189'
-    gperm_name: xhelp_dept
--
-    gperm_groupid: '1'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_submit
--
-    gperm_groupid: '3'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_view
--
-    gperm_groupid: '2'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_view
--
-    gperm_groupid: '1'
-    gperm_itemid: '1'
-    gperm_modid: '189'
-    gperm_name: xhelp_view
+- gperm_groupid: '1'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_approve
+- gperm_groupid: '4'
+  gperm_itemid: '2'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '3'
+  gperm_itemid: '2'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '1'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '2'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '5'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '6'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '4'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '3'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '6'
+  gperm_itemid: '2'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '5'
+  gperm_itemid: '2'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '2'
+  gperm_itemid: '2'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '1'
+  gperm_itemid: '2'
+  gperm_modid: '189'
+  gperm_name: xhelp_dept
+- gperm_groupid: '1'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_submit
+- gperm_groupid: '3'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_view
+- gperm_groupid: '2'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_view
+- gperm_groupid: '1'
+  gperm_itemid: '1'
+  gperm_modid: '189'
+  gperm_name: xhelp_view

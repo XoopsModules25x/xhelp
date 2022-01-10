@@ -14,7 +14,7 @@ class FormRadio extends \XoopsFormRadio
      *
      * @return string HTML
      */
-    public function render()
+    public function render(): string
     {
         $ret = '';
         foreach ($this->getOptions() as $value => $name) {

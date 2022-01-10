@@ -3,14 +3,16 @@
 namespace XoopsModules\Xhelp\Reports;
 
 use XoopsModules\Xhelp;
+use Amenadiel\JpGraph\Plot;
+use Amenadiel\JpGraph\Graph;
 
-require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
+//require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
-Xhelp\Utility::includeReportLangFile('unresolvedTicketsByDept');
+Xhelp\Utility::includeReportLangFile('reports/unresolvedTicketsByDept');
 
 global $xoopsDB, $paramVals;
 
-$startDate = \date('m/d/y h:i:s A', \mktime(0, 0, 0, \date('m') - 1, \date('d'), \date('Y')));
+$startDate = \date('m/d/y h:i:s A', \mktime(0, 0, 0, \date('m') - 1, (int)\date('d'), (int)\date('Y')));
 $endDate   = \date('m/d/y') . ' 12:00:00 AM';
 
 // Cannot fill date values in class...have to fill these values later
@@ -35,7 +37,7 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name       = 'unresolvedTicketsByDept';
+    public $name       = 'unresolvedTicketsByDeptReport';
     public $meta       = [
         'name'        => \_XHELP_UTBD_NAME,
         'author'      => 'Eric Juden',
@@ -77,7 +79,7 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
      global $paramVals;
 
      if ($this->getVar('hasResults') == 0) {
-     $this->_setResults();
+     $this->setResults();
      }
      $aResults = $this->getVar('results');
 
@@ -135,14 +137,14 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
     /**
      * @return bool
      */
-    public function generateGraph()
+    public function generateGraph(): bool
     {
         if (0 == $this->getVar('hasGraph')) {
             return false;
         }
 
         if (0 == $this->getVar('hasResults')) {
-            $this->_setResults();
+            $this->setResults();
         }
         $aResults = $this->getVar('results');
 
@@ -164,13 +166,17 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
             ++$i;
         }
 
-        $this->generatePie3D($data, 0, 1, \XHELP_IMAGE_PATH . '/graph_bg.jpg');
+        if (\count($data) > 0) {
+            //        $this->generatePie3D($data, 0, 1, \XHELP_IMAGE_PATH . '/graph_bg.jpg');
+            $this->generatePie3D($data, 0, 1, true);
+        }
+        return true;
     }
 
     /**
      * @return bool
      */
-    public function _setResults()
+    public function setResults(): bool
     {
         global $xoopsDB;
 
@@ -184,7 +190,7 @@ class UnresolvedTicketsByDeptReport extends Xhelp\Reports\Report
         );
 
         $result   = $xoopsDB->query($sSQL);
-        $aResults = $this->_arrayFromData($result);
+        $aResults = $this->arrayFromData($result);
         $this->setVar('results', \serialize($aResults));
         $this->setVar('hasResults', 1);
 

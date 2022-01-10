@@ -36,7 +36,6 @@ namespace XoopsModules\Xhelp;
  ***** END LICENSE BLOCK *****
  */
 
-
 /**
  * class NaiveBayesian
  */
@@ -53,17 +52,15 @@ class NaiveBayesian
     /** storage object
      * @see class NaiveBayesianStorage
      */
-    public $nbs = null;
+    public $nbs;
 
     /**
      * Xhelp\NaiveBayesian constructor.
-     * @param $nbs
+     * @param NaiveBayesianStorage $nbs
      */
-    public function __construct($nbs)
+    public function __construct(NaiveBayesianStorage $nbs)
     {
         $this->nbs = $nbs;
-
-        return true;
     }
 
     /** categorize a document.
@@ -77,7 +74,7 @@ class NaiveBayesian
     {
         $scores     = [];
         $categories = $this->nbs->getCategories();
-        $tokens     = $this->_getTokens($document);
+        $tokens     = $this->getTokens($document);
         // calculate the score in each category
         $total_words = 0;
         $ncat        = 0;
@@ -109,7 +106,7 @@ class NaiveBayesian
             }
         }
 
-        return $this->_rescale($scores);
+        return $this->rescale($scores);
     }
 
     /** training against a document.
@@ -126,7 +123,7 @@ class NaiveBayesian
      */
     public function train($doc_id, $category_id, $content): bool
     {
-        $tokens = $this->_getTokens($content);
+        $tokens = $this->getTokens($content);
         //            while (list($token, $count) = each($tokens)) {
         foreach ($tokens as $token => $count) {
             $this->nbs->updateWord($token, $count, $category_id);
@@ -147,7 +144,7 @@ class NaiveBayesian
     public function untrain($doc_id): bool
     {
         $ref    = $this->nbs->getReference($doc_id);
-        $tokens = $this->_getTokens($ref['content']);
+        $tokens = $this->getTokens($ref['content']);
         //            while (list($token, $count) = each($tokens)) {
         foreach ($tokens as $token => $count) {
             $this->nbs->removeWord($token, $count, $ref['category_id']);
@@ -164,7 +161,7 @@ class NaiveBayesian
      * @author Ken Williams, ken@mathforum.org
      * @see    categorize()
      */
-    public function _rescale($scores): array
+    public function rescale($scores): array
     {
         // Scale everything back to a reasonable area in
         // logspace (near zero), un-loggify, and normalize
@@ -214,7 +211,8 @@ class NaiveBayesian
     public function getIgnoreList(): array
     {
         global $xhelp_noise_words;
-        @$helper->LoadLanguage('noise_words');
+        $helper = Helper::getInstance();
+        @$helper->loadLanguage('noise_words');
 
         return $xhelp_noise_words;
     }
@@ -228,11 +226,11 @@ class NaiveBayesian
      * @return array tokens
      * @internal param the $string string to get the tokens from
      */
-    public function _getTokens($string): array
+    private function getTokens(string $string): array
     {
         $rawtokens = [];
         $tokens    = [];
-        $string    = $this->_cleanString($string);
+        $string    = $this->cleanString($string);
         if (0 == \count($this->ignore_list)) {
             $this->ignore_list = $this->getIgnoreList();
         }
@@ -262,7 +260,7 @@ class NaiveBayesian
      * @author Antoine Bajolet [phpdig_at_toiletoine.net]
      * @author SPIP [https://uzine.net/spip/]
      */
-    public function _cleanString($string): string
+    private function cleanString($string): string
     {
         $diac = /* A */
             \chr(192) . \chr(193) . \chr(194) . \chr(195) . \chr(196) . \chr(197) . /* a */

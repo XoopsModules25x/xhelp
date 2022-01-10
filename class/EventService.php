@@ -2,20 +2,19 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * EventService class
  *
  * Messaging Subsystem.  Notifies objects when events occur in the system
  *
  * <code>
- * $_eventsrv = new xhelp_eventService();
+ * $eventService = new xhelp_eventService();
  * // Call $obj->callback($args) when a new ticket is created
- * $_eventsrv->advise('new_ticket', $obj, 'callback');
+ * $eventService->advise('new_ticket', $obj, 'callback');
  * // Call $obj2->somefunction($args) when a new ticket is created
- * $_eventsrv->advise('new_ticket', $obj2, 'somefunction');
+ * $eventService->advise('new_ticket', $obj2, 'somefunction');
  * // .. Code to create new ticket
- * $_eventsrv->trigger('new_ticket', $new_ticketobj);
+ * $eventService->trigger('new_ticket', $new_ticketobj);
  * </code>
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
@@ -39,12 +38,12 @@ class EventService
 
     /**
      * Add a new class function to be notified
-     * @param string   $context  Event used for callback
-     * @param callable $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
-     * @param int      $priority Order that callback should be triggered
+     * @param string $context  Event used for callback
+     * @param string $callback Function to call when event is fired. If only object is supplied, look for function with same name as context
+     * @param int    $priority Order that callback should be triggered
      * @return int      Event cookie, used for unadvise
      */
-    public function advise(string $context, $callback, int $priority = 10): int
+    public function advise(string $context, string $callback, int $priority = 10): int
     {
         $clbk = $callback;
         if (!\is_array($callback) && \is_object($callback)) {
@@ -73,7 +72,7 @@ class EventService
      * Only have 1 instance of class used
      * @return EventService {@link EventService}
      */
-    public static function getInstance()
+    public static function getInstance(): EventService
     {
         static $instance;
         if (null === $instance) {

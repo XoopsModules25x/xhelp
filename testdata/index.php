@@ -62,6 +62,9 @@ switch ($op) {
 
 // XMF TableLoad for SAMPLE data
 
+/**
+ *
+ */
 function loadSampleData()
 {
     global $xoopsConfig;
@@ -71,7 +74,9 @@ function loadSampleData()
     $utility      = new Utility();
     $configurator = new Configurator();
 
-    $tables = \Xmf\Module\Helper::getHelper($moduleDirName)->getModule()->getInfo('tables');
+    $tables = \Xmf\Module\Helper::getHelper($moduleDirName)
+        ->getModule()
+        ->getInfo('tables');
 
     $language = 'english/';
     if (\is_dir(__DIR__ . '/' . $xoopsConfig['language'])) {
@@ -88,7 +93,9 @@ function loadSampleData()
     // load permissions
     $table     = 'group_permission';
     $tabledata = Yaml::readWrapped($language . $table . '.yml');
-    $mid       = \Xmf\Module\Helper::getHelper($moduleDirName)->getModule()->getVar('mid');
+    $mid       = \Xmf\Module\Helper::getHelper($moduleDirName)
+        ->getModule()
+        ->getVar('mid');
     loadTableFromArrayWithReplace($table, $tabledata, 'gperm_modid', $mid);
 
     //  ---  COPY test folder files ---------------
@@ -103,13 +110,17 @@ function loadSampleData()
     \redirect_header('../admin/index.php', 1, \constant('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_SUCCESS'));
 }
 
+/**
+ *
+ */
 function saveSampleData()
 {
     global $xoopsConfig;
     $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
     $helper             = Helper::getInstance();
-    $tables             = $helper->getModule()->getInfo('tables');
+    $tables             = $helper->getModule()
+        ->getInfo('tables');
 
     $languageFolder = __DIR__ . '/' . $xoopsConfig['language'];
     if (!\file_exists($languageFolder . '/')) {
@@ -125,7 +136,13 @@ function saveSampleData()
 
     // save permissions
     $criteria = new \CriteriaCompo();
-    $criteria->add(new \Criteria('gperm_modid', $helper->getModule()->getVar('mid')));
+    $criteria->add(
+        new \Criteria(
+            'gperm_modid',
+            $helper->getModule()
+                ->getVar('mid')
+        )
+    );
     $skipColumns[] = 'gperm_id';
     TableLoad::saveTableToYamlFile('group_permission', $exportFolder . 'group_permission.yml', $criteria, $skipColumns);
     unset($criteria);
@@ -133,6 +150,9 @@ function saveSampleData()
     \redirect_header('../admin/index.php', 1, \constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA_SUCCESS'));
 }
 
+/**
+ *
+ */
 function exportSchema()
 {
     $moduleDirName      = \basename(\dirname(__DIR__));
@@ -158,10 +178,10 @@ function exportSchema()
  *                       Each element of the outer array represents a single table row.
  *                       Each row is an associative array in 'column' => 'value' format.
  * @param string $search name of column for which the value should be replaced
- * @param        $replace
+ * @param string $replace
  * @return int number of rows inserted
  */
-function loadTableFromArrayWithReplace(string $table, array $data, string $search, $replace)
+function loadTableFromArrayWithReplace(string $table, array $data, string $search, string $replace): int
 {
     /** @var \XoopsMySQLDatabase $db */
     $db = \XoopsDatabaseFactory::getDatabaseConnection();
@@ -212,7 +232,8 @@ function clearSampleData()
     $helper             = Helper::getInstance();
     // Load language files
     $helper->loadLanguage('common');
-    $tables = $helper->getModule()->getInfo('tables');
+    $tables = $helper->getModule()
+        ->getInfo('tables');
     // truncate module tables
     foreach ($tables as $table) {
         \Xmf\Database\TableLoad::truncateTable($table);

@@ -47,7 +47,7 @@ class DepartmentMailBoxHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_department_mailbox';
+    public $dbtable = 'xhelp_department_mailbox';
 
     /**
      * Constructor
@@ -89,7 +89,7 @@ class DepartmentMailBoxHandler extends BaseObjectHandler
     public function &getActiveMailboxes(): array
     {
         $criteria = new \Criteria('active', '1');
-        $ret  = $this->getObjects($criteria);
+        $ret      = $this->getObjects($criteria);
 
         return $ret;
     }
@@ -100,8 +100,9 @@ class DepartmentMailBoxHandler extends BaseObjectHandler
      * @param int $depid
      * @return bool
      */
-    public function addEmailServer(int $depid)
+    public function addEmailServer(int $depid): bool
     {
+        /** @var \XoopsModules\Xhelp\DepartmentMailBox $server */
         $server = $this->create();
         $server->setVar('departmentid', $depid);
 
@@ -111,45 +112,48 @@ class DepartmentMailBoxHandler extends BaseObjectHandler
     /**
      * remove an email server
      *
-     * @param \XoopsObject $obj         {@link DepartmentMailbox}
+     * @param \XoopsObject $object      {@link DepartmentMailbox}
      *                                  Mailbox to delete
      * @param bool         $force       Should bypass XOOPS delete restrictions
      * @return bool True on Successful delete
      */
-    public function delete(\XoopsObject $obj, bool $force = false)
+    public function delete(\XoopsObject $object, $force = false): bool
     {
+        $helper = Helper::getInstance();
         //Remove all Mail Events for mailbox
-        $mailEventHandler = new MailEventHandler($GLOBALS['xoopsDB']);
-        $criteria             = new \Criteria('mbox_id', $obj->getVar('id'));
+        /** @var \XoopsModules\Xhelp\MailEventHandler $mailEventHandler */
+        $mailEventHandler = $helper->getHandler('MailEvent');
+        $criteria         = new \Criteria('mbox_id', $object->getVar('id'));
         $mailEventHandler->deleteAll($criteria);
 
-        $ret = parent::delete($obj, $force);
+        $ret = parent::delete($object, $force);
 
         return $ret;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'INSERT INTO `%s` (id, departmentid, SERVER, serverport, username, PASSWORD, priority, emailaddress, mboxtype, active) VALUES (%u, %u, %s, %u, %s, %s, %u, %s, %u, %u)',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $id,
             $departmentid,
-            $this->_db->quoteString($server),
+            $this->db->quoteString($server),
             $serverport,
-            $this->_db->quoteString($username),
-            $this->_db->quoteString($password),
+            $this->db->quoteString($username),
+            $this->db->quoteString($password),
             $priority,
-            $this->_db->quoteString($emailaddress),
+            $this->db->quoteString($emailaddress),
             $mboxtype,
             $active
         );
@@ -158,26 +162,27 @@ class DepartmentMailBoxHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'UPDATE `%s` SET departmentid = %u, SERVER = %s, serverport = %u, username = %s, PASSWORD = %s, priority = %u, emailaddress = %s, mboxtype = %u, active = %u WHERE id = %u',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $departmentid,
-            $this->_db->quoteString($server),
+            $this->db->quoteString($server),
             $serverport,
-            $this->_db->quoteString($username),
-            $this->_db->quoteString($password),
+            $this->db->quoteString($username),
+            $this->db->quoteString($password),
             $priority,
-            $this->_db->quoteString($emailaddress),
+            $this->db->quoteString($emailaddress),
             $mboxtype,
             $active,
             $id
@@ -187,12 +192,12 @@ class DepartmentMailBoxHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }

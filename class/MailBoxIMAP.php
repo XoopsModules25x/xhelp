@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * Xhelp\MailBox class
  *

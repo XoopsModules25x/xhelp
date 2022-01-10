@@ -2,9 +2,14 @@
 
 namespace XoopsModules\Xhelp\Reports;
 
-use const FF_FONT1;
 use XoopsModules\Xhelp;
+use Amenadiel\JpGraph;
+use Amenadiel\JpGraph\Plot;
+use Amenadiel\JpGraph\Graph;
+use Amenadiel\JpGraph\Text;
+use Amenadiel\JpGraph\Util;
 
+require \dirname(__DIR__, 2) . '/vendor/amenadiel/jpgraph/src/config.inc.php';
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
@@ -32,7 +37,7 @@ class Report extends \XoopsObject
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 0, false);
     }
 
-    public $name       = '';
+    public $name       = 'Report';
     public $meta       = [
         'name'         => '',
         'author'       => '',
@@ -48,9 +53,10 @@ class Report extends \XoopsObject
      *
      * @return string report
      */
-    public function generateReport()
+    public function generateReport(): string
     {
         // Stub function - inherited by each /report/<reportfile>.php class
+        return '';
     }
 
     /**
@@ -83,7 +89,7 @@ class Report extends \XoopsObject
     /**
      * Set SQL query to be run, and set results for class
      */
-    public function _setResults()
+    public function setResults()
     {
         // Stub function - inherited by each /report/<reportfile>.php class
     }
@@ -91,15 +97,15 @@ class Report extends \XoopsObject
     /**
      * Returns an array from db query information
      *
-     * @param $dResult
+     * @param mysqli_result $dResult
      * @return array
      */
-    public function _arrayFromData($dResult)
+    public function arrayFromData(mysqli_result $dResult): array
     {
         global $xoopsDB;
 
         $aResults = [];
-        if (\count($xoopsDB->getRowsNum($dResult)) > 0) {      // Has data?
+        if (($xoopsDB->getRowsNum($dResult)) > 0) {      // Has data?
             $i        = 0;
             $dbFields = $this->meta['dbFields'];
             while (false !== ($myrow = $xoopsDB->fetchArray($dResult))) {
@@ -128,13 +134,13 @@ class Report extends \XoopsObject
      *
      * @return array {@link Xhelp\ReportParameter} objects
      */
-    public function getParams()
+    public function getParams(): array
     {
         // require_once XHELP_CLASS_PATH . '/ReportParameter.php';
 
         $params = [];
         foreach ($this->parameters as $name => $param) {
-            $params[] = Xhelp\ReportParameter::addParam($param['controltype'], $name, $param['fieldname'], $param['value'], $param['values'], $param['fieldlength'], $param['dbfield'], $param['dbaction']);
+            $params[] = Xhelp\ReportParameter::addParam($param['controltype'], $name, $param['fieldname'], $param['value'], (array)$param['values'], $param['fieldlength'], $param['dbfield'], $param['dbaction']);
         }
 
         return $params;
@@ -144,10 +150,10 @@ class Report extends \XoopsObject
      * Add additional items to where clause from report parameters for sql query string
      *
      * @param array $params
-     * @param bool $includeAnd
+     * @param bool  $includeAnd
      * @return string (additional part of where clause)
      */
-    public function makeWhere($params, $includeAnd = true): string
+    public function makeWhere(array $params, bool $includeAnd = true): string
     {
         $where = '';
         $i     = 0;
@@ -174,7 +180,7 @@ class Report extends \XoopsObject
     }
 
     /**
-     * @param        $data
+     * @param array  $data
      * @param int    $legend_index
      * @param int    $chartData_index
      * @param bool   $image
@@ -187,22 +193,12 @@ class Report extends \XoopsObject
      * @param string $fontColor
      */
     public function generatePie3D(
-        $data,
-        $legend_index = 0,
-        $chartData_index = 1,
-        $image = false,
-        $length = 500,
-        $width = 300,
-        $hasShadow = true,
-        $fontFamily = FF_FONT1,
-        $fontStyle = FS_BOLD,
-        $fontSize = '',
-        $fontColor = 'black'
+        array $data, int $legend_index = 0, int $chartData_index = 1, bool $image = false, int $length = 500, int $width = 300, bool $hasShadow = true, $fontFamily = FF_FONT1, $fontStyle = FS_BOLD, string $fontSize = '', string $fontColor = 'black'
     ) {
-        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_pie.php';
-        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_pie3d.php';
+        //        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_pie.php';
+        //        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_pie3d.php';
 
-        $graph = new PieGraph($length, $width);
+        $graph = new Graph\PieGraph($length, $width);
 
         if ($hasShadow) {     // Add a shadow to the image
             $graph->setShadow();
@@ -210,7 +206,7 @@ class Report extends \XoopsObject
 
         $graph->title->Set($this->meta['name']);
 
-        $p1 = new PiePlot3D($data[$chartData_index]);
+        $p1 = new Plot\PiePlot3D($data[$chartData_index]);
 
         $p1->SetSize(.3);
         $p1->SetCenter(0.45);
@@ -223,11 +219,11 @@ class Report extends \XoopsObject
         $p1->value->SetColor($fontColor);
         $p1->SetLabelType(PIE_VALUE_PER);
 
-        $a = \array_search(\max($data[$chartData_index]), $data[$chartData_index], true); //Find the position of maximum value.
+        $a = \array_search(\max($data[$chartData_index]), $data[$chartData_index]); //Find the position of maximum value.
         $p1->ExplodeSlice($a);
 
         // Set graph background image
-        if (false !== $image) {
+        if ($image) {
             $graph->SetBackgroundImage($image, BGIMG_FILLFRAME);
         }
 
@@ -236,7 +232,7 @@ class Report extends \XoopsObject
     }
 
     /**
-     * @param             $data
+     * @param array       $data
      * @param int         $legend_index
      * @param bool|string $image
      * @param array       $aFillColors
@@ -249,32 +245,22 @@ class Report extends \XoopsObject
      * @param string      $marginColor
      */
     public function generateStackedBarGraph(
-        $data,
-        $legend_index = 0,
-        $image = false,
-        $aFillColors = [
-            'red',
-            'green',
-            'orange',
-            'yellow',
-            'aqua',
-            'lime',
-            'teal',
-            'purple1',
-            'lightblue',
-            'blue',
-        ],
-        $length = 500,
-        $width = 300,
-        $fontFamily = FF_FONT1,
-        $fontStyle = FS_BOLD,
-        $fontSize = '',
-        $fontColor = 'black',
-        $marginColor = 'white'
+        array $data, int $legend_index = 0, $image = false, array $aFillColors = [
+        'red',
+        'green',
+        'orange',
+        'yellow',
+        'aqua',
+        'lime',
+        'teal',
+        'purple1',
+        'lightblue',
+        'blue',
+    ], int    $length = 500, int $width = 300, $fontFamily = FF_FONT1, $fontStyle = FS_BOLD, string $fontSize = '', string $fontColor = 'black', string $marginColor = 'white'
     ) {
-        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';
+        //        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';
 
-        $graph = new Graph($length, $width);
+        $graph = new Graph\Graph($length, $width);
         $graph->title->Set($this->meta['name']);
         $graph->setScale('textint');
         $graph->yaxis->scale->SetGrace(30);
@@ -287,7 +273,7 @@ class Report extends \XoopsObject
         $datazero = [0, 0, 0, 0];
 
         // Create the "dummy" 0 bplot
-        $bplotzero = new BarPlot($datazero);
+        $bplotzero = new Plot\BarPlot($datazero);
 
         // Set names as x-axis label
         $graph->xaxis->SetTickLabels($data[$legend_index]);
@@ -295,7 +281,7 @@ class Report extends \XoopsObject
         // for loop through data array starting with element 1
         $aPlots = [];
         for ($i = 1, $iMax = \count($data); $i < $iMax; ++$i) {
-            $ybplot1 = new BarPlot($data[$i]);
+            $ybplot1 = new Plot\BarPlot($data[$i]);
             $ybplot1->setFillColor($aFillColors[$i]);
             $ybplot1->value->Show();
             $ybplot1->value->SetFont($fontFamily, $fontStyle, $fontSize);
@@ -304,7 +290,7 @@ class Report extends \XoopsObject
             $aPlots[] = $ybplot1;
         }
         //$ybplot = new AccBarPlot(array($ybplot1,$bplotzero));
-        $ybplot = new AccBarPlot($aPlots, $bplotzero);
+        $ybplot = new Plot\AccBarPlot($aPlots, $bplotzero);
         $graph->Add($ybplot);
 
         // Set graph background image

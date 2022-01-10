@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -47,10 +47,8 @@ interface Constants
     /**
      * long XOOPS redirect delay (in seconds)
      */
-    public const REDIRECT_DELAY_LONG = 7;
-
+    public const REDIRECT_DELAY_LONG    = 7;
     public const XHELP_MAILBOXTYPE_POP3 = 1;
-
     public const XHELP_MAILBOXTYPE_IMAP = 2;
     /**#@-*/
 }

@@ -16,9 +16,6 @@ namespace XoopsModules\Xhelp\Common;
  */
 
 use Xmf\Request;
-use XoopsModules\Xhelp\{
-    Helper
-};
 
 //require __DIR__ . '/admin_header.php';
 
@@ -32,7 +29,7 @@ class Blocksadmin
      */
     public $db;
     /**
-     * @var \XoopsModules\Tag\Helper
+     * @var \Xmf\Module\Helper
      */
     public $helper;
     /**
@@ -47,7 +44,7 @@ class Blocksadmin
     /**
      * Blocksadmin constructor.
      */
-    public function __construct(?\XoopsDatabase $db, Helper $helper)
+    public function __construct(?\XoopsDatabase $db, \Xmf\Module\Helper $helper)
     {
         if (null === $db) {
             $db = \XoopsDatabaseFactory::getDatabaseConnection();
@@ -63,7 +60,10 @@ class Blocksadmin
         \xoops_loadLanguage('blocksadmin', $this->moduleDirName);
     }
 
-    public function listBlocks()
+    /**
+     *
+     */
+    public function listBlocks(): void
     {
         global $xoopsModule, $pathIcon16;
         require_once XOOPS_ROOT_PATH . '/class/xoopslists.php';
@@ -310,7 +310,10 @@ class Blocksadmin
         <br><br>";
     }
 
-    public function deleteBlock(int $bid)
+    /**
+     * @param int $bid
+     */
+    public function deleteBlock(int $bid): void
     {
         //        \xoops_cp_header();
 
@@ -329,6 +332,9 @@ class Blocksadmin
         $this->helper->redirect('admin/blocksadmin.php?op=list', 1, _AM_DBUPDATED);
     }
 
+    /**
+     * @param int $bid
+     */
     public function cloneBlock(int $bid)
     {
         //require __DIR__ . '/admin_header.php';
@@ -376,7 +382,17 @@ class Blocksadmin
         //        exit();
     }
 
-    public function isBlockCloned(int $bid, string $bside, string $bweight, string $bvisible, string $bcachetime, ?array $bmodule, ?array $options, ?array $groups)
+    /**
+     * @param int        $bid
+     * @param string     $bside
+     * @param string     $bweight
+     * @param string     $bvisible
+     * @param string     $bcachetime
+     * @param array|null $bmodule
+     * @param array|null $options
+     * @param array|null $groups
+     */
+    public function isBlockCloned(int $bid, string $bside, string $bweight, string $bvisible, string $bcachetime, ?array $bmodule, ?array $options, ?array $groups): void
     {
         \xoops_loadLanguage('admin', 'system');
         \xoops_loadLanguage('admin/blocksadmin', 'system');
@@ -440,7 +456,16 @@ class Blocksadmin
         $this->helper->redirect('admin/blocksadmin.php?op=list', 1, _AM_DBUPDATED);
     }
 
-    public function setOrder(string $bid, string $title, string $weight, string $visible, string $side, string $bcachetime, ?array $bmodule = null)
+    /**
+     * @param string     $bid
+     * @param string     $title
+     * @param string     $weight
+     * @param string     $visible
+     * @param string     $side
+     * @param string     $bcachetime
+     * @param array|null $bmodule
+     */
+    public function setOrder(string $bid, string $title, string $weight, string $visible, string $side, string $bcachetime, ?array $bmodule = null): void
     {
         $myblock = new \XoopsBlock($bid);
         $myblock->setVar('title', $title);
@@ -454,6 +479,9 @@ class Blocksadmin
         //        return $blockHandler->insert($myblock);
     }
 
+    /**
+     * @param int $bid
+     */
     public function editBlock(int $bid)
     {
         //        require_once \dirname(__DIR__,2) . '/admin/admin_header.php';
@@ -495,7 +523,18 @@ class Blocksadmin
         echo $this->render($block);
     }
 
-    public function updateBlock(int $bid, string $btitle, string $bside, string $bweight, string $bvisible, string $bcachetime, ?array $bmodule, ?array $options, ?array $groups)
+    /**
+     * @param int        $bid
+     * @param string     $btitle
+     * @param string     $bside
+     * @param string     $bweight
+     * @param string     $bvisible
+     * @param string     $bcachetime
+     * @param array|null $bmodule
+     * @param array|null $options
+     * @param array|null $groups
+     */
+    public function updateBlock(int $bid, string $btitle, string $bside, string $bweight, string $bvisible, string $bcachetime, ?array $bmodule, ?array $options, ?array $groups): void
     {
         $myblock = new \XoopsBlock($bid);
         $myblock->setVar('title', $btitle);
@@ -546,23 +585,26 @@ class Blocksadmin
         $this->helper->redirect('admin/blocksadmin.php', 1, \constant('CO_' . $this->moduleDirNameUpper . '_' . 'UPDATE_SUCCESS'));
     }
 
+    /**
+     * @param array $bid
+     * @param array $oldtitle
+     * @param array $oldside
+     * @param array $oldweight
+     * @param array $oldvisible
+     * @param array $oldgroups
+     * @param array $oldbcachetime
+     * @param array $oldbmodule
+     * @param array $title
+     * @param array $weight
+     * @param array $visible
+     * @param array $side
+     * @param array $bcachetime
+     * @param array $groups
+     * @param array $bmodule
+     */
     public function orderBlock(
-        array $bid,
-        array $oldtitle,
-        array $oldside,
-        array $oldweight,
-        array $oldvisible,
-        array $oldgroups,
-        array $oldbcachetime,
-        array $oldbmodule,
-        array $title,
-        array $weight,
-        array $visible,
-        array $side,
-        array $bcachetime,
-        array $groups,
-        array $bmodule
-    ) {
+        array $bid, array $oldtitle, array $oldside, array $oldweight, array $oldvisible, array $oldgroups, array $oldbcachetime, array $oldbmodule, array $title, array $weight, array $visible, array $side, array $bcachetime, array $groups, array $bmodule
+    ): void {
         if (!$GLOBALS['xoopsSecurity']->check()) {
             \redirect_header($_SERVER['SCRIPT_NAME'], 3, \implode('<br>', $GLOBALS['xoopsSecurity']->getErrors()));
         }
@@ -601,6 +643,9 @@ class Blocksadmin
         $this->helper->redirect('admin/blocksadmin.php', 1, \constant('CO_' . $this->moduleDirNameUpper . '_' . 'UPDATE_SUCCESS'));
     }
 
+    /**
+     * @param array|null $block
+     */
     public function render(?array $block = null)
     {
         \xoops_load('XoopsFormLoader');

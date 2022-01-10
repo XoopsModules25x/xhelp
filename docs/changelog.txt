@@ -7,6 +7,11 @@
 - PHP 8 Smarty template defaults (mamba)
 - strict type checking (mamba)
 - refactored FaqAdapters with Interface and Abstract class (mamba)
+- refactored Handler classes to inherit from XoopsPersistableObjectHandler (mamba)
+- added module cloning (mamba)
+- included Confirm class from Goffy (mamba)
+- included MigrateHelper class from Goffy (mamba)
+
 WORK IN PROGRESS
 
 

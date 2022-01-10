@@ -254,6 +254,7 @@ define('_AM_XHELP_ICO_ONLINE', 'Online');
 define('_AM_XHELP_ICO_OFFLINE', 'Offline');
 define('_AM_XHELP_ICO_APPROVED', 'Approved');
 define('_AM_XHELP_ICO_NOTAPPROVED', 'Not Approved');
+define('_AM_XHELP_REJECTED_EDIT', 'Edit this rejected item');
 
 define('_AM_XHELP_ICO_LINK', 'Related Link');
 define('_AM_XHELP_ICO_URL', 'Add Related URL');
@@ -494,7 +495,6 @@ define('_AM_XHELP_TOTAL_TICKETS', 'Tickets');
 define('_AM_XHELP_TOTAL_ROLES', 'Roles');
 define('_AM_XHELP_TOTAL_NOTIFICATIONS', 'Notifications');
 define('_AM_XHELP_TOTAL_TICKET_SOLUTIONS', 'Ticket Solutions');
-
 
 define('_AM_XHELP_MESSAGE_NO_FIELD', 'There are no extra fields');
 

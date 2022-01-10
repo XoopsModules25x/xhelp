@@ -3,11 +3,13 @@
 namespace XoopsModules\Xhelp\Reports;
 
 use XoopsModules\Xhelp;
+use Amenadiel\JpGraph\Plot;
+use Amenadiel\JpGraph\Graph;
 
 // require_once XHELP_CLASS_PATH . '/report.php';
-Xhelp\Utility::includeReportLangFile('staffRolesByDept');
+Xhelp\Utility::includeReportLangFile('reports/staffRolesByDept');
 
-require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
+//require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
 
 global $xoopsDB;
@@ -27,6 +29,7 @@ class StaffRolesByDeptReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 0, false);
     }
 
+    public $name = 'StaffRolesByDeptReport';
     public $meta = [
         'name'         => \_XHELP_SRD_NAME,
         'author'       => 'Eric Juden',
@@ -39,75 +42,76 @@ class StaffRolesByDeptReport extends Xhelp\Reports\Report
             'name'       => \_XHELP_SRD_DB1,
         ],
     ];
-    /*
-     function generateReport()
-     {
-     if ($this->getVar('hasResults') == 0) {
-     $this->_setResults();
-     }
-     $aResults = $this->getVar('results');
 
-     if (empty($aResults)) {       // If no records found
-     $myReport = $this->generateReportNoData();
+    public function generateReport(): string
+    {
+        if (0 == $this->getVar('hasResults')) {
+            $this->setResults();
+        }
+        $aResults = $this->getVar('results');
 
-     return $myReport;
-     }
+        if (empty($aResults)) {       // If no records found
+            $myReport = $this->generateReportNoData();
 
-     // Print graph
-     $myReport = '';
-     $myReport .= "<div id='xhelp_graph'>";
-     $myReport .= "</div>";
+            return $myReport;
+        }
 
-     // Display report
-     $myReport .= "<br>";
-     $myReport .= "<div id='xhelp_report'>";
-     $myReport .= "<table>";
-     $myReport .= "<tr>";
+        // Print graph
+        $myReport = '';
+        $myReport .= "<div id='xhelp_graph'>";
+        $myReport .= '</div>';
 
-     $dbFields = $this->meta['dbFields'];
-     $myReport .= "<th>".$dbFields['Department']."</th>";
-     $myReport .= "<th>".$dbFields['Role']."</th>";
-     $myReport .= "<th>".$dbFields['name']."</th>";
+        // Display report
+        $myReport .= '<br>';
+        $myReport .= "<div id='xhelp_report'>";
+        $myReport .= '<table>';
+        $myReport .= '<tr>';
 
-     $myReport .= "</tr>";
+        $dbFields = $this->meta['dbFields'];
+        $myReport .= '<th>' . $dbFields['Department'] . '</th>';
+        $myReport .= '<th>' . $dbFields['Role'] . '</th>';
+        $myReport .= '<th>' . $dbFields['name'] . '</th>';
 
-     $dept = '';
-     $role = '';
-     foreach ($aResults as $result) {
-     if ($result['Department'] != $dept) {
-     $myReport .= "<tr class='even'><td>".$result['Department']."</td>";
-     $dept = $result['Department'];
-     $role = '';
-     } else {
-     $myReport .= "<tr class='even'><td></td>";
-     }
-     if ($result['Role'] != $role) {
-     $myReport .= "<td>".$result['Role']."</td>";
-     $role = $result['Role'];
-     } else {
-     $myReport .= "<td></td>";
-     }
-     $myReport .= "<td>".$result['name']."</td></tr>";
-     }
+        $myReport .= '</tr>';
 
-     $myReport .= "</table>";
-     $myReport .= "</div>";
+        $dept = '';
+        $role = '';
+        foreach ($aResults as $result) {
+            if ($result['Department'] != $dept) {
+                $myReport .= "<tr class='even'><td>" . $result['Department'] . '</td>';
+                $dept     = $result['Department'];
+                $role     = '';
+            } else {
+                $myReport .= "<tr class='even'><td></td>";
+            }
+            if ($result['Role'] != $role) {
+                $myReport .= '<td>' . $result['Role'] . '</td>';
+                $role     = $result['Role'];
+            } else {
+                $myReport .= '<td></td>';
+            }
+            $myReport .= '<td>' . $result['name'] . '</td></tr>';
+        }
 
-     return $myReport;
-     }
-     */
+        $myReport .= '</table>';
+        $myReport .= '</div>';
+
+        return $myReport;
+    }
+
+
 
     /**
      * @return void
      */
-    public function generateGraph()
-    {
-    }
+    //    public function generateGraph()
+    //    {
+    //    }
 
     /**
      * @return bool
      */
-    public function _setResults()
+    public function setResults(): bool
     {
         global $xoopsDB;
 
@@ -121,7 +125,7 @@ class StaffRolesByDeptReport extends Xhelp\Reports\Report
         );
 
         $result   = $xoopsDB->query($sSQL);
-        $aResults = $this->_arrayFromData($result);
+        $aResults = $this->arrayFromData($result);
         $this->setVar('results', \serialize($aResults));
         $this->setVar('hasResults', 1);
 

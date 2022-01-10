@@ -41,8 +41,8 @@ class TicketValuesHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_ticket_values';
-    public $id       = 'ticketid';
+    public $dbtable = 'xhelp_ticket_values';
+    public $id      = 'ticketid';
     public $idfield = 'ticketid';
 
     /**
@@ -56,17 +56,18 @@ class TicketValuesHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {     // Assumes cleanVars has already been called
+        foreach ($object->cleanVars as $k => $v) {     // Assumes cleanVars has already been called
             ${$k} = $v;
         }
 
-        $myFields = $obj->getTicketFields();    // Returns array[$fieldname] = %s or %d for all custom fields
+        $myFields = $object->getTicketFields();    // Returns array[$fieldname] = %s or %d for all custom fields
 
         $count     = 1;
         $sqlFields = '';
@@ -78,32 +79,33 @@ class TicketValuesHandler extends BaseObjectHandler
                     $sqlFields .= ', ';
                 }
                 $sqlFields .= $myField;
-                if ('%s' === $datatype) {                      // If this field is a string
-                    $sqlVars .= $this->_db->quoteString(${$myField});     // Add text to sqlVars string
+                if ('%s' === $datatype) {                                 // If this field is a string
+                    $sqlVars .= $this->db->quoteString(${$myField});      // Add text to sqlVars string
                 } else {                                    // If this field is a number
-                    $sqlVars .= ${$myField};      // Add text to sqlVars string
+                    $sqlVars .= ${$myField};                // Add text to sqlVars string
                 }
                 ++$count;
             }
         }
         // Create sql statement
-        $sql = 'INSERT INTO ' . $this->_db->prefix($this->_dbtable) . ' (' . $sqlFields . ') VALUES (' . $sqlVars . ')';
+        $sql = 'INSERT INTO ' . $this->db->prefix($this->dbtable) . ' (' . $sqlFields . ') VALUES (' . $sqlVars . ')';
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $myFields = $obj->getTicketFields();    // Returns array[$fieldname] = %s or %u for all custom fields
+        $myFields = $object->getTicketFields();    // Returns array[$fieldname] = %s or %u for all custom fields
         $count    = 1;
         $sqlVars  = '';
         foreach ($myFields as $myField => $datatype) {      // Used to create sql field and value substrings
@@ -111,9 +113,9 @@ class TicketValuesHandler extends BaseObjectHandler
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars .= ', ';
                 }
-                if ('%s' === $datatype) {                      // If this field is a string
-                    $sqlVars .= $myField . ' = ' . $this->_db->quoteString(${$myField});     // Add text to sqlVars string
-                } else {                                    // If this field is a number
+                if ('%s' === $datatype) {                                                    // If this field is a string
+                    $sqlVars .= $myField . ' = ' . $this->db->quoteString(${$myField});      // Add text to sqlVars string
+                } else {                                             // If this field is a number
                     $sqlVars .= $myField . ' = ' . ${$myField};      // Add text to sqlVars string
                 }
                 ++$count;
@@ -121,18 +123,18 @@ class TicketValuesHandler extends BaseObjectHandler
         }
 
         // Create update statement
-        $sql = 'UPDATE ' . $this->_db->Prefix($this->_dbtable) . ' SET ' . $sqlVars . ' WHERE ticketid = ' . $obj->getVar('ticketid');
+        $sql = 'UPDATE ' . $this->db->prefix($this->dbtable) . ' SET ' . $sqlVars . ' WHERE ticketid = ' . $object->getVar('ticketid');
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
+        $sql = \sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->db->prefix($this->dbtable), $object->getVar($this->id));
 
         return $sql;
     }

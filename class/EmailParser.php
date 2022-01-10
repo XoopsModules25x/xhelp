@@ -14,7 +14,7 @@ if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
 require_once \XHELP_PEAR_PATH . '/Mail/mimeDecode.php';
 
 /**
- * xhelpMessageParser class
+ * EmailParser class
  *
  * Part of the email submission subsystem
  *
@@ -60,7 +60,7 @@ class EmailParser
 
         $structure          = Mail_mimeDecode::decode($this->_params);
         $body               = $this->_getBody($structure);
-        $arr['hash']        = $this->_parseTicketID($structure->headers['subject']);
+        $arr['hash']        = $this->parseTicketID($structure->headers['subject']);
         $arr['msg']         = $this->_parseBody($body);
         $arr['mime_struct'] = $structure;
         $arr                = \array_merge($arr, $this->_parseFrom($structure->headers['from']));
@@ -72,7 +72,7 @@ class EmailParser
      * @param string $from
      * @return array
      */
-    public function &_parseFrom(string $from)
+    public function &_parseFrom(string $from): array
     {
         //Extract Name & Email from supplied message
         //eregi("From: (.*)\nTo:",$headers, $addr);
@@ -94,7 +94,7 @@ class EmailParser
      * @param string $msg
      * @return mixed|string
      */
-    public function _parseTicketID(string $msg)
+    public function parseTicketID(string $msg)
     {
         $matches = [];
         $ret     = \preg_match(MD5SIGNATUREPATTERN, $msg, $matches);
@@ -111,21 +111,21 @@ class EmailParser
 
     /**
      * @param array $msg
-     * @return mixed|string
+     * @return array|string|string[]|null
      */
     public function _parseBody(array $msg)
     {
-        $msg = $this->_quoteBody($msg);
+        $msg = $this->_quoteBody((string)$msg);
         $msg = $this->_stripMd5Key($msg);
 
         return $msg;
     }
 
     /**
-     * @param array $msg
+     * @param string $msg
      * @return string
      */
-    public function _quoteBody(array $msg): string
+    public function _quoteBody(string $msg): string
     {
         $current = 0;
 
@@ -145,16 +145,16 @@ class EmailParser
             $replace[2] = '[/quote]\\2';
 
             //Check if current line indicates a quote
-            if (\preg_match($pattern[0], $msg[$i])) {
-                $msg[$i] = \preg_replace($pattern[0], $replace[0], $msg[$i]);
+            if (\preg_match($pattern[0], $iValue)) {
+                $msg[$i] = \preg_replace($pattern[0], $replace[0], $iValue);
                 ++$current;
             } else {
                 if ($current) {
                     //Check if line indicates a closed quote
-                    if (\preg_match($pattern[1], $msg[$i])) {
-                        $msg[$i] = \preg_replace($pattern[1], $replace[1], $msg[$i]);
+                    if (\preg_match($pattern[1], $iValue)) {
+                        $msg[$i] = \preg_replace($pattern[1], $replace[1], $iValue);
                     } else {
-                        $msg[$i] = \preg_replace($pattern[2], $replace[2], $msg[$i]);
+                        $msg[$i] = \preg_replace($pattern[2], $replace[2], $iValue);
                         $current--;
                     }
                 }
@@ -176,12 +176,12 @@ class EmailParser
     }
 
     /**
-     * @param string $part
-     * @param string $primary
-     * @param string $secondary
-     * @return bool
+     * @param object|array $part
+     * @param string       $primary
+     * @param string       $secondary
+     * @return bool|array
      */
-    public function _getBody(string $part, string $primary = 'text', string $secondary = 'plain'): ?bool
+    public function _getBody($part, string $primary = 'text', string $secondary = 'plain')
     {
         $body = false;
 

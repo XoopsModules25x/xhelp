@@ -33,7 +33,7 @@ class LogMessage extends \XoopsObject
 {
     /**
      * Xhelp\LogMessage constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
@@ -57,7 +57,7 @@ class LogMessage extends \XoopsObject
      *
      * @return string Timestamp of last update
      */
-    public function lastUpdated()
+    public function lastUpdated(): string
     {
         return \formatTimestamp($this->getVar('lastUpdated'));
     }

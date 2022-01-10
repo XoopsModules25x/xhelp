@@ -5,11 +5,12 @@ use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/admin_header.php';
-require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+xoops_load('XoopsPagenav');
 // require_once XHELP_CLASS_PATH . '/Form.php';
 
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
+$helper    = Xhelp\Helper::getInstance();
 
 $limit = Request::getInt('limit', 0, 'REQUEST');
 $start = Request::getInt('start', 0, 'REQUEST');
@@ -53,50 +54,69 @@ switch ($op) {
         manageStatus();
         break;
     default:
-        redirect_header(XHELP_ADMIN_URL . '/index.php');
+        $helper->redirect('admin/index.php');
         break;
 }
 
 function deleteStatus()
 {
+    $helper = Xhelp\Helper::getInstance();
     if (Request::hasVar('statusid', 'GET')) {
         $statusid = Request::getInt('statusid', 0, 'GET');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+        $helper->redirect('admin/status.php?op=manageStatus');
     }
 
-    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-    $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+    $ticketHandler = $helper->getHandler('Ticket');
+    /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+    $statusHandler = $helper->getHandler('Status');
     $status        = $statusHandler->get($statusid);
 
     // Check for tickets with this status first
-    $criteria        = new \Criteria('status', (string)$statusid);
+    $criteria    = new \Criteria('status', (string)$statusid);
     $ticketCount = $ticketHandler->getCount($criteria);
 
     if ($ticketCount > 0) {
-        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, _AM_XHELP_STATUS_HASTICKETS_ERR);
+        $helper->redirect('admin/status.php?op=manageStatus', 3, _AM_XHELP_STATUS_HASTICKETS_ERR);
     }
 
     if ($statusHandler->delete($status, true)) {
-        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+        $helper->redirect('admin/status.php?op=manageStatus');
     } else {
         $message = _AM_XHELP_DEL_STATUS_ERR;
-        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
+        $helper->redirect('admin/status.php?op=manageStatus', 3, $message);
     }
 }
 
 function editStatus()
 {
+    $helper = Xhelp\Helper::getInstance();
     if (Request::hasVar('statusid', 'REQUEST')) {
         $statusid = Request::getInt('statusid', 0, 'REQUEST');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+        $helper->redirect('admin/status.php?op=manageStatus');
     }
 
-    $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+    $statusHandler = $helper->getHandler('Status');
     $status        = $statusHandler->get($statusid);
 
-    if (!isset($_POST['updateStatus'])) {
+    if (isset($_POST['updateStatus'])) {
+        if ('' === $_POST['desc']) {  // If no description supplied
+            $message = _AM_XHELP_MESSAGE_NO_DESC;
+            $helper->redirect('admin/status.php?op=manageStatus', 3, $message);
+        }
+
+        $status->setVar('description', $_POST['desc']);
+        $status->setVar('state', $_POST['state']);
+        if ($statusHandler->insert($status)) {
+            $helper->redirect('admin/status.php?op=manageStatus');
+        } else {
+            $message = _AM_MESSAGE_EDIT_STATUS_ERR;
+            $helper->redirect('admin/status.php?op=manageStatus', 3, $message);
+        }
+    } else {
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('modTpl');
         $adminObject = Admin::getInstance();
@@ -124,46 +144,36 @@ function editStatus()
         echo '</table></form>';
 
         require_once __DIR__ . '/admin_footer.php';
-    } else {
-        if ('' == $_POST['desc']) {  // If no description supplied
-            $message = _AM_XHELP_MESSAGE_NO_DESC;
-            redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
-        }
-
-        $status->setVar('description', $_POST['desc']);
-        $status->setVar('state', $_POST['state']);
-        if ($statusHandler->insert($status)) {
-            redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
-        } else {
-            $message = _AM_MESSAGE_EDIT_STATUS_ERR;
-            readirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
-        }
     }
 }
 
 function manageStatus()
 {
     global $aSortBy, $aOrderBy, $aLimitBy, $order, $limit, $start, $sort;
-    $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+    $helper = Xhelp\Helper::getInstance();
+    /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+    $statusHandler = $helper->getHandler('Status');
+    $helper        = Xhelp\Helper::getInstance();
 
     if (Request::hasVar('changeDefaultStatus', 'POST')) {
         Xhelp\Utility::setMeta('default_status', $_POST['default']);
     }
 
     if (Request::hasVar('newStatus', 'POST')) {
-        if ('' == $_POST['desc']) {  // If no description supplied
+        if ('' === \Xmf\Request::getString('desc', '', 'POST')) {  // If no description supplied
             $message = _AM_XHELP_MESSAGE_NO_DESC;
-            redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
+            $helper->redirect('admin/status.php?op=manageStatus', 3, $message);
         }
+        /** @var \XoopsModules\Xhelp\Status $newStatus */
         $newStatus = $statusHandler->create();
 
         $newStatus->setVar('state', Request::getInt('state', 0, 'POST'));
-        $newStatus->setVar('description', $_POST['desc']);
+        $newStatus->setVar('description', \Xmf\Request::getString('desc', '', 'POST'));
         if ($statusHandler->insert($newStatus)) {
-            redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus');
+            $helper->redirect('admin/status.php?op=manageStatus');
         } else {
             $message = _AM_MESSAGE_ADD_STATUS_ERR;
-            redirect_header(XHELP_ADMIN_URL . '/status.php?op=manageStatus', 3, $message);
+            $helper->redirect('admin/status.php?op=manageStatus', 3, $message);
         }
     }
     xoops_cp_header();

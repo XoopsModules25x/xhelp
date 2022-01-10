@@ -1,19 +1,40 @@
 <?php declare(strict_types=1);
 
 use Xmf\Module\Admin;
+use XoopsModules\Xhelp\Helper;
+use XoopsModules\Xhelp\Utility;
 
-$pathIcon16    = Admin::iconUrl('', '16');
-$moduleDirName = \basename(\dirname(__DIR__));
+$pathIcon16         = Admin::iconUrl('', '16');
+$moduleDirName      = \basename(\dirname(__DIR__));
+$moduleDirNameUpper = \mb_strtoupper($moduleDirName);
+$helper             = Helper::getInstance();
+$helper->loadLanguage('admin');
+$pathModIcon16 = $helper->url(
+        $helper->getModule()
+            ->getInfo('modicons16')
+    ) . '/';
+$pathModIcon32 = $helper->url(
+        $helper->getModule()
+            ->getInfo('modicons32')
+    ) . '/';
+
+$print = constant('CO_' . $moduleDirNameUpper . '_' . 'PRINT');
+$pdf   = constant('CO_' . $moduleDirNameUpper . '_' . 'PDF');
 
 return [
-    'name'    => \mb_strtoupper($moduleDirName) . ' IconConfigurator',
-    'edit'    => "<img src='" . $pathIcon16 . "/edit.png'  alt=" . _EDIT . ' title=' . _EDIT . " align='middle'>",
-    'delete'  => "<img src='" . $pathIcon16 . "/delete.png' alt=" . _DELETE . ' title=' . _DELETE . " align='middle'>",
-    'clone'   => "<img src='" . $pathIcon16 . "/editcopy.png' alt=" . _CLONE . ' title=' . _CLONE . " align='middle'>",
-    'preview' => "<img src='" . $pathIcon16 . "/view.png' alt=" . _PREVIEW . ' title=' . _PREVIEW . " align='middle'>",
-    'print'   => "<img src='" . $pathIcon16 . "/printer.png' alt=" . _PRINT . ' title=' . _PRINT . " align='middle'>",
-    'pdf'     => "<img src='" . $pathIcon16 . "/pdf.png' alt=" . _PDF . ' title=' . _PDF . " align='middle'>",
-    'add'     => "<img src='" . $pathIcon16 . "/add.png' alt=" . _ADD . ' title=' . _ADD . " align='middle'>",
-    '0'       => "<img src='" . $pathIcon16 . "/0.png' alt=" . 0 . ' title=' . _OFF . " align='middle'>",
-    '1'       => "<img src='" . $pathIcon16 . "/1.png' alt=" . 1 . ' title=' . _ON . " align='middle'>",
+    'edit'         => Utility::iconSourceTag($pathIcon16, 'edit.png', _EDIT),
+    'delete'       => Utility::iconSourceTag($pathIcon16, 'delete.png', _DELETE),
+    'clone'        => Utility::iconSourceTag($pathIcon16, 'editcopy.png', _CLONE),
+    'preview'      => Utility::iconSourceTag($pathIcon16, 'view.png', _PREVIEW),
+    'print'        => Utility::iconSourceTag($pathIcon16, 'printer.png', $print),
+    'pdf'          => Utility::iconSourceTag($pathIcon16, 'pdf.png', $pdf),
+    'add'          => Utility::iconSourceTag($pathIcon16, 'add.png', _ADD),
+    '0'            => Utility::iconSourceTag($pathIcon16, '0.png', '0'),
+    '1'            => Utility::iconSourceTag($pathIcon16, '1.png', '1'),
+    //Publisher
+    'rejectededit' => Utility::iconSourceTag($pathIcon16, 'edit.png', _AM_XHELP_REJECTED_EDIT),
+    'online'       => Utility::iconSourceTag($pathIcon16, 'on.png', _AM_XHELP_ICO_ONLINE),
+    'offline'      => Utility::iconSourceTag($pathIcon16, 'off.png', _AM_XHELP_ICO_OFFLINE),
+    //    'moderate'     => Utility::iconSourceTag($pathModIcon16, 'approve.gif', _AM_XHELP_SUBMISSION_MODERATE),
+    //    'mail'         => Utility::iconSourceTag($pathModIcon16, 'friend.gif', _CO_XHELP_MAIL),
 ];

@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * Renderer class
  *

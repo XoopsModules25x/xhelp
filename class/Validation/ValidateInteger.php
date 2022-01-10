@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace XoopsModules\Xasset\Validate;
+namespace XoopsModules\Xhelp\Validation;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -33,10 +33,10 @@ class ValidateInteger extends Validator
 
     /**
      * Constructs a new ValidateInteger object subclass or Validator
-     * @param      $text
-     * @param bool $forceentry
+     * @param string $text
+     * @param bool   $forceentry
      */
-    public function __construct($text, $forceentry = false)
+    public function __construct(string $text, bool $forceentry = false)
     {
         $this->text       = $text;
         $this->forceentry = $forceentry;
@@ -50,7 +50,7 @@ class ValidateInteger extends Validator
      */
     public function validate()
     {
-        if (!\is_int($this->text) && (mb_strlen($this->text) > 0 && !$this->forceentry)) {
+        if (!\is_int($this->text) && ('' !== $this->text && !$this->forceentry)) {
             $this->setError(\_XHELP_MESSAGE_NOT_INTEGER);
         }
     }

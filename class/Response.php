@@ -18,7 +18,6 @@ namespace XoopsModules\Xhelp;
  * @author       XOOPS Development Team
  */
 
-
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
@@ -26,15 +25,17 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * Responses class
+ * Response class
  *
  * @author  Eric Juden <ericj@epcusa.com>
  */
-class Responses extends \XoopsObject
+class Response extends \XoopsObject
 {
+    private $helper;
+
     /**
-     * Responses constructor.
-     * @param null $id
+     * Response constructor.
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
@@ -47,6 +48,7 @@ class Responses extends \XoopsObject
         $this->initVar('userIP', \XOBJ_DTYPE_TXTBOX, null, true, 35);
         $this->initVar('private', \XOBJ_DTYPE_INT, null, false);
 
+        $this->helper = Helper::getInstance();
         if (null !== $id) {
             if (\is_array($id)) {
                 $this->assignVars($id);
@@ -62,18 +64,18 @@ class Responses extends \XoopsObject
      * @param string $format
      * @return string Formatted posted date
      */
-    public function posted($format = 'l'): string
+    public function posted(string $format = 'l'): string
     {
         return \formatTimestamp($this->getVar('updateTime'), $format);
     }
 
     /**
-     * @param      $post_field
-     * @param null $response
-     * @param null $allowed_mimetypes
+     * @param string $post_field
+     * @param null   $response
+     * @param null   $allowed_mimetypes
      * @return array|false|object|string|void
      */
-    public function storeUpload($post_field, $response = null, $allowed_mimetypes = null)
+    public function storeUpload(string $post_field, $response = null, $allowed_mimetypes = null)
     {
         //global $xoopsModuleConfig, $xoopsUser, $xoopsDB, $xoopsModule;
         // require_once XHELP_CLASS_PATH . '/uploader.php';
@@ -82,8 +84,9 @@ class Responses extends \XoopsObject
         $ticketid = $this->getVar('id');
 
         if (null === $allowed_mimetypes) {
-            $mimetypeHandler   = new MimetypeHandler($GLOBALS['xoopsDB']);
-            $allowed_mimetypes = $mimetypeHandler->checkMimeTypes();
+            /** @var \XoopsModules\Xhelp\MimetypeHandler $mimetypeHandler */
+            $mimetypeHandler   = $this->helper->getHandler('Mimetype');
+            $allowed_mimetypes = $mimetypeHandler->checkMimeTypes($post_field);
             if (!$allowed_mimetypes) {
                 return false;
             }
@@ -106,7 +109,7 @@ class Responses extends \XoopsObject
                 $uploader->setTargetFileName($ticketid . '_' . $response . '_' . $uploader->getMediaName());
             }
             if ($uploader->upload()) {
-                $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
+                $fileHandler = $this->helper->getHandler('File');
                 $file        = $fileHandler->create();
                 $file->setVar('filename', $uploader->getSavedFileName());
                 $file->setVar('ticketid', $ticketid);
@@ -126,11 +129,11 @@ class Responses extends \XoopsObject
 
     /**
      * @param string $post_field
-     * @param array $allowed_mimetypes
-     * @param array $errors
+     * @param array  $allowed_mimetypes
+     * @param array  $errors
      * @return bool
      */
-    public function checkUpload($post_field, &$allowed_mimetypes, &$errors): bool
+    public function checkUpload(string $post_field, array &$allowed_mimetypes, array &$errors): bool
     {
         //global $xoopsModuleConfig;
         // require_once XHELP_CLASS_PATH . '/uploader.php';
@@ -141,7 +144,7 @@ class Responses extends \XoopsObject
         $errors        = [];
 
         if (null === $allowed_mimetypes) {
-            $mimetypeHandler   = new MimetypeHandler($GLOBALS['xoopsDB']);
+            $mimetypeHandler   = $this->helper->getHandler('Mimetype');
             $allowed_mimetypes = $mimetypeHandler->checkMimeTypes($post_field);
             if (!$allowed_mimetypes) {
                 $errors[] = \_XHELP_MESSAGE_WRONG_MIMETYPE;
@@ -162,11 +165,11 @@ class Responses extends \XoopsObject
 
     /**
      * Get the ticket to which the response is attached
-     * @return Ticket The ticket
+     * @return \XoopsObject|null The ticket ID
      */
-    public function getTicket(): Ticket
+    public function getTicket(): ?\XoopsObject
     {
-        $ticketHandler = new TicketHandler($GLOBALS['xoopsDB']);
+        $ticketHandler = $this->helper->getHandler('Ticket');
 
         return $ticketHandler->get($this->getVar('ticketid'));
     }

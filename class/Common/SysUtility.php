@@ -29,10 +29,21 @@ use XoopsModules\Xhelp\Helper;
  */
 class SysUtility
 {
-    use VersionChecks;    //checkVerXoops, checkVerPhp Traits
-    use ServerStats;    // getServerStats Trait
-    use FilesManagement;    // Files Management Trait
-    use ModuleStats;    // ModuleStats Trait
+    use VersionChecks;
+
+    //checkVerXoops, checkVerPhp Traits
+
+    use ServerStats;
+
+    // getServerStats Trait
+
+    use FilesManagement;
+
+    // Files Management Trait
+
+    use ModuleStats;
+
+    // ModuleStats Trait
 
     /**
      * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
@@ -47,7 +58,7 @@ class SysUtility
      *
      * @return string Trimmed string.
      */
-    public static function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true): string
+    public static function truncateHtml(string $text, int $length = 100, string $ending = '...', bool $exact = false, bool $considerHtml = true): string
     {
         if ($considerHtml) {
             // if the plain text is shorter than the maximum length, return the whole text
@@ -121,7 +132,7 @@ class SysUtility
         if (!$exact) {
             // ...search the last occurance of a space...
             $spacepos = mb_strrpos($truncate, ' ');
-            if (isset($spacepos)) {
+            if (!empty($spacepos)) {
                 // ...and cut the text in this position
                 $truncate = mb_substr($truncate, 0, $spacepos);
             }
@@ -143,7 +154,7 @@ class SysUtility
      * @param array|null $options
      * @return \XoopsFormDhtmlTextArea|\XoopsFormEditor
      */
-    public static function getEditor($helper = null, $options = null)
+    public static function getEditor($helper = null, array $options = null)
     {
         /** @var Helper $helper */
         if (null === $options) {
@@ -178,8 +189,9 @@ class SysUtility
     }
 
     /**
-     * @param $fieldname
-     * @param $table
+     * @param string $fieldname
+     * @param string $table
+     * @return bool
      */
     public static function fieldExists(string $fieldname, string $table): bool
     {

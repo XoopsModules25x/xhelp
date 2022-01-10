@@ -1,16 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
 
 /**
  * class EmailStore
  */
 class EmailStore
 {
-    public $_hResponse;
-    public $_hTicket;
-    public $_hMailEvent;
+    public $responseHandler;
+    public $ticketHandler;
+    public $mailEventHandler;
     public $_errors;
 
     /**
@@ -18,14 +19,17 @@ class EmailStore
      */
     public function __construct()
     {
-        $this->_hResponse  = new ResponsesHandler($GLOBALS['xoopsDB']);
-        $this->_hTicket    = new TicketHandler($GLOBALS['xoopsDB']);
-        $this->_hMailEvent = new MailEventHandler($GLOBALS['xoopsDB']);
-        $this->_errors     = [];
+        $helper                = Helper::getInstance();
+        $this->responseHandler = $helper->getHandler('Response');
+        /** @var TicketHandler $this- >ticketHandler */
+        $this->ticketHandler = $helper->getHandler('Ticket');
+        /** @var MailEventHandler $this- >mailEventHandler */
+        $this->mailEventHandler = $helper->getHandler('MailEvent');
+        $this->_errors          = [];
     }
 
     /**
-     * @param $desc
+     * @param string|array $desc
      */
     public function _setError($desc)
     {
@@ -49,22 +53,28 @@ class EmailStore
         return 0;
     }
 
+    /**
+     *
+     */
     public function clearErrors()
     {
         $this->_errors = [];
     }
 
+    /**
+     *
+     */
     public function renderErrors()
     {
     }
 
     /**
      * Store the parsed message in database
-     * @param ParsedMessage $msg  {@link ParsedMessage} object Message to add
-     * @param \XoopsUser $user {@link xoopsUser} object User that submitted message
+     * @param ParsedMessage     $msg  {@link ParsedMessage} object Message to add
+     * @param \XoopsUser        $user {@link xoopsUser} object User that submitted message
      * @param DepartmentMailBox $mbox {@link DepartmentMailBox} object. Originating Mailbox for message
-     * @param mixed  $errors
-     * @return array|false Returns <a href='psi_element://Ticket'>Ticket</a> object if new ticket, <a href='psi_element://Responses'>Responses</a> object if a response, and false if unable to save.
+     * @param mixed             $errors
+     * @return array|false Returns <a href='psi_element://Ticket'>Ticket</a> object if new ticket, <a href='psi_element://Response'>Response</a> object if a response, and false if unable to save.
      */
     public function storeMsg(ParsedMessage $msg, \XoopsUser $user, DepartmentMailBox $mbox, &$errors)
     {
@@ -74,7 +84,7 @@ class EmailStore
         $type = $msg->getMsgType();
         switch ($type) {
             case _XHELP_MSGTYPE_TICKET:
-                $obj = $this->_hTicket->create();
+                $obj = $this->ticketHandler->create();
                 $obj->setVar('uid', $user->getVar('uid'));
                 $obj->setVar('subject', $msg->getSubject());
                 $obj->setVar('description', $msg->getMsg());
@@ -90,9 +100,9 @@ class EmailStore
                 }
                 $obj->setVar('status', $status);
                 $obj->createEmailHash($msg->getEmail());
-                if ($this->_hTicket->insert($obj)) {
+                if ($this->ticketHandler->insert($obj)) {
                     $obj->addSubmitter($user->getVar('email'), $user->getVar('uid'));
-                    $this->_saveAttachments($msg, $obj->getVar('id'));
+                    $this->saveAttachments($msg, $obj->getVar('id'));
 
                     $errors = $this->_getErrors();
 
@@ -100,7 +110,7 @@ class EmailStore
                 }
                 break;
             case _XHELP_MSGTYPE_RESPONSE:
-                if (!$ticket = $this->_hTicket->getTicketByHash($msg->getHash())) {
+                if (!$ticket = $this->ticketHandler->getTicketByHash($msg->getHash())) {
                     $this->_setError(\_XHELP_RESPONSE_NO_TICKET);
 
                     return false;
@@ -112,17 +122,17 @@ class EmailStore
                     return false;
                 }
 
-                $obj = $this->_hResponse->create();
+                $obj = $this->responseHandler->create();
                 $obj->setVar('ticketid', $ticket->getVar('id'));
                 $obj->setVar('uid', $user->getVar('uid'));
                 $obj->setVar('message', $msg->getMsg());
                 $obj->setVar('updateTime', \time());
                 $obj->setVar('userIP', 'via Email');
 
-                if ($this->_hResponse->insert($obj)) {
-                    $this->_saveAttachments($msg, $ticket->getVar('id'), $obj->getVar('id'));
+                if ($this->responseHandler->insert($obj)) {
+                    $this->saveAttachments($msg, $ticket->getVar('id'), $obj->getVar('id'));
                     $ticket->setVar('lastUpdated', \time());
-                    $this->_hTicket->insert($ticket);
+                    $this->ticketHandler->insert($ticket);
 
                     $errors = $this->_getErrors();
 
@@ -141,15 +151,15 @@ class EmailStore
      * @param int           $ticketid
      * @param int           $responseid
      */
-    public function _saveAttachments(ParsedMessage $msg, int $ticketid, int $responseid = 0)
+    public function saveAttachments(ParsedMessage $msg, int $ticketid, int $responseid = 0)
     {
-        /** @var Helper $helper */
         $helper = Helper::getInstance();
 
-        $attachments       = $msg->getAttachments();
-        $dir               = XOOPS_UPLOAD_PATH . '/xhelp';
-        $prefix            = (0 != $responseid ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
-        $mimetypeHandler   = new MimetypeHandler($GLOBALS['xoopsDB']);
+        $attachments = $msg->getAttachments();
+        $dir         = XOOPS_UPLOAD_PATH . '/xhelp';
+        $prefix      = (0 != $responseid ? $ticketid . '_' . $responseid . '_' : $ticketid . '_');
+        /** @var \XoopsModules\Xhelp\MimetypeHandler $mimetypeHandler */
+        $mimetypeHandler   = $helper->getHandler('Mimetype');
         $allowed_mimetypes = $mimetypeHandler->getArray();
 
         if (!\is_dir($dir)) {
@@ -161,7 +171,8 @@ class EmailStore
         $dir .= '/';
 
         if ($helper->getConfig('xhelp_allowUpload')) {
-            $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
+            /** @var \XoopsModules\Xhelp\FileHandler $fileHandler */
+            $fileHandler = $helper->getHandler('File');
             foreach ($attachments as $attach) {
                 $validators = [];
 
@@ -171,23 +182,24 @@ class EmailStore
                 \fwrite($fp, $attach['content']);
                 \fclose($fp);
 
-                $validators[] = new validation\ValidateMimeType($dir . $fname, $attach['content-type'], $allowed_mimetypes);
-                $validators[] = new validation\ValidateFileSize($dir . $fname, $helper->getConfig('xhelp_uploadSize'));
-                $validators[] = new validation\ValidateImageSize($dir . $fname, $helper->getConfig('xhelp_uploadWidth'), $helper->getConfig('xhelp_uploadHeight'));
+                $validators[] = new Validation\ValidateMimeType($dir . $fname, $attach['content-type'], $allowed_mimetypes);
+                $validators[] = new Validation\ValidateFileSize($dir . $fname, $helper->getConfig('xhelp_uploadSize'));
+                $validators[] = new Validation\ValidateImageSize($dir . $fname, $helper->getConfig('xhelp_uploadWidth'), $helper->getConfig('xhelp_uploadHeight'));
 
-                if (!Utility::checkRules($validators, $errors)) {
-                    //Remove the file
-                    $this->_addAttachmentError($errors, $msg, $fname);
-                    \unlink($dir . $fname);
-                } else {
+                if (Utility::checkRules($validators, $errors)) {
                     //Add attachment to ticket
 
+                    /** @var \XoopsModules\Xhelp\File $file */
                     $file = $fileHandler->create();
                     $file->setVar('filename', $fname);
                     $file->setVar('ticketid', $ticketid);
                     $file->setVar('mimetype', $attach['content-type']);
                     $file->setVar('responseid', $responseid);
                     $fileHandler->insert($file, true);
+                } else {
+                    //Remove the file
+                    $this->addAttachmentError($errors, $msg, $fname);
+                    \unlink($dir . $fname);
                 }
             }
         } else {
@@ -196,11 +208,11 @@ class EmailStore
     }
 
     /**
-     * @param $errors
-     * @param array $msg
-     * @param $fname
+     * @param array         $errors
+     * @param ParsedMessage $msg
+     * @param string        $fname
      */
-    public function _addAttachmentError($errors, $msg, $fname)
+    public function addAttachmentError(array $errors, ParsedMessage $msg, string $fname)
     {
         if (0 != $errors) {
             $aErrors = [];

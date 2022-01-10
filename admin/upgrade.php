@@ -5,9 +5,8 @@ use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/admin_header.php';
-require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+xoops_load('XoopsPagenav');
 
-/** @var Xhelp\Helper $helper */
 $helper = Xhelp\Helper::getInstance();
 
 global $xoopsModule;
@@ -24,19 +23,22 @@ switch ($op) {
         checkTables();
         break;
     case 'upgradeDB':
-        upgradeDB();
+        try {
+            upgradeDB();
+        } catch (Exception $e) {
+        }
         break;
     default:
-        redirect_header(XHELP_BASE_URL . '/admin/index.php');
+        $helper->redirect('admin/index.php');
         break;
 }
 
 /**
- * @param $oldName
- * @param $newName
+ * @param string $oldName
+ * @param string $newName
  * @return bool
  */
-function renameTable($oldName, $newName)
+function renameTable(string $oldName, string $newName): bool
 {
     global $xoopsDB;
     $qry = runQuery(sprintf('ALTER TABLE %s RENAME %s', $xoopsDB->prefix($oldName), $xoopsDB->prefix($newName)), sprintf(_AM_XHELP_MSG_RENAME_TABLE, $oldName, $newName), sprintf(_AM_XHELP_MSG_RENAME_TABLE_ERR, $oldName));
@@ -45,12 +47,12 @@ function renameTable($oldName, $newName)
 }
 
 /**
- * @param $query
- * @param $goodmsg
- * @param $badmsg
+ * @param string $query
+ * @param string $goodmsg
+ * @param string $badmsg
  * @return bool
  */
-function runQuery($query, $goodmsg, $badmsg)
+function runQuery(string $query, string $goodmsg, string $badmsg): bool
 {
     global $xoopsDB;
     $ret = $xoopsDB->query($query);
@@ -76,7 +78,7 @@ function checkTables()
     if (!Xhelp\Utility::tableExists('xhelp_meta')) {
         $ver = '0.5';
     } elseif (!$ver = Xhelp\Utility::getMeta('version')) {
-            echo('Unable to determine previous version.');
+        echo('Unable to determine previous version.');
     }
 
     $currentVer = round($xoopsModule->getVar('version') / 100, 2);
@@ -109,20 +111,27 @@ function _openProgressWindow()
 function upgradeDB()
 {
     global $xoopsModule;
+    $helper = Xhelp\Helper::getInstance();
+    /** @var \XoopsMySQLDatabase $xoopsDB */
     $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
     //1. Determine previous release
     //   *** Update this in sql/mysql.sql for each release **
     if (!Xhelp\Utility::tableExists('xhelp_meta')) {
         $ver = '0.5';
     } elseif (!$ver = Xhelp\Utility::getMeta('version')) {
-            exit(_AM_XHELP_VERSION_ERR);
+        exit(_AM_XHELP_VERSION_ERR);
     }
 
-    $staffHandler  = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-    $memberHandler = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-    $ticketHandler = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+    /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+    $staffHandler = $helper->getHandler('Staff');
+    /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+    $membershipHandler = $helper->getHandler('Membership');
+    /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+    $ticketHandler = $helper->getHandler('Ticket');
+    /** @var \XoopsMemberHandler $memberHandler */
     $memberHandler = xoops_getHandler('member');
-    $roleHandler   = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+    /** @var \XoopsModules\Xhelp\RoleHandler $roleHandler */
+    $roleHandler = $helper->getHandler('Role');
 
     $mid = $xoopsModule->getVar('mid');
 
@@ -313,18 +322,18 @@ function upgradeDB()
                    );
 
             // Add default roles to db
-            if (!$hasRoles = Xhelp\Utility::createRoles()) {
-                echo '<li>' . _AM_XHELP_MESSAGE_DEF_ROLES_ERROR . '</li>';
-            } else {
+            if ($hasRoles = Xhelp\Utility::createRoles()) {
                 echo '<li>' . _AM_XHELP_MESSAGE_DEF_ROLES . '</li>';
+            } else {
+                echo '<li>' . _AM_XHELP_MESSAGE_DEF_ROLES_ERROR . '</li>';
             }
 
             // Set all staff members to have admin permission role
-            $staff = $staffHandler->getObjects();
-            if ($staff) {
-                foreach ($staff as $stf) {
-                    $uid   = $stf->getVar('uid');
-                    $depts = $memberHandler->membershipByStaff($uid, true);
+            $staffArray = $staffHandler->getObjects();
+            if ($staffArray) {
+                foreach ($staffArray as $staff) {
+                    $uid   = $staff->getVar('uid');
+                    $depts = $membershipHandler->membershipByStaff($uid, true);
                     if ($staffHandler->addStaffRole($uid, 1, 0)) {
                         echo '<li>' . sprintf(_AM_XHELP_MSG_GLOBAL_PERMS, $uid) . '</li>';
                     }
@@ -336,11 +345,11 @@ function upgradeDB()
                         }
                     }
 
-                    $stf->setVar('permTimestamp', time());        // Set initial value for permTimestamp field
-                    if (!$staffHandler->insert($stf)) {
-                        echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid) . '</li>';
-                    } else {
+                    $staff->setVar('permTimestamp', time());        // Set initial value for permTimestamp field
+                    if ($staffHandler->insert($staff)) {
                         echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATESTAFF, $uid) . '</li>';
+                    } else {
+                        echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATESTAFF_ERR, $uid) . '</li>';
                     }
                 }
             }
@@ -402,20 +411,22 @@ function upgradeDB()
                    );
 
             // Give default statuses for upgrade
-            $statusHandler = new Xhelp\StatusHandler($GLOBALS['xoopsDB']);
+            /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+            $statusHandler = $helper->getHandler('Status');
             $startStatuses = [_XHELP_STATUS0 => 1, _XHELP_STATUS1 => 1, _XHELP_STATUS2 => 2];
 
             $count = 1;
             set_time_limit(60);
             foreach ($startStatuses as $desc => $state) {
+                /** @var \XoopsModules\Xhelp\Status $newStatus */
                 $newStatus = $statusHandler->create();
                 $newStatus->setVar('id', $count);
                 $newStatus->setVar('description', $desc);
                 $newStatus->setVar('state', $state);
-                if (!$statusHandler->insert($newStatus)) {
-                    echo '<li>' . sprintf(_AM_XHELP_MSG_ADD_STATUS_ERR, $desc) . '</li>';
-                } else {
+                if ($statusHandler->insert($newStatus)) {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_ADD_STATUS, $desc) . '</li>';
+                } else {
+                    echo '<li>' . sprintf(_AM_XHELP_MSG_ADD_STATUS_ERR, $desc) . '</li>';
                 }
                 ++$count;
             }
@@ -424,8 +435,8 @@ function upgradeDB()
             $oldStatuses = [2 => 3, 1 => 2, 0 => 1];
 
             foreach ($oldStatuses as $cStatus => $newStatus) {
-                $criteria    = new \Criteria('status', (string)$cStatus);
-                $success = $ticketHandler->updateAll('status', $newStatus, $criteria);
+                $criteria = new \Criteria('status', (string)$cStatus);
+                $success  = $ticketHandler->updateAll('status', $newStatus, $criteria);
             }
             if ($success) {
                 echo '<li>' . _AM_XHELP_MSG_CHANGED_STATUS . '</li>';
@@ -467,8 +478,8 @@ function upgradeDB()
                     $all_users[$ticket->getVar('uid')] = $ticket->getVar('uid');
                 }
 
-                $criteria  = new \Criteria('uid', '(' . implode(',', array_keys($all_users)) . ')', 'IN');
-                $users = $memberHandler->getUsers($criteria, true);
+                $criteria = new \Criteria('uid', '(' . implode(',', array_keys($all_users)) . ')', 'IN');
+                $users    = $memberHandler->getUsers($criteria, true);
 
                 foreach ($users as $user) {
                     $all_users[$user->getVar('uid')] = $user->getVar('email');
@@ -490,10 +501,10 @@ function upgradeDB()
 
             set_time_limit(60);
             // Update xhelp_roles Admin record with new value (2047)
-            $criteria        = new \Criteria('tasks', '511');
-            $admin_roles = $roleHandler->getObjects($criteria);
+            $criteria   = new \Criteria('tasks', '511');
+            $adminRoles = $roleHandler->getObjects($criteria);
 
-            foreach ($admin_roles as $role) {
+            foreach ($adminRoles as $role) {
                 $role->setVar('tasks', 2047);
                 if ($roleHandler->insert($role)) {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_ROLE, $role->getVar('name')) . '</li>';
@@ -607,7 +618,8 @@ function upgradeDB()
             if (null !== $helper->getConfig('xhelp_defaultDept') && 0 != $helper->getConfig('xhelp_defaultDept')) {
                 $ret = Xhelp\Utility::setMeta('default_department', $helper->getConfig('xhelp_defaultDept'));
             } else {
-                $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+                /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+                $departmentHandler = $helper->getHandler('Department');
                 $depts             = $departmentHandler->getObjects();
                 $aDepts            = [];
                 foreach ($depts as $dpt) {
@@ -630,7 +642,8 @@ function upgradeDB()
                    && runQuery(sprintf("ALTER TABLE %s ADD (hasCustFields INT(11) NOT NULL DEFAULT '0')", $xoopsDB->prefix('xhelp_saved_searches')), sprintf(_AM_XHELP_MSG_MODIFYTABLE, 'xhelp_saved_searches'), sprintf(_AM_XHELP_MSG_MODIFYTABLE_ERR, 'xhelp_saved_searches'));
 
             // Take existing saved searches and add 'query' field
-            $savedSearchHandler = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
+            /** @var \XoopsModules\Xhelp\SavedSearchHandler $savedSearchHandler */
+            $savedSearchHandler = $helper->getHandler('SavedSearch');
             $savedSearches      = $savedSearchHandler->getObjects();
 
             foreach ($savedSearches as $savedSearch) {
@@ -671,10 +684,10 @@ function upgradeDB()
 
             set_time_limit(60);
             // Update xhelp_roles Admin record with new value (4095)
-            $criteria        = new \Criteria('tasks', '2047');
-            $admin_roles = $roleHandler->getObjects($criteria);
+            $criteria   = new \Criteria('tasks', '2047');
+            $adminRoles = $roleHandler->getObjects($criteria);
 
-            foreach ($admin_roles as $role) {
+            foreach ($adminRoles as $role) {
                 $role->setVar('tasks', 4095);
                 if ($roleHandler->insert($role)) {
                     echo '<li>' . sprintf(_AM_XHELP_MSG_UPDATE_ROLE, $role->getVar('name')) . '</li>';
@@ -689,6 +702,9 @@ function upgradeDB()
 
         case '0.78':
             echo '</ul>';
+            break;
+        default:
+            throw new \Exception('Unexpected value');
     }
 
     $newversion = round($xoopsModule->getVar('version') / 100, 2);

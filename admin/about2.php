@@ -39,12 +39,12 @@ if (isset($contributors['translators']) && (count($contributors['translators']) 
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for translators
     foreach ($translators as $tran) {
-        if ('' != $tran['website']) {
+        if ('' !== $tran['website']) {
             $tran_contact = "<a href='" . $tran['website'] . "'>" . $tran['uname'] . '</a>';
-        } elseif ('' != $tran['email']) {
-                $tran_contact = "<a href='mailto: " . $tran['email'] . "'>" . $tran['uname'] . '</a>';
-            } else {
-                $tran_contact = $tran['uname'];
+        } elseif ('' !== $tran['email']) {
+            $tran_contact = "<a href='mailto: " . $tran['email'] . "'>" . $tran['uname'] . '</a>';
+        } else {
+            $tran_contact = $tran['uname'];
         }
         echo '<tr><td>' . $tran_contact . ' (' . $tran['language'] . ')</td>
                   </tr>';
@@ -59,12 +59,12 @@ if (isset($contributors['testers']) && (count($contributors['testers']) > 0)) {
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for testers
     foreach ($testers as $tester) {
-        if ('' != $tester['website']) {
+        if ('' !== $tester['website']) {
             $tester_contact = "<a href='" . $tester['website'] . "'>" . $tester['uname'] . '</a>';
-        } elseif ('' != $tester['email']) {
-                $tester_contact = "<a href='mailto: " . $tester['email'] . "'>" . $tester['uname'] . '</a>';
-            } else {
-                $tester_contact = $tester['uname'];
+        } elseif ('' !== $tester['email']) {
+            $tester_contact = "<a href='mailto: " . $tester['email'] . "'>" . $tester['uname'] . '</a>';
+        } else {
+            $tester_contact = $tester['uname'];
         }
         echo '<tr><td>' . $tester_contact . ' (' . $tester['name'] . ')</td>
                   </tr>';
@@ -79,12 +79,12 @@ if (isset($contributors['documenters']) && (count($contributors['documenters']) 
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for documenters
     foreach ($documenters as $doc) {
-        if ('' != $doc['website']) {
+        if ('' !== $doc['website']) {
             $doc_contact = "<a href='" . $doc['website'] . "'>" . $doc['uname'] . '</a>';
-        } elseif ('' != $doc['email']) {
-                $doc_contact = "<a href='mailto: " . $doc['email'] . "'>" . $doc['uname'] . '</a>';
-            } else {
-                $doc_contact = $doc['uname'];
+        } elseif ('' !== $doc['email']) {
+            $doc_contact = "<a href='mailto: " . $doc['email'] . "'>" . $doc['uname'] . '</a>';
+        } else {
+            $doc_contact = $doc['uname'];
         }
         echo '<tr><td>' . $doc_contact . ' (' . $doc['name'] . ')</td>
                   </tr>';
@@ -99,12 +99,12 @@ if (isset($contributors['code']) && (count($contributors['code']) > 0)) {
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for code contributors
     foreach ($coders as $coder) {
-        if ('' != $coder['website']) {
+        if ('' !== $coder['website']) {
             $coder_contact = "<a href='" . $coder['website'] . "'>" . $coder['uname'] . '</a>';
-        } elseif ('' != $coder['email']) {
-                $coder_contact = "<a href='mailto: " . $coder['email'] . "'>" . $coder['uname'] . '</a>';
-            } else {
-                $coder_contact = $coder['uname'];
+        } elseif ('' !== $coder['email']) {
+            $coder_contact = "<a href='mailto: " . $coder['email'] . "'>" . $coder['uname'] . '</a>';
+        } else {
+            $coder_contact = $coder['uname'];
         }
         echo '<tr><td>' . $coder_contact . ' (' . $coder['name'] . ')</td>
                   </tr>';

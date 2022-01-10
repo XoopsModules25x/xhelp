@@ -2,6 +2,23 @@
 
 namespace XoopsModules\Xhelp\Validation;
 
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    XOOPS Project (https://xoops.org)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author       XOOPS Development Team
+ * @author       Nazar Aziz (www.panthersoftware.com)
+ */
+
 /**
  * Class ValidateLength
  */
@@ -30,7 +47,7 @@ class ValidateLength extends Validator
      * @param int    $min_length min string size
      * @param int    $max_length the max string size
      */
-    public function __construct($text, $min_length, $max_length = 0)
+    public function __construct(string $text, int $min_length, int $max_length = 0)
     {
         $this->text       = $text;
         $this->min_length = $min_length;

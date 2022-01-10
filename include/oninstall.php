@@ -25,15 +25,14 @@ use XoopsModules\Xhelp\Utility;
  *
  * @return bool true if ready to install, false if not
  */
-function xoops_module_pre_install_xhelp(\XoopsModule $module)
+function xoops_module_pre_install_xhelp(\XoopsModule $module): bool
 {
     require_once \dirname(__DIR__) . '/preloads/autoloader.php';
-    /** @var Xhelp\Utility $utility */
     $utility      = new Utility();
     $xoopsSuccess = $utility::checkVerXoops($module);
     $phpSuccess   = $utility::checkVerPhp($module);
 
-    if (false !== $xoopsSuccess && false !== $phpSuccess) {
+    if ($xoopsSuccess && $phpSuccess) {
         $moduleTables = &$module->getInfo('tables');
         foreach ($moduleTables as $table) {
             $GLOBALS['xoopsDB']->queryF('DROP TABLE IF EXISTS ' . $GLOBALS['xoopsDB']->prefix($table) . ';');
@@ -49,17 +48,15 @@ function xoops_module_pre_install_xhelp(\XoopsModule $module)
  *
  * @return bool true if installation successful, false if not
  */
-function xoops_module_install_xhelp(\XoopsModule $module)
+function xoops_module_install_xhelp(\XoopsModule $module): bool
 {
     require_once \dirname(__DIR__) . '/preloads/autoloader.php';
 
     $moduleDirName = \basename(\dirname(__DIR__));
 
-    /** @var Xhelp\Helper $helper */ /** @var Xhelp\Utility $utility */
-    /** @var Common\Configurator $configurator */
     $helper       = Xhelp\Helper::getInstance();
-    $utility      = new Utility();
-    $configurator = new Common\Configurator();
+    $utility      = new Xhelp\Utility();
+    $configurator = new Xhelp\Common\Configurator();
 
     // Load language files
     $helper->loadLanguage('admin');

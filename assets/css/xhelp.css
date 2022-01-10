@@ -71,7 +71,7 @@ div.errorMsg {
     padding-left: 45px;
     text-align: left;
     filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (
-            enabled=true, sizingMethod=scale src='../images/important-32.png');
+    enabled=true, sizingMethod=scale src='../images/important-32.png');
 }
 
 div.errorMsg[class] {

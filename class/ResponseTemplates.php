@@ -31,7 +31,7 @@ class ResponseTemplates extends \XoopsObject
 {
     /**
      * XHelpResponseTemplates constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {

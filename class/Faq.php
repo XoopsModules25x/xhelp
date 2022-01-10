@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * class Faq
  */

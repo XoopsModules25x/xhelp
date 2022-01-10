@@ -3,11 +3,13 @@
 namespace XoopsModules\Xhelp\Reports;
 
 use XoopsModules\Xhelp;
+use Amenadiel\JpGraph\Plot;
+use Amenadiel\JpGraph\Graph;
 
-require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
-require_once \XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';
+//require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
+//require_once \XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
-Xhelp\Utility::includeReportLangFile('staffInfo');
+Xhelp\Utility::includeReportLangFile('reports/staffInfo');
 
 global $xoopsDB;
 
@@ -33,7 +35,7 @@ class StaffInfoReport extends Xhelp\Reports\Report
          */
     }
 
-    public $name       = 'staffInfo';
+    public $name       = 'staffInfoReport';
     public $meta       = [
         'name'        => \_XHELP_STAFF_INFO_NAME,
         'author'      => 'Eric Juden',
@@ -52,7 +54,7 @@ class StaffInfoReport extends Xhelp\Reports\Report
      function generateReport()
      {
      if ($this->getVar('hasResults') == 0) {
-     $this->_setResults();
+     $this->setResults();
      }
      $aResults = $this->getVar('results');
 
@@ -96,18 +98,18 @@ class StaffInfoReport extends Xhelp\Reports\Report
     /**
      * @return bool
      */
-    public function generateGraph()
+    public function generateGraph(): bool
     {
         if (0 == $this->getVar('hasGraph')) {
             return false;
         }
 
         if (0 == $this->getVar('hasResults')) {
-            $this->_setResults();
+            $this->setResults();
         }
         $aResults = $this->getVar('results');
 
-        $graph = new Graph(500, 300);
+        $graph = new Graph\Graph(500, 300);
         $graph->title->Set($this->meta['name']);
         $graph->setScale('textint');
         $graph->yaxis->scale->SetGrace(30);
@@ -130,16 +132,16 @@ class StaffInfoReport extends Xhelp\Reports\Report
         $datazero = [0, 0, 0, 0];
 
         // Create the "dummy" 0 bplot
-        $bplotzero = new BarPlot($datazero);
+        $bplotzero = new Plot\BarPlot($datazero);
 
         // Set names as x-axis label
         $graph->xaxis->SetTickLabels($data[0]);
 
         // Create the "Y" axis group
         foreach ($data as $d) {
-            $ybplot1 = new BarPlot($d);
+            $ybplot1 = new Plot\BarPlot($d);
             $ybplot1->value->Show();
-            $ybplot = new GroupBarPlot([$ybplot1, $bplotzero]);
+            $ybplot = new Plot\GroupBarPlot([$ybplot1, $bplotzero]);
 
             $graph->Add($ybplot);
         }
@@ -148,12 +150,13 @@ class StaffInfoReport extends Xhelp\Reports\Report
         $graph->SetBackgroundImage(\XHELP_IMAGE_PATH . '/graph_bg.jpg', BGIMG_FILLFRAME);
 
         $graph->Stroke();
+        return true;
     }
 
     /**
      * @return bool
      */
-    public function _setResults()
+    public function setResults(): bool
     {
         global $xoopsDB;
         $sSQL = \sprintf(
@@ -165,7 +168,7 @@ class StaffInfoReport extends Xhelp\Reports\Report
         );
 
         $result   = $xoopsDB->query($sSQL);
-        $aResults = $this->_arrayFromData($result);
+        $aResults = $this->arrayFromData($result);
 
         $this->setVar('results', \serialize($aResults));
         $this->setVar('hasResults', 1);
@@ -176,7 +179,7 @@ class StaffInfoReport extends Xhelp\Reports\Report
     /**
      * @return void
      */
-    public function getParams()
-    {
-    }
+    //    public function getParams()
+    //    {
+    //    }
 }

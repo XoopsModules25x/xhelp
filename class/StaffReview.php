@@ -33,7 +33,7 @@ class StaffReview extends \XoopsObject
 {
     /**
      * Xhelp\StaffReview constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
@@ -60,7 +60,7 @@ class StaffReview extends \XoopsObject
      *
      * @return string Timestamp of last update
      */
-    public function posted(): int
+    public function posted(): string
     {
         return \formatTimestamp($this->getVar('updateTime'));
     }

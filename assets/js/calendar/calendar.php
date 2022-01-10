@@ -107,7 +107,7 @@ class calendar
      * @param array $other_options
      * @return string
      */
-    public function _make_calendar($other_options = []): string
+    public function _make_calendar(array $other_options = []): string
     {
         $js_options = $this->_make_js_hash(array_merge($this->calendar_options, $other_options));
         $code       = ('<script type="text/javascript">Calendar.setup({' . $js_options . '});</script>');

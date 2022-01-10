@@ -22,21 +22,23 @@ namespace XoopsModules\Xhelp\Common;
 use Xmf\Yaml;
 use XoopsModules\Xhelp\Helper;
 
-/** @var Helper $helper */
-
 /**
  * Class TestdataButtons
  */
 class TestdataButtons
 {
     //functions for import buttons
-    public static function loadButtonConfig($adminObject)
+    /**
+     * @param \Xmf\Module\Admin $adminObject
+     * @return void
+     */
+    public static function loadButtonConfig(\Xmf\Module\Admin $adminObject)
     {
         $moduleDirName       = \basename(\dirname(__DIR__, 2));
         $moduleDirNameUpper  = \mb_strtoupper($moduleDirName);
         $yamlFile            = \dirname(__DIR__, 2) . '/config/admin.yml';
-        $config              = Yaml::readWrapped($yamlFile); // work with phpmyadmin YAML dumps
-        $displaySampleButton = $config['displaySampleButton'];
+        $config[]            = Yaml::readWrapped($yamlFile); // work with phpmyadmin YAML dumps
+        $displaySampleButton = $config[0]['displaySampleButton'];
         $helper              = Helper::getInstance();
 
         if (1 == $displaySampleButton) {

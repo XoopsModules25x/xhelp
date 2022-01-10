@@ -10,7 +10,7 @@ class FaqCategoryHandler extends \XoopsObjectHandler
     /**
      * @return FaqCategory
      */
-    public function &create()
+    public function &create(): FaqCategory
     {
         return new FaqCategory();
     }

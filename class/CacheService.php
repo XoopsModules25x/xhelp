@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * CacheService class
  *
@@ -18,7 +17,7 @@ class CacheService extends Service
      *
      * @var string
      */
-    public $_cacheDir;
+    private $cacheDir;
     //    public $_cookies = [];
 
     /**
@@ -26,10 +25,13 @@ class CacheService extends Service
      */
     public function __construct()
     {
-        $this->_cacheDir = \XHELP_CACHE_PATH;
+        $this->cacheDir = \XHELP_CACHE_PATH;
         $this->init();
     }
 
+    /**
+     *
+     */
     public function attachEvents()
     {
         $this->attachEvent('batch_status', $this);
@@ -64,14 +66,18 @@ class CacheService extends Service
      * @param Ticket $ticket Ticket being deleted
      * @return bool        True on success, false on error
      */
-    public function delete_ticket(Ticket $ticket): ?bool
+    public function delete_ticket(Ticket $ticket): bool
     {
-        $statusHandler = new StatusHandler($GLOBALS['xoopsDB']);
+        $ret    = false;
+        $helper = Helper::getInstance();
+        /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+        $statusHandler = $helper->getHandler('Status');
         $status        = $statusHandler->get($ticket->getVar('status'));
 
         if (\XHELP_STATE_UNRESOLVED == $status->getVar('state')) {
             return $this->clearPerfImages();
         }
+        return $ret;
     }
 
     /**
@@ -105,10 +111,10 @@ class CacheService extends Service
     }
 
     /**
-     * @param $args
+     * @param array $args
      * @return bool
      */
-    public function batch_status($args): bool
+    public function batch_status(array $args): bool
     {
         return $this->clearPerfImages();
     }
@@ -120,14 +126,14 @@ class CacheService extends Service
     public function clearPerfImages(): bool
     {
         //Remove all cached department queue images
-        $opendir = \opendir($this->_cacheDir);
+        $opendir = \opendir($this->cacheDir);
 
         while (false !== ($file = \readdir($opendir))) {
             if (false === mb_strpos((string)$file, 'xhelp_perf_')) {
                 continue;
             }
 
-            \unlink($this->_cacheDir . '/' . $file);
+            \unlink($this->cacheDir . '/' . $file);
         }
 
         return true;
@@ -135,9 +141,9 @@ class CacheService extends Service
 
     /**
      * Only have 1 instance of class used
-     * @return CacheService {@link CacheService}
+     * @return Service {@link Service}
      */
-    public static function getInstance(): CacheService
+    public static function getInstance(): Service
     {
         static $instance;
         if (null === $instance) {

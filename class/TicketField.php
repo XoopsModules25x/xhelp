@@ -33,12 +33,12 @@ if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
  */
 class TicketField extends \XoopsObject
 {
-    public $_departments = [];
+    public $departments = [];
 
     /**
      * Class Constructor
      *
-     * @param mixed $id null for a new object, hash table for an existing object
+     * @param int|array|null $id null for a new object, hash table for an existing object
      */
     public function __construct($id = null)
     {
@@ -76,24 +76,24 @@ class TicketField extends \XoopsObject
     }
 
     /**
-     * @param $validator
+     * @param Validation\Validator $validator
      */
-    public function addValidator($validator)
+    public function addValidator(Validation\Validator $validator)
     {
     }
 
     /**
-     * @param $val_arr
+     * @param array $val_arr
      */
-    public function setValues($val_arr)
+    public function setValues(array $val_arr)
     {
         $this->setVar('fieldvalues', $val_arr);
     }
 
     /**
-     * @param $val_arr
+     * @param array $val_arr
      */
-    public function addValues($val_arr)
+    public function addValues(array $val_arr)
     {
         if (\is_array($val_arr)) {
             $values = @$this->getVar('fieldvalues');
@@ -108,10 +108,10 @@ class TicketField extends \XoopsObject
     }
 
     /**
-     * @param      $desc
-     * @param null $value
+     * @param string $desc
+     * @param null   $value
      */
-    public function addValue($desc, $value = null)
+    public function addValue(string $desc, $value = null)
     {
         //Add value to array
         $values        = $this->getVar('fieldvalues');
@@ -120,36 +120,37 @@ class TicketField extends \XoopsObject
     }
 
     /**
-     * @param $dept
+     * @param int $dept
      */
-    public function addDepartment($dept)
+    public function addDepartment(int $dept)
     {
-        $dept                      = (int)$dept;
-        $this->_departments[$dept] = $dept;
+        $dept                     = $dept;
+        $this->departments[$dept] = $dept;
     }
 
     /**
-     * @param $dept_arr
+     * @param array $dept_arr
      * @return bool
      */
-    public function addDepartments($dept_arr): ?bool
+    public function addDepartments(array $dept_arr): ?bool
     {
         if (!\is_array($dept_arr) || 0 == \count($dept_arr)) {
             return false;
         }
         foreach ($dept_arr as $dept) {
-            $dept                      = (int)$dept;
-            $this->_departments[$dept] = $dept;
+            $dept                     = (int)$dept;
+            $this->departments[$dept] = $dept;
         }
+        return true;
     }
 
     /**
-     * @param $dept
+     * @param int $dept
      */
-    public function removeDepartment($dept)
+    public function removeDepartment(int $dept)
     {
-        $dept                      = (int)$dept;
-        $this->_departments[$dept] = 0;
+        $dept                     = $dept;
+        $this->departments[$dept] = 0;
     }
 
     /**
@@ -157,13 +158,13 @@ class TicketField extends \XoopsObject
      */
     public function &getDepartments(): array
     {
-        return $this->_departments;
+        return $this->departments;
     }
 
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $arr = [];
 

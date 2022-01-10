@@ -44,7 +44,7 @@ class DepartmentMailBox extends \XoopsObject
     /**
      * Class Constructor
      *
-     * @param mixed $id ID of Mailbox or array containing mailbox info
+     * @param int|array|null $id ID of Mailbox or array containing mailbox info
      */
     public function __construct($id = null)
     {
@@ -152,7 +152,7 @@ class DepartmentMailBox extends \XoopsObject
      * @param string $mboxType
      * @return bool|MailBoxIMAP|MailBoxPOP3|MailBox
      */
-    public function getMailBox($mboxType)
+    public function getMailBox(string $mboxType)
     {
         switch ($mboxType) {
             case \_XHELP_MAILBOXTYPE_IMAP:

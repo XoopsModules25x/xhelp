@@ -34,15 +34,14 @@ xoops_cp_header();
 $moduleDirName      = \basename(\dirname(__DIR__));
 $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
-$adminObject = Admin::getInstance();
+$adminObject  = Admin::getInstance();
 $configurator = new Configurator();
-
 
 $modStats    = [];
 $moduleStats = $utility::getModuleStats($configurator);
 
 $adminObject->addInfoBox(constant('CO_' . $moduleDirNameUpper . '_' . 'STATS_SUMMARY'));
-if (is_array($moduleStats)  && count($moduleStats) > 0) {
+if (is_array($moduleStats) && count($moduleStats) > 0) {
     foreach ($moduleStats as $key => $value) {
         switch ($key) {
             case 'totaldepartments':
@@ -88,7 +87,6 @@ if (is_array($moduleStats)  && count($moduleStats) > 0) {
         }
     }
 }
-
 
 $adminObject->displayNavigation(basename(__FILE__));
 

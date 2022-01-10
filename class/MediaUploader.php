@@ -12,7 +12,6 @@ namespace XoopsModules\Xhelp;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-
 /**
  * @copyright    XOOPS Project (https://xoops.org)
  * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
@@ -107,25 +106,25 @@ class MediaUploader
      * @param int       $maxHeight
      * @internal param int $cmodvalue
      */
-    public function __construct($uploadDir, $allowedMimeTypes, $maxFileSize, $maxWidth = 0, $maxHeight = 0)
+    public function __construct(string $uploadDir, $allowedMimeTypes, int $maxFileSize, int $maxWidth = 0, int $maxHeight = 0)
     {
         if (\is_array($allowedMimeTypes)) {
             $this->allowedMimeTypes = &$allowedMimeTypes;
         }
         $this->uploadDir   = $uploadDir;
-        $this->maxFileSize = (int)$maxFileSize;
+        $this->maxFileSize = $maxFileSize;
         if (null !== $maxWidth) {
-            $this->maxWidth = (int)$maxWidth;
+            $this->maxWidth = $maxWidth;
         }
         if (null !== $maxHeight) {
-            $this->maxHeight = (int)$maxHeight;
+            $this->maxHeight = $maxHeight;
         }
     }
 
     /**
-     * @param $value
+     * @param string $value
      */
-    public function noAdminSizeCheck($value)
+    public function noAdminSizeCheck(string $value)
     {
         $this->noadmin_sizecheck = $value;
     }
@@ -138,7 +137,7 @@ class MediaUploader
      * @return bool
      * @global       $HTTP_POST_FILES
      */
-    public function fetchMedia($media_name, $index = null): bool
+    public function fetchMedia(string $media_name, $index = null): bool
     {
         global $_FILES;
 
@@ -173,7 +172,7 @@ class MediaUploader
 
             return false;
         }
-        if ('' == $this->mediaName) {
+        if ('' === $this->mediaName) {
             $this->setErrors('Filename Is Empty');
 
             return false;
@@ -243,7 +242,7 @@ class MediaUploader
      *
      * @param string $value
      */
-    public function setTargetFileName($value)
+    public function setTargetFileName(string $value)
     {
         $this->targetFileName = \trim($value);
     }
@@ -253,7 +252,7 @@ class MediaUploader
      *
      * @param string $value
      */
-    public function setPrefix($value)
+    public function setPrefix(string $value)
     {
         $this->prefix = \trim($value);
     }
@@ -324,9 +323,9 @@ class MediaUploader
      * @param int $chmod
      * @return bool
      */
-    public function upload($chmod = 0644): bool
+    public function upload(int $chmod = 0644): bool
     {
-        if ('' == $this->uploadDir) {
+        if ('' === $this->uploadDir) {
             $this->setErrors('Upload directory not set');
 
             return false;
@@ -371,10 +370,10 @@ class MediaUploader
     /**
      * Copy the file to its destination
      *
-     * @param $chmod
+     * @param int $chmod
      * @return bool
      */
-    public function _copyFile($chmod): bool
+    public function _copyFile(int $chmod): bool
     {
         $matched = [];
         if (!\preg_match('/\.([a-zA-Z0-9]+)$/', $this->mediaName, $matched)) {
@@ -422,10 +421,10 @@ class MediaUploader
     /**
      * Is the picture the right width?
      *
-     * @param $dimension
+     * @param int $dimension
      * @return bool
      */
-    public function checkMaxWidth($dimension): bool
+    public function checkMaxWidth(int $dimension): bool
     {
         if (null === $this->maxWidth) {
             return true;
@@ -440,10 +439,10 @@ class MediaUploader
     /**
      * Is the picture the right height?
      *
-     * @param $dimension
+     * @param int $dimension
      * @return bool
      */
-    public function checkMaxHeight($dimension): bool
+    public function checkMaxHeight(int $dimension): bool
     {
         if (null === $this->maxHeight) {
             return true;
@@ -476,7 +475,7 @@ class MediaUploader
      *
      * @param string $error
      */
-    public function setErrors($error)
+    public function setErrors(string $error)
     {
         $this->errors[] = \trim($error);
     }
@@ -487,7 +486,7 @@ class MediaUploader
      * @param bool $ashtml Format using HTML?
      * @return array |string    Array of array messages OR HTML string
      */
-    public function &getErrors($ashtml = true)
+    public function &getErrors(bool $ashtml = true)
     {
         if (!$ashtml) {
             return $this->errors;

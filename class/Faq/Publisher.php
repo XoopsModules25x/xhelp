@@ -74,7 +74,7 @@ class Publisher extends Xhelp\FaqAdapterAbstract
     public function __construct()
     {
         if (\class_exists(AdapterHelper::class)) {
-            $this->helper = AdapterHelper::getInstance();
+            $this->helper  = AdapterHelper::getInstance();
             $this->dirname = $this->helper->dirname();
         }
         // Every class should call parent::init() to ensure that all class level
@@ -88,20 +88,22 @@ class Publisher extends Xhelp\FaqAdapterAbstract
      */
     public function &getCategories()
     {
-//        if (!\class_exists('XoopsModules\Publisher\Helper')) {
-//            return false;
-//        }
-        if (null !== $this->helper) {
-            return false;
+        $ret = false;
+        //        if (!\class_exists('XoopsModules\Publisher\Helper')) {
+        //            return false;
+        //        }
+        if (null === $this->helper) {
+            return $ret;
         }
 
-        $ret = [];
+        $ret    = [];
+        $helper = Xhelp\Helper::getInstance();
         // Create an instance of the Xhelp\FaqCategoryHandler
-        $faqCategoryHandler = new Xhelp\FaqCategoryHandler($GLOBALS['xoopsDB']);
+        $faqCategoryHandler = $helper->getHandler('FaqCategory');
 
         // Get all the categories for the application
         $publisherCategoryHandler = $this->helper->getHandler('Category');
-        $categories                  = $publisherCategoryHandler->getCategories(0, 0, -1);
+        $categories               = $publisherCategoryHandler->getCategories(0, 0, -1);
 
         //Convert the module specific category to the
         //Xhelp\FaqCategory object for standarization
@@ -120,33 +122,33 @@ class Publisher extends Xhelp\FaqAdapterAbstract
 
     /**
      * storeFaq: store the FAQ in the application's specific database (required)
-     * @param null $faq The faq to add
+     * @param Xhelp\Faq|null $faq The faq to add
      * @return bool     true (success) / false (failure)
      */
-    public function storeFaq($faq = null)
+    public function storeFaq(Xhelp\Faq $faq = null): bool
     {
         global $xoopsUser, $publisher_itemHandler;
 
         $uid = $xoopsUser->getVar('uid');
 
-//        if (!\class_exists('XoopsModules\Publisher\Helper')) {
-//            return false;
-//        }
-        if (null !== $this->helper) {
+        //        if (!\class_exists('XoopsModules\Publisher\Helper')) {
+        //            return false;
+        //        }
+        if (null === $this->helper) {
             return false;
         }
 
         $this->helper->loadLanguage('admin');
 
-        //fix for smartsectionItem::store assuming that publisher handlers are globalized
-        $GLOBALS['smartsection_itemHandler']     = $this->helper->getHandler('Item');
-        $GLOBALS['smartsection_categoryHandler'] =$this->helper->getHandler('Category');
+        //fix for publisherItem::store assuming that publisher handlers are globalized //TODO MB adjust for Publisher
+        $publisherItemHandler     = $this->helper->getHandler('Item');
+        $publisherCategoryHandler = $this->helper->getHandler('Category');
 
         //        $ssConfig = XoopsModules\Publisher\Utility::getModuleConfig();
 
         // Create page in publisher from Xhelp\Faq object
-        $publisherItemHandler = $this->helper->getHandler('Item');
-        $itemObj                 = $publisherItemHandler->create();
+        /** @var \XoopsModules\Publisher\Item $itemObj */
+        $itemObj = $publisherItemHandler->create();
 
         //$faq->getVar('categories') is an array. If your application
         //only supports single categories use the first element
@@ -170,7 +172,7 @@ class Publisher extends Xhelp\FaqAdapterAbstract
         $itemObj->setVar('datesub', \time());
 
         // Setting the status of the item
-        if ($this->_articleNeedsApproval()) {
+        if ($this->articleNeedsApproval()) {
             $itemObj->setVar('status', Constants::PUBLISHER_STATUS_SUBMITTED);
         } else {
             $itemObj->setVar('status', Constants::PUBLISHER_STATUS_PUBLISHED);
@@ -182,10 +184,7 @@ class Publisher extends Xhelp\FaqAdapterAbstract
             $faq->setVar('id', $itemObj->getVar('itemid'));
             $faq->setVar('url', $this->makeFaqUrl($faq));
 
-            if (!$this->_articleNeedsApproval()) {
-                // Send notifications
-                $itemObj->sendNotifications([_AM_PUBLISHER_NOITEMS]);
-            } else {
+            if ($this->articleNeedsApproval()) {
                 if (\XHELP_SSECTION_NOTIFYPUB) {
                     require_once XOOPS_ROOT_PATH . '/include/notification_constants.php';
                     /** @var \XoopsNotificationHandler $notificationHandler */
@@ -193,7 +192,10 @@ class Publisher extends Xhelp\FaqAdapterAbstract
                     $notificationHandler->subscribe('item', $itemObj->itemid(), 'approved', \XOOPS_NOTIFICATION_MODE_SENDONCETHENDELETE);
                 }
                 // Send notifications
-                $itemObj->sendNotifications([_AM_PUBLISHER_NOITEMS_SUBMITTED]);
+                $itemObj->sendNotifications([\_AM_PUBLISHER_NOITEMS_SUBMITTED]);
+            } else {
+                // Send notifications
+                $itemObj->sendNotifications([\_AM_PUBLISHER_NOITEMS]);
             }
         }
 
@@ -203,7 +205,7 @@ class Publisher extends Xhelp\FaqAdapterAbstract
     /**
      * Create the url going to the faq article
      *
-     * @param Xhelp\Faq $faq object
+     * @param \XoopsModules\Xhelp\Xhelp\Faq $faq
      * @return string
      */
     public function makeFaqUrl($faq): string
@@ -214,10 +216,10 @@ class Publisher extends Xhelp\FaqAdapterAbstract
     /**
      * @return bool
      */
-    public function _articleNeedsApproval(): bool
+    private function articleNeedsApproval(): bool
     {
-//        $publisherHelper = XoopsModules\Publisher\Helper::getInstance();
-        return (\XHELP_SSECTION_FORCEAPPROVAL == 2 && 0 == $this->helper->getConfig('perm_autoapprove'))
+        //        $publisherHelper = XoopsModules\Publisher\Helper::getInstance();
+        return (\XHELP_SSECTION_FORCEAPPROVAL == 2 && 0 === $this->helper->getConfig('perm_autoapprove'))
                || \XHELP_SSECTION_FORCEAPPROVAL == 1;
     }
 }

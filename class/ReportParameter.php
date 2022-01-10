@@ -16,13 +16,14 @@ if (!\defined('XHELP_CLASS_PATH')) {
 class ReportParameter
 {
     public $controltype;
-    public $name;
+    public $dbaction;
+    public $dbfield;
+    public $fieldlength;
     public $fieldname;
+    public $maxlength;
+    public $name;
     public $value;
     public $values;
-    public $fieldlength;
-    public $dbfield;
-    public $dbaction;
 
     /**
      * ReportParameter constructor.
@@ -58,7 +59,7 @@ class ReportParameter
      *
      * @return object {@link ReportParameter}
      */
-    public static function addParam($controltype, $name, $fieldname, $value, $values, $fieldlength, $dbfield, $dbaction)
+    public static function addParam(int $controltype, string $name, string $fieldname, string $value, array $values, int $fieldlength, string $dbfield, string $dbaction)
     {
         $param              = self::create();
         $param->controltype = $controltype;
@@ -80,17 +81,17 @@ class ReportParameter
      * @param array $vals
      * @return string
      */
-    public function displayParam($vals = []): ?string
+    public function displayParam(array $vals = []): ?string
     {
         $controltype = $this->controltype;
         $fieldlength = $this->maxlength;
 
         if (!empty($vals) && isset($vals[$this->fieldname])) {
-            if (!\is_array($vals[$this->fieldname])) {
-                $this->value = $vals[$this->fieldname];
-            } else {
+            if (\is_array($vals[$this->fieldname])) {
                 $this->values = $vals[$this->fieldname][0];
                 $this->value  = $vals[$this->fieldname][1];
+            } else {
+                $this->value = $vals[$this->fieldname];
             }
         }
 

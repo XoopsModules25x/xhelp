@@ -33,11 +33,11 @@ class MailBoxPOP3 extends MailBox
 
     /**
      * Connect to mailbox
-     * @param mixed $server
-     * @param mixed $port
+     * @param string $server
+     * @param int    $port
      * @return bool
      */
-    public function connect($server, $port = 110)
+    public function connect(string $server, int $port = 110): bool
     {
         if ($this->_pop3->connect($server, $port)) {
             return true;
@@ -48,11 +48,11 @@ class MailBoxPOP3 extends MailBox
 
     /**
      * Send Authentication Credentials to mail server
-     * @param mixed $username
-     * @param mixed $password
+     * @param string $username
+     * @param string $password
      * @return bool
      */
-    public function login($username, $password)
+    public function login(string $username, string $password): bool
     {
         if (!PEAR::isError($this->_pop3->login($username, $password, false))) {
             return true;
@@ -65,30 +65,30 @@ class MailBoxPOP3 extends MailBox
      * Number of messages on server
      * @return int Number of messages
      */
-    public function messageCount()
+    public function messageCount(): int
     {
         return $this->_pop3->numMsg();
     }
 
     /**
      * Get Headers for message
-     * @param $i
+     * @param int $i
      * @return bool|string|void
      * @internal param Message $msg_id number
      *                 Either raw headers or false on error
      */
-    public function getHeaders($i)
+    public function getHeaders(int $i)
     {
         return $this->_pop3->getRawHeaders($i);
     }
 
     /**
      * Get Message Body
-     * @param $i
+     * @param int $i
      * @return mixed Either message body or false on error
      * @internal param Message $msg_id number
      */
-    public function getBody($i)
+    public function getBody(int $i)
     {
         return $this->_pop3->getBody($i);
     }
@@ -96,11 +96,11 @@ class MailBoxPOP3 extends MailBox
     /**
      * Returns the entire message with given message number.
      *
-     * @param $i
+     * @param int $i
      * @return mixed Either entire message or false on error
      * @internal param Message $msg_id number
      */
-    public function getMsg($i)
+    public function getMsg(int $i)
     {
         return $this->_pop3->getMsg($i);
     }
@@ -109,11 +109,11 @@ class MailBoxPOP3 extends MailBox
      * Marks a message for deletion. Only will be deleted if the
      * disconnect() method is called.
      *
-     * @param $i
+     * @param int $i
      * @return bool Success/Failure
      * @internal param Message $msg_id to delete
      */
-    public function deleteMessage($i)
+    public function deleteMessage(int $i): bool
     {
         return $this->_pop3->deleteMsg($i);
     }
@@ -124,7 +124,7 @@ class MailBoxPOP3 extends MailBox
      *
      * @return bool Success/Failure
      */
-    public function disconnect()
+    public function disconnect(): bool
     {
         return $this->_pop3->disconnect();
     }

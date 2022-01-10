@@ -3,14 +3,16 @@
 namespace XoopsModules\Xhelp\Reports;
 
 use XoopsModules\Xhelp;
+use Amenadiel\JpGraph\Plot;
+use Amenadiel\JpGraph\Graph;
 
-require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
+//require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
 // require_once XHELP_CLASS_PATH . '/report.php';
-Xhelp\Utility::includeReportLangFile('ticketsByDept');
+Xhelp\Utility::includeReportLangFile('reports/ticketsByDept');
 
 global $xoopsDB, $paramVals;
 
-$startDate = \date('m/d/y h:i:s A', \mktime(0, 0, 0, \date('m') - 1, \date('d'), \date('Y')));
+$startDate = \date('m/d/y h:i:s A', \mktime(0, 0, 0, \date('m') - 1, (int)\date('d'), (int)\date('Y')));
 $endDate   = \date('m/d/y') . ' 12:00:00 AM';
 
 // Cannot fill date values in class...have to fill these values later
@@ -35,7 +37,7 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name       = 'ticketsByDept';
+    public $name       = 'ticketsByDeptReport';
     public $meta       = [
         'name'        => \_XHELP_TBD_NAME,
         'author'      => 'Eric Juden',
@@ -73,7 +75,7 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
      global $paramVals;
 
      if ($this->getVar('hasResults') == 0) {
-     $this->_setResults();
+     $this->setResults();
      }
      $aResults = $this->getVar('results');
 
@@ -135,7 +137,7 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
     public function generateGraph()
     {
         if (0 == $this->getVar('hasResults')) {
-            $this->_setResults();
+            $this->setResults();
         }
 
         $aResults = $this->getVar('results');
@@ -146,19 +148,22 @@ class TicketsByDeptReport extends Xhelp\Reports\Report
             $data[0][] = $result['department'];
             $data[1][] = $result['TicketCount'];
         }
-        $this->generatePie3D($data, 0, 1, \XHELP_IMAGE_PATH . '/graph_bg.jpg');
+        if (\count($data) > 0) {
+            //        $this->generatePie3D($data, 0, 1, \XHELP_IMAGE_PATH . '/graph_bg.jpg');
+            $this->generatePie3D($data, 0, 1, true);
+        }
     }
 
     /**
      * @return bool
      */
-    public function _setResults()
+    public function setResults(): bool
     {
         global $xoopsDB;
         $sSQL = \sprintf('SELECT DISTINCT d.department, COUNT(*) AS TicketCount FROM `%s` t, %s d WHERE t.department = d.id AND (d.id = t.department) %s GROUP BY d.department', $xoopsDB->prefix('xhelp_tickets'), $xoopsDB->prefix('xhelp_departments'), $this->extraWhere);
 
         $result   = $xoopsDB->query($sSQL);
-        $aResults = $this->_arrayFromData($result);
+        $aResults = $this->arrayFromData($result);
         $this->setVar('results', \serialize($aResults));
         $this->setVar('hasResults', 1);
 

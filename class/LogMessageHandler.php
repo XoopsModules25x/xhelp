@@ -44,7 +44,7 @@ class LogMessageHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_logmessages';
+    public $dbtable = 'xhelp_logmessages';
 
     /**
      * Constructor
@@ -57,44 +57,46 @@ class LogMessageHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('INSERT INTO `%s` (id, uid, ticketid, lastUpdated, ACTION) VALUES (%u, %u, %u, %u, %s)', $this->_db->prefix($this->_dbtable), $id, $uid, $ticketid, \time(), $this->_db->quoteString($action));
+        $sql = \sprintf('INSERT INTO `%s` (id, uid, ticketid, lastUpdated, ACTION) VALUES (%u, %u, %u, %u, %s)', $this->db->prefix($this->dbtable), $id, $uid, $ticketid, \time(), $this->db->quoteString($action));
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('UPDATE `%s` SET uid = %u, ticketid = %u, lastUpdated = %u, ACTION = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $ticketid, \time(), $this->_db->quoteString($action), $id);
+        $sql = \sprintf('UPDATE `%s` SET uid = %u, ticketid = %u, lastUpdated = %u, ACTION = %s WHERE id = %u', $this->db->prefix($this->dbtable), $uid, $ticketid, \time(), $this->db->quoteString($action), $id);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->idfield));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar($this->idfield));
 
         return $sql;
     }

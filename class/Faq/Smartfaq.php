@@ -3,6 +3,7 @@
 namespace XoopsModules\Xhelp\Faq;
 
 use XoopsModules\Smartfaq\Helper as AdapterHelper;
+use XoopsModules\Smartfaq\Constants as AdapterConstants;
 use XoopsModules\Xhelp;
 
 //Sanity Check: make sure that file is not being accessed directly
@@ -64,7 +65,7 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
         // Every class should call parent::init() to ensure that all class level
         // variables are initialized properly.
         if (\class_exists(AdapterHelper::class)) {
-            $this->helper = AdapterHelper::getInstance();
+            $this->helper  = AdapterHelper::getInstance();
             $this->dirname = $this->helper->dirname();
         }
         parent::init();
@@ -76,18 +77,19 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
      */
     public function &getCategories()
     {
-//        if (!\class_exists('XoopsModules\Smartfaq\Helper')) {
-//            return false;
-//        }
+        $ret = false;
+        //        if (!\class_exists('XoopsModules\Smartfaq\Helper')) {
+        //            return false;
+        //        }
 
-        if (null !== $this->helper) {
-            return false;
+        if (null === $this->helper) {
+            return $ret;
         }
-
 
         $ret = [];
         // Create an instance of the Xhelp\FaqCategoryHandler
-        $faqCategoryHandler = Xhelp\Helper::getInstance()->getHandler('FaqCategory');
+        $faqCategoryHandler = Xhelp\Helper::getInstance()
+            ->getHandler('FaqCategory');
 
         // Get all the categories for the application
         $smartfaqCategoryHandler = $this->helper->getHandler('Category');
@@ -112,14 +114,16 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
      * @param Xhelp\Faq|null $faq The faq to add
      * @return bool     true (success) / false (failure)
      */
-    public function storeFaq($faq = null)
+    public function storeFaq(Xhelp\Faq $faq = null): bool
     {
         global $xoopsUser;
         $uid = $xoopsUser->getVar('uid');
 
         // Take Xhelp\Faq and create faq for smartfaq
-        $faqHandler    = Xhelp\Helper::getInstance()->getHandler('Faq');
-        $answerHandler = Xhelp\Helper::getInstance()->getHandler('Answer');
+        $faqHandler    = Xhelp\Helper::getInstance()
+            ->getHandler('Faq');
+        $answerHandler = Xhelp\Helper::getInstance()
+            ->getHandler('Answer');
         $myFaq         = $faqHandler->create();
         $myAnswer      = $answerHandler->create();            // Creating the answer object
 
@@ -133,7 +137,7 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
         $myFaq->setVar('question', $faq->getVar('problem'));
         $myFaq->setVar('datesub', \time());
         $myFaq->setVar('categoryid', $categories);
-        $myFaq->setVar('status', _SF_STATUS_PUBLISHED);
+        $myFaq->setVar('status', AdapterConstants::SF_STATUS_PUBLISHED);
 
         $ret = $faqHandler->insert($myFaq);
         $faq->setVar('id', $myFaq->getVar('faqid'));
@@ -141,7 +145,7 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
         if ($ret) {   // If faq was stored, store answer
             // Trigger event for question being stored
 
-            $myAnswer->setVar('status', _SF_AN_STATUS_APPROVED);
+            $myAnswer->setVar('status', AdapterConstants::SF_AN_STATUS_APPROVED);
             $myAnswer->setVar('faqid', $myFaq->faqid());
             $myAnswer->setVar('answer', $faq->getVar('solution'));
             $myAnswer->setVar('uid', $uid);
@@ -154,7 +158,7 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
             $faq->setVar('url', $this->makeFaqUrl($faq));
 
             // Trigger any module events
-            $myFaq->sendNotifications([_SF_NOT_FAQ_PUBLISHED]);
+            $myFaq->sendNotifications([AdapterConstants::SF_NOT_FAQ_PUBLISHED]);
         }
 
         return $ret;
@@ -166,7 +170,7 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
      * @param Xhelp\Faq $faq object
      * @return string
      */
-    public function makeFaqUrl($faq): string
+    public function makeFaqUrl(Xhelp\Faq $faq): string
     {
         return $this->helper->url('/faq.php?faqid=' . $faq->getVar('id'));
     }

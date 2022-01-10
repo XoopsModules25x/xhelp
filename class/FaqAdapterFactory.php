@@ -78,9 +78,9 @@ class FaqAdapterFactory
     {
         // Step 1 - Retrieve configured faq application
         $ret = null;
-        if ('' == $name) {
+        if ('' === $name) {
             $name = Utility::getMeta('faq_adapter');
-            if ('' == $name) {
+            if ('' === $name) {
                 return $ret;
             }
         }
@@ -90,10 +90,10 @@ class FaqAdapterFactory
 
         if ($isValid) {
             // Step 2 - include script with faq adapter class
-//            require_once \XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php';
+            //            require_once \XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php';
 
             // Step 3 - create instance of adapter class
-//            $classname = 'xhelp' . $name . 'Adapter';
+            //            $classname = 'xhelp' . $name . 'Adapter';
             $classname = __NAMESPACE__ . '\Faq\\' . \ucfirst($name);
             if (!\class_exists($classname)) {
                 throw new \RuntimeException("Class '$classname' not found");
@@ -111,10 +111,10 @@ class FaqAdapterFactory
     /**
      * Set an FaqAdapterAbstract class
      *
-     * @param $name
+     * @param string $name
      * @return bool true (success) / false (failure)
      */
-    public static function setFaqAdapter($name): bool
+    public static function setFaqAdapter(string $name): bool
     {
         // Step 1 - check that $name is a valid adapter
         $isValid = self::isAdapterValid($name);
@@ -132,24 +132,22 @@ class FaqAdapterFactory
     /**
      * Check if an adapter exists
      *
-     * @param $name
+     * @param string $name
      * @return bool true (success) / false (failure)
      */
-    public static function isAdapterValid($name): bool
+    public static function isAdapterValid(string $name): bool
     {
         $ret = false;
         // Step 0 - Make sure this is a valid file
         if (\is_file(\XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php')) {
             // Step 1 - create instance of faq adapter class
-//            if (require_once \XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php') {
-//                $classname = 'xhelp' . $name . 'Adapter';
-//                $oAdapter  = new $classname();
-//
-//                // Step 2 - run isActive inside of adapter class
-//                $ret = $oAdapter->isActive($oAdapter->meta['module_dir']);
-//            }
-
-
+            //            if (require_once \XHELP_FAQ_ADAPTER_PATH . '/' . $name . '.php') {
+            //                $classname = 'xhelp' . $name . 'Adapter';
+            //                $oAdapter  = new $classname();
+            //
+            //                // Step 2 - run isActive inside of adapter class
+            //                $ret = $oAdapter->isActive($oAdapter->meta['module_dir']);
+            //            }
 
             $class = __NAMESPACE__ . '\Faq\\' . \ucfirst($name);
             if (\class_exists($class)) {
@@ -159,11 +157,6 @@ class FaqAdapterFactory
                     $ret = $oAdapter->isActive($oAdapter->meta['module_dir']);
                 }
             }
-
-
-
-
-
         }
 
         // Step 3 - return value

@@ -26,14 +26,16 @@ use XoopsModules\Xhelp;
 class WebLib
 {
     /**
-     * @param $deptid
+     * @param int $deptid
      * @return array
      */
-    public function customFieldsByDept($deptid): array
+    public function customFieldsByDept(int $deptid): array
     {
-        $deptid                      = (int)$deptid;
-        $tickefielddepartmentHandler = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
-        $fields                      = &$tickefielddepartmentHandler->fieldsByDepartment($deptid);
+        $deptid = $deptid;
+        /** @var \XoopsModules\Xhelp\TicketFieldDepartmentHandler $ticketFieldDepartmentHandler */
+        $ticketFieldDepartmentHandler = Xhelp\Helper::getInstance()
+            ->getHandler('TicketFieldDepartment');
+        $fields                       = $ticketFieldDepartmentHandler->fieldsByDepartment($deptid);
 
         $aFields = [];
         foreach ($fields as $field) {
@@ -44,18 +46,22 @@ class WebLib
     }
 
     /**
-     * @param $deptid
-     * @param $ticketid
+     * @param int $deptid
+     * @param int $ticketid
      * @return array
      */
-    public function editTicketCustFields($deptid, $ticketid): array
+    public function editTicketCustFields(int $deptid, int $ticketid): array
     {
-        $deptid                      = (int)$deptid;
-        $tickefielddepartmentHandler = Xhelp\Helper::getInstance()->getHandler('TicketFieldDepartment');
-        $ticketHandler               = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        $ticket                      = $ticketHandler->get($ticketid);
-        $custValues                  = $ticket->getCustFieldValues();
-        $fields                      = $tickefielddepartmentHandler->fieldsByDepartment($deptid);
+        $deptid = $deptid;
+        /** @var \XoopsModules\Xhelp\TicketFieldDepartmentHandler $ticketFieldDepartmentHandler */
+        $ticketFieldDepartmentHandler = Xhelp\Helper::getInstance()
+            ->getHandler('TicketFieldDepartment');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Xhelp\Helper::getInstance()
+            ->getHandler('Ticket');
+        $ticket        = $ticketHandler->get($ticketid);
+        $custValues    = $ticket->getCustFieldValues();
+        $fields        = $ticketFieldDepartmentHandler->fieldsByDepartment($deptid);
 
         $aFields = [];
         foreach ($fields as $field) {
@@ -69,16 +75,18 @@ class WebLib
     }
 
     /**
-     * @param $deptid
+     * @param int $deptid
      * @return array
      */
-    public function staffByDept($deptid): array
+    public function staffByDept(int $deptid): array
     {
         $mc    = Xhelp\Utility::getModuleConfig();
         $field = 1 == $mc['xhelp_displayName'] ? 'uname' : 'name';
 
-        $deptid            = (int)$deptid;
-        $membershipHandler = Xhelp\Helper::getInstance()->getHandler('Membership');
+        $deptid = $deptid;
+        /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+        $membershipHandler = Xhelp\Helper::getInstance()
+            ->getHandler('Membership');
         $staff             = $membershipHandler->xoopsUsersByDept($deptid);
 
         $aStaff   = [];

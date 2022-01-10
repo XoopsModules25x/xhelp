@@ -3,9 +3,10 @@
 use Xmf\Module\Admin;
 use Xmf\Request;
 use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\Helper;
 
 require_once __DIR__ . '/admin_header.php';
-require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+xoops_load('XoopsPagenav');
 require_once XOOPS_ROOT_PATH . '/class/xoopsformloader.php';
 // require_once XHELP_CLASS_PATH . '/Form.php';
 // require_once XHELP_CLASS_PATH . '/FormRegex.php';
@@ -44,13 +45,19 @@ switch ($op) {
         break;
 }
 
+/**
+ *
+ */
 function manageFields()
 {
     global $imagearray;
+    $helper = Helper::getInstance();
+    $errors = [];
 
-    $session            = Xhelp\Session::getInstance();
-    $regex_array        = &getRegexArray();
-    $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+    $session     = Xhelp\Session::getInstance();
+    $regex_array = &getRegexArray();
+    /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+    $ticketFieldHandler = $helper->getHandler('TicketField');
 
     $start = $limit = 0;
 
@@ -66,15 +73,127 @@ function manageFields()
         $limit = 15;
     }
 
-    if (!isset($_POST['addField'])) {
+    if (isset($_POST['addField'])) {
+        //Validate Field Information
+        $has_errors = false;
+        /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+        $ticketFieldHandler = $helper->getHandler('TicketField');
+
+        $values = parseValues($_POST['fld_values']);
+
+        if (!$control = xhelpGetControl($_POST['fld_controltype'])) {
+            $has_errors                  = true;
+            $errors['fld_controltype'][] = _AM_XHELP_VALID_ERR_CONTROLTYPE;
+        }
+
+        $fld_needslength = $control['needs_length'];
+        $fld_needsvalues = $control['needs_values'];
+
+        //name field filled?
+        if ('' === trim($_POST['fld_name'])) {
+            $has_errors           = true;
+            $errors['fld_name'][] = _AM_XHELP_VALID_ERR_NAME;
+        }
+
+        $fld_fieldname = sanitizeFieldName(\Xmf\Request::getString('fld_fieldname', '', 'POST'));
+
+        //fieldname filled
+        if ('' === trim($fld_fieldname)) {
+            $has_errors                = true;
+            $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME;
+        }
+
+        //fieldname unique?
+        $criteria = new \CriteriaCompo(new \Criteria('fieldname', $fld_fieldname));
+        if ($ticketFieldHandler->getCount($criteria)) {
+            $has_errors                = true;
+            $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME_UNIQUE;
+        }
+
+        //Length filled
+        if (0 == Request::getInt('fld_length', 0, 'POST') && true === $fld_needslength) {
+            $has_errors             = true;
+            $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, 2, 16777215);
+        }
+
+        //Departments Chosen?
+
+        //default value in value set?
+        if (count($values)) {
+            if (!in_array($_POST['fld_defaultvalue'], $values)
+                && !array_key_exists($_POST['fld_defaultvalue'], $values)) {
+                $has_errors                   = true;
+                $errors['fld_defaultvalue'][] = _AM_XHELP_VALID_ERR_DEFAULTVALUE;
+            }
+
+            //length larger than longest value?
+            $length = Request::getInt('fld_length', 0, 'POST');
+            foreach ($values as $key => $value) {
+                if (mb_strlen($key) > $length) {
+                    $has_errors             = true;
+                    $errors['fld_values'][] = sprintf(_AM_XHELP_VALID_ERR_VALUE_LENGTH, htmlentities($key, ENT_QUOTES | ENT_HTML5), $length);
+                }
+            }
+            //Values are all of the correct datatype?
+        } elseif ($fld_needsvalues) {
+            $has_errors             = true;
+            $errors['fld_values'][] = _AM_XHELP_VALID_ERR_VALUE;
+        }
+
+        if ($has_errors) {
+            $afield = [];
+
+            $afield['name']         = \Xmf\Request::getString('fld_name', '', 'POST');
+            $afield['description']  = \Xmf\Request::getString('fld_description', '', 'POST');
+            $afield['fieldname']    = $fld_fieldname;
+            $afield['departments']  = $_POST['fld_departments'];
+            $afield['controltype']  = $_POST['fld_controltype'];
+            $afield['datatype']     = $_POST['fld_datatype'];
+            $afield['required']     = $_POST['fld_required'];
+            $afield['weight']       = $_POST['fld_weight'];
+            $afield['defaultvalue'] = $_POST['fld_defaultvalue'];
+            $afield['values']       = $_POST['fld_values'];
+            $afield['length']       = $_POST['fld_length'];
+            $afield['validation']   = ($_POST['fld_valid_select'] == $_POST['fld_valid_txtbox'] ? $_POST['fld_valid_select'] : $_POST['fld_valid_txtbox']);
+            $session->set('xhelp_addField', $afield);
+            $session->set('xhelp_addFieldErrors', $errors);
+            $helper->redirect('admin/fields.php');
+        }
+
+        //Save field
+        /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+        $ticketFieldHandler = $helper->getHandler('TicketField');
+        /** @var \XoopsModules\Xhelp\TicketField $ticketField */
+        $ticketField = $ticketFieldHandler->create();
+        $ticketField->setVar('name', \Xmf\Request::getString('fld_name', '', 'POST'));
+        $ticketField->setVar('description', \Xmf\Request::getString('fld_description', '', 'POST'));
+        $ticketField->setVar('fieldname', $fld_fieldname);
+        $ticketField->setVar('controltype', $_POST['fld_controltype']);
+        $ticketField->setVar('datatype', $_POST['fld_datatype']);
+        $ticketField->setVar('fieldlength', $_POST['fld_length']);
+        $ticketField->setVar('required', $_POST['fld_required']);
+        $ticketField->setVar('weight', $_POST['fld_weight']);
+        $ticketField->setVar('defaultvalue', $_POST['fld_defaultvalue']);
+        $ticketField->setVar('validation', ($_POST['fld_valid_select'] == $_POST['fld_valid_txtbox'] ? $_POST['fld_valid_select'] : $_POST['fld_valid_txtbox']));
+        $ticketField->addValues($values);
+        $ticketField->addDepartments($_POST['fld_departments']);
+
+        if ($ticketFieldHandler->insert($ticketField)) {
+            clearAddSessionVars();
+            $helper->redirect('admin/fields.php', 3, _AM_XHELP_MSG_FIELD_ADD_OK);
+        } else {
+            $errors = $ticketField->getHtmlErrors();
+            $helper->redirect('admin/fields.php', 3, _AM_XHELP_MSG_FIELD_ADD_ERR . $errors);
+        }
+    } else {
         $criteria = new \Criteria('', '');
         $criteria->setLimit($limit);
         $criteria->setStart($start);
         $criteria->setSort('weight');
         $criteria->setOrder('ASC');
 
-        $count  = $ticketFieldHandler->getCount($criteria);
-        $fields = $ticketFieldHandler->getObjects($criteria);
+        $count       = $ticketFieldHandler->getCount($criteria);
+        $fieldsArray = $ticketFieldHandler->getObjects($criteria);
 
         //Display List of Current Fields, form for new field
         xoops_cp_header();
@@ -103,7 +222,7 @@ function manageFields()
                 'id'          => 0,
             ];
 
-            foreach ($fields as $field) {
+            foreach ($fieldsArray as $field) {
                 $req_link_params['id'] = $field->getVar('id');
 
                 if ($field->getVar('required')) {
@@ -123,7 +242,7 @@ function manageFields()
                     <td>' . $field->getVar('name') . '</td>
                     <td>' . $field->getVar('description') . '</td>
                     <td>' . $field->getVar('fieldname') . '</td>
-                    <td>' . xhelpGetControlLabel($field->getVar('controltype')) . "</td>
+                    <td>' . xhelpGetControlLabel((string)$field->getVar('controltype')) . "</td>
                     <td><a href='" . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', $req_link_params) . "' title='$req_title'>$req_img</a></td>
                     <td><a href='$edit_url'>" . ($imagearray['editimg'] ?? '') . "</a>
                         <a href='$del_url'>" . ($imagearray['deleteimg'] ?? '') . '</a></td>
@@ -138,7 +257,8 @@ function manageFields()
         $field_info   = $session->get('xhelp_addField');
         $field_errors = $session->get('xhelp_addFieldErrors');
 
-        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+        $departmentHandler = $helper->getHandler('Department');
         $depts             = $departmentHandler->getObjects();
         $deptarr           = [];
 
@@ -254,12 +374,131 @@ function manageFields()
         echo $form->render();
 
         require_once __DIR__ . '/admin_footer.php';
-    } else {
-        //Validate Field Information
-        $has_errors         = false;
-        $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+    }
+}
 
-        $values = parseValues($_POST['fld_values']);
+/**
+ * @param array $values_arr
+ * @return string
+ */
+function formatValues(array $values_arr): string
+{
+    $ret = '';
+    foreach ($values_arr as $key => $value) {
+        $ret .= "$key=$value\r\n";
+    }
+
+    return $ret;
+}
+
+/**
+ * @param string $raw_values
+ * @return array
+ */
+function &parseValues(string $raw_values): array
+{
+    $_inValue = false;
+    $values   = [];
+
+    if ('' === $raw_values) {
+        return $values;
+    }
+
+    //Split values into name/value pairs
+    $lines = explode("\r\n", $raw_values);
+
+    //Parse each line into name=value
+    foreach ($lines as $line) {
+        if ('' === trim($line)) {
+            continue;
+        }
+        $name     = $value = '';
+        $_inValue = false;
+        $chrs     = mb_strlen($line);
+        for ($i = 0; $i <= $chrs; ++$i) {
+            $chr = mb_substr($line, $i, 1);
+            if ('=' === $chr && !$_inValue) {
+                $_inValue = true;
+            } elseif ($_inValue) {
+                $name .= $chr;
+            } else {
+                $value .= $chr;
+            }
+        }
+        //Add value to array
+        if ('' === $value) {
+            $values[$name] = $name;
+        } else {
+            $values[$value] = $name;
+        }
+
+        //Reset name / value vars
+        $name = $value = '';
+    }
+
+    return $values;
+}
+
+/**
+ *
+ */
+function deleteField()
+{
+    global $eventService;
+    $helper = Xhelp\Helper::getInstance();
+    if (!isset($_REQUEST['id'])) {
+        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
+    }
+
+    $id = Request::getInt('id', 0, 'REQUEST');
+
+    if (isset($_POST['ok'])) {
+        /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+        $ticketFieldHandler = $helper->getHandler('TicketField');
+        $ticketField        = $ticketFieldHandler->get($id);
+        if ($ticketFieldHandler->delete($ticketField, true)) {
+            $eventService->trigger('delete_field', [&$ticketField]);
+            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageFields'], false));
+        }
+
+        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageFields'], false), 3, $message);
+    } else {
+        xoops_cp_header();
+        //echo $oAdminButton->renderButtons('manfields');
+        $adminObject = Admin::getInstance();
+        $adminObject->displayNavigation(basename(__FILE__));
+
+        xoops_confirm(['op' => 'delfield', 'id' => $id, 'ok' => 1], XHELP_ADMIN_URL . '/fields.php', sprintf(_AM_XHELP_MSG_FIELD_DEL_CFRM, $id));
+        xoops_cp_footer();
+    }
+}
+
+/**
+ *
+ */
+function editField()
+{
+    $eventsrv    = Xhelp\EventService::getInstance();
+    $session     = Xhelp\Session::getInstance();
+    $regex_array = getRegexArray();
+    $helper      = Helper::getInstance();
+
+    if (!isset($_REQUEST['id'])) {
+        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
+    }
+
+    $fld_id = Request::getInt('id', 0, 'REQUEST');
+    /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+    $ticketFieldHandler = $helper->getHandler('TicketField');
+    if (!$ticketField = $ticketFieldHandler->get($fld_id)) {
+        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
+    }
+
+    if (isset($_POST['editField'])) {
+        //Validate Field Information
+        $has_errors = false;
+        $errors     = [];
+        $values     = parseValues($_POST['fld_values']);
 
         if (!$control = xhelpGetControl($_POST['fld_controltype'])) {
             $has_errors                  = true;
@@ -270,21 +509,20 @@ function manageFields()
         $fld_needsvalues = $control['needs_values'];
 
         //name field filled?
-        if ('' == trim($_POST['fld_name'])) {
+        if ('' === trim(\Xmf\Request::getString('fld_name', '', 'POST'))) {
             $has_errors           = true;
             $errors['fld_name'][] = _AM_XHELP_VALID_ERR_NAME;
         }
 
-        $fld_fieldname = sanitizeFieldName($_POST['fld_fieldname']);
-
         //fieldname filled
-        if ('' == trim($fld_fieldname)) {
+        if ('' === trim(\Xmf\Request::getString('fld_fieldname', '', 'POST'))) {
             $has_errors                = true;
             $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME;
         }
 
         //fieldname unique?
-        $criteria = new \CriteriaCompo(new \Criteria('fieldname', $fld_fieldname));
+        $criteria = new \CriteriaCompo(new \Criteria('id', (string)$fld_id, '!='));
+        $criteria->add(new \Criteria('fieldname', \Xmf\Request::getString('fld_fieldname', '', 'POST')));
         if ($ticketFieldHandler->getCount($criteria)) {
             $has_errors                = true;
             $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME_UNIQUE;
@@ -293,10 +531,8 @@ function manageFields()
         //Length filled
         if (0 == Request::getInt('fld_length', 0, 'POST') && true === $fld_needslength) {
             $has_errors             = true;
-            $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, 2, 16777215);
+            $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, _XHELP_FIELD_MINLEN, _XHELP_FIELD_MAXLEN);
         }
-
-        //Departments Chosen?
 
         //default value in value set?
         if (count($values)) {
@@ -314,165 +550,52 @@ function manageFields()
                     $errors['fld_values'][] = sprintf(_AM_XHELP_VALID_ERR_VALUE_LENGTH, htmlentities($key, ENT_QUOTES | ENT_HTML5), $length);
                 }
             }
-            //Values are all of the correct datatype?
         } elseif ($fld_needsvalues) {
             $has_errors             = true;
             $errors['fld_values'][] = _AM_XHELP_VALID_ERR_VALUE;
         }
 
         if ($has_errors) {
-            $afield = [];
-
-            $afield['name']         = $_POST['fld_name'];
-            $afield['description']  = $_POST['fld_description'];
-            $afield['fieldname']    = $fld_fieldname;
+            $afield                 = [];
+            $afield['name']         = \Xmf\Request::getString('fld_name', '', 'POST');
+            $afield['description']  = \Xmf\Request::getString('fld_description', '', 'POST');
+            $afield['fieldname']    = \Xmf\Request::getString('fld_fieldname', '', 'POST');
             $afield['departments']  = $_POST['fld_departments'];
             $afield['controltype']  = $_POST['fld_controltype'];
             $afield['datatype']     = $_POST['fld_datatype'];
             $afield['required']     = $_POST['fld_required'];
-            $afield['weight']       = $_POST['fld_weight'];
-            $afield['defaultvalue'] = $_POST['fld_defaultvalue'];
+            $afield['weight']       = \Xmf\Request::getInt('fld_weight', 0, 'POST');
+            $afield['defaultvalue'] = \Xmf\Request::getInt('fld_defaultvalue', 0, 'POST');
             $afield['values']       = $_POST['fld_values'];
-            $afield['length']       = $_POST['fld_length'];
+            $afield['length']       = \Xmf\Request::getInt('fld_length', 0, 'POST');
             $afield['validation']   = ($_POST['fld_valid_select'] == $_POST['fld_valid_txtbox'] ? $_POST['fld_valid_select'] : $_POST['fld_valid_txtbox']);
-            $session->set('xhelp_addField', $afield);
-            $session->set('xhelp_addFieldErrors', $errors);
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'));
+            $session->set('xhelp_editField_' . $fld_id, $afield);
+            $session->set('xhelp_editFieldErrors_' . $fld_id, $errors);
+            //Redirect to edit page (display errors);
+            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'editfield', 'id' => $fld_id], false));
         }
+        //Store Modified Field info
 
-        //Save field
-        $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-        $field              = $ticketFieldHandler->create();
-        $field->setVar('name', $_POST['fld_name']);
-        $field->setVar('description', $_POST['fld_description']);
-        $field->setVar('fieldname', $fld_fieldname);
-        $field->setVar('controltype', $_POST['fld_controltype']);
-        $field->setVar('datatype', $_POST['fld_datatype']);
-        $field->setVar('fieldlength', $_POST['fld_length']);
-        $field->setVar('required', $_POST['fld_required']);
-        $field->setVar('weight', $_POST['fld_weight']);
-        $field->setVar('defaultvalue', $_POST['fld_defaultvalue']);
-        $field->setVar('validation', ($_POST['fld_valid_select'] == $_POST['fld_valid_txtbox'] ? $_POST['fld_valid_select'] : $_POST['fld_valid_txtbox']));
-        $field->addValues($values);
-        $field->addDepartments($_POST['fld_departments']);
+        $ticketField->setVar('name', \Xmf\Request::getString('fld_name', '', 'POST'));
+        $ticketField->setVar('description', \Xmf\Request::getString('fld_description', '', 'POST'));
+        $ticketField->setVar('fieldname', \Xmf\Request::getString('fld_fieldname', '', 'POST'));
+        $ticketField->setVar('controltype', $_POST['fld_controltype']);
+        $ticketField->setVar('datatype', $_POST['fld_datatype']);
+        $ticketField->setVar('fieldlength', \Xmf\Request::getInt('fld_length', 0, 'POST'));
+        $ticketField->setVar('required', $_POST['fld_required']);
+        $ticketField->setVar('weight', \Xmf\Request::getInt('fld_weight', 0, 'POST'));
+        $ticketField->setVar('defaultvalue', $_POST['fld_defaultvalue']);
+        $ticketField->setVar('validation', ($_POST['fld_valid_select'] == $_POST['fld_valid_txtbox'] ? $_POST['fld_valid_select'] : $_POST['fld_valid_txtbox']));
+        $ticketField->setValues($values);
+        $ticketField->addDepartments($_POST['fld_departments']);
 
-        if ($ticketFieldHandler->insert($field)) {
-            clearAddSessionVars();
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'), 3, _AM_XHELP_MSG_FIELD_ADD_OK);
+        if ($ticketFieldHandler->insert($ticketField)) {
+            clearEditSessionVars($fld_id);
+            $helper->redirect('admin/fields.php', 3, _AM_XHELP_MSG_FIELD_UPD_OK);
         } else {
-            $errors = $field->getHtmlErrors();
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'), 3, _AM_XHELP_MSG_FIELD_ADD_ERR . $errors);
+            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'editfield', 'id' => $fld_id], false), 3, _AM_XHELP_MSG_FIELD_UPD_ERR);
         }
-    }
-}
-
-/**
- * @param $values_arr
- * @return string
- */
-function formatValues($values_arr)
-{
-    $ret = '';
-    foreach ($values_arr as $key => $value) {
-        $ret .= "$key=$value\r\n";
-    }
-
-    return $ret;
-}
-
-/**
- * @param $raw_values
- * @return array
- */
-function &parseValues($raw_values)
-{
-    $_inValue = false;
-    $values   = [];
-
-    if ('' == $raw_values) {
-        return $values;
-    }
-
-    //Split values into name/value pairs
-    $lines = explode("\r\n", $raw_values);
-
-    //Parse each line into name=value
-    foreach ($lines as $line) {
-        if ('' == trim($line)) {
-        }
-        $name     = $value = '';
-        $_inValue = false;
-        $chrs     = mb_strlen($line);
-        for ($i = 0; $i <= $chrs; ++$i) {
-            $chr = mb_substr($line, $i, 1);
-            if ('=' === $chr && !$_inValue) {
-                $_inValue = true;
-            } elseif ($_inValue) {
-                    $name .= $chr;
-                } else {
-                    $value .= $chr;
-            }
-        }
-        //Add value to array
-        if ('' == $value) {
-            $values[$name] = $name;
-        } else {
-            $values[$value] = $name;
-        }
-
-        //Reset name / value vars
-        $name = $value = '';
-    }
-
-    return $values;
-}
-
-function deleteField()
-{
-    global $_eventsrv;
-    if (!isset($_REQUEST['id'])) {
-        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
-    }
-
-    $id = Request::getInt('id', 0, 'REQUEST');
-
-    if (!isset($_POST['ok'])) {
-        xoops_cp_header();
-        //echo $oAdminButton->renderButtons('manfields');
-        $adminObject = Admin::getInstance();
-        $adminObject->displayNavigation(basename(__FILE__));
-
-        xoops_confirm(['op' => 'delfield', 'id' => $id, 'ok' => 1], XHELP_ADMIN_URL . '/fields.php', sprintf(_AM_XHELP_MSG_FIELD_DEL_CFRM, $id));
-        xoops_cp_footer();
     } else {
-        $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-        $field              = $ticketFieldHandler->get($id);
-        if ($ticketFieldHandler->delete($field, true)) {
-            $_eventsrv->trigger('delete_field', [&$field]);
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageFields'], false));
-        }
-
-        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageFields'], false), 3, $message);
-    }
-}
-
-function editField()
-{
-    $eventsrv    = Xhelp\EventService::getInstance();
-    $session     = Xhelp\Session::getInstance();
-    $regex_array = getRegexArray();
-
-    if (!isset($_REQUEST['id'])) {
-        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
-    }
-
-    $fld_id             = Request::getInt('id', 0, 'REQUEST');
-    $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-    if (!$field = $ticketFieldHandler->get($fld_id)) {
-        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'manageDepartments'], false), 3, _AM_XHELP_MESSAGE_NO_FIELD);
-    }
-
-    if (!isset($_POST['editField'])) {
         //Get Custom Field From session (if exists)
         $field_info   = $session->get('xhelp_editField_' . $fld_id);
         $field_errors = $session->get('xhelp_editFieldErrors_' . $fld_id);
@@ -491,21 +614,22 @@ function editField()
             $fld_values       = $field_info['values'];
             $fld_validation   = $field_info['validation'];
         } else {
-            $ticketFieldDepartmentHandler = new Xhelp\TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
-            $depts                        = $ticketFieldDepartmentHandler->departmentsByField($field->getVar('id'), true);
+            /** @var \XoopsModules\Xhelp\TicketFieldDepartmentHandler $ticketFieldDepartmentHandler */
+            $ticketFieldDepartmentHandler = $helper->getHandler('TicketFieldDepartment');
+            $depts                        = $ticketFieldDepartmentHandler->departmentsByField($ticketField->getVar('id'), true);
 
-            $fld_controltype  = $field->getVar('controltype');
-            $fld_datatype     = $field->getVar('datatype');
+            $fld_controltype  = $ticketField->getVar('controltype');
+            $fld_datatype     = $ticketField->getVar('datatype');
             $fld_departments  = array_keys($depts);
-            $fld_name         = $field->getVar('name');
-            $fld_fieldname    = $field->getVar('fieldname');
-            $fld_description  = $field->getVar('description');
-            $fld_required     = $field->getVar('required');
-            $fld_length       = $field->getVar('fieldlength');
-            $fld_weight       = $field->getVar('weight');
-            $fld_defaultvalue = $field->getVar('defaultvalue');
-            $fld_values       = formatValues($field->getVar('fieldvalues'));
-            $fld_validation   = $field->getVar('validation');
+            $fld_name         = $ticketField->getVar('name');
+            $fld_fieldname    = $ticketField->getVar('fieldname');
+            $fld_description  = $ticketField->getVar('description');
+            $fld_required     = $ticketField->getVar('required');
+            $fld_length       = $ticketField->getVar('fieldlength');
+            $fld_weight       = $ticketField->getVar('weight');
+            $fld_defaultvalue = $ticketField->getVar('defaultvalue');
+            $fld_values       = formatValues($ticketField->getVar('fieldvalues'));
+            $fld_validation   = $ticketField->getVar('validation');
         }
 
         //Display Field modification
@@ -533,7 +657,8 @@ function editField()
         $datatype_select->setDescription(_AM_XHELP_TEXT_DATATYPE_DESC);
         $datatype_select->addOptionArray($datatypes);
 
-        $departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+        /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+        $departmentHandler = $helper->getHandler('Department');
         $depts             = $departmentHandler->getObjects();
         $dept_select       = new \XoopsFormSelect(_AM_XHELP_TEXT_DEPARTMENTS, 'fld_departments', $fld_departments, 5, true);
         $dept_select->setDescription(_AM_XHELP_TEXT_DEPT_DESC);
@@ -547,15 +672,10 @@ function editField()
         }
 
         $form = new Xhelp\Form(
-            _AM_XHELP_EDIT_FIELD,
-            'edit_field',
-            Xhelp\Utility::createURI(
-                XHELP_ADMIN_URL . '/fields.php',
-                [
-                    'op' => 'editfield',
-                    'id' => $fld_id,
-                ]
-            )
+            _AM_XHELP_EDIT_FIELD, 'edit_field', Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', [
+            'op' => 'editfield',
+            'id' => $fld_id,
+        ])
         );
 
         $nameEle = new \XoopsFormText(_AM_XHELP_TEXT_NAME, 'fld_name', 30, 64, $fld_name);
@@ -608,114 +728,13 @@ function editField()
         echo $form->render();
 
         require_once __DIR__ . '/admin_footer.php';
-    } else {
-        //Validate Field Information
-        $has_errors = false;
-        $errors     = [];
-        $values     = parseValues($_POST['fld_values']);
-
-        if (!$control = xhelpGetControl($_POST['fld_controltype'])) {
-            $has_errors                  = true;
-            $errors['fld_controltype'][] = _AM_XHELP_VALID_ERR_CONTROLTYPE;
-        }
-
-        $fld_needslength = $control['needs_length'];
-        $fld_needsvalues = $control['needs_values'];
-
-        //name field filled?
-        if ('' == trim($_POST['fld_name'])) {
-            $has_errors           = true;
-            $errors['fld_name'][] = _AM_XHELP_VALID_ERR_NAME;
-        }
-
-        //fieldname filled
-        if ('' == trim($_POST['fld_fieldname'])) {
-            $has_errors                = true;
-            $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME;
-        }
-
-        //fieldname unique?
-        $criteria = new \CriteriaCompo(new \Criteria('id', (string)$fld_id, '!='));
-        $criteria->add(new \Criteria('fieldname', $_POST['fld_fieldname']));
-        if ($ticketFieldHandler->getCount($criteria)) {
-            $has_errors                = true;
-            $errors['fld_fieldname'][] = _AM_XHELP_VALID_ERR_FIELDNAME_UNIQUE;
-        }
-
-        //Length filled
-        if (0 == Request::getInt('fld_length', 0, 'POST') && true === $fld_needslength) {
-            $has_errors             = true;
-            $errors['fld_length'][] = sprintf(_AM_XHELP_VALID_ERR_LENGTH, _XHELP_FIELD_MINLEN, _XHELP_FIELD_MAXLEN);
-        }
-
-        //default value in value set?
-        if (count($values)) {
-            if (!in_array($_POST['fld_defaultvalue'], $values)
-                && !array_key_exists($_POST['fld_defaultvalue'], $values)) {
-                $has_errors                   = true;
-                $errors['fld_defaultvalue'][] = _AM_XHELP_VALID_ERR_DEFAULTVALUE;
-            }
-
-            //length larger than longest value?
-            $length = Request::getInt('fld_length', 0, 'POST');
-            foreach ($values as $key => $value) {
-                if (mb_strlen($key) > $length) {
-                    $has_errors             = true;
-                    $errors['fld_values'][] = sprintf(_AM_XHELP_VALID_ERR_VALUE_LENGTH, htmlentities($key, ENT_QUOTES | ENT_HTML5), $length);
-                }
-            }
-        } elseif ($fld_needsvalues) {
-            $has_errors             = true;
-            $errors['fld_values'][] = _AM_XHELP_VALID_ERR_VALUE;
-        }
-
-        if ($has_errors) {
-            $afield                 = [];
-            $afield['name']         = $_POST['fld_name'];
-            $afield['description']  = $_POST['fld_description'];
-            $afield['fieldname']    = $_POST['fld_fieldname'];
-            $afield['departments']  = $_POST['fld_departments'];
-            $afield['controltype']  = $_POST['fld_controltype'];
-            $afield['datatype']     = $_POST['fld_datatype'];
-            $afield['required']     = $_POST['fld_required'];
-            $afield['weight']       = $_POST['fld_weight'];
-            $afield['defaultvalue'] = $_POST['fld_defaultvalue'];
-            $afield['values']       = $_POST['fld_values'];
-            $afield['length']       = $_POST['fld_length'];
-            $afield['validation']   = ($_POST['fld_valid_select'] == $_POST['fld_valid_txtbox'] ? $_POST['fld_valid_select'] : $_POST['fld_valid_txtbox']);
-            $session->set('xhelp_editField_' . $fld_id, $afield);
-            $session->set('xhelp_editFieldErrors_' . $fld_id, $errors);
-            //Redirect to edit page (display errors);
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'editfield', 'id' => $fld_id], false));
-        }
-        //Store Modified Field info
-
-        $field->setVar('name', $_POST['fld_name']);
-        $field->setVar('description', $_POST['fld_description']);
-        $field->setVar('fieldname', $_POST['fld_fieldname']);
-        $field->setVar('controltype', $_POST['fld_controltype']);
-        $field->setVar('datatype', $_POST['fld_datatype']);
-        $field->setVar('fieldlength', $_POST['fld_length']);
-        $field->setVar('required', $_POST['fld_required']);
-        $field->setVar('weight', $_POST['fld_weight']);
-        $field->setVar('defaultvalue', $_POST['fld_defaultvalue']);
-        $field->setVar('validation', ($_POST['fld_valid_select'] == $_POST['fld_valid_txtbox'] ? $_POST['fld_valid_select'] : $_POST['fld_valid_txtbox']));
-        $field->setValues($values);
-        $field->addDepartments($_POST['fld_departments']);
-
-        if ($ticketFieldHandler->insert($field)) {
-            clearEditSessionVars($fld_id);
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'), 3, _AM_XHELP_MSG_FIELD_UPD_OK);
-        } else {
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'editfield', 'id' => $fld_id], false), 3, _AM_XHELP_MSG_FIELD_UPD_ERR);
-        }
     }
 }
 
 /**
  * @return array
  */
-function &getRegexArray()
+function &getRegexArray(): array
 {
     $regex_array = [
         ''                                                       => _AM_XHELP_TEXT_REGEX_CUSTOM,
@@ -727,42 +746,57 @@ function &getRegexArray()
     return $regex_array;
 }
 
+/**
+ *
+ */
 function setFieldRequired()
 {
+    $helper      = Helper::getInstance();
     $setRequired = Request::getInt('setrequired', 0, 'GET');
     $id          = Request::getInt('id', 0, 'GET');
 
     $setRequired = (0 != $setRequired ? 1 : 0);
 
-    $ticketFieldHandler = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
+    /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+    $ticketFieldHandler = $helper->getHandler('TicketField');
 
-    $field = $ticketFieldHandler->get($id);
-    if ($field) {
-        $field->setVar('required', $setRequired);
-        $ret = $ticketFieldHandler->insert($field, true);
+    $ticketField = $ticketFieldHandler->get($id);
+    if ($ticketField) {
+        $ticketField->setVar('required', $setRequired);
+        $ret = $ticketFieldHandler->insert($ticketField, true);
         if ($ret) {
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'));
+            $helper->redirect('admin/fields.php');
         } else {
-            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'), 3, _AM_XHELP_MSG_FIELD_UPD_ERR);
+            $helper->redirect('admin/fields.php', 3, _AM_XHELP_MSG_FIELD_UPD_ERR);
         }
     } else {
-        redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'), 3, _AM_XHELP_MESSAGE_NO_FIELD);
+        $helper->redirect('admin/fields.php', 3, _AM_XHELP_MESSAGE_NO_FIELD);
     }
 }
 
+/**
+ *
+ */
 function clearAddSession()
 {
+    $helper = Helper::getInstance();
     clearAddSessionVars();
-    redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php'));
+    $helper->redirect('admin/fields.php');
 }
 
+/**
+ *
+ */
 function clearEditSession()
 {
-    $fieldid = $_REQUEST['id'];
+    $fieldid = \Xmf\Request::getInt('id', 0, 'REQUEST');
     clearEditSessionVars($fieldid);
     redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', ['op' => 'editfield', 'id' => $fieldid], false));
 }
 
+/**
+ *
+ */
 function clearAddSessionVars()
 {
     $session = Xhelp\Session::getInstance();
@@ -771,11 +805,11 @@ function clearAddSessionVars()
 }
 
 /**
- * @param $id
+ * @param int $id
  */
-function clearEditSessionVars($id)
+function clearEditSessionVars(int $id)
 {
-    $id      = (int)$id;
+    $id      = $id;
     $session = Xhelp\Session::getInstance();
     $session->del("xhelp_editField_$id");
     $session->del("xhelp_editFieldErrors_$id");

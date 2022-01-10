@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * class FormRegex
  */
@@ -16,11 +15,11 @@ class FormRegex extends \XoopsFormElement
 
     /**
      * Xhelp\FormRegex constructor.
-     * @param $caption
-     * @param $name
-     * @param $value
+     * @param string $caption
+     * @param string $name
+     * @param string $value
      */
-    public function __construct($caption, $name, $value)
+    public function __construct(string $caption, string $name, string $value)
     {
         $select_js     = 'onchange="' . $name . '_txtbox.value = this.options[this.selectedIndex].value"';
         $this->_tray   = new \XoopsFormElementTray('', '<br><br>', $name);
@@ -32,15 +31,15 @@ class FormRegex extends \XoopsFormElement
     }
 
     /**
-     * @param $regexArray
+     * @param array $regexArray
      */
-    public function addOptionArray($regexArray)
+    public function addOptionArray(array $regexArray)
     {
         $this->_select->addOptionArray($regexArray);
     }
 
     /**
-     * @param string       $value
+     * @param string $value
      * @param string $name
      */
     public function addOption(string $value, string $name = '')
@@ -49,9 +48,9 @@ class FormRegex extends \XoopsFormElement
     }
 
     /**
-     * @param $value
+     * @param string $value
      */
-    public function setValue($value)
+    public function setValue(string $value)
     {
         $this->_value = $value;
     }
@@ -76,7 +75,7 @@ class FormRegex extends \XoopsFormElement
      * @param bool $encode
      * @return string
      */
-    public function getCaption($encode = false)
+    public function getCaption($encode = false): string
     {
         return $this->_caption;
     }
@@ -92,7 +91,7 @@ class FormRegex extends \XoopsFormElement
     /**
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         //Determine value for selectbox
         $values = $this->_select->getOptions();

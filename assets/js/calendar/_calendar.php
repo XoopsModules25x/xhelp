@@ -30,10 +30,10 @@ class _calendar
      * @param bool|false $stripped
      */
     public function __construct(
-        $calendar_lib_path = '/calendar/',
-        $lang = 'en',
-        $theme = 'calendar',
-        $stripped = false
+        string $calendar_lib_path = '/calendar/',
+        string $lang = 'en',
+        string $theme = 'calendar',
+        bool $stripped = false
     ) {
         global $xoopsConfig;
         $lang  = 'en';
@@ -100,7 +100,7 @@ class _calendar
      * @param array $other_options
      * @return string
      */
-    public function _make_calendar($other_options = []): string
+    public function _make_calendar(array $other_options = []): string
     {
         $js_options = $this->_make_js_hash(array_merge($this->calendar_options, $other_options));
         $code       = '<script type="text/javascript">Calendar.setup({' . $js_options . '});</script>';
@@ -116,7 +116,7 @@ class _calendar
      * @param mixed $show
      * @return string
      */
-    public function make_input_field($cal_options = [], $field_attributes = [], $show = true): string
+    public function make_input_field(array $cal_options = [], array $field_attributes = [], $show = true): string
     {
         $id      = $this->_gen_id();
         $attrstr = $this->_make_html_attr(array_merge($field_attributes, ['id' => $this->_field_id($id), 'type' => 'text']));

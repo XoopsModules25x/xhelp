@@ -26,7 +26,7 @@ trait FilesManagement
      *
      * @throws \RuntimeException
      */
-    public static function createFolder($folder)
+    public static function createFolder(string $folder)
     {
         try {
             if (!\is_dir($folder)) {
@@ -42,8 +42,9 @@ trait FilesManagement
     }
 
     /**
-     * @param $file
-     * @param $folder
+     * @param string $file
+     * @param string $folder
+     * @return bool
      */
     public static function copyFile(string $file, string $folder): bool
     {
@@ -51,10 +52,10 @@ trait FilesManagement
     }
 
     /**
-     * @param $src
-     * @param $dst
+     * @param string $src
+     * @param string $dst
      */
-    public static function recurseCopy($src, $dst)
+    public static function recurseCopy(string $src, string $dst)
     {
         $dir = \opendir($src);
         if (!\mkdir($dst) && !\is_dir($dst)) {
@@ -81,7 +82,7 @@ trait FilesManagement
      * @version     1.0.1
      * @link        https://aidanlister.com/2004/04/recursively-copying-directories-in-php/
      */
-    public static function xcopy($source, $dest): bool
+    public static function xcopy(string $source, string $dest): bool
     {
         // Check for symlinks
         if (\is_link($source)) {
@@ -126,7 +127,7 @@ trait FilesManagement
      *
      * @uses \Xmf\Module\Helper::getHelper()
      */
-    public static function deleteDirectory($src): bool
+    public static function deleteDirectory(string $src): bool
     {
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
@@ -171,7 +172,7 @@ trait FilesManagement
      *
      * @return bool true on success
      */
-    public static function rrmdir($src): bool
+    public static function rrmdir(string $src): bool
     {
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
@@ -212,7 +213,7 @@ trait FilesManagement
      *
      * @return bool true on success
      */
-    public static function rmove($src, $dest): bool
+    public static function rmove(string $src, string $dest): bool
     {
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {
@@ -256,7 +257,7 @@ trait FilesManagement
      *
      * @uses \Xmf\Module\Helper::getHelper()
      */
-    public static function rcopy($src, $dest): bool
+    public static function rcopy(string $src, string $dest): bool
     {
         // Only continue if user is a 'global' Admin
         if (!($GLOBALS['xoopsUser'] instanceof \XoopsUser) || !$GLOBALS['xoopsUser']->isAdmin()) {

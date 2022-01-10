@@ -10,14 +10,15 @@ use XoopsModules\Xhelp\{
 };
 
 require_once __DIR__ . '/admin_header.php';
-// require_once XHELP_CLASS_PATH . '/session.php';
-$_xhelpSession       = new Session();
-$notificationHandler = Helper::getInstance()->getHandler('Notification');
+$session = Session::getInstance();
+$helper  = Helper::getInstance();
+/** @var \XoopsModules\Xhelp\NotificationHandler $notificationHandler */
+$notificationHandler = $helper->getHandler('Notification');
 
 global $xoopsModule;
-if (!$templates = $_xhelpSession->get('xhelp_notifications')) {
+if (!$templates = $session->get('xhelp_notifications')) {
     $templates = $xoopsModule->getInfo('_email_tpl');
-    $_xhelpSession->set('xhelp_notifications', $templates);
+    $session->set('xhelp_notifications', $templates);
 }
 $has_notifications = count($templates);
 
@@ -30,7 +31,7 @@ $aUserSettings  = ['1' => _AM_XHELP_USER_SETTING1, '2' => _AM_XHELP_USER_SETTING
 
 // Also in profile.php
 $aNotifications = [
-    XHELP_NOTIF_NEWTICKET => [
+    XHELP_NOTIF_NEWTICKET    => [
         'name'      => _AM_XHELP_NOTIF_NEW_TICKET,
         'email_tpl' => [
             1  => $templates[1],
@@ -101,20 +102,22 @@ switch ($op) {
 
 function edit()
 {
-    global $xoopsModule, $_xhelpSession, $aNotifications, $has_notifications, $aStaffSettings, $aUserSettings;
+    global $xoopsModule, $session, $aNotifications, $has_notifications, $aStaffSettings, $aUserSettings;
+    $helper = Helper::getInstance();
 
     if (Request::hasVar('id', 'REQUEST')) {
         $id = Request::getInt('id', 0, 'REQUEST');
     } else {
         // No id specified, return to manage page
-        redirect_header(XHELP_ADMIN_URL . 'notifications.php?op=manage', 3, _AM_XHELP_MESSAGE_NO_ID);
+        $helper->redirect('admin/notifications.php?op=manage', 3, _AM_XHELP_MESSAGE_NO_ID);
     }
 
-    $notificationHandler = Helper::getInstance()->getHandler('Notification');
-    $settings = $notificationHandler->get($id);
+    /** @var \XoopsModules\Xhelp\NotificationHandler $notificationHandler */
+    $notificationHandler = $helper->getHandler('Notification');
+    $settings            = $notificationHandler->get($id);
 
     if (null === $settings || false === $settings) {
-        redirect_header(XHELP_ADMIN_URL . 'notifications.php?op=manage', 3, _AM_XHELP_EDIT_ERR);
+        $helper->redirect('admin/notifications.php?op=manage', 3, _AM_XHELP_EDIT_ERR);
     }
 
     xoops_cp_header();
@@ -127,30 +130,31 @@ function edit()
 
     $adminObject->displayNavigation(basename(__FILE__));
 
-    $_xhelpSession->set('xhelp_return_page', mb_substr(mb_strstr($_SERVER['REQUEST_URI'], 'admin/'), 6));
+    $session->set('xhelp_return_page', mb_substr(mb_strstr($_SERVER['REQUEST_URI'], 'admin/'), 6));
 
     if (Request::hasVar('save_notification', 'POST')) {
         $settings->setVar('staff_setting', Request::getInt('staff_setting', 0, 'POST'));
         $settings->setVar('user_setting', Request::getInt('user_setting', 0, 'POST'));
-        if (XHELP_NOTIF_STAFF_DEPT == $_POST['staff_setting']) {
+        if (XHELP_NOTIF_STAFF_DEPT == Request::getInt('staff_setting', 0, 'POST')) {
             $settings->setVar('staff_options', $_POST['roles']);
         } else {
             $settings->setVar('staff_options', []);
         }
         $notificationHandler->insert($settings, true);
-        redirect_header(XHELP_ADMIN_URL . "/notifications.php?op=edit&id=$id");
+        $helper->redirect("notifications.php?op=edit&id=$id");
     }
 
     // Retrieve list of email templates
-    if (!$templates = $_xhelpSession->get('xhelp_notifications')) {
+    if (!$templates = $session->get('xhelp_notifications')) {
         $templates = $xoopsModule->getInfo('_email_tpl');
-        $_xhelpSession->set('xhelp_notifications', $templates);
+        $session->set('xhelp_notifications', $templates);
     }
     $notification = $aNotifications[$id];
 
     $staff_settings = Utility::getMeta("notify_staff{$id}");
     $user_settings  = Utility::getMeta("notify_user{$id}");
-    $roleHandler    = Helper::getInstance()->getHandler('Role');
+    /** @var RoleHandler $roleHandler */
+    $roleHandler = $helper->getHandler('Role');
     if (XHELP_NOTIF_STAFF_DEPT == $settings->getVar('staff_setting')) {
         $selectedRoles = $settings->getVar('staff_options');
     } else {
@@ -231,7 +235,8 @@ function edit()
 
 function manage()
 {
-    global $xoopsModule, $_xhelpSession, $aNotifications, $has_notifications, $xoopsDB, $aStaffSettings, $aUserSettings;
+    global $xoopsModule, $session, $aNotifications, $has_notifications, $xoopsDB, $aStaffSettings, $aUserSettings;
+    $helper = Helper::getInstance();
 
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manNotify');
@@ -243,8 +248,9 @@ function manage()
     $adminObject->displayNavigation(basename(__FILE__));
     $adminObject->displayButton('left');
 
-    $notificationHandler = Helper::getInstance()->getHandler('Notification');
-    $settings = $notificationHandler->getObjects(null, true);
+    /** @var \XoopsModules\Xhelp\NotificationHandler $notificationHandler */
+    $notificationHandler = $helper->getHandler('Notification');
+    $settings            = $notificationHandler->getObjects(null, true);
 
     echo "<table width='100%' cellspacing='1' class='outer'>";
     echo "<tr><th colspan='3'>" . _AM_XHELP_TEXT_MANAGE_NOTIFICATIONS . '</th></tr>';
@@ -255,14 +261,14 @@ function manage()
                   <td>' . _AM_XHELP_TEXT_ACTIONS . '</td>
               </tr>';
         foreach ($aNotifications as $template_id => $template) {
-//            if (isset($settings[$template_id])) {
-                $cSettings = $settings[$template_id] ?? '';
-                //                if (null !== $cSettings) {
-//                $staff_setting = $cSettings->getVar('staff_setting');
-//                $user_setting  = $cSettings->getVar('user_setting');
+            //            if (isset($settings[$template_id])) {
+            $cSettings = $settings[$template_id] ?? '';
+            //                if (null !== $cSettings) {
+            //                $staff_setting = $cSettings->getVar('staff_setting');
+            //                $user_setting  = $cSettings->getVar('user_setting');
             $staff_setting = !empty($cSettings) ? $cSettings->getVar('staff_setting') : 0;
             $user_setting  = !empty($cSettings) ? $cSettings->getVar('user_setting') : 0;
-//            }
+            //            }
             // Build text of who gets notification
             if (XHELP_NOTIF_USER_YES == $user_setting) {
                 if (\XHELP_NOTIF_STAFF_NONE == $staff_setting) {
@@ -296,7 +302,8 @@ function manage()
 
 function modifyEmailTpl()
 {
-    global $xoopsConfig, $_xhelpSession;
+    global $xoopsConfig, $session;
+    $helper = Helper::getInstance();
 
     if (is_dir(XOOPS_ROOT_PATH . '/modules/xhelp/language/' . $xoopsConfig['language'] . '/mail_template')) {
         $opendir = opendir(XOOPS_ROOT_PATH . '/modules/xhelp/language/' . $xoopsConfig['language'] . '/mail_template/');
@@ -456,32 +463,7 @@ function modifyEmailTpl()
         $aFiles[]          = $aFile;
     }
 
-    if (!isset($_GET['file'])) {
-        xoops_cp_header();
-        //echo $oAdminButton->renderButtons('manNotify');
-        $adminObject = Admin::getInstance();
-        $adminObject->addItemButton(_AM_XHELP_TEXT_MANAGE_NOTIFICATIONS, 'notifications.php?op=manage', 'add');
-        $adminObject->addItemButton(_AM_XHELP_MENU_MODIFY_EMLTPL, 'notifications.php?op=modifyEmailTpl', 'list');
-
-        $adminObject->displayNavigation(basename(__FILE__));
-        $adminObject->displayButton('left');
-
-        echo "<table width='100%' border='0' cellspacing='1' class='outer'>
-              <tr><th colspan='2'><label>" . _AM_XHELP_MENU_MODIFY_EMLTPL . "</label></th></tr>
-              <tr class='head'><td>" . _AM_XHELP_TEXT_TEMPLATE_NAME . '</td><td>' . _AM_XHELP_TEXT_DESCRIPTION . '</td></tr>';
-
-        static $rowSwitch = 0;
-        foreach ($aFiles as $file) {
-            if (0 == $rowSwitch) {
-                echo "<tr class='odd'><td><a href='" . $file['url'] . "'>" . $file['name'] . '</a></td><td>' . $file['desc'] . '</td></tr>';
-                $rowSwitch = 1;
-            } else {
-                echo "<tr class='even'><td><a href='" . $file['url'] . "'>" . $file['name'] . '</a></td><td>' . $file['desc'] . '</td></tr>';
-                $rowSwitch = 0;
-            }
-        }
-        echo '</table>';
-    } else {
+    if (isset($_GET['file'])) {
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manNotify');
         $adminObject = Admin::getInstance();
@@ -492,7 +474,7 @@ function modifyEmailTpl()
         $adminObject->displayButton('left');
 
         foreach ($aFiles as $file) {
-            if ($_GET['file'] == $file['filename']) {
+            if (\Xmf\Request::getString('file', '', 'GET') == $file['filename']) {
                 $myFileName = $file['filename'];
                 $myFileDesc = $file['desc'];
                 $myName     = $file['name'];
@@ -517,7 +499,7 @@ function modifyEmailTpl()
                 $text = '';
             }
 
-            if (!$returnPage = $_xhelpSession->get('xhelp_return_page')) {
+            if (!$returnPage = $session->get('xhelp_return_page')) {
                 $returnPage = false;
             }
 
@@ -526,18 +508,18 @@ function modifyEmailTpl()
                 $fileSize = filesize($dir . $myFileName);
                 fclose($handle);
                 if ($returnPage) {
-                    redirect_header(XHELP_ADMIN_URL . "/$returnPage");
+                    $helper->redirect((string)$returnPage);
                 } else {
-                    redirect_header(XHELP_ADMIN_URL . '/notifications.php');
+                    $helper->redirect('admin/notifications.php');
                 }
             } else {
                 $message  = _AM_XHELP_MESSAGE_FILE_UPDATED_ERROR;
                 $fileSize = filesize($dir . $myFileName);
                 fclose($handle);
                 if ($returnPage) {
-                    redirect_redirect_header(XHELP_ADMIN_URL . "/$returnPage", 3, $message);
+                    $helper->redirect((string)$returnPage, 3, $message);
                 } else {
-                    redirect_redirect_header(XHELP_ADMIN_URL . '/notifications.php', 3, $message);
+                    $helper->redirect('admin/notifications.php', 3, $message);
                 }
             }
         }
@@ -573,6 +555,31 @@ function modifyEmailTpl()
             echo "<tr><td class='foot' colspan='2'><input type='submit' name='editTemplate' value='" . _AM_XHELP_BUTTON_UPDATE . "' class='formButton'></td></tr>";
         }
         echo '</table></form>';
+    } else {
+        xoops_cp_header();
+        //echo $oAdminButton->renderButtons('manNotify');
+        $adminObject = Admin::getInstance();
+        $adminObject->addItemButton(_AM_XHELP_TEXT_MANAGE_NOTIFICATIONS, 'notifications.php?op=manage', 'add');
+        $adminObject->addItemButton(_AM_XHELP_MENU_MODIFY_EMLTPL, 'notifications.php?op=modifyEmailTpl', 'list');
+
+        $adminObject->displayNavigation(basename(__FILE__));
+        $adminObject->displayButton('left');
+
+        echo "<table width='100%' border='0' cellspacing='1' class='outer'>
+              <tr><th colspan='2'><label>" . _AM_XHELP_MENU_MODIFY_EMLTPL . "</label></th></tr>
+              <tr class='head'><td>" . _AM_XHELP_TEXT_TEMPLATE_NAME . '</td><td>' . _AM_XHELP_TEXT_DESCRIPTION . '</td></tr>';
+
+        static $rowSwitch = 0;
+        foreach ($aFiles as $file) {
+            if (0 == $rowSwitch) {
+                echo "<tr class='odd'><td><a href='" . $file['url'] . "'>" . $file['name'] . '</a></td><td>' . $file['desc'] . '</td></tr>';
+                $rowSwitch = 1;
+            } else {
+                echo "<tr class='even'><td><a href='" . $file['url'] . "'>" . $file['name'] . '</a></td><td>' . $file['desc'] . '</td></tr>';
+                $rowSwitch = 0;
+            }
+        }
+        echo '</table>';
     }
     require_once __DIR__ . '/admin_footer.php';
 }

@@ -44,7 +44,7 @@ class DepartmentHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_departments';
+    public $dbtable = 'xhelp_departments';
 
     /**
      * Constructor
@@ -53,14 +53,14 @@ class DepartmentHandler extends BaseObjectHandler
      */
     public function __construct(\XoopsDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
     }
 
     /**
      * @param int $id
      * @return string
      */
-    public function getNameById($id): string
+    public function getNameById(int $id): string
     {
         $tmp = $this->get($id);
         if ($tmp) {
@@ -71,44 +71,46 @@ class DepartmentHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('INSERT INTO `%s` (id, department) VALUES (%u, %s)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($department));
+        $sql = \sprintf('INSERT INTO `%s` (id, department) VALUES (%u, %s)', $this->db->prefix($this->dbtable), $id, $this->db->quoteString($department));
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('UPDATE `%s` SET department = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($department), $id);
+        $sql = \sprintf('UPDATE `%s` SET department = %s WHERE id = %u', $this->db->prefix($this->dbtable), $this->db->quoteString($department), $id);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }

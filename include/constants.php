@@ -55,7 +55,8 @@ namespace XoopsModules\Xhelp;
     | (2 ** \XHELP_SEC_TICKET_PRIORITY)
     | (2 ** \XHELP_SEC_TICKET_LOGUSER)
     | (2 ** \XHELP_SEC_RESPONSE_ADD)
-    | (2 ** \XHELP_SEC_RESPONSE_EDIT)
+    | (2
+       ** \XHELP_SEC_RESPONSE_EDIT)
     | (2 ** \XHELP_SEC_TICKET_MERGE)
     | (2 ** \XHELP_SEC_FILE_DELETE)
     | (2 ** \XHELP_SEC_FAQ_ADD)
@@ -65,13 +66,7 @@ namespace XoopsModules\Xhelp;
 //Support Role - Log Tickets and Responses, Change Status/Priority, Log tickets as user
 \define(
     'XHELP_ROLE_PERM_2',
-    (2 ** \XHELP_SEC_TICKET_ADD)
-    | (2 ** \XHELP_SEC_TICKET_STATUS)
-    | (2 ** \XHELP_SEC_TICKET_PRIORITY)
-    | (2 ** \XHELP_SEC_TICKET_LOGUSER)
-    | (2 ** \XHELP_SEC_RESPONSE_ADD)
-    | (2 ** \XHELP_SEC_FAQ_ADD)
-    | (2 ** \XHELP_SEC_TICKET_TAKE_OWNERSHIP)
+    (2 ** \XHELP_SEC_TICKET_ADD) | (2 ** \XHELP_SEC_TICKET_STATUS) | (2 ** \XHELP_SEC_TICKET_PRIORITY) | (2 ** \XHELP_SEC_TICKET_LOGUSER) | (2 ** \XHELP_SEC_RESPONSE_ADD) | (2 ** \XHELP_SEC_FAQ_ADD) | (2 ** \XHELP_SEC_TICKET_TAKE_OWNERSHIP)
 );
 
 //Browser Role - Read-Only
@@ -82,7 +77,7 @@ namespace XoopsModules\Xhelp;
 \define('XHELP_BASE_PATH', XOOPS_ROOT_PATH . '/modules/' . \XHELP_DIR_NAME);
 \define('XHELP_CLASS_PATH', \XHELP_BASE_PATH . '/class');
 \define('XHELP_BASE_URL', \XHELP_SITE_URL . '/modules/' . \XHELP_DIR_NAME);
-//define('XHELP_UPLOAD_PATH', XOOPS_ROOT_PATH . '/uploads/' . XHELP_DIR_NAME);
+//\define('XHELP_UPLOAD_PATH', XOOPS_ROOT_PATH . '/uploads/' . XHELP_DIR_NAME);
 \define('XHELP_INCLUDE_PATH', \XHELP_BASE_PATH . '/include');
 \define('XHELP_INCLUDE_URL', \XHELP_BASE_URL . '/include');
 \define('XHELP_IMAGE_PATH', \XHELP_BASE_PATH . '/assets/images');
@@ -94,9 +89,9 @@ namespace XoopsModules\Xhelp;
 \define('XHELP_CACHE_URL', \XHELP_SITE_URL . '/cache');
 \define('XHELP_SCRIPT_URL', \XHELP_BASE_URL . '/scripts');
 \define('XHELP_FAQ_ADAPTER_PATH', \XHELP_CLASS_PATH . '/faq');
-\define('XHELP_REPORT_PATH', \XHELP_BASE_PATH . '/reports');
-\define('XHELP_REPORT_URL', \XHELP_BASE_URL . '/reports');
-\define('XHELP_RPT_RENDERER_PATH', \XHELP_CLASS_PATH . '/reportRenderer');
+\define('XHELP_REPORT_PATH', \XHELP_CLASS_PATH . '/Reports');
+\define('XHELP_REPORT_URL', \XHELP_BASE_URL . '/class/Reports');
+\define('XHELP_RPT_RENDERER_PATH', \XHELP_CLASS_PATH . '/ReportRenderer');
 
 \define('XHELP_ASSETS_PATH', \XHELP_BASE_PATH . '/assets');
 \define('XHELP_ASSETS_URL', \XHELP_BASE_URL . '/assets');

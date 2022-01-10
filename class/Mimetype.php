@@ -30,7 +30,7 @@ if (!\defined('XHELP_CLASS_PATH')) {
  * Information about an individual mimetype
  *
  * <code>
- * $mimetypeHandler = new Xhelp\MimetypeHandler($GLOBALS['xoopsDB']);
+ * $mimetypeHandler = $helper->getHandler('Mimetype');
  * $mimetype = $mimetypeHandler->get(1);
  * $mime_id = $mimetype->getVar('id');
  * </code>
@@ -41,7 +41,7 @@ class Mimetype extends \XoopsObject
 {
     /**
      * Xhelp\Mimetype constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {

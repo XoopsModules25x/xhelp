@@ -20,7 +20,7 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
 {
     /**
      * Xhelp\HtmlReportRenderer constructor.
-     * @param $report
+     * @param Report $report
      */
     public function __construct($report)
     {
@@ -32,13 +32,13 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
      * @param int $graphHeight
      * @return string
      */
-    public function render(int $graphWidth = 500, int $graphHeight = 300)
+    public function render(int $graphWidth = 500, int $graphHeight = 300): string
     {
         global $paramVals;
         $report = $this->report;
 
         if (0 == $report->getVar('hasResults')) {
-            $report->_setResults();
+            $report->setResults();
         }
         $aResults = $report->getVar('results');
 

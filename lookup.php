@@ -4,8 +4,10 @@ use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
+$helper = Xhelp\Helper::getInstance();
 
-$staffHandler = Xhelp\Helper::getInstance()->getHandler('Staff');
+/** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+$staffHandler = $helper->getHandler('Staff');
 
 //Allow only staff members to view this page
 if (!$xoopsUser) {
@@ -13,7 +15,7 @@ if (!$xoopsUser) {
 }
 
 $inadmin = 0;
-if (Request::hasVar('admin', 'REQUEST') && 1 == $_REQUEST['admin']) {
+if (Request::hasVar('admin', 'REQUEST') && 1 === $_REQUEST['admin']) {
     $inadmin = 1;
 }
 
@@ -35,15 +37,16 @@ $xoopsTpl->assign('xhelp_adminURL', XHELP_ADMIN_URL);
 
 if (Request::hasVar('search', 'POST')) {
     if (Request::hasVar('searchText', 'POST')) {
-        $text = $_POST['searchText'];
+        $text = \Xmf\Request::getString('searchText', '', 'POST');
     }
     if (Request::hasVar('subject', 'POST')) {
-        $subject = $_POST['subject'];
+        $subject = \Xmf\Request::getString('subject', '', 'POST');
     }
     $xoopsTpl->assign('xhelp_viewResults', true);
 
+    /** @var \XoopsUserHandler $userHandler */
     $userHandler = xoops_getHandler('user');
-    $criteria        = new \Criteria($subject, '%' . $text . '%', 'LIKE');
+    $criteria    = new \Criteria($subject, '%' . $text . '%', 'LIKE');
     $criteria->setSort($subject);
     $users = $userHandler->getObjects($criteria);
     foreach ($users as $user) {

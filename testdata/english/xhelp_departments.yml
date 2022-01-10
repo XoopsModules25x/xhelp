@@ -1,6 +1,4 @@
--
-    id: '1'
-    department: Service
--
-    id: '2'
-    department: Parts
+- id: '1'
+  department: Service
+- id: '2'
+  department: Parts

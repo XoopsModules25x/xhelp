@@ -11,7 +11,6 @@ namespace XoopsModules\Xhelp;
  * @depreciated
  */
 
-
 /**
  * Class TicketMailParser
  */
@@ -41,8 +40,11 @@ class TicketMailParser
     public function createTicket($mailParser, $xoopsUser, $department, $server): bool
     {
         //get ticket handler
-        $ticketHandler = new TicketHandler($GLOBALS['xoopsDB']);
-        $ticket        = $ticketHandler->create();
+        $helper = Helper::getInstance();
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = $helper->getHandler('Ticket');
+        /** @var \XoopsModules\Xhelp\Ticket $ticket */
+        $ticket = $ticketHandler->create();
 
         $ticket->setVar('uid', $xoopsUser->uid());
         $ticket->setVar('subject', $mailParser->getSubject());
@@ -67,7 +69,7 @@ class TicketMailParser
      * Returns the ticket object for this email
      * @return object {@link Ticket} Ticket Object
      */
-    public function &getTicket()
+    public function &getTicket(): object
     {
         return $this->_ticket;
     }

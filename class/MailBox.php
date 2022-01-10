@@ -17,18 +17,18 @@ namespace XoopsModules\Xhelp;
 class MailBox
 {
     /**
-     * @param     $server
-     * @param int $port
+     * @param string $server
+     * @param int    $port
      */
-    public function connect($server, $port = 110)
+    public function connect(string $server, int $port = 110)
     {
     }
 
     /**
-     * @param $username
-     * @param $password
+     * @param string $username
+     * @param string $password
      */
-    public function login($username, $password)
+    public function login(string $username, string $password)
     {
     }
 
@@ -37,30 +37,30 @@ class MailBox
     }
 
     /**
-     * @param $i
+     * @param int $i
      */
-    public function getHeaders($i)
+    public function getHeaders(int $i)
     {
     }
 
     /**
-     * @param $i
+     * @param int $i
      */
-    public function getBody($i)
+    public function getBody(int $i)
     {
     }
 
     /**
-     * @param $i
+     * @param int $i
      */
-    public function getMsg($i)
+    public function getMsg(int $i)
     {
     }
 
     /**
-     * @param $i
+     * @param int $i
      */
-    public function deleteMessage($i)
+    public function deleteMessage(int $i)
     {
     }
 

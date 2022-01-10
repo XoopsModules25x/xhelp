@@ -32,6 +32,7 @@
                 return radio.value;
             }
         }
+
         //-->
     </script>
     <link rel="stylesheet" type="text/css" media="screen" href="<{$xoops_url}>/xoops.css">

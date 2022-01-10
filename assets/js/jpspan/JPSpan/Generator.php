@@ -213,7 +213,7 @@ class JPSpan_Generator_AdHoc
         $client = $Code->toString();
 
         require_once JPSPAN . 'Include.php';
-        $I = (new JPSpan_include()))->instance(;
+        $I = (new JPSpan_include())->instance();
 
         // HACK - this needs to change
         $I->loadString(__FILE__, $client);

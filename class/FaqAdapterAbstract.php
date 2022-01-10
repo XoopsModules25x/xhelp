@@ -15,7 +15,7 @@ if (!\defined('XHELP_CLASS_PATH')) {
 /**
  * class FaqAdapterAbstract
  */
-class FaqAdapterAbstract implements FaqAdapterInterface
+abstract class FaqAdapterAbstract implements FaqAdapterInterface
 {
     public $categoryType = \XHELP_FAQ_CATEGORY_SING;
     /**
@@ -29,7 +29,7 @@ class FaqAdapterAbstract implements FaqAdapterInterface
      * url - support url for plugin
      * module_dir - module directory name (not needed if class overloads the isActive() function from FaqAdapterAbstract)
      */
-    public $meta = [
+    public $meta    = [
         'name'            => '',
         'author'          => '',
         'author_email'    => '',
@@ -38,7 +38,6 @@ class FaqAdapterAbstract implements FaqAdapterInterface
         'url'             => '',
         'module_dir'      => '',
     ];
-
     public $modname;
     public $module;
     public $helper;
@@ -54,16 +53,16 @@ class FaqAdapterAbstract implements FaqAdapterInterface
     /**
      * Stub function (does nothing)
      */
-    public function &getCategories()
+    public function &getCategories(): array
     {
     }
 
     /**
      * @return bool true (success)/false (failure)
      */
-    public function storeFaq()
+    public function storeFaq(): bool
     {
-        // Store an faq
+        // Store a Faq
         return false;
     }
 
@@ -86,18 +85,19 @@ class FaqAdapterAbstract implements FaqAdapterInterface
         $module_dir  = $this->meta['module_dir'];
         $module_name = $this->meta['name'];
 
-        if ('' == $module_dir || '' == $module_name) {      // Sanity check
+        if ('' === $module_dir || '' == $module_name) {      // Sanity check
             return false;
         }
 
         // Make sure that module is active
+        /** @var \XoopsModuleHandler $moduleHandler */
         $moduleHandler = \xoops_getHandler('module');
         $mod           = $moduleHandler->getByDirname($module_dir);
 
         if (\is_object($mod)) {
-            if ($mod->getVar('isactive')) {   // Module active?
+            if ($mod->getVar('isactive')) {                       // Module active?
                 $activeAdapter = Utility::getMeta('faq_adapter'); //TODO use this one or the one below?
-//                $activeAdapter = $module_name;
+                //                $activeAdapter = $module_name;
                 if ($activeAdapter) {
                     return true;
                 }
@@ -109,5 +109,15 @@ class FaqAdapterAbstract implements FaqAdapterInterface
         }
 
         return false;
+    }
+
+    /**
+     * Create the url going to the Faq article
+     *
+     * @param \XoopsModules\Xhelp\Xhelp\Faq $faq
+     * @return string
+     */
+    public function makeFaqUrl(Xhelp\Faq $faq): string
+    {
     }
 }

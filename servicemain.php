@@ -62,4 +62,5 @@ foreach ($myConfigs as $myConf) {
 $xoopsModule       = Xhelp\Utility::getModule();
 $xoopsModuleConfig = Xhelp\Utility::getModuleConfig();
 
+$helper = Xhelp\Helper::getInstance();
 $helper->loadLanguage('main');

@@ -1,9 +1,6 @@
--
-    metakey: version
-    metavalue: '1'
--
-    metakey: default_department
-    metavalue: '1'
--
-    metakey: default_status
-    metavalue: '1'
+- metakey: version
+  metavalue: '1'
+- metakey: default_department
+  metavalue: '1'
+- metakey: default_status
+  metavalue: '1'

@@ -14,6 +14,7 @@ function cE(t) {
     var l = d.createElement(t);
     return l;
 }
+
 function gE(n) {
     var l = xoopsGetElementById(n);
     return l;

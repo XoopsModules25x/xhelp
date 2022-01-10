@@ -293,3 +293,6 @@ define('_MI_XHELP_LICENSE', 'License');
 define('_MI_XHELP_SUPPORT', 'Support');
 
 define('_MI_XHELP_MENU_HOME', 'Home');
+
+define('MI_XHELP_MIMETYPES', 'Mime Types');
+define('MI_XHELP_MIMETYPES_DESC', 'Set the mime types selected');

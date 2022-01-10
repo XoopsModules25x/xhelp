@@ -2,6 +2,22 @@
 
 namespace XoopsModules\Xhelp\Validation;
 
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    XOOPS Project (https://xoops.org)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author       XOOPS Development Team
+ */
+
 /**
  * Class ValidateFileSize
  */
@@ -12,10 +28,10 @@ class ValidateFileSize extends Validator
 
     /**
      * ValidateFileSize constructor.
-     * @param $file
-     * @param $maxsize
+     * @param string $file
+     * @param int    $maxsize
      */
-    public function __construct($file, $maxsize)
+    public function __construct(string $file, int $maxsize)
     {
         $this->file    = $file;
         $this->maxsize = $maxsize;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
 
@@ -14,15 +14,15 @@ interface PluginInterface
     /**
      * Retrieve the specified meta field
      * @param string $var name of variable to return
-     * @return string if var is set, false if not
+     * @return string|bool if var is set, false if not
      */
-    public function getMeta($var);
+    public function getMeta(string $var);
 
     /**
-     * @param $var
-     * @param $value
+     * @param string $var
+     * @param string $value
      */
-    public function setMeta($var, $value);
+    public function setMeta(string $var, string $value);
 
     /**
      * Initialization function, triggered when a plugin is "loaded" by the system
@@ -36,10 +36,10 @@ interface PluginInterface
 
     /**
      * Add a function to be called when an event is triggered by the system
-     * @param $event_ctx
-     * @param $event_func
+     * @param string $event_ctx
+     * @param string $event_func
      */
-    public function registerEventHandler($event_ctx, $event_func);
+    public function registerEventHandler(string $event_ctx, string $event_func);
 
     /**
      * Only have 1 instance of class used

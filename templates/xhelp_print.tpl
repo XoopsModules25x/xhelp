@@ -62,7 +62,7 @@
                 <tr>
                     <td>
                         <{$smarty.const._XHELP_TEXT_OWNER}>
-                        <{if $xhelp_ticket_ownership neq ''}>
+                        <{if $xhelp_ticket_ownership|default:'' neq ''}>
                             <{$xhelp_ticket_ownership}>
                         <{else}>
                             <{$smarty.const._XHELP_NO_OWNER}>
@@ -104,7 +104,7 @@
     <tr>
         <th><{$smarty.const._XHELP_TEXT_RESPONSES}></th>
     </tr>
-    <{if $xhelp_hasResponses eq true}>
+    <{if $xhelp_hasResponses|default:false eq true}>
         <{foreach from=$xhelp_aResponses item=response}>
             <tr>
                 <td><{$response.uname}><{if $response.private eq true}> (<{$smarty.const._XHELP_TEXT_PRIVATE}>)<{/if}>

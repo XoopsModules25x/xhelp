@@ -23,10 +23,10 @@ trait VersionChecks
      * Verifies XOOPS version meets minimum requirements for this module
      * @static
      *
-     * @param null|string $requiredVer
+     * @param string|null $requiredVer
      * @return bool true if meets requirements, false if not
      */
-    public static function checkVerXoops(\XoopsModule $module = null, $requiredVer = null): bool
+    public static function checkVerXoops(\XoopsModule $module = null, string $requiredVer = null): bool
     {
         $moduleDirName      = \basename(\dirname(__DIR__, 2));
         $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
@@ -54,7 +54,7 @@ trait VersionChecks
     /**
      * Verifies PHP version meets minimum requirements for this module
      * @static
-     * @param \XoopsModule|bool|null $module
+     * @param \XoopsModule|null $module
      *
      * @return bool true if meets requirements, false if not
      */
@@ -88,7 +88,7 @@ trait VersionChecks
      * compares current module version with the latest GitHub release
      * @static
      *
-     * @return string|array info about the latest module version, if newer
+     * @return array|null info about the latest module version, if newer, or null
      */
     public static function checkVerModule(\Xmf\Module\Helper $helper, ?string $source = 'github', ?string $default = 'master'): ?array
     {
@@ -124,7 +124,9 @@ trait VersionChecks
                         $latestVersion = \str_replace('_', '', \mb_strtolower($latestVersion));
                         $latestVersion = \str_replace('final', '', \mb_strtolower($latestVersion));
                     }
-                    $moduleVersion = ($helper->getModule()->getInfo('version') . '_' . $helper->getModule()->getInfo('module_status'));
+                    $moduleVersion = ($helper->getModule()
+                                          ->getInfo('version') . '_' . $helper->getModule()
+                                          ->getInfo('module_status'));
                     //"PHP-standardized" version
                     $moduleVersion = \str_replace(' ', '', \mb_strtolower($moduleVersion));
                     //                    $moduleVersion = '1.0'; //for testing only

@@ -61,9 +61,9 @@ class JPSpan_LexerParallelRegex
      * @param string $subject   String to match against.
      * @param string $match     First matched portion of
      *                          subject.
-     * @return bool True on success.
+     * @return bool|string True on success.
      */
-    public function match($subject, &$match): bool
+    public function match($subject, &$match)
     {
         if (0 == count($this->_patterns)) {
             return false;

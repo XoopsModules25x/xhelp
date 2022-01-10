@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace XoopsModules\Xhelp;
 
 /**
@@ -20,7 +22,7 @@ interface FaqAdapterInterface
     /**
      * @return bool true (success)/false (failure)
      */
-    public function storeFaq();
+    public function storeFaq(): bool;
 
     /**
      * @return Faq object
@@ -31,4 +33,10 @@ interface FaqAdapterInterface
      * @return bool true (success) / false (failure)
      */
     public function isActive(): bool;
+
+    /**
+     * @param \XoopsModules\Xhelp\Xhelp\Faq $faq
+     * @return string
+     */
+    public function makeFaqUrl(Xhelp\Faq $faq): string;
 }

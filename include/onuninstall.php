@@ -17,7 +17,7 @@ use XoopsModules\Xhelp;
  *
  * @return bool true if ready to uninstall, false if not
  */
-function xoops_module_pre_uninstall_xhelp(\XoopsModule $module)
+function xoops_module_pre_uninstall_xhelp(\XoopsModule $module): bool
 {
     // Do some synchronization
     return true;
@@ -29,14 +29,12 @@ function xoops_module_pre_uninstall_xhelp(\XoopsModule $module)
  *
  * @return bool true if uninstallation successful, false if not
  */
-function xoops_module_uninstall_xhelp(\XoopsModule $module)
+function xoops_module_uninstall_xhelp(\XoopsModule $module): bool
 {
     require_once \dirname(__DIR__) . '/preloads/autoloader.php';
     $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
-    /** @var Xhelp\Helper $helper */
-    /** @var Xhelp\Utility $utility */
     $helper  = Xhelp\Helper::getInstance();
     $utility = new Xhelp\Utility();
     //    $configurator = new Xhelp\Common\Configurator();

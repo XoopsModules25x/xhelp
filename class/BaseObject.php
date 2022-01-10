@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * class BaseObject
  */
@@ -10,9 +9,9 @@ class BaseObject extends \XoopsObject
 {
     /**
      * create a new  object
-     * @return object {@link BaseObject}
+     * @return BaseObject {@link BaseObject}
      */
-    public function &create()
+    public function &create(): BaseObject
     {
         return new $this->classname();
     }
@@ -20,19 +19,19 @@ class BaseObject extends \XoopsObject
     /**
      * retrieve an object from the database, based on. use in child classes
      * @param int $id ID
-     * @return bool <a href='psi_element://Xhelp\Departmentemailserver'>Xhelp\Departmentemailserver</a>
+     * @return DepartmentMailBox|bool
      */
-    public function get(int $id): bool
+    public function get(int $id)
     {
         $id = $id;
         if ($id > 0) {
             $sql = $this->selectQuery(new \Criteria('id', (string)$id));
-            if (!$result = $this->_db->query($sql)) {
+            if (!$result = $this->db->query($sql)) {
                 return false;
             }
-            $numrows = $this->_db->getRowsNum($result);
+            $numrows = $this->db->getRowsNum($result);
             if (1 == $numrows) {
-                $obj = new $this->classname($this->_db->fetchArray($result));
+                $obj = new $this->classname($this->db->fetchArray($result));
 
                 return $obj;
             }
@@ -48,7 +47,7 @@ class BaseObject extends \XoopsObject
      */
     public function selectQuery(\CriteriaElement $criteria = null): string
     {
-        $sql = \sprintf('SELECT * FROM `%s`', $this->_db->prefix($this->_dbtable));
+        $sql = \sprintf('SELECT * FROM `%s`', $this->db->prefix($this->dbtable));
         if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
             if ('' != $criteria->getSort()) {
@@ -68,14 +67,14 @@ class BaseObject extends \XoopsObject
      */
     public function getCount($criteria = null): int
     {
-        $sql = 'SELECT COUNT(*) FROM ' . $this->_db->prefix($this->_dbtable);
+        $sql = 'SELECT COUNT(*) FROM ' . $this->db->prefix($this->dbtable);
         if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return 0;
         }
-        [$count] = $this->_db->fetchRow($result);
+        [$count] = $this->db->fetchRow($result);
 
         return $count;
     }
@@ -83,21 +82,22 @@ class BaseObject extends \XoopsObject
     /**
      * delete object based on id
      *
-     * @param bool $force
-     * @return bool count of objects
-     * @internal param object $criteria <a href='psi_element://CriteriaElement'>CriteriaElement</a> to match to match
+     * @param \XoopsObject $obj
+     * @param bool         $force
+     * @return bool true/false on deleting objects
+     * @internal param CriteriaElement $criteria  to match
      */
-    public function delete(\XoopsObject $obj, bool $force = false)
+    public function delete(\XoopsObject $obj, bool $force = false): bool
     {
         if (0 != \strcasecmp($this->classname, \get_class($obj))) {
             return false;
         }
 
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
-        if (false !== $force) {
-            $result = $this->_db->queryF($sql);
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $obj->getVar('id'));
+        if ($force) {
+            $result = $this->db->queryF($sql);
         } else {
-            $result = $this->_db->query($sql);
+            $result = $this->db->query($sql);
         }
         if (!$result) {
             return false;

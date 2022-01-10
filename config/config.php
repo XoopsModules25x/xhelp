@@ -84,17 +84,27 @@ return (object)[
     ],
     'renameColumns' => [//        'extcal_event' => ['from' => 'event_etablissement', 'to' => 'event_location'],
     ],
-    'moduleStats'  => [
-        'totaldepartments'     => $helper->getHandler('Department')->getCount(),
-        'totalfiles'           => $helper->getHandler('File')->getCount(),
-        'totallogmessages'     => $helper->getHandler('Logmessage')->getCount(),
-        'totalresponses'       => $helper->getHandler('File')->getCount(),
-        'totalstaff'           => $helper->getHandler('Staff')->getCount(),
-        'totalstaffreview'     => $helper->getHandler('StaffReview')->getCount(),
-        'totaltickets'         => $helper->getHandler('Ticket')->getCount(),
-        'totalroles'           => $helper->getHandler('Role')->getCount(),
-        'totalnotifications'   => $helper->getHandler('Notification')->getCount(),
-        'totalticketsolutions' => $helper->getHandler('TicketSolution')->getCount(),
+    'moduleStats'   => [
+        'totaldepartments'     => $helper->getHandler('Department')
+            ->getCount(),
+        'totalfiles'           => $helper->getHandler('File')
+            ->getCount(),
+        'totallogmessages'     => $helper->getHandler('Logmessage')
+            ->getCount(),
+        'totalresponses'       => $helper->getHandler('Response')
+            ->getCount(),
+        'totalstaff'           => $helper->getHandler('Staff')
+            ->getCount(),
+        'totalstaffreview'     => $helper->getHandler('StaffReview')
+            ->getCount(),
+        'totaltickets'         => $helper->getHandler('Ticket')
+            ->getCount(),
+        'totalroles'           => $helper->getHandler('Role')
+            ->getCount(),
+        'totalnotifications'   => $helper->getHandler('Notification')
+            ->getCount(),
+        'totalticketsolutions' => $helper->getHandler('TicketSolution')
+            ->getCount(),
 
     ],
     'modCopyright'  => "<a href='https://xoops.org' title='XOOPS Project' target='_blank'>

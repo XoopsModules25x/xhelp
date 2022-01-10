@@ -200,7 +200,8 @@ class JPSpan_Server_PostOffice extends JPSpan_Server
     {
         require_once JPSPAN . 'Generator.php';
         $G = new JPSpan_Generator();
-        $G->init(new JPSpan_PostOffice_Generator(), $this->descriptions, $this->serverUrl, $this->RequestEncoding);
+        $postofficeGenerator = new JPSpan_PostOffice_Generator();
+        $G->init($postofficeGenerator, $this->descriptions, $this->serverUrl, $this->RequestEncoding);
 
         return $G;
     }

@@ -1,13 +1,12 @@
--
-    id: '1'
-    name: Color
-    description: 'Test for Text Field'
-    fieldname: customcolor
-    controltype: '0'
-    datatype: Text
-    required: '0'
-    fieldlength: '25'
-    weight: '1'
-    fieldvalues: 'a:0:{}'
-    defaultvalue: ''
-    validation: ''
+- id: '1'
+  name: Color
+  description: 'Test for Text Field'
+  fieldname: customcolor
+  controltype: '0'
+  datatype: Text
+  required: '0'
+  fieldlength: '25'
+  weight: '1'
+  fieldvalues: 'a:0:{}'
+  defaultvalue: ''
+  validation: ''

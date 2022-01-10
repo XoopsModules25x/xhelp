@@ -224,3 +224,5 @@ $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 \define('CO_' . $moduleDirNameUpper . '_' . 'NO_REL_FOUND', 'Released Version Not Found: ');
 //rename upload folder on uninstall
 \define('CO_' . $moduleDirNameUpper . '_' . 'ERROR_FOLDER_RENAME_FAILED', 'Could not rename upload folder, please rename manually');
+
+\define('CO_' . $moduleDirNameUpper . '_' . 'BAD_TOKEN', 'Invalid token, please try again');

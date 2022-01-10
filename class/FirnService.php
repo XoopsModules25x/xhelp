@@ -21,6 +21,9 @@ class FirnService extends Service
         $this->init();
     }
 
+    /**
+     *
+     */
     public function attachEvents()
     {
         $this->attachEvent('new_faq', $this);
@@ -36,24 +39,27 @@ class FirnService extends Service
     public function new_faq(Ticket $ticket, Faq $faq): bool
     {
         global $xoopsUser;
+        $helper = Helper::getInstance();
 
         //Create a new solution from the supplied ticket / faq
-        $hTicketSol = new TicketSolutionHandler($GLOBALS['xoopsDB']);
-        $sol        = $hTicketSol->create();
+        /** @var \XoopsModules\Xhelp\TicketSolutionHandler $ticketSolutionHandler */
+        $ticketSolutionHandler = $helper->getHandler('TicketSolution');
+        /** @var \XoopsModules\Xhelp\TicketSolution $ticketSolution */
+        $ticketSolution = $ticketSolutionHandler->create();
 
-        $sol->setVar('ticketid', $ticket->getVar('id'));
-        $sol->setVar('url', $faq->getVar('url'));
-        $sol->setVar('title', $faq->getVar('subject'));
-        $sol->setVar('uid', $xoopsUser->getVar('uid'));
+        $ticketSolution->setVar('ticketid', $ticket->getVar('id'));
+        $ticketSolution->setVar('url', $faq->getVar('url'));
+        $ticketSolution->setVar('title', $faq->getVar('subject'));
+        $ticketSolution->setVar('uid', $xoopsUser->getVar('uid'));
 
-        return $hTicketSol->addSolution($ticket, $sol);
+        return $ticketSolutionHandler->addSolution($ticket, $ticketSolution);
     }
 
     /**
      * Only have 1 instance of class used
-     * @return EventService {@link EventService}
+     * @return Service {@link Service}
      */
-    public static function getInstance()
+    public static function getInstance(): Service
     {
         static $instance;
         if (null === $instance) {

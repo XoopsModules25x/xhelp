@@ -39,7 +39,7 @@ class RoleHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_roles';
+    public $dbtable = 'xhelp_roles';
 
     /**
      * Constructor
@@ -48,48 +48,51 @@ class RoleHandler extends BaseObjectHandler
      */
     public function __construct(\XoopsDatabase $db = null)
     {
+        $this->helper = Helper::getInstance();
         parent::init($db);
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('INSERT INTO `%s` (id, NAME, description, tasks) VALUES (%u, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($name), $this->_db->quoteString($description), $tasks);
+        $sql = \sprintf('INSERT INTO `%s` (id, NAME, description, tasks) VALUES (%u, %s, %s, %u)', $this->db->prefix($this->dbtable), $id, $this->db->quoteString($name), $this->db->quoteString($description), $tasks);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('UPDATE `%s` SET NAME = %s, description = %s, tasks = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($name), $this->_db->quoteString($description), $tasks, $id);
+        $sql = \sprintf('UPDATE `%s` SET NAME = %s, description = %s, tasks = %u WHERE id = %u', $this->db->prefix($this->dbtable), $this->db->quoteString($name), $this->db->quoteString($description), $tasks, $id);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }
@@ -97,31 +100,31 @@ class RoleHandler extends BaseObjectHandler
     /**
      * delete a role from the database
      *
-     * @param \XoopsObject $obj       reference to the {@link Role}
+     * @param \XoopsObject $object    reference to the {@link Role}
      *                                obj to delete
      * @param bool         $force
      * @return bool FALSE if failed.
      */
-    public function delete(\XoopsObject $obj, bool $force = false)
+    public function delete(\XoopsObject $object, $force = false): bool
     {
         // Remove staff roles from db first
-        $staffRoleHandler = new StaffRoleHandler($GLOBALS['xoopsDB']);
-        if (!$staffRoleHandler->deleteAll(new \Criteria('roleid', $obj->getVar('id')))) {
+        $staffRoleHandler = $this->helper->getHandler('StaffRole');
+        if (!$staffRoleHandler->deleteAll(new \Criteria('roleid', $object->getVar('id')))) {
             return false;
         }
 
-        $ret = parent::delete($obj, $force);
+        $ret = parent::delete($object, $force);
 
         return $ret;
     }
 
     /**
-     * @param $task
+     * @param int $task
      * @return array
      */
-    public function getRolesByTask($task): array
+    public function getRolesByTask(int $task): array
     {
-        $task = (int)$task;
+        $task = $task;
 
         // Get all roles
         $roles = $this->getObjects();

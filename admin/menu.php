@@ -16,8 +16,13 @@ $helper->loadLanguage('feedback');
 
 $pathIcon32    = Admin::menuIconPath('');
 $pathModIcon32 = XOOPS_URL . '/modules/' . $moduleDirName . '/assets/images/icons/32/';
-if (is_object($helper->getModule()) && false !== $helper->getModule()->getInfo('modicons32')) {
-    $pathModIcon32 = $helper->url($helper->getModule()->getInfo('modicons32'));
+if (is_object($helper->getModule())
+    && false !== $helper->getModule()
+        ->getInfo('modicons32')) {
+    $pathModIcon32 = $helper->url(
+        $helper->getModule()
+            ->getInfo('modicons32')
+    );
 }
 
 $adminmenu[] = [
@@ -39,12 +44,6 @@ $adminmenu[] = [
 ];
 
 $adminmenu[] = [
-    'title' => _MI_XHELP_MENU_MANAGE_FILES,
-    'link'  => 'admin/file.php?op=manageFiles',
-    'icon'  => $pathIcon32 . '/content.png',
-];
-
-$adminmenu[] = [
     'title' => _MI_XHELP_MENU_MANAGE_STAFF,
     'link'  => 'admin/staff.php?op=manageStaff',
     'icon'  => $pathIcon32 . '/users.png',
@@ -54,6 +53,12 @@ $adminmenu[] = [
     'title' => _MI_XHELP_TEXT_NOTIFICATIONS,
     'link'  => 'admin/notifications.php',
     'icon'  => $pathIcon32 . '/face-smile.png',
+];
+
+$adminmenu[] = [
+    'title' => _MI_XHELP_MENU_MANAGE_FILES,
+    'link'  => 'admin/file.php?op=manageFiles',
+    'icon'  => $pathIcon32 . '/content.png',
 ];
 
 $adminmenu[] = [
@@ -97,6 +102,13 @@ $adminmenu[] = [
     'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'BLOCKS'),
     'link'  => 'admin/blocksadmin.php',
     'icon'  => $pathIcon32 . '/block.png',
+];
+
+//Clone
+$adminmenu[] = [
+    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'CLONE'),
+    'link'  => 'admin/clone.php',
+    'icon'  => $pathIcon32 . '/page_copy.png',
 ];
 
 $adminmenu[] = [

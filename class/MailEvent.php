@@ -33,7 +33,7 @@ class MailEvent extends \XoopsObject
 {
     /**
      * Xhelp\MailEvent constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
@@ -56,7 +56,7 @@ class MailEvent extends \XoopsObject
      * @param string $format
      * @return string
      */
-    public function posted($format = 'l'): string
+    public function posted(string $format = 'l'): string
     {
         return \formatTimestamp($this->getVar('posted'), $format);
     }

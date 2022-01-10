@@ -4,19 +4,25 @@ namespace XoopsModules\Xhelp\Reports;
 
 use Criteria;
 use XoopsModules\Xhelp;
+use Amenadiel\JpGraph;
+use Amenadiel\JpGraph\Plot;
+use Amenadiel\JpGraph\Text;
+use Amenadiel\JpGraph\Util;
 
-require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
-require_once \XHELP_JPGRAPH_PATH . '/jpgraph_bar.php'; // añado para ver si funciona <====================18/03/2010
+//require_once \XHELP_JPGRAPH_PATH . '/jpgraph.php';
+//require_once \XHELP_JPGRAPH_PATH . '/jpgraph_bar.php'; // añado para ver si funciona <====================18/03/2010
 // require_once XHELP_CLASS_PATH . '/report.php';
-Xhelp\Utility::includeReportLangFile('departmentSummary');
+Xhelp\Utility::includeReportLangFile('reports/departmentSummary');
 
 global $xoopsDB, $paramVals;
 
-$startDate = \date('m/d/y h:i:s A', \mktime(0, 0, 0, \date('m') - 1, \date('d'), \date('Y')));
+$startDate = \date('m/d/y h:i:s A', \mktime(0, 0, 0, \date('m') - 1, (int)\date('d'), (int)\date('Y')));
 $endDate   = \date('m/d/y') . ' 12:00:00 AM';
 
-$departmentHandler = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-$criteria              = new \Criteria('', '');
+$helper = Xhelp\Helper::getInstance();
+/** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+$departmentHandler = $helper->getHandler('Department');
+$criteria          = new \Criteria('', '');
 $criteria->setSort('department');
 $criteria->setOrder('ASC');
 $departments = $departmentHandler->getObjects($criteria, true);
@@ -55,7 +61,7 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
         $this->initVar('hasGraph', \XOBJ_DTYPE_INT, 1, false);
     }
 
-    public $name       = 'departmentSummary';
+    public $name       = 'departmentSummaryReport';
     public $meta       = [
         'name'        => \_XHELP_DS_NAME,
         'author'      => 'Eric Juden',
@@ -104,7 +110,7 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
      global $paramVals;
 
      if ($this->getVar('hasResults') == 0) {
-     $this->_setResults();
+     $this->setResults();
      }
      $aResults = $this->getVar('results');
 
@@ -180,14 +186,14 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
     /**
      * @return bool
      */
-    public function generateGraph()
+    public function generateGraph(): bool
     {
         if (0 == $this->getVar('hasGraph')) {
             return false;
         }
 
         if (0 == $this->getVar('hasResults')) {
-            $this->_setResults();
+            $this->setResults();
         }
         $aResults = $this->getVar('results');
 
@@ -199,12 +205,13 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
         }
 
         $this->generateStackedBarGraph($data, 0, \XHELP_IMAGE_PATH . '/graph_bg.jpg', ['red', 'green', 'orange']);
+        return true;
     }
 
     /**
      * @return bool
      */
-    public function _setResults()
+    public function setResults(): bool
     {
         global $xoopsDB;
 
@@ -227,7 +234,7 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
         $result  = $xoopsDB->queryF($sSQL);
         $result2 = $xoopsDB->queryF($sSQL2);
 
-        $aResults = $this->_arrayFromData([$result, $result2]);
+        $aResults = $this->arrayFromData([$result, $result2]);
 
         $this->setVar('results', \serialize($aResults));
         $this->setVar('hasResults', 1);
@@ -236,17 +243,17 @@ class DepartmentSummaryReport extends Xhelp\Reports\Report
     }
 
     /**
-     * @param $dResult
+     * @param mysqli_result $dResult
      * @return array
      */
-    public function _arrayFromData($dResult)
+    public function arrayFromData(mysqli_result $dResult): array
     {
         global $xoopsDB;
 
         $aResults = [];
 
         foreach ($dResult as $dRes) {
-            if (\count($xoopsDB->getRowsNum($dRes)) > 0) {      // Has data?
+            if (is_countable($dRes) && \count($xoopsDB->getRowsNum($dRes)) > 0) {      // Has data?
                 $i        = 0;
                 $dbFields = $this->meta['dbFields'];
                 while (false !== ($myrow = $xoopsDB->fetchArray($dRes))) {    // Loop through each db record

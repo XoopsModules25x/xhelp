@@ -2,6 +2,22 @@
 
 namespace XoopsModules\Xhelp\Validation;
 
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    XOOPS Project (https://xoops.org)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author       XOOPS Development Team
+ */
+
 /**
  *  ValidatorEmail subclass of Validator
  *  Validates an email address
@@ -19,7 +35,7 @@ class ValidateEmail extends Validator
      * Constructs a new ValidateEmail object subclass or Validator
      * @param string $email the string to validate
      */
-    public function __construct($email)
+    public function __construct(string $email)
     {
         $this->email = $email;
         parent::__construct();

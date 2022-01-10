@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
@@ -13,15 +12,20 @@ if (!\defined('XHELP_CLASS_PATH')) {
 class ReportFactory
 {
     /**
-     * @param $name
+     * @param string $name
      * @return bool
      */
-    public function getReport($name): bool
+    public function getReport(string $name): bool
     {
         $report = false;
         if ('' != $name) {
-            $classname = 'xhelp' . \ucfirst($name) . 'Report';
-            require_once \XHELP_REPORT_PATH . "/$name.php";
+            //            $classname = 'xhelp' . \ucfirst($name) . 'Report';
+            //            require_once \XHELP_REPORT_PATH . "/$name.php";
+            $classname = __NAMESPACE__ . '\Reports\\' . \ucfirst($name);
+            if (!\class_exists($classname)) {
+                throw new \RuntimeException("Class '$classname' not found");
+            }
+
             $report = new $classname();
         }
 
@@ -48,13 +52,21 @@ class ReportFactory
 
                     // Check that class exists in file
                     //                    $report_data = implode('', file(XHELP_REPORT_PATH . '/' . $file));
-                    $report_data = file_get_contents(\XHELP_REPORT_PATH . '/' . $file);
-                    $classname   = 'xhelp' . \ucfirst($filename) . 'Report';
-                    if (\preg_match("|class $classname(.*)|i", $report_data) > 0) {
-                        require_once \XHELP_REPORT_PATH . "/$file";
+                    //                    $report_data = file_get_contents(\XHELP_REPORT_PATH . '/' . $file);
+                    //                    $classname   = 'xhelp' . \ucfirst($filename) . 'Report';
+                    //                    if (\preg_match("|class $classname(.*)|i", $report_data) > 0) {
+                    //                        require_once \XHELP_REPORT_PATH . "/$file";
+                    //                        $aReports[$filename] = new $classname();
+                    //                    }
+                    //                    unset($report_data);
+
+                    if (false !== \strpos($filename, 'Report')) {
+                        $classname = __NAMESPACE__ . '\Reports\\' . \ucfirst($filename);
+                        if (!\class_exists($classname)) {
+                            throw new \RuntimeException("Class '$classname' not found");
+                        }
                         $aReports[$filename] = new $classname();
                     }
-                    unset($report_data);
                 }
             }
         }

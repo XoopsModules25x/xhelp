@@ -44,7 +44,7 @@ class FileHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_files';
+    public $dbtable = 'xhelp_files';
 
     /**
      * Constructor
@@ -57,58 +57,61 @@ class FileHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('INSERT INTO `%s` (id, filename, ticketid, responseid, mimetype) VALUES (%u, %s, %u, %d, %s)', $this->_db->prefix($this->_dbtable), $id, $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype));
+        $sql = \sprintf('INSERT INTO `%s` (id, filename, ticketid, responseid, mimetype) VALUES (%u, %s, %u, %d, %s)', $this->db->prefix($this->dbtable), $id, $this->db->quoteString($filename), $ticketid, $responseid, $this->db->quoteString($mimetype));
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('UPDATE `%s` SET filename = %s, ticketid = %u, responseid = %d, mimetype = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $this->_db->quoteString($filename), $ticketid, $responseid, $this->_db->quoteString($mimetype), $id);
+        $sql = \sprintf('UPDATE `%s` SET filename = %s, ticketid = %u, responseid = %d, mimetype = %s WHERE id = %u', $this->db->prefix($this->dbtable), $this->db->quoteString($filename), $ticketid, $responseid, $this->db->quoteString($mimetype), $id);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }
 
     /**
-     * @param bool $force
+     * @param \XoopsObject|File $object
+     * @param bool              $force
      * @return bool
      */
-    public function delete(\XoopsObject $obj, bool $force = false)
+    public function delete(\XoopsObject $object, $force = false): bool
     {
-        if (!$this->unlinkFile($obj->getFilePath())) {
+        if (!$this->unlinkFile($object->getFilePath())) {
             return false;
         }
-        $ret = parent::delete($obj, $force);
+        $ret = parent::delete($object, $force);
 
         return $ret;
     }
@@ -119,18 +122,18 @@ class FileHandler extends BaseObjectHandler
      * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link \CriteriaElement}
      * @return bool   FALSE if deletion failed
      */
-    public function deleteAll($criteria = null)
+    public function deleteAll(\CriteriaElement $criteria = null, $force = true, $asObject = false): bool
     {
         $files = $this->getObjects($criteria);
         foreach ($files as $file) {
             $this->unlinkFile($file->getFilePath());
         }
 
-        $sql = 'DELETE FROM ' . $this->_db->prefix($this->_dbtable);
+        $sql = 'DELETE FROM ' . $this->db->prefix($this->dbtable);
         if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result = $this->_db->queryF($sql)) {
+        if (!$result = $this->db->queryF($sql)) {
             return false;
         }
 
@@ -138,10 +141,10 @@ class FileHandler extends BaseObjectHandler
     }
 
     /**
-     * @param $file
+     * @param string $file
      * @return bool
      */
-    public function unlinkFile($file): bool
+    public function unlinkFile(string $file): bool
     {
         $ret = false;
         if (\is_file($file)) {

@@ -10,11 +10,11 @@ use XoopsModules\Xhelp;
 /**
  * Check the status of the supplied directory
  * Thanks to the NewBB2 Development Team and SmartFactory
- * @param string     $path
- * @param bool $getStatus
+ * @param string $path
+ * @param bool   $getStatus
  * @return int|string
  */
-function xhelp_admin_getPathStatus(string $path, $getStatus = false)
+function xhelp_admin_getPathStatus(string $path, bool $getStatus = false)
 {
     if (empty($path)) {
         return false;
@@ -23,12 +23,12 @@ function xhelp_admin_getPathStatus(string $path, $getStatus = false)
     if (@is_writable($path)) {
         $pathCheckResult = 1;
         $path_status     = _AM_XHELP_PATH_AVAILABLE;
-    } elseif (!@is_dir($path)) {
-        $pathCheckResult = -1;
-        $path_status     = _AM_XHELP_PATH_NOTAVAILABLE . " [<a href=main.php?op=createdir&amp;path=$url_path>" . _AM_XHELP_TEXT_CREATETHEDIR . '</a>]';
-    } else {
+    } elseif (@is_dir($path)) {
         $pathCheckResult = -2;
         $path_status     = _AM_XHELP_PATH_NOTWRITABLE . " [<a href=main.php?op=setperm&amp;path=$url_path>" . _AM_XHELP_TEXT_SETPERM . '</a>]';
+    } else {
+        $pathCheckResult = -1;
+        $path_status     = _AM_XHELP_PATH_NOTAVAILABLE . " [<a href=main.php?op=createdir&amp;path=$url_path>" . _AM_XHELP_TEXT_CREATETHEDIR . '</a>]';
     }
     if (!$getStatus) {
         return $path_status;
@@ -39,15 +39,15 @@ function xhelp_admin_getPathStatus(string $path, $getStatus = false)
 
 /**
  * Thanks to the NewBB2 Development Team and SmartFactory
- * @param $target
+ * @param string $target
  * @return bool
  */
-function xhelp_admin_mkdir($target)
+function xhelp_admin_mkdir(string $target): bool
 {
     // https://www.php.net/manual/en/function.mkdir.php
     // saint at corenova.com
     // bart at cdasites dot com
-    if (is_dir($target) || empty($target)) {
+    if (empty($target) || is_dir($target)) {
         return true;
     } // best case check first
     if (is_dir($target) && !is_dir($target)) {
@@ -64,11 +64,11 @@ function xhelp_admin_mkdir($target)
 
 /**
  * Thanks to the NewBB2 Development Team and SmartFactory
- * @param     $target
- * @param int $mode
+ * @param string $target
+ * @param int    $mode
  * @return bool
  */
-function xhelp_admin_chmod($target, $mode = 0777)
+function xhelp_admin_chmod(string $target, int $mode = 0777): bool
 {
     return @chmod($target, $mode);
 }
@@ -78,14 +78,17 @@ function xhelp_admin_chmod($target, $mode = 0777)
  * @param bool   $getResolved
  * @return string
  */
-function xhelpDirsize($dirName = '.', $getResolved = false)
+function xhelpDirsize(string $dirName = '.', bool $getResolved = false): string
 {
-    $dir  = dir($dirName);
-    $size = 0;
+    $helper = Xhelp\Helper::getInstance();
+    $dir    = dir($dirName);
+    $size   = 0;
 
     if ($getResolved) {
-        $ticketHandler = Xhelp\Helper::getInstance()->getHandler('Ticket');
-        $fileHandler   = Xhelp\Helper::getInstance()->getHandler('File');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = $helper->getHandler('Ticket');
+        /** @var \XoopsModules\Xhelp\FileHandler $fileHandler */
+        $fileHandler = $helper->getHandler('File');
 
         $tickets = $ticketHandler->getObjectsByState(1);
 
@@ -95,9 +98,9 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
         }
 
         // Retrieve all unresolved ticket attachments
-        $criteria   = new \Criteria('ticketid', '(' . implode(',', $aTickets) . ')', 'IN');
-        $files  = $fileHandler->getObjects($criteria);
-        $aFiles = [];
+        $criteria = new \Criteria('ticketid', '(' . implode(',', $aTickets) . ')', 'IN');
+        $files    = $fileHandler->getObjects($criteria);
+        $aFiles   = [];
         foreach ($files as $f) {
             $aFiles[$f->getVar('id')] = $f->getVar('filename');
         }
@@ -106,7 +109,8 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
     while ($file = $dir->read()) {
         if ('.' !== $file && '..' !== $file) {
             if (is_dir($file)) {
-                $size += dirsize($dirName . '/' . $file);
+                //                $size += dirsize($dirName . '/' . $file);
+                $size += disk_total_space($dirName . '/' . $file);
             } else {
                 if ($getResolved) {
                     if (!in_array($file, $aFiles)) {     // Skip unresolved files
@@ -124,10 +128,10 @@ function xhelpDirsize($dirName = '.', $getResolved = false)
 }
 
 /**
- * @param $control
+ * @param string $control
  * @return mixed
  */
-function xhelpGetControlLabel($control)
+function xhelpGetControlLabel(string $control)
 {
     $controlArr = xhelpGetControl($control);
     if ($controlArr) {
@@ -138,10 +142,10 @@ function xhelpGetControlLabel($control)
 }
 
 /**
- * @param $control
- * @return bool|mixed
+ * @param string $control
+ * @return bool|array
  */
-function xhelpGetControl($control)
+function xhelpGetControl(string $control)
 {
     $controls = xhelpGetControlArray();
 
@@ -151,7 +155,7 @@ function xhelpGetControl($control)
 /**
  * @return array
  */
-function &xhelpGetControlArray()
+function &xhelpGetControlArray(): array
 {
     $ret = [
         XHELP_CONTROL_TXTBOX   => [
@@ -199,10 +203,10 @@ function &xhelpGetControlArray()
 }
 
 /**
- * @param        $err_arr
+ * @param array  $err_arr
  * @param string $reseturl
  */
-function xhelpRenderErrors($err_arr, $reseturl = '')
+function xhelpRenderErrors(array $err_arr, string $reseturl = '')
 {
     if ($err_arr && is_array($err_arr)) {
         echo '<div id="readOnly" class="errorMsg" style="border:1px solid #D24D00; background:#FEFECC url(' . XHELP_IMAGE_URL . '/important-32.png) no-repeat 7px 50%;color:#333;padding-left:45px;">';
@@ -229,10 +233,10 @@ function xhelpRenderErrors($err_arr, $reseturl = '')
 }
 
 /**
- * @param $string
+ * @param string $string
  * @return string
  */
-function removeAccents($string)
+function removeAccents(string $string): string
 {
     $chars['in']  = chr(128)
                     . chr(131)
@@ -333,12 +337,12 @@ function removeAccents($string)
 }
 
 /**
- * @param $Str
+ * @param array $str
  * @return bool
  */
-function seemsUtf8($Str)
+function seemsUtf8(array $str): bool
 { # by bmorel at ssi dot fr
-    foreach ($Str as $i => $iValue) {
+    foreach ($str as $i => $iValue) {
         if (ord($iValue) < 0x80) {
             continue;
         } # 0bbbbbbb
@@ -361,7 +365,7 @@ function seemsUtf8($Str)
             return false;
         } # Does not match any model
         for ($j = 0; $j < $n; ++$j) { # n bytes matching 10bbbbbb follow ?
-            if ((++$i == mb_strlen($Str)) || (0x80 != (ord($Str[$i]) & 0xC0))) {
+            if ((++$i == mb_strlen($str)) || (0x80 != (ord($str[$i]) & 0xC0))) {
                 return false;
             }
         }
@@ -371,10 +375,10 @@ function seemsUtf8($Str)
 }
 
 /**
- * @param $field
+ * @param string $field
  * @return string
  */
-function sanitizeFieldName($field)
+function sanitizeFieldName(string $field): string
 {
     $field = removeAccents($field);
     $field = \mb_strtolower($field);
@@ -391,10 +395,14 @@ function sanitizeFieldName($field)
 /**
  * @return bool
  */
-function xhelpCreateDepartmentVisibility()
+function xhelpCreateDepartmentVisibility(): bool
 {
-    $departmentHandler = Xhelp\Helper::getInstance()->getHandler('Department');
-    $groupHandler      = xoops_getHandler('group');
+    $helper = Xhelp\Helper::getInstance();
+
+    /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+    $departmentHandler = $helper->getHandler('Department');
+    /** @var \XoopsGroupHandler $groupHandler */
+    $groupHandler = xoops_getHandler('group');
     /** @var \XoopsGroupPermHandler $grouppermHandler */
     $grouppermHandler = xoops_getHandler('groupperm');
     $xoopsModule      = Xhelp\Utility::getModule();

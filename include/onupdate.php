@@ -28,13 +28,11 @@ if ((!defined('XOOPS_ROOT_PATH')) || !($GLOBALS['xoopsUser'] instanceof \XoopsUs
  *
  * @return bool true if ready to install, false if not
  */
-function xoops_module_pre_update_xhelp(\XoopsModule $module)
+function xoops_module_pre_update_xhelp(\XoopsModule $module): bool
 {
     $moduleDirName = \basename(\dirname(__DIR__));
-    /** @var Xhelp\Helper $helper */
-    /** @var Xhelp\Utility $utility */
-    $helper  = Xhelp\Helper::getInstance();
-    $utility = new Xhelp\Utility();
+    $helper        = Xhelp\Helper::getInstance();
+    $utility       = new Xhelp\Utility();
 
     $xoopsSuccess = $utility::checkVerXoops($module);
     $phpSuccess   = $utility::checkVerPhp($module);
@@ -49,13 +47,11 @@ function xoops_module_pre_update_xhelp(\XoopsModule $module)
  *
  * @return bool true if update successful, false if not
  */
-function xoops_module_update_xhelp(\XoopsModule $module, $previousVersion = null)
+function xoops_module_update_xhelp(\XoopsModule $module, $previousVersion = null): bool
 {
     $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
-    /** @var Xhelp\Helper $helper */ /** @var Xhelp\Utility $utility */
-    /** @var Xhelp\Common\Configurator $configurator */
     $helper       = Xhelp\Helper::getInstance();
     $utility      = new Xhelp\Utility();
     $configurator = new Xhelp\Common\Configurator();

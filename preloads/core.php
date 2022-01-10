@@ -22,10 +22,59 @@ class XhelpCorePreload extends \XoopsPreloadItem
 {
     // to add PSR-4 autoloader
     /**
-     * @param $args
+     * @param array|null $args
      */
-    public static function eventCoreIncludeCommonEnd($args)
+    public static function eventCoreIncludeCommonEnd(?array $args)
     {
         require_once __DIR__ . '/autoloader.php';
+    }
+
+    /**
+     * eventCoreIncludeCommonAuthSuccess
+     */
+    public static function eventCoreIncludeCommonAuthSuccess(): void
+    {
+        $autoloader = dirname(__DIR__) . '/vendor/autoload.php';
+        if (!is_file($autoloader)) {
+            trigger_error("xhelp/vendor/autoload.php not found, was 'composer install' done?");
+
+            return;
+        }
+        //        xoops_loadLanguage('logger');
+        require_once $autoloader;
+        //        $permissionHelper = new Permission('xwhoops25');
+        //        if ($permissionHelper) {
+        //            $permissionName   = 'use_xwhoops';
+        //            $permissionItemId = 0;
+        //
+        //            if ($permissionHelper->checkPermission($permissionName, $permissionItemId, false)) {
+        //                $whoops  = new \Whoops\Run();
+        //                $handler = new \Whoops\Handler\PrettyPageHandler();
+        //                $whoops->pushHandler($handler);
+        //                $whoops->register();
+        //                $handler->addDataTableCallback(
+        //                    _LOGGER_QUERIES,
+        //                    function () {
+        //                        $logger = XoopsLogger::getInstance();
+        //                        if (false === $logger->renderingEnabled) {
+        //                            return ['XoopsLogger' => 'off'];  // logger is off so data is incomplete
+        //                        }
+        //                        $queries = [];
+        //                        $count   = 1;
+        //                        foreach ($logger->queries as $key => $q) {
+        //                            $error     = (null === $q['errno'] ? '' : $q['errno'] . ' ') . (null === $q['error'] ? '' : $q['error']);
+        //                            $queryTime = isset($q['query_time']) ? sprintf('%0.6f', $q['query_time']) : '';
+        //                            $queryKey  = (string)$count++ . ' - ' . $queryTime;
+        //                            if (null !== $q['errno']) {
+        //                                $queryKey = (string)$count . ' - Error';
+        //                            }
+        //                            $queries[$queryKey] = htmlentities($q['sql']) . ' ' . $error;
+        //                        }
+        //
+        //                        return ($queries);
+        //                    }
+        //                );
+        //            }
+        //        }
     }
 }

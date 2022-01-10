@@ -43,7 +43,7 @@ class SavedSearchHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_saved_searches';
+    public $dbtable = 'xhelp_saved_searches';
 
     /**
      * Constructor
@@ -56,56 +56,58 @@ class SavedSearchHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('INSERT INTO `%s` (id, uid, NAME, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields);
+        $sql = \sprintf('INSERT INTO `%s` (id, uid, NAME, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)', $this->db->prefix($this->dbtable), $id, $uid, $this->db->quoteString($name), $this->db->quoteString($search), $this->db->quoteString($pagenav_vars), $hasCustFields);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('UPDATE `%s` SET uid = %d, NAME = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields, $id);
+        $sql = \sprintf('UPDATE `%s` SET uid = %d, NAME = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u', $this->db->prefix($this->dbtable), $uid, $this->db->quoteString($name), $this->db->quoteString($search), $this->db->quoteString($pagenav_vars), $hasCustFields, $id);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }
 
     /**
-     * @param      $uid
+     * @param int  $uid
      * @param bool $has_global
      * @return array
      */
-    public function getByUid($uid, $has_global = false): array
+    public function getByUid(int $uid, bool $has_global = false): array
     {
-        $uid = (int)$uid;
+        $uid = $uid;
         if ($has_global) {
             $criteria = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
             $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID), 'OR');
@@ -120,7 +122,7 @@ class SavedSearchHandler extends BaseObjectHandler
     }
 
     /**
-     * @param $criteria
+     * @param \CriteriaElement|\CriteriaCompo $criteria
      * @return string
      */
     public function createSQL($criteria): string
@@ -136,13 +138,13 @@ class SavedSearchHandler extends BaseObjectHandler
      * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link \CriteriaElement}
      * @return bool   FALSE if deletion failed
      */
-    public function deleteAll($criteria = null)
+    public function deleteAll(\CriteriaElement $criteria = null, $force = true, $asObject = false): bool
     {
-        $sql = 'DELETE FROM ' . $this->_db->prefix($this->_dbtable);
+        $sql = 'DELETE FROM ' . $this->db->prefix($this->dbtable);
         if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return false;
         }
 

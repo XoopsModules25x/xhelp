@@ -18,7 +18,6 @@ namespace XoopsModules\Xhelp;
  * @author       XOOPS Development Team
  */
 
-
 if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
@@ -41,77 +40,79 @@ class TicketFieldHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_ticket_fields';
-    public $id       = 'id';
+    public $dbtable = 'xhelp_ticket_fields';
+    public $id      = 'id';
 
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
         parent::init($db);
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'INSERT INTO `%s` (id, NAME, description, fieldname, controltype, datatype, required, fieldlength, weight, fieldvalues, defaultvalue, VALIDATION)
             VALUES (%u, %s, %s, %s, %u, %s, %u, %u, %s, %s, %s, %s)',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $id,
-            $this->_db->quoteString($name),
-            $this->_db->quoteString($description),
-            $this->_db->quoteString($fieldname),
+            $this->db->quoteString($name),
+            $this->db->quoteString($description),
+            $this->db->quoteString($fieldname),
             $controltype,
-            $this->_db->quoteString($datatype),
+            $this->db->quoteString($datatype),
             $required,
             $fieldlength,
             $weight,
-            $this->_db->quoteString($fieldvalues),
-            $this->_db->quoteString($defaultvalue),
-            $this->_db->quoteString($validation)
+            $this->db->quoteString($fieldvalues),
+            $this->db->quoteString($defaultvalue),
+            $this->db->quoteString($validation)
         );
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'UPDATE `%s` SET NAME = %s, description = %s, fieldname = %s, controltype = %u, datatype = %s, required = %u, fieldlength = %u, weight = %u, fieldvalues = %s,
             defaultvalue = %s, VALIDATION = %s WHERE id = %u',
-            $this->_db->prefix($this->_dbtable),
-            $this->_db->quoteString($name),
-            $this->_db->quoteString($description),
-            $this->_db->quoteString($fieldname),
+            $this->db->prefix($this->dbtable),
+            $this->db->quoteString($name),
+            $this->db->quoteString($description),
+            $this->db->quoteString($fieldname),
             $controltype,
-            $this->_db->quoteString($datatype),
+            $this->db->quoteString($datatype),
             $required,
             $fieldlength,
             $weight,
-            $this->_db->quoteString($fieldvalues),
-            $this->_db->quoteString($defaultvalue),
-            $this->_db->quoteString($validation),
+            $this->db->quoteString($fieldvalues),
+            $this->db->quoteString($defaultvalue),
+            $this->db->quoteString($validation),
             $id
         );
 
@@ -119,52 +120,54 @@ class TicketFieldHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar($this->id));
 
         return $sql;
     }
 
     /**
-     * @param bool $force
+     * @param \XoopsObject $object
+     * @param bool         $force
      * @return bool
      */
-    public function insert(\XoopsObject $obj, bool $force = false)
+    public function insert(\XoopsObject $object, $force = true): bool
     {
-        $ticketFieldDepartmentHandler = new TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
-        if (!$obj->isNew()) {
-            $old_obj = $this->get($obj->getVar('id'));
+        /** @var \XoopsModules\Xhelp\TicketFieldDepartmentHandler $ticketFieldDepartmentHandler */
+        $ticketFieldDepartmentHandler = $this->helper->getHandler('TicketFieldDepartment');
+        if ($object->isNew()) {
+            $add_field = true;
+            $fieldname = $object->getVar('fieldname');
+        } else {
+            $old_obj = $this->get($object->getVar('id'));
 
             $old_name = $old_obj->getVar('fieldname');
-            $new_name = $obj->getVar('fieldname');
+            $new_name = $object->getVar('fieldname');
 
             $add_field   = false;
             $alter_table = ($old_name != $new_name)
-                           || ($old_obj->getVar('fieldlength') != $obj->getVar('fieldlength'))
-                           || ($old_obj->getVar('controltype') != $obj->getVar('controltype'))
-                           || ($old_obj->getVar('datatype') != $obj->getVar('datatype'));
-        } else {
-            $add_field = true;
-            $fieldname = $obj->getVar('fieldname');
+                           || ($old_obj->getVar('fieldlength') != $object->getVar('fieldlength'))
+                           || ($old_obj->getVar('controltype') != $object->getVar('controltype'))
+                           || ($old_obj->getVar('datatype') != $object->getVar('datatype'));
         }
 
         //Store base object
-        $ret = parent::insert($obj, $force);
+        $ret = parent::insert($object, $force);
         if ($ret) {
             //Update Joiner Records
-            $ret2 = $ticketFieldDepartmentHandler->removeFieldFromAllDept($obj->getVar('id'));
+            $ret2 = $ticketFieldDepartmentHandler->removeFieldFromAllDept($object->getVar('id'));
 
-            $depts = $obj->getDepartments();
+            $depts = $object->getDepartments();
 
             if (\count($depts)) {
-                $ret = $ticketFieldDepartmentHandler->addDepartmentToField($depts, $obj->getVar('id'));
+                $ret = $ticketFieldDepartmentHandler->addDepartmentToField($depts, $object->getVar('id'));
             }
 
-            $mysql = $this->_mysqlDBType($obj);
+            $mysql = $this->mysqlDBType($object);
 
             if ($add_field) {
                 Utility::addDBField('xhelp_ticket_values', $fieldname, $mysql['fieldtype'], $mysql['length']);
@@ -177,49 +180,53 @@ class TicketFieldHandler extends BaseObjectHandler
     }
 
     /**
-     * @param bool $force
+     * @param \XoopsObject $object
+     * @param bool         $force
      * @return bool
      */
-    public function delete(\XoopsObject $obj, bool $force = false)
+    public function delete(\XoopsObject $object, $force = false): bool
     {
         //Remove FieldDepartment Records
-        $ticketFieldDepartmentHandler = new TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
-        if (!$ret = $ticketFieldDepartmentHandler->removeFieldFromAllDept($obj, $force)) {
-            $obj->setErrors('Unable to remove field from departments');
+        /** @var \XoopsModules\Xhelp\TicketFieldDepartmentHandler $ticketFieldDepartmentHandler */
+        $ticketFieldDepartmentHandler = $this->helper->getHandler('TicketFieldDepartment');
+        $fieldId                      = $object->getVar('id');
+        if (!$ret = $ticketFieldDepartmentHandler->removeFieldFromAllDept($fieldId, $force)) {
+            $object->setErrors('Unable to remove field from departments');
         }
 
         //Remove values from ticket values table
-        if (!$ret = Utility::removeDBField('xhelp_ticket_values', $obj->getVar('fieldname'))) {
-            $obj->setErrors('Unable to remove field from ticket values table');
+        if (!$ret = Utility::removeDBField('xhelp_ticket_values', $object->getVar('fieldname'))) {
+            $object->setErrors('Unable to remove field from ticket values table');
         }
 
         //Remove obj from table
-        $ret = parent::delete($obj, $force);
+        $ret = $this->delete($object, $force);
 
         return $ret;
     }
 
     /**
-     * @param $dept
+     * @param int $dept
      * @return array
      */
-    public function getByDept($dept)
+    public function getByDept(int $dept): array
     {
-        $tickefielddepartmentHandler = new TicketFieldDepartmentHandler($GLOBALS['xoopsDB']);
-        $ret                         = $tickefielddepartmentHandler->fieldsByDepartment($dept);
+        /** @var TicketFieldDepartmentHandler $ticketFieldDepartmentHandler */
+        $ticketFieldDepartmentHandler = $this->helper->getHandler('TicketFieldDepartment');
+        $ret                          = $ticketFieldDepartmentHandler->fieldsByDepartment($dept);
 
         return $ret;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return array
      */
-    public function _mysqlDBType($obj): array
+    private function mysqlDBType(\XoopsObject $object): array
     {
-        $controltype = $obj->getVar('controltype');
-        $datatype    = $obj->getVar('datatype');
-        $fieldlength = $obj->getVar('fieldlength');
+        $controltype = $object->getVar('controltype');
+        $datatype    = $object->getVar('datatype');
+        $fieldlength = $object->getVar('fieldlength');
 
         $mysqldb           = [];
         $mysqldb['length'] = $fieldlength;

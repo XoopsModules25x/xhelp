@@ -3,7 +3,7 @@
 use Xmf\Request;
 use XoopsModules\Xhelp;
 
-/** @var Helper $helper */
+/** @var Xhelp\Helper $helper */
 require_once __DIR__ . '/header.php';
 
 require_once \dirname(__DIR__, 2) . '/mainfile.php';
@@ -37,9 +37,10 @@ switch ($op) {
 /**
  * @return bool
  */
-function updateDepts()
+function updateDepts(): bool
 {
     global $xoopsDB;
+    $helper = Xhelp\Helper::getInstance();
 
     echo "<link rel='stylesheet' type='text/css' media'screen' href='" . XOOPS_URL . "/xoops.css'>
           <link rel='stylesheet' type='text/css' media='screen' href='" . xoops_getcss() . "'>
@@ -53,7 +54,8 @@ function updateDepts()
     }
 
     //Retrieve list of departments
-    $departmentHandler = Xhelp\Helper::getInstance()->getHandler('Department');
+    /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+    $departmentHandler = $helper->getHandler('Department');
     $depts             = $departmentHandler->getObjects();
 
     $class = 'odd';
@@ -61,7 +63,8 @@ function updateDepts()
         $deptid   = $dept->getVar('id');
         $deptname = $dept->getVar('department');
 
-        $configOptionHandler = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
+        /** @var \XoopsModules\Xhelp\ConfigOptionHandler $configOptionHandler */
+        $configOptionHandler = $helper->getHandler('ConfigOption');
         $newOption           = $configOptionHandler->create();
         $newOption->setVar('confop_name', $deptname);
         $newOption->setVar('confop_value', $deptid);
@@ -83,16 +86,18 @@ function updateDepts()
 /**
  * @return bool
  */
-function removeDepts()
+function removeDepts(): bool
 {
     global $xoopsDB;
+    $helper = Xhelp\Helper::getInstance();
 
     //Needs force on delete
+    /** @var \XoopsConfigHandler $configHandler */
     $configHandler = xoops_getHandler('config');
 
     // Select the config from the xoops_config table
-    $criteria   = new \Criteria('conf_name', 'xhelp_defaultDept');
-    $config = &$configHandler->getConfigs($criteria);
+    $criteria = new \Criteria('conf_name', 'xhelp_defaultDept');
+    $config   = $configHandler->getConfigs($criteria);
 
     if (count($config) > 0) {
         $xhelp_config = $config[0]->getVar('conf_id');
@@ -101,8 +106,9 @@ function removeDepts()
     }
 
     // Remove the config options
-    $configOptionHandler = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
-    $criteria                = new \Criteria('conf_id', $xhelp_config);
+    /** @var \XoopsModules\Xhelp\ConfigOptionHandler $configOptionHandler */
+    $configOptionHandler = $helper->getHandler('ConfigOption');
+    $criteria            = new \Criteria('conf_id', $xhelp_config);
     $configOptions       = $configOptionHandler->getObjects($criteria);
 
     if (count($configOptions) > 0) {
@@ -122,7 +128,7 @@ function removeDepts()
  * @param bool $onInstall
  * @return bool
  */
-function updateTopics($onInstall = false)
+function updateTopics(bool $onInstall = false): bool
 {
     if (!$onInstall) {    // Don't need to display anything if installing
         echo "<link rel='stylesheet' type='text/css' media='screen' href='" . XOOPS_URL . "/xoops.css'>
@@ -166,10 +172,11 @@ function updateTopics($onInstall = false)
         echo "<tr class='foot'><td>" . _XHELP_TEXT_UPDATE_COMP . "<br><br><input type='button' name='closeWindow' value='" . _XHELP_TEXT_CLOSE_WINDOW . "' class='formButton' onClick=\"javascript:window.opener.location=window.opener.location;window.close();\"></td></tr>";
         echo '</table>';
     }
+    return true;
 }
 
 /**
- * @return bool
+ * @return bool|string
  */
 function removeTopics()
 {
@@ -193,9 +200,11 @@ function removeTopics()
 }
 
 /**
+ *
+ * @param \XoopsModule $module
  * @return bool
  */
-function xoops_module_install_xhelp(\XoopsModule $module)
+function xoops_module_install_xhelp(\XoopsModule $module): bool
 {
     $myTopics         = updateTopics(true);
     $hasRoles         = Xhelp\Utility::createRoles();

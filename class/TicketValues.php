@@ -23,7 +23,6 @@ if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-//$helper->LoadLanguage('admin');
 
 /**
  * TicketValues class
@@ -34,34 +33,38 @@ if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
  */
 class TicketValues extends \XoopsObject
 {
-    public $_fields = [];
+    private $fields = [];
+    private $helper;
 
     /**
      * Class Constructor
      *
-     * @param null $id
-     * @internal param mixed $ticketid null for a new object, hash table for an existing object
+     * @param int|array|null $id
+     * @internal param mixed $ticketid: null for a new object, hash table for an existing object
      */
     public function __construct($id = null)
     {
         $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, false);
+        $this->helper = Helper::getInstance();
+        $this->helper->loadLanguage('admin');
 
-        $ticketFieldHandler = new TicketFieldHandler($GLOBALS['xoopsDB']);
+        /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+        $ticketFieldHandler = $this->helper->getHandler('TicketField');
         $fields             = $ticketFieldHandler->getObjects(null, true);
 
         foreach ($fields as $field) {
             $key       = $field->getVar('fieldname');
-            $datatype  = $this->_getDataType($field->getVar('datatype'), $field->getVar('controltype'));
-            $value     = $this->_getValueFromXoopsDataType($datatype);
+            $datatype  = $this->getDataType($field->getVar('datatype'), $field->getVar('controltype'));
+            $value     = $this->getValueFromXoopsDataType($datatype);
             $required  = $field->getVar('required');
             $maxlength = ($field->getVar('fieldlength') < 50 ? $field->getVar('fieldlength') : 50);
             $options   = '';
 
             $this->initVar($key, $datatype, null, $required, $maxlength, $options);
 
-            $this->_fields[$key] = ((\_XHELP_DATATYPE_TEXT == $field->getVar('datatype')) ? '%s' : '%d');
+            $this->fields[$key] = ((\_XHELP_DATATYPE_TEXT == $field->getVar('datatype')) ? '%s' : '%d');
         }
-        $this->_fields['ticketid'] = '%u';
+        $this->fields['ticketid'] = '%u';
 
         if (null !== $id) {
             if (\is_array($id)) {
@@ -73,18 +76,18 @@ class TicketValues extends \XoopsObject
     }
 
     /**
-     * @param $datatype
-     * @param $controltype
+     * @param string $datatype
+     * @param int    $controltype
      * @return int
      */
-    public function _getDataType($datatype, $controltype): ?int
+    private function getDataType(string $datatype, int $controltype): ?int
     {
         switch ($controltype) {
             case \XHELP_CONTROL_TXTBOX:
-                return $this->_getXoopsDataType($datatype);
+                return $this->getXoopsDataType($datatype);
                 break;
             case \XHELP_CONTROL_TXTAREA:
-                return $this->_getXoopsDataType($datatype);
+                return $this->getXoopsDataType($datatype);
                 break;
             case \XHELP_CONTROL_SELECT:
                 return \XOBJ_DTYPE_TXTAREA;
@@ -96,7 +99,7 @@ class TicketValues extends \XoopsObject
                 return \XOBJ_DTYPE_TXTBOX;
                 break;
             case \XHELP_CONTROL_DATETIME:
-                return $this->_getXoopsDataType($datatype);
+                return $this->getXoopsDataType($datatype);
                 break;
             case \XHELP_CONTROL_FILE:
                 return \XOBJ_DTYPE_TXTBOX;
@@ -108,10 +111,10 @@ class TicketValues extends \XoopsObject
     }
 
     /**
-     * @param $datatype
+     * @param string $datatype
      * @return int
      */
-    public function _getXoopsDataType($datatype): ?int
+    private function getXoopsDataType(string $datatype): ?int
     {
         switch ($datatype) {
             case \_XHELP_DATATYPE_TEXT:
@@ -130,10 +133,10 @@ class TicketValues extends \XoopsObject
     }
 
     /**
-     * @param $datatype
+     * @param int $datatype
      * @return float|int|null|string
      */
-    public function _getValueFromXoopsDataType($datatype)
+    private function getValueFromXoopsDataType(int $datatype)
     {
         switch ($datatype) {
             case \XOBJ_DTYPE_TXTBOX:
@@ -157,6 +160,6 @@ class TicketValues extends \XoopsObject
      */
     public function getTicketFields(): array
     {
-        return $this->_fields;
+        return $this->fields;
     }
 }

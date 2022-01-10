@@ -1,19 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace XoopsModules\Xhelp;
-
 
 /**
  * class ConfigOptionHandler
  */
 class ConfigOptionHandler extends \XoopsConfigOptionHandler
 {
-    /**
-     * Database connection
-     *
-     * @var object
-     */
-    public $_db;
     /**
      * Autoincrementing DB fieldname
      * @var string
@@ -27,7 +22,7 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      */
     public function init(\XoopsDatabase $db = null)
     {
-        $this->_db = $db;
+        $this->db = $db;
     }
 
     /**
@@ -35,7 +30,7 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      *
      * @var string
      */
-    public $_dbtable = 'configoption';
+    public $dbtable = 'configoption';
 
     /**
      * delete configoption matching a set of conditions
@@ -46,20 +41,18 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      */
     public function deleteAll($criteria = null, bool $force = false): bool
     {
-        $sql = 'DELETE FROM ' . $this->db->prefix($this->_dbtable);
+        $sql = 'DELETE FROM ' . $this->db->prefix($this->dbtable);
         if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$force) {
-            if (!$result = $this->db->query($sql)) {
-                return false;
-            }
+        if ($force) {
+            $result = $this->db->queryF($sql);
         } else {
-            if (!$result = $this->db->queryF($sql)) {
-                return false;
-            }
+            $result = $this->db->query($sql);
         }
-
+        if (!$result) {
+            return false;
+        }
         return true;
     }
 
@@ -68,7 +61,7 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      *
      * @param \XoopsObject $confoption reference to a {@link XoopsConfigOption}
      * @param bool         $force
-     * @return bool TRUE if successfull.
+     * @return bool|int TRUE if successfull.
      */
     public function insert(\XoopsObject $confoption, bool $force = false)
     {
@@ -81,6 +74,7 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
         if (!$confoption->cleanVars()) {
             return false;
         }
+        //TODO mb replace with individual variables
         foreach ($confoption->cleanVars as $k => $v) {
             ${$k} = $v;
         }
@@ -91,14 +85,13 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
             $sql = \sprintf('UPDATE `%s` SET confop_name = %s, confop_value = %s WHERE confop_id = %u', $this->db->prefix('configoption'), $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $confop_id);
         }
 
-        if (!$force) {
-            if (!$result = $this->db->query($sql)) {
-                return false;
-            }
+        if ($force) {
+            $result = $this->db->queryF($sql);
         } else {
-            if (!$result = $this->db->queryF($sql)) {
-                return false;
-            }
+            $result = $this->db->query($sql);
+        }
+        if (!$result) {
+            return false;
         }
         if (empty($confop_id)) {
             $confop_id = $this->db->getInsertId();

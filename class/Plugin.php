@@ -2,7 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-
 /**
  * Plugin Interface
  *
@@ -26,15 +25,17 @@ class Plugin implements PluginInterface
      * A reference to a {@link EventService} object
      * @var EventService
      */
-    public $_event_srv;
+    public $eventService;
 
     /**
      * Class Constructor
-     * @param EventService $event_srv a reference to a {@link EventService} object
+     * @param EventService $eventService a reference to a {@link EventService} object
      */
-    public function __construct($event_srv)
+    public function __construct(EventService $eventService = null)
     {
-        $this->_event_srv = $event_srv;
+        if (null !== $eventService) {
+            $this->eventService = $eventService;
+        }
     }
 
     /**
@@ -42,16 +43,16 @@ class Plugin implements PluginInterface
      * @param string $var name of variable to return
      * @return string if var is set, false if not
      */
-    public function getMeta($var)
+    public function getMeta(string $var)
     {
         return ($this->_meta[$var] ?? false);
     }
 
     /**
-     * @param $var
-     * @param $value
+     * @param string $var
+     * @param string $value
      */
-    public function setMeta($var, $value)
+    public function setMeta(string $var, string $value)
     {
         $this->_meta[$var] = $value;
     }
@@ -73,23 +74,23 @@ class Plugin implements PluginInterface
         //Remove any registered events
         foreach ($this->_events as $event_ctx => $event_cookies) {
             foreach ($event_cookies as $cookie) {
-                $this->_event_srv->unadvise($event_ctx, $cookie);
+                $this->eventService->unadvise($event_ctx, $cookie);
             }
         }
     }
 
     /**
      * Add a function to be called when an event is triggered by the system
-     * @param $event_ctx
-     * @param $event_func
+     * @param string $event_ctx
+     * @param string $event_func
      */
-    public function registerEventHandler($event_ctx, $event_func)
+    public function registerEventHandler(string $event_ctx, string $event_func)
     {
         if (!isset($this->_events[$event_ctx])) {
             $this->_events[$event_ctx] = [];
         }
 
-        $this->_events[$event_ctx][] = $this->_event_srv->advise($event_ctx, $this, $event_func);
+        $this->_events[$event_ctx][] = $this->eventService->advise($event_ctx, $event_func);
     }
 
     /**

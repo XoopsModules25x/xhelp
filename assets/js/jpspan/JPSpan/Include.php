@@ -51,8 +51,7 @@ if (!function_exists('file_get_contents')) {
  */
 function JPSpan_Include($file)
 {
-    $Includer = (new JPSpan_include()))->instance(
-        ;
+    $Includer = (new JPSpan_include())->instance();
         $Includer->loadFile($file);
         register_shutdown_function('JPSpan_Include_Shutdown');
         }
@@ -66,9 +65,7 @@ function JPSpan_Include($file)
  */
 function JPSpan_Include_Shutdown()
 {
-    $Includer = (new JPSpan_include())
-    )->instance(
-        ;
+    $Includer = (new JPSpan_include())->instance();
             echo $Includer->getCode();
         }
 
@@ -84,8 +81,7 @@ function JPSpan_Include_Shutdown()
  */
 function JPSpan_Include_Register($file)
 {
-    $Includer = (new JPSpan_include())
-    )->instance(;
+    $Includer = (new JPSpan_include())->instance();
                 $Includer->loadFile($file);
         }
 
@@ -158,9 +154,7 @@ function JPSpan_Include_ErrorReader($lang = 'en', $app = [], $ser = [], $cli = [
         $script .= "JPSpan_Util_ErrorReader.prototype.errorList[$key] = '$value';\n";
     }
 
-    $Includer = (new JPSpan_include())
-    )->instance(
-        ;
+    $Includer = (new JPSpan_include())->instance();
                     $Includer->loadString('errorreaderlist', $script);
                 }
 
@@ -176,8 +170,7 @@ function JPSpan_Include_ErrorReader($lang = 'en', $app = [], $ser = [], $cli = [
  */
 function JPSpan_Includes_Fetch(): string
 {
-    $Includer = (new JPSpan_include())
-    )->instance(;
+    $Includer = (new JPSpan_include())->instance();
 
                         return $Includer->getCode();
                     }
@@ -268,7 +261,7 @@ class JPSpan_Include
      * @access public
      * @static
      */
-    public function &instance(): ?\JPSpan_Include
+    public static function &instance(): ?\JPSpan_Include
     {
         static $importer = null;
 

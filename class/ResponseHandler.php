@@ -25,26 +25,26 @@ if (!\defined('XHELP_CLASS_PATH')) {
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
 /**
- * ResponsesHandler class
+ * ResponseHandler class
  *
- * Response Handler for Responses class
+ * Response Handler for Response class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
  */
-class ResponsesHandler extends BaseObjectHandler
+class ResponseHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
      */
-    public $classname = Responses::class;
+    public $classname = Response::class;
     /**
      * DB table name
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_responses';
+    public $dbtable = 'xhelp_responses';
 
     /**
      * Constructor
@@ -53,31 +53,33 @@ class ResponsesHandler extends BaseObjectHandler
      */
     public function __construct(\XoopsDatabase $db = null)
     {
+        $this->helper = Helper::getInstance();
         parent::init($db);
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'INSERT INTO `%s` (id, uid, ticketid, message, timeSpent, updateTime, userIP, private)
             VALUES (%u, %u, %u, %s, %u, %u, %s, %u)',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $id,
             $uid,
             $ticketid,
-            $this->_db->quoteString($message),
+            $this->db->quoteString($message),
             $timeSpent,
             \time(),
-            $this->_db->quoteString($userIP),
+            $this->db->quoteString($userIP),
             $private
         );
 
@@ -85,26 +87,27 @@ class ResponsesHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'UPDATE `%s` SET uid = %u, ticketid = %u, message = %s, timeSpent = %u,
             updateTime = %u, userIP = %s, private = %u WHERE id = %u',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $uid,
             $ticketid,
-            $this->_db->quoteString($message),
+            $this->db->quoteString($message),
             $timeSpent,
             \time(),
-            $this->_db->quoteString($userIP),
+            $this->db->quoteString($userIP),
             $private,
             $id
         );
@@ -113,12 +116,12 @@ class ResponsesHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }
@@ -126,22 +129,22 @@ class ResponsesHandler extends BaseObjectHandler
     /**
      * delete a response from the database
      *
-     * @param \XoopsObject $obj       reference to the {@link xhelpResponse}
+     * @param \XoopsObject $object    reference to the {@link xhelpResponse}
      *                                obj to delete
      * @param bool         $force
      * @return bool FALSE if failed.
      */
-    public function delete(\XoopsObject $obj, bool $force = false)
+    public function delete(\XoopsObject $object, $force = false): bool
     {
         // Remove file associated with this response
-        $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
-        $criteria        = new \CriteriaCompo(new \Criteria('ticketid', $obj->getVar('ticketid')));
-        $criteria->add(new \Criteria('responseid', $obj->getVar('responseid')));
+        $fileHandler = $this->helper->getHandler('File');
+        $criteria    = new \CriteriaCompo(new \Criteria('ticketid', $object->getVar('ticketid')));
+        $criteria->add(new \Criteria('responseid', $object->getVar('responseid')));
         if (!$fileHandler->deleteAll($criteria)) {
             return false;
         }
 
-        $ret = parent::delete($obj, $force);
+        $ret = parent::delete($object, $force);
 
         return $ret;
     }
@@ -152,15 +155,15 @@ class ResponsesHandler extends BaseObjectHandler
      * @param int $ticketid ticket to get count
      * @return int Number of staff responses
      */
-    public function getStaffResponseCount($ticketid): int
+    public function getStaffResponseCount(int $ticketid): int
     {
-        $sql = \sprintf('SELECT COUNT(*) FROM `%s` r INNER JOIN %s s ON r.uid = s.uid WHERE r.ticketid = %u', $this->_db->prefix($this->_dbtable), $this->_db->prefix('xhelp_staff'), $ticketid);
+        $sql = \sprintf('SELECT COUNT(*) FROM `%s` r INNER JOIN %s s ON r.uid = s.uid WHERE r.ticketid = %u', $this->db->prefix($this->dbtable), $this->db->prefix('xhelp_staff'), $ticketid);
 
-        $ret = $this->_db->query($sql);
+        $ret = $this->db->query($sql);
 
-        [$count] = $this->_db->fetchRow($ret);
+        [$count] = $this->db->fetchRow($ret);
 
-        return $count;
+        return (int)$count;
     }
 
     /**
@@ -169,22 +172,22 @@ class ResponsesHandler extends BaseObjectHandler
      * @param array $tickets where ticketid is key
      * @return bool|array key = ticketid, value = response count
      */
-    public function getResponseCounts($tickets)
+    public function getResponseCounts(array $tickets)
     {
         if (\is_array($tickets)) {
             //$criteria = new \Criteria('ticketid', "(". implode(array_keys($tickets), ',') .")", 'IN');
-            $sql = \sprintf('SELECT COUNT(*) AS numresponses, ticketid FROM `%s` WHERE ticketid IN (%s) GROUP BY ticketid', $this->_db->prefix($this->_dbtable), \implode(',', \array_keys($tickets)));
+            $sql = \sprintf('SELECT COUNT(*) AS numresponses, ticketid FROM `%s` WHERE ticketid IN (%s) GROUP BY ticketid', $this->db->prefix($this->dbtable), \implode(',', \array_keys($tickets)));
         } else {
             return false;
         }
-        $result = $this->_db->query($sql);
+        $result = $this->db->query($sql);
 
         if (!$result) {
             return false;
         }
 
         // Add each returned record to the result array
-        while (false !== ($myrow = $this->_db->fetchArray($result))) {
+        while (false !== ($myrow = $this->db->fetchArray($result))) {
             $tickets[$myrow['ticketid']] = $myrow['numresponses'];
         }
 

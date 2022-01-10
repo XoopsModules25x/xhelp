@@ -43,7 +43,7 @@ class ResponseTemplatesHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_responsetemplates';
+    public $dbtable = 'xhelp_responsetemplates';
 
     /**
      * Constructor
@@ -56,52 +56,54 @@ class ResponseTemplatesHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'INSERT INTO `%s` (id, uid, NAME, response)
                 VALUES (%u, %u, %s, %s)',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $id,
             $uid,
-            $this->_db->quoteString($name),
-            $this->_db->quoteString($response)
+            $this->db->quoteString($name),
+            $this->db->quoteString($response)
         );
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('UPDATE `%s` SET uid = %u, NAME = %s, response = %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($response), $id);
+        $sql = \sprintf('UPDATE `%s` SET uid = %u, NAME = %s, response = %s WHERE id = %u', $this->db->prefix($this->dbtable), $uid, $this->db->quoteString($name), $this->db->quoteString($response), $id);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }

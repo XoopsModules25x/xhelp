@@ -33,7 +33,7 @@ class File extends \XoopsObject
 {
     /**
      * File constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
@@ -69,12 +69,14 @@ class File extends \XoopsObject
      */
     public function rename(int $ticketid, int $responseid = 0): bool
     {
+        $helper         = Helper::getInstance();
         $ticketid       = $ticketid;
         $responseid     = $responseid;
         $old_ticketid   = $this->getVar('ticketid');
         $old_responseid = $this->getVar('responseid');
 
-        $filename = $this->getVar('filename');
+        $filename    = $this->getVar('filename');
+        $newFilename = '';
         if ((0 != $old_responseid) && (0 != $responseid)) {   // Was a response and is going to be a response
             $newFilename = \str_replace('_' . $old_responseid . '_', '_' . $responseid . '_', $filename);
             $newFilename = \str_replace($old_ticketid . '_', $ticketid . '_', $newFilename);
@@ -88,7 +90,8 @@ class File extends \XoopsObject
             $newFilename = \str_replace($old_ticketid . '_', $ticketid . '_', $filename);
         }
 
-        $fileHandler = new FileHandler($GLOBALS['xoopsDB']);
+        /** @var \XoopsModules\Xhelp\FileHandler $fileHandler */
+        $fileHandler = $helper->getHandler('File');
         $this->setVar('filename', $newFilename);
         $this->setVar('ticketid', $ticketid);
         $this->setVar('responseid', $responseid);
@@ -107,13 +110,13 @@ class File extends \XoopsObject
     }
 
     /**
-     * @param $oldName
-     * @param $newName
+     * @param string $oldName
+     * @param string $newName
      * @return bool
      */
-    public function renameAtFS($oldName, $newName): bool
+    public function renameAtFS(string $oldName, string $newName): bool
     {
-        $ret = \rename(XHELP_UPLOAD_PATH . '/' . $oldName, XHELP_UPLOAD_PATH . '/' . $newName);
+        $ret = \rename(\XHELP_UPLOAD_PATH . '/' . $oldName, \XHELP_UPLOAD_PATH . '/' . $newName);
 
         return $ret;
     }

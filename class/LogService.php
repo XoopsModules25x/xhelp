@@ -16,7 +16,7 @@ class LogService extends Service
     /**
      * Instance of the LogMessageHandler
      *
-     * @var object
+     * @var LogMessageHandler
      */
     public $logMessageHandler;
 
@@ -25,7 +25,9 @@ class LogService extends Service
      */
     public function __construct()
     {
-        $this->logMessageHandler = Helper::getInstance()->getHandler('LogMessage');
+        /** @var \XoopsModules\Xhelp\LogMessageHandler $this- >logMessageHandler */
+        $this->logMessageHandler = Helper::getInstance()
+            ->getHandler('LogMessage');
         $this->init();
     }
 
@@ -56,7 +58,7 @@ class LogService extends Service
      * @param Ticket $ticket Ticket that was added
      * @return bool        True on success, false on error
      */
-    public function new_ticket($ticket): bool
+    public function new_ticket(Ticket $ticket): bool
     {
         global $xoopsUser;
 
@@ -79,10 +81,10 @@ class LogService extends Service
     /**
      * Callback function for the 'update_priority' event
      * @param Ticket $ticket      Ticket that was modified
-     * @param int          $oldpriority Original ticket priority
+     * @param int    $oldpriority Original ticket priority
      * @return bool        True on success, false on error
      */
-    public function update_priority($ticket, $oldpriority): bool
+    public function update_priority(Ticket $ticket, int $oldpriority): bool
     {
         global $xoopsUser;
 
@@ -98,12 +100,12 @@ class LogService extends Service
 
     /**
      * Callback function for the 'update_status' event
-     * @param Ticket $ticket    Ticket that was modified
-     * @param Status $oldstatus Original ticket status
-     * @param Status $newstatus New ticket status
+     * @param Ticket                          $ticket    Ticket that was modified
+     * @param \XoopsModules\Xhelp\Status|null $oldstatus Original ticket status
+     * @param Status                          $newstatus New ticket status
      * @return bool        True on success, false on error
      */
-    public function update_status($ticket, $oldstatus, $newstatus): bool
+    public function update_status(Ticket $ticket, ?Status $oldstatus, Status $newstatus): bool
     {
         global $xoopsUser;
 
@@ -122,11 +124,11 @@ class LogService extends Service
      * Triggered after ticket ownership change (Individual)
      * Also See: batch_owner
      * @param Ticket $ticket   Ticket that was changed
-     * @param int          $oldowner UID of previous owner
-     * @param int          $newowner UID of new owner
-     * @return
+     * @param int    $oldowner UID of previous owner
+     * @param int    $newowner UID of new owner
+     * @return bool        True on success, false on error
      */
-    public function update_owner($ticket, $oldowner, $newowner)
+    public function update_owner(Ticket $ticket, int $oldowner, int $newowner): bool
     {
         global $xoopsUser;
 
@@ -150,7 +152,7 @@ class LogService extends Service
      * @param Ticket $ticket Ticket that was re-opened
      * @return bool        True on success, false on error
      */
-    public function reopen_ticket($ticket): bool
+    public function reopen_ticket(Ticket $ticket): bool
     {
         global $xoopsUser;
 
@@ -168,7 +170,7 @@ class LogService extends Service
      * @param Ticket $ticket Ticket that was closed
      * @return bool        True on success, false on error
      */
-    public function close_ticket($ticket): bool
+    public function close_ticket(Ticket $ticket): bool
     {
         global $xoopsUser;
 
@@ -183,11 +185,11 @@ class LogService extends Service
 
     /**
      * Add Log information for 'new_response' event
-     * @param Ticket    $ticket      Ticket for Response
-     * @param Responses $newResponse Response that was added
+     * @param Ticket   $ticket      Ticket for Response
+     * @param Response $newResponse Response that was added
      * @return bool           True on success, false on error
      */
-    public function new_response($ticket, $newResponse): bool
+    public function new_response(Ticket $ticket, Response $newResponse): bool
     {
         global $xoopsUser;
 
@@ -202,12 +204,12 @@ class LogService extends Service
 
     /**
      * Callback function for the 'new_response_rating' event
-     * @param Rating    $rating   Rating Information
-     * @param Ticket    $ticket   Ticket for Rating
-     * @param Responses $response Response that was rated
+     * @param \XoopsModules\Xhelp\StaffReview $rating   Rating Information
+     * @param Ticket                          $ticket   Ticket for Rating
+     * @param Response                        $response Response that was rated
      * @return bool           True on success, false on error
      */
-    public function new_response_rating($rating, $ticket, $response): bool
+    public function new_response_rating(StaffReview $rating, Ticket $ticket, Response $response): bool
     {
         global $xoopsUser;
 
@@ -222,11 +224,11 @@ class LogService extends Service
 
     /**
      * Callback function for the 'edit_ticket' event
-     * @param Ticket $oldTicket  Original Ticket Information
-     * @param Ticket $ticketInfo New Ticket Information
+     * @param array|Ticket $oldTicket  Original Ticket Information
+     * @param Ticket       $ticketInfo New Ticket Information
      * @return bool        True on success, false on error
      */
-    public function edit_ticket($oldTicket, $ticketInfo): bool
+    public function edit_ticket($oldTicket, Ticket $ticketInfo): bool
     {
         global $xoopsUser;
 
@@ -242,14 +244,14 @@ class LogService extends Service
 
     /**
      * Callback function for the 'edit_response' event
-     * @param $ticket
-     * @param $response
-     * @param $oldticket
-     * @param $oldresponse
+     * @param Ticket   $ticket
+     * @param Response $response
+     * @param Ticket   $oldticket
+     * @param Response $oldresponse
      * @return bool True on success, false on error
      * @internal param array $args Array of arguments passed to EventService
      */
-    public function edit_response($ticket, $response, $oldticket, $oldresponse): bool
+    public function edit_response(Ticket $ticket, Response $response, Ticket $oldticket, Response $oldresponse): bool
     {
         global $xoopsUser;
 
@@ -264,15 +266,17 @@ class LogService extends Service
 
     /**
      * Add Log Events for 'batch_dept' event
-     * @param array                $tickets Array of Ticket objects
+     * @param array          $tickets Array of Ticket objects
      * @param Department|int $dept    New department for tickets
      * @return bool            True on success, false on error
      */
-    public function batch_dept($tickets, $dept): bool
+    public function batch_dept(array $tickets, $dept): bool
     {
         global $xoopsUser;
+        $helper = Helper::getInstance();
 
-        $departmentHandler = new DepartmentHandler($GLOBALS['xoopsDB']);
+        /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+        $departmentHandler = $helper->getHandler('Department');
         $deptObj           = $departmentHandler->get($dept);
 
         foreach ($tickets as $ticket) {
@@ -294,11 +298,11 @@ class LogService extends Service
      * @param int   $priority New priority level for tickets
      * @return bool  True on success, false on error
      */
-    public function batch_priority($tickets, $priority): bool
+    public function batch_priority(array $tickets, int $priority): bool
     {
         global $xoopsUser;
 
-        $priority = (int)$priority;
+        $priority = $priority;
         foreach ($tickets as $ticket) {
             $logMessage = $this->logMessageHandler->create();
             $logMessage->setVar('uid', $xoopsUser->getVar('uid'));
@@ -318,7 +322,7 @@ class LogService extends Service
      * @param int   $owner   New owner for tickets
      * @return bool  True on success, false on error
      */
-    public function batch_owner($tickets, $owner): bool
+    public function batch_owner(array $tickets, int $owner): bool
     {
         global $xoopsUser;
 
@@ -347,7 +351,7 @@ class LogService extends Service
      * @param int   $newstatus New status for tickets
      * @return bool  True on success, false on error
      */
-    public function batch_status($tickets, $newstatus): bool
+    public function batch_status(array $tickets, int $newstatus): bool
     {
         global $xoopsUser;
 
@@ -371,11 +375,11 @@ class LogService extends Service
      * Event: batch_response
      * Triggered after a batch response addition
      * Note: the $response->getVar('ticketid') field is empty for this function
-     * @param array           $tickets  The Ticket objects that were modified
-     * @param Responses $response The response added to each ticket
+     * @param array    $tickets  The Ticket objects that were modified
+     * @param Response $response The response added to each ticket
      * @return bool
      */
-    public function batch_response($tickets, $response): bool
+    public function batch_response(array $tickets, Response $response): bool
     {
         global $xoopsUser;
 
@@ -401,7 +405,7 @@ class LogService extends Service
      * @param int $newTicket     Resulting merged ticket
      * @return bool True on success, false on error
      */
-    public function merge_tickets($ticketid, $mergeTicketid, $newTicket): bool
+    public function merge_tickets(int $ticketid, int $mergeTicketid, int $newTicket): bool
     {
         global $xoopsUser;
 
@@ -422,7 +426,7 @@ class LogService extends Service
      * @param File $file File being deleted
      * @return bool      True on success, false on error
      */
-    public function delete_file($file): bool
+    public function delete_file(File $file): bool
     {
         global $xoopsUser;
 
@@ -446,9 +450,9 @@ class LogService extends Service
      * Triggered after FAQ addition
      * @param Ticket $ticket Ticket used as base for FAQ
      * @param Faq    $faq    FAQ that was added
-     * @return
+     * @return bool
      */
-    public function new_faq($ticket, $faq)
+    public function new_faq(Ticket $ticket, Faq $faq): bool
     {
         global $xoopsUser;
 
@@ -462,9 +466,9 @@ class LogService extends Service
 
     /**
      * Only have 1 instance of class used
-     * @return EventService {@link EventService}
+     * @return Service {@link Service}
      */
-    public static function getInstance()
+    public static function getInstance(): Service
     {
         static $instance;
         if (null === $instance) {

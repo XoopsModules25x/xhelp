@@ -35,7 +35,7 @@ class Notification extends \XoopsObject
      * Xhelp\Notification constructor.
      * @param array|null $id
      */
-    public function __construct($id = null)
+    public function __construct(array $id = null)
     {
         $this->initVar('notif_id', \XOBJ_DTYPE_INT, null, false);
         $this->initVar('staff_setting', \XOBJ_DTYPE_INT, null, false);

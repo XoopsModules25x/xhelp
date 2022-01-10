@@ -2,7 +2,7 @@
 
 namespace XoopsModules\Xhelp;
 
-require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+\xoops_load('XoopsPagenav');
 
 /**
  * class PageNav
@@ -21,12 +21,7 @@ class PageNav extends \XoopsPageNav
      * @param string $bookmark
      */
     public function __construct(
-        $total_items,
-        $items_perpage,
-        $current_start,
-        $start_name = 'start',
-        $extra_arg = '',
-        $bookmark = ''
+        $total_items, $items_perpage, $current_start, $start_name = 'start', $extra_arg = '', string $bookmark = ''
     ) {
         $this->total   = (int)$total_items;
         $this->perpage = (int)$items_perpage;
@@ -44,7 +39,7 @@ class PageNav extends \XoopsPageNav
      * @param int $offset
      * @return string
      */
-    public function renderNav($offset = 4)
+    public function renderNav($offset = 4): string
     {
         $ret = '';
         if ($this->total <= $this->perpage) {
@@ -61,7 +56,7 @@ class PageNav extends \XoopsPageNav
             while ($counter <= $total_pages) {
                 if ($counter == $current_page) {
                     $ret .= '<b>(' . $counter . ')</b> ';
-                } elseif (($counter > $current_page - $offset && $counter < $current_page + $offset) || 1 == $counter
+                } elseif (($counter > $current_page - $offset && $counter < $current_page + $offset) || 1 === $counter
                           || $counter == $total_pages) {
                     if ($counter == $total_pages && $current_page < $total_pages - $offset) {
                         $ret .= '... ';

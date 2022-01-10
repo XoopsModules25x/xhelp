@@ -18,7 +18,7 @@ class Session
      */
     public function __construct()
     {
-        if (false === @\session_start()) {
+        if (!@\session_start()) {
             throw new RuntimeException('Session could not start.');
         }
     }
@@ -36,7 +36,7 @@ class Session
     /**
      * Fetches a session variable
      * @param mixed $name
-     * @return mixed value of session variable
+     * @return string|array|bool session variable
      */
     public function get($name)
     {
@@ -64,7 +64,7 @@ class Session
     /**
      * @return static
      */
-    public static function getInstance()
+    public static function getInstance(): Session
     {
         static $instance;
         if (null === $instance) {

@@ -36,6 +36,7 @@ class Helper extends \Xmf\Module\Helper
     }
 
     /**
+     * @param bool $debug
      * @return \XoopsModules\Xhelp\Helper
      */
     public static function getInstance(bool $debug = false): self
@@ -61,7 +62,7 @@ class Helper extends \Xmf\Module\Helper
      *
      * @param string $name name of handler to load
      *
-     * @return bool|\XoopsObjectHandler|\XoopsPersistableObjectHandler
+     * @return \XoopsPersistableObjectHandler|\XoopsObjectHandler|bool
      */
     public function getHandler($name)
     {

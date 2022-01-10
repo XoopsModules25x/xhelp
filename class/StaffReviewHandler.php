@@ -44,7 +44,7 @@ class StaffReviewHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_staffreview';
+    public $dbtable = 'xhelp_staffreview';
 
     /**
      * Constructor
@@ -63,15 +63,15 @@ class StaffReviewHandler extends BaseObjectHandler
      * @param int $submittedBy UID of ticket submitter
      * @return array|bool (@link StaffReview}
      */
-    public function getReview($ticketid, $responseid, $submittedBy)
+    public function getReview(int $ticketid, int $responseid, int $submittedBy)
     {
-        $ticketid    = (int)$ticketid;
-        $responseid  = (int)$responseid;
-        $submittedBy = (int)$submittedBy;
+        $ticketid    = $ticketid;
+        $responseid  = $responseid;
+        $submittedBy = $submittedBy;
 
-        $criteria = new \CriteriaCompo(new \Criteria('ticketid', $ticketid));
-        $criteria->add(new \Criteria('submittedBy', $submittedBy));
-        $criteria->add(new \Criteria('responseid', $responseid));
+        $criteria = new \CriteriaCompo(new \Criteria('ticketid', (string)$ticketid));
+        $criteria->add(new \Criteria('submittedBy', (string)$submittedBy));
+        $criteria->add(new \Criteria('responseid', (string)$responseid));
         $review = [];
         if (!$review = $this->getObjects($criteria)) {
             return false;
@@ -81,55 +81,57 @@ class StaffReviewHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'INSERT INTO `%s` (id, staffid, rating, ticketid, responseid, comments, submittedBy, userIP)
             VALUES (%u, %u, %u, %u, %u, %s, %u, %s)',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $id,
             $staffid,
             $rating,
             $ticketid,
             $responseid,
-            $this->_db->quoteString($comments),
+            $this->db->quoteString($comments),
             $submittedBy,
-            $this->_db->quoteString($userIP)
+            $this->db->quoteString($userIP)
         );
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
         $sql = \sprintf(
             'UPDATE `%s` SET staffid = %u, rating = %u, ticketid = %u, responseid = %u, comments = %s, submittedBy = %u, userIP = %s
                 WHERE id = %u',
-            $this->_db->prefix($this->_dbtable),
+            $this->db->prefix($this->dbtable),
             $staffid,
             $rating,
             $ticketid,
             $responseid,
-            $this->_db->quoteString($comments),
+            $this->db->quoteString($comments),
             $submittedBy,
-            $this->_db->quoteString($userIP),
+            $this->db->quoteString($userIP),
             $id
         );
 
@@ -137,12 +139,12 @@ class StaffReviewHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }

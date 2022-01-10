@@ -18,7 +18,6 @@ namespace XoopsModules\Xhelp;
  * @author       XOOPS Development Team
  */
 
-
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
@@ -33,7 +32,7 @@ class SavedSearch extends \XoopsObject
 {
     /**
      * Xhelp\SavedSearch constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {

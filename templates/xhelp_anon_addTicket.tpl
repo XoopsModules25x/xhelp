@@ -95,7 +95,10 @@
                         of
                         the
                         multiSelector
-                        class,
+
+                        class
+
+                        ,
                         pass
                         it
                         the

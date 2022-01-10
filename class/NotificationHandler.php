@@ -44,7 +44,7 @@ class NotificationHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_notifications';
+    public $dbtable = 'xhelp_notifications';
     public $idfield = 'notif_id';
 
     /**
@@ -58,44 +58,46 @@ class NotificationHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('INSERT INTO `%s` (notif_id, staff_setting, user_setting, staff_options) VALUES (%u, %u, %u, %s)', $this->_db->prefix($this->_dbtable), $notif_id, $staff_setting, $user_setting, $this->_db->quoteString($staff_options));
+        $sql = \sprintf('INSERT INTO `%s` (notif_id, staff_setting, user_setting, staff_options) VALUES (%u, %u, %u, %s)', $this->db->prefix($this->dbtable), $notif_id, $staff_setting, $user_setting, $this->db->quoteString($staff_options));
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('UPDATE `%s` SET staff_setting = %u, user_setting = %u, staff_options = %s WHERE notif_id = %u', $this->_db->prefix($this->_dbtable), $staff_setting, $user_setting, $this->_db->quoteString($staff_options), $notif_id);
+        $sql = \sprintf('UPDATE `%s` SET staff_setting = %u, user_setting = %u, staff_options = %s WHERE notif_id = %u', $this->db->prefix($this->dbtable), $staff_setting, $user_setting, $this->db->quoteString($staff_options), $notif_id);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }

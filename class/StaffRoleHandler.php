@@ -41,7 +41,7 @@ class StaffRoleHandler extends BaseObjectHandler
      *
      * @var string
      */
-    public $_dbtable = 'xhelp_staffroles';
+    public $dbtable = 'xhelp_staffroles';
 
     /**
      * Constructor
@@ -54,16 +54,16 @@ class StaffRoleHandler extends BaseObjectHandler
     }
 
     /**
-     * @param int  $int_id
-     * @param null $roleid
-     * @param null $deptid
+     * @param int      $id
+     * @param int|null $roleid
+     * @param int|null $deptid
      * @return array|bool
      */
-    public function get($int_id, $roleid = null, $deptid = null)
+    public function get($id = null, $fields = null, int $roleid = null, int $deptid = null)
     {
-        $criteria = new \CriteriaCompo('uid', $int_id);
-        $criteria->add(new \Criteria('roleid', $roleid));
-        $criteria->add(new \Criteria('deptid', $deptid));
+        $criteria = new \CriteriaCompo(new \Criteria('uid', (string)$id));
+        $criteria->add(new \Criteria('roleid', (string)$roleid));
+        $criteria->add(new \Criteria('deptid', (string)$deptid));
 
         if (!$role = $this->getObjects($criteria)) {
             return false;
@@ -73,14 +73,14 @@ class StaffRoleHandler extends BaseObjectHandler
     }
 
     /**
-     * @param      $uid
+     * @param int  $uid
      * @param bool $id_as_key
      * @return array|bool
      */
-    public function &getObjectsByStaff($uid, $id_as_key = false)
+    public function &getObjectsByStaff(int $uid, bool $id_as_key = false)
     {
-        $uid  = (int)$uid;
-        $criteria = new \Criteria('uid', $uid);
+        $uid      = $uid;
+        $criteria = new \Criteria('uid', (string)$uid);
 
         $arr = $this->getObjects($criteria, $id_as_key);
 
@@ -92,13 +92,13 @@ class StaffRoleHandler extends BaseObjectHandler
     }
 
     /**
-     * @param $uid
-     * @param $roleid
+     * @param int $uid
+     * @param int $roleid
      * @return bool
      */
-    public function staffInRole($uid, $roleid): bool
+    public function staffInRole(int $uid, int $roleid): bool
     {
-        $criteria = new \CriteriaCompo('uid', $uid);
+        $criteria = new \CriteriaCompo(new \Criteria('uid', $uid));
         $criteria->add(new \Criteria('roleid', $roleid));
 
         if (!$role = $this->getObjects($criteria)) {
@@ -109,28 +109,29 @@ class StaffRoleHandler extends BaseObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = \sprintf('INSERT INTO `%s` (uid, roleid, deptid) VALUES (%u, %u, %u)', $this->_db->prefix($this->_dbtable), $uid, $roleid, $deptid);
+        $sql = \sprintf('INSERT INTO `%s` (uid, roleid, deptid) VALUES (%u, %u, %u)', $this->db->prefix($this->dbtable), $uid, $roleid, $deptid);
 
         return $sql;
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = \sprintf('DELETE FROM `%s` WHERE uid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('uid'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE uid = %u', $this->db->prefix($this->dbtable), $object->getVar('uid'));
 
         return $sql;
     }

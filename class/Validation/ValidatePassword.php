@@ -2,6 +2,22 @@
 
 namespace XoopsModules\Xhelp\Validation;
 
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    XOOPS Project (https://xoops.org)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author       XOOPS Development Team
+ */
+
 use Criteria;
 
 /**
@@ -25,9 +41,9 @@ class ValidatePassword extends Validator
     /**
      * Constructs a new ValidatePassword object subclass or Validator
      * @param string $pass the string to validate
-     * @param        $vpass
+     * @param string $vpass
      */
-    public function __construct($pass, $vpass)
+    public function __construct(string $pass, string $vpass)
     {
         $this->pass  = $pass;
         $this->vpass = $vpass;
@@ -41,10 +57,11 @@ class ValidatePassword extends Validator
      */
     public function validate()
     {
+        /** @var \XoopsConfigHandler $configHandler */
         $configHandler = \xoops_getHandler('config');
         //$xoopsConfigUser = $configHandler->getConfigsByCat(XOOPS_CONF_USER);
         $xoopsConfigUser = [];
-        $criteria            = new \Criteria('conf_catid', 2);
+        $criteria        = new \Criteria('conf_catid', 2);
         $myConfigs       = $configHandler->getConfigs($criteria);
         foreach ($myConfigs as $myConf) {
             $xoopsConfigUser[$myConf->getVar('conf_name')] = $myConf->getVar('conf_value');

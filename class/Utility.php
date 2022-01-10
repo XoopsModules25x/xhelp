@@ -8,7 +8,6 @@ use const XHELP_ROLE_PERM_2;
 use const XHELP_ROLE_PERM_3;
 use Xmf\Request;
 
-
 /**
  * Class Utility
  */
@@ -21,7 +20,7 @@ class Utility extends Common\SysUtility
      * @param int $time UNIX timestamp
      * @return string formatted time
      */
-    public static function formatTime($time): string
+    public static function formatTime(int $time): string
     {
         $values = self::getElapsedTime($time);
 
@@ -61,7 +60,7 @@ class Utility extends Common\SysUtility
      * @param int $time UNIX timestamp
      * @return array
      */
-    public static function getElapsedTime($time): array
+    public static function getElapsedTime(int $time): array
     {
         //Define the units of measure
         $units = [
@@ -89,10 +88,11 @@ class Utility extends Common\SysUtility
      * Generate xhelp URL
      *
      * @param string $page
+     * @param array  $vars
      * @param bool   $encodeAmp
      * @return string
      */
-    public static function createURI($page, array $vars = [], $encodeAmp = true): string
+    public static function createURI(string $page, array $vars = [], bool $encodeAmp = true): string
     {
         $joinStr = '';
 
@@ -116,7 +116,7 @@ class Utility extends Common\SysUtility
      * @param int $priority
      * @return string
      */
-    public static function getPriority($priority)
+    public static function getPriority(int $priority)
     {
         $priorities = [
             1 => \_XHELP_TEXT_PRIORITY1,
@@ -126,7 +126,7 @@ class Utility extends Common\SysUtility
             5 => \_XHELP_TEXT_PRIORITY5,
         ];
 
-        $priority = (int)$priority;
+        $priority = $priority;
 
         return ($priorities[$priority] ?? $priority);
     }
@@ -137,9 +137,9 @@ class Utility extends Common\SysUtility
      * @param int $state
      * @return string
      */
-    public static function getState($state)
+    public static function getState(int $state)
     {
-        $state       = (int)$state;
+        $state       = $state;
         $stateValues = [
             1 => \_XHELP_STATE1,
             2 => \_XHELP_STATE2,
@@ -159,8 +159,10 @@ class Utility extends Common\SysUtility
     {
         static $statuses;
 
-        $status        = (int)$status;
-        $statusHandler = Helper::getInstance()->getHandler('Status');
+        $status = (int)$status;
+        /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+        $statusHandler = Helper::getInstance()
+            ->getHandler('Status');
 
         //Get Statuses from database if first request
         if (!$statuses) {
@@ -176,7 +178,7 @@ class Utility extends Common\SysUtility
      * @param int $rating
      * @return string
      */
-    public static function getRating($rating)
+    public static function getRating(int $rating)
     {
         $ratings = [
             0 => \_XHELP_RATING0,
@@ -186,16 +188,16 @@ class Utility extends Common\SysUtility
             4 => \_XHELP_RATING4,
             5 => \_XHELP_RATING5,
         ];
-        $rating  = (int)$rating;
+        $rating  = $rating;
 
         return ($ratings[$rating] ?? $rating);
     }
 
     /**
-     * @param $class
+     * @param int $class
      * @return int|mixed
      */
-    public static function getEventClass($class)
+    public static function getEventClass(int $class)
     {
         $classes = [
             0 => \_XHELP_MAIL_CLASS0,
@@ -203,7 +205,7 @@ class Utility extends Common\SysUtility
             2 => \_XHELP_MAIL_CLASS2,
             3 => \_XHELP_MAIL_CLASS3,
         ];
-        $class   = (int)$class;
+        $class   = $class;
 
         return ($classes[$class] ?? $class);
     }
@@ -215,12 +217,14 @@ class Utility extends Common\SysUtility
      * @param int   $dept    department ID
      * @return bool  True on success, False on error
      */
-    public static function setDept($tickets, $dept): bool
+    public static function setDept(array $tickets, int $dept): bool
     {
-        $ticketHandler = Helper::getInstance()->getHandler('Ticket');
-        $criteria          = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $ticketHandler->updateAll('department', (int)$dept, $criteria);
+        return $ticketHandler->updateAll('department', $dept, $criteria);
     }
 
     /**
@@ -230,12 +234,14 @@ class Utility extends Common\SysUtility
      * @param int   $priority priority value
      * @return bool  True on success, False on error
      */
-    public static function setPriority($tickets, $priority): bool
+    public static function setPriority(array $tickets, int $priority): bool
     {
-        $ticketHandler = Helper::getInstance()->getHandler('Ticket');
-        $criteria          = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $ticketHandler->updateAll('priority', (int)$priority, $criteria);
+        return $ticketHandler->updateAll('priority', $priority, $criteria);
     }
 
     /**
@@ -245,12 +251,14 @@ class Utility extends Common\SysUtility
      * @param int   $status  status value
      * @return bool  True on success, False on error
      */
-    public static function setStatus($tickets, $status): bool
+    public static function setStatus(array $tickets, int $status): bool
     {
-        $ticketHandler = Helper::getInstance()->getHandler('Ticket');
-        $criteria          = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $ticketHandler->updateAll('status', (int)$status, $criteria);
+        return $ticketHandler->updateAll('status', $status, $criteria);
     }
 
     /**
@@ -262,12 +270,14 @@ class Utility extends Common\SysUtility
      * @param int   $owner   uid of new owner
      * @return bool  True on success, False on error
      */
-    public static function setOwner($tickets, $owner): bool
+    public static function setOwner(array $tickets, int $owner): bool
     {
-        $ticketHandler = Helper::getInstance()->getHandler('Ticket');
-        $criteria          = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $ticketHandler->updateAll('ownership', (int)$owner, $criteria);
+        return $ticketHandler->updateAll('ownership', $owner, $criteria);
     }
 
     /**
@@ -275,26 +285,31 @@ class Utility extends Common\SysUtility
      *
      *
      * @param array  $tickets   array of ticket ids (int)
-     * @param        $sresponse
+     * @param string $sresponse
      * @param int    $timespent Number of minutes spent on ticket
      * @param bool   $private   Should this be a private message?
-     * @return false|\XoopsObject Response information
+     * @return false|\XoopsModules\Xhelp\Response
      *
      * @internal param string $response response text to add
      */
-    public static function addResponse($tickets, $sresponse, $timespent = 0, $private = false)
+    public static function addResponse(array $tickets, string $sresponse, int $timespent = 0, bool $private = false)
     {
         global $xoopsUser;
-        $responsesHandler = Helper::getInstance()->getHandler('Responses');
-        $ticketHandler    = Helper::getInstance()->getHandler('Ticket');
-        $updateTime       = \time();
-        $uid              = $xoopsUser->getVar('uid');
-        $ret              = true;
-        $userIP           = \getenv('REMOTE_ADDR');
-        $ticket_count     = \count($tickets);
-        $i                = 1;
+        /** @var \XoopsModules\Xhelp\ResponseHandler $responseHandler */
+        $responseHandler = Helper::getInstance()
+            ->getHandler('Response');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $updateTime    = \time();
+        $uid           = $xoopsUser->getVar('uid');
+        $ret           = true;
+        $userIP        = \getenv('REMOTE_ADDR');
+        $ticket_count  = \count($tickets);
+        $i             = 1;
         foreach ($tickets as $ticketid) {
-            $response = $responsesHandler->create();
+            /** @var \XoopsModules\Xhelp\Response $response */
+            $response = $responseHandler->create();
             $response->setVar('uid', $uid);
             $response->setVar('ticketid', $ticketid);
             $response->setVar('message', $sresponse);
@@ -302,7 +317,7 @@ class Utility extends Common\SysUtility
             $response->setVar('updateTime', $updateTime);
             $response->setVar('userIP', $userIP);
             $response->setVar('private', $private);
-            $ret = $ret && $responsesHandler->insert($response);
+            $ret = $ret && $responseHandler->insert($response);
             if ($ticket_count != $i) {
                 unset($response);
             }
@@ -310,8 +325,8 @@ class Utility extends Common\SysUtility
         }
         if ($ret) {
             $criteria = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
-            $ret  = $ticketHandler->incrementAll('totalTimeSpent', $timespent, $criteria);
-            $ret  = $ticketHandler->updateAll('lastUpdated', $updateTime, $criteria);
+            $ret      = $ticketHandler->incrementAll('totalTimeSpent', $timespent, $criteria);
+            $ret      = $ticketHandler->updateAll('lastUpdated', $updateTime, $criteria);
             $response->setVar('ticketid', 0);
             $response->setVar('id', 0);
 
@@ -327,10 +342,12 @@ class Utility extends Common\SysUtility
      * @param array $tickets array of ticket ids (int)
      * @return bool  True on success, False on error
      */
-    public static function deleteTickets($tickets): bool
+    public static function deleteTickets(array $tickets): bool
     {
-        $ticketHandler = Helper::getInstance()->getHandler('Ticket');
-        $criteria          = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
         return $ticketHandler->deleteAll($criteria);
     }
@@ -341,10 +358,12 @@ class Utility extends Common\SysUtility
      * @param array $tickets array of ticket ids (int)
      * @return array Array of ticket objects
      */
-    public static function getTickets($tickets): array
+    public static function getTickets(array $tickets): array
     {
-        $ticketHandler = Helper::getInstance()->getHandler('Ticket');
-        $criteria          = new \Criteria('t.id', '(' . \implode(',', $tickets) . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('t.id', '(' . \implode(',', $tickets) . ')', 'IN');
 
         return $ticketHandler->getObjects($criteria);
     }
@@ -352,11 +371,11 @@ class Utility extends Common\SysUtility
     /**
      * Check if all supplied rules pass, and return any errors
      *
-     * @param array $rules  array of {@link Validator} classes
-     * @param array $errors array of errors found (if any)
+     * @param array|Validation\Validator $rules  array of {@link Validator} classes
+     * @param array|null                 $errors array of errors found (if any)
      * @return bool  True if all rules pass, false if any fail
      */
-    public static function checkRules($rules, &$errors): bool
+    public static function checkRules($rules, ?array &$errors): bool
     {
         $ret = true;
         if (\is_array($rules)) {
@@ -365,12 +384,12 @@ class Utility extends Common\SysUtility
                 $errors = \array_merge($errors, $error);
             }
         } else {
-            if (!$rules->isValid()) {
-                $ret    = false;
-                $errors = $rules->getErrors();
-            } else {
+            if ($rules->isValid()) {
                 $ret    = true;
                 $errors = [];
+            } else {
+                $ret    = false;
+                $errors = $rules->getErrors();
             }
         }
 
@@ -395,7 +414,7 @@ class Utility extends Common\SysUtility
      * @param string $table the table name (without XOOPS prefix)
      * @return bool   True if table exists, false if not
      */
-    public static function tableExists($table): bool
+    public static function tableExists(string $table): bool
     {
         $bRetVal = false;
         //Verifies that a MySQL table exists
@@ -421,11 +440,11 @@ class Utility extends Common\SysUtility
      * @param string $key
      * @return string|bool|null
      */
-    public static function getMeta($key)
+    public static function getMeta(string $key)
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
         $sql     = \sprintf('SELECT metavalue FROM `%s` WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
-        $result     = $xoopsDB->query($sql);
+        $result  = $xoopsDB->query($sql);
         if (!$result || $xoopsDB->getRowsNum($result) < 1) {
             $value = false;
         } else {
@@ -442,7 +461,7 @@ class Utility extends Common\SysUtility
      * @param string $value
      * @return bool   TRUE if success, FALSE if failure
      */
-    public static function setMeta($key, $value): bool
+    public static function setMeta(string $key, string $value): bool
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
         $ret     = self::getMeta($key);
@@ -465,7 +484,7 @@ class Utility extends Common\SysUtility
      * @param string $key
      * @return bool   TRUE if success, FALSE if failure
      */
-    public static function deleteMeta($key): bool
+    public static function deleteMeta(string $key): bool
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
         $sql     = \sprintf('DELETE FROM `%s` WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
@@ -481,16 +500,17 @@ class Utility extends Common\SysUtility
      * Does the supplied email belong to an existing xoops user
      *
      * @param string $email
-     * @return bool <a href='psi_element://xoopsUser'>xoopsUser</a> object if success, FALSE if failure
+     * @return \XoopsUser|bool \xoopsUser object if success, FALSE if failure
      * object if success, FALSE if failure
      */
-    public static function emailIsXoopsUser($email): bool
+    public static function emailIsXoopsUser(string $email)
     {
+        /** @var \XoopsMemberHandler $memberHandler */
         $memberHandler = \xoops_getHandler('member');
-        $criteria          = new \Criteria('email', $email);
+        $criteria      = new \Criteria('email', $email);
         $criteria->setLimit(1);
 
-        $users = &$memberHandler->getUsers($criteria);
+        $users = $memberHandler->getUsers($criteria);
         if (\count($users) > 0) {
             return $users[0];
         }
@@ -527,28 +547,28 @@ class Utility extends Common\SysUtility
     /**
      * Creates a xoops account from an email address and password
      *
-     * @param string  $email
-     * @param         $name
-     * @param string  $password
-     * @param         $level
-     * @return bool <a href='psi_element://xoopsUser'>xoopsUser</a> object if success, FALSE if failure
-     * object if success, FALSE if failure
+     * @param string $email
+     * @param string $name
+     * @param string $password
+     * @param int    $level
+     * @return \XoopsUser|bool \xoopsUser object if success, FALSE if failure
      */
-    public static function getXoopsAccountFromEmail($email, $name, &$password, $level): bool
+    public static function getXoopsAccountFromEmail(string $email, string $name, string &$password, int $level)
     {
+        /** @var \XoopsMemberHandler $memberHandler */
         $memberHandler = \xoops_getHandler('member');
 
         $unamecount = 10;
-        if ('' == $password) {
-            $password = mb_substr(\md5(\uniqid(\mt_rand(), 1)), 0, 6);
+        if ('' === $password) {
+            $password = mb_substr(\md5(\uniqid((string)\mt_rand(), true)), 0, 6);
         }
 
         $usernames = self::generateUserNames($email, $name, $unamecount);
         $newuser   = false;
         $i         = 0;
-        while (false === $newuser) {
-            $criteria  = new \Criteria('uname', $usernames[$i]);
-            $count = $memberHandler->getUserCount($criteria);
+        while (!$newuser) {
+            $criteria = new \Criteria('uname', $usernames[$i]);
+            $count    = $memberHandler->getUserCount($criteria);
             if (0 == $count) {
                 $newuser = true;
             } else {
@@ -568,7 +588,7 @@ class Utility extends Common\SysUtility
         $xuser->setVar('user_avatar', 'blank.gif');
         $xuser->setVar('user_regdate', \time());
         $xuser->setVar('timezone_offset', 0);
-        $xuser->setVar('actkey', mb_substr(\md5(\uniqid(\mt_rand(), 1)), 0, 8));
+        $xuser->setVar('actkey', mb_substr(\md5(\uniqid((string)\mt_rand(), true)), 0, 8));
         $xuser->setVar('email', $email);
         $xuser->setVar('name', $name);
         $xuser->setVar('pass', \md5($password));
@@ -593,7 +613,7 @@ class Utility extends Common\SysUtility
      * @param int    $count number of names to generate
      * @return array
      */
-    public static function generateUserNames($email, $name, $count = 20): array
+    public static function generateUserNames(string $email, string $name, int $count = 20): array
     {
         $names  = [];
         $userid = \explode('@', $email);
@@ -604,7 +624,7 @@ class Utility extends Common\SysUtility
 
         $names[] = $emailname;
 
-        if (mb_strlen($name) > 0) {
+        if ('' !== $name) {
             $name = \explode(' ', \trim($name));
             if (\count($name) > 1) {
                 $basename = \mb_strtolower(mb_substr($name[0], 0, 1) . $name[\count($name) - 1]);
@@ -637,16 +657,33 @@ class Utility extends Common\SysUtility
     }
 
     /**
+     * Gives the random number generator a seed to start from
+     *
+     * @return void
+     *
+     * @access public
+     */
+    public static function initRand()
+    {
+        static $randCalled = false;
+        if (!$randCalled) {
+            // mt_srand((double)microtime() * 1000000);
+            $randCalled = true;
+        }
+    }
+
+    /**
      * Creates a random number with a specified number of $digits
      *
      * @param int $digits number of digits
      * @return string random number
      */
-    public static function generateRandNumber($digits = 2): int
+    public static function generateRandNumber(int $digits = 2): string
     {
+        self::initRand();
         $tmp = [];
 
-        foreach ($tmp as $i => $iValue) {
+        for ($i = 0; $i < $digits; $i++) {
             $tmp[$i] = (\mt_rand() % 9);
         }
 
@@ -659,10 +696,10 @@ class Utility extends Common\SysUtility
      * @param int $type
      * @return string
      */
-    public static function getMBoxType($type): string
+    public static function getMBoxType(int $type): string
     {
         $mboxTypes = [
-            \_XHELP_MAILBOXTYPE_POP3  => 'POP3',
+            \_XHELP_MAILBOXTYPE_POP3 => 'POP3',
             \_XHELP_MAILBOXTYPE_IMAP => 'IMAP',
         ];
 
@@ -672,11 +709,11 @@ class Utility extends Common\SysUtility
     /**
      * Retrieve list of all staff members
      *
-     * @param $displayName
-     * @return array <a href='psi_element://Staff'>Staff</a> objects
+     * @param int $displayName
+     * @return array Staff objects
      * objects
      */
-    public static function getStaff($displayName): array
+    public static function getStaff(int $displayName): array
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
 
@@ -709,9 +746,12 @@ class Utility extends Common\SysUtility
             3 => ['name' => \_XHELP_ROLE_NAME3, 'desc' => \_XHELP_ROLE_DSC3, 'value' => XHELP_ROLE_PERM_3],
         ];
 
-        $roleHandler = Helper::getInstance()->getHandler('Role');
+        /** @var \XoopsModules\Xhelp\RoleHandler $roleHandler */
+        $roleHandler = Helper::getInstance()
+            ->getHandler('Role');
 
         foreach ($defaultRolePermissions as $key => $aRole) {
+            /** @var \XoopsModules\Xhelp\Role $role */
             $role = $roleHandler->create();
             $role->setVar('id', $key);
             $role->setVar('name', $aRole['name']);
@@ -742,8 +782,11 @@ class Utility extends Common\SysUtility
             3 => ['description' => \_XHELP_STATUS2, 'state' => \XHELP_STATE_RESOLVED],
         ];
 
-        $statusHandler = Helper::getInstance()->getHandler('Status');
+        /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+        $statusHandler = Helper::getInstance()
+            ->getHandler('Status');
         foreach ($statuses as $id => $status) {
+            /** @var \XoopsModules\Xhelp\Status $newStatus */
             $newStatus = $statusHandler->create();
             $newStatus->setVar('id', $id);
             $newStatus->setVar('description', $status['description']);
@@ -760,12 +803,12 @@ class Utility extends Common\SysUtility
     /**
      * Convert Bytes to a human readable size (GB, MB, KB, etc)
      *
-     * @param $bytes
+     * @param int $bytes
      * @return string Human readable size
      */
-    public static function prettyBytes($bytes): string
+    public static function prettyBytes(int $bytes): string
     {
-        $bytes = (int)$bytes;
+        $bytes = $bytes;
 
         if ($bytes >= 1099511627776) {
             $return = \number_format($bytes / 1024 / 1024 / 1024 / 1024, 2);
@@ -791,14 +834,14 @@ class Utility extends Common\SysUtility
      * Add a new database field to an existing table
      * MySQL Only!
      *
-     * @param        $table
-     * @param        $fieldname
+     * @param string $table
+     * @param string $fieldname
      * @param string $fieldtype
      * @param int    $size
      * @param null   $attr
      * @return resource SQL query resource
      */
-    public static function addDBField($table, $fieldname, $fieldtype = 'VARCHAR', $size = 0, $attr = null)
+    public static function addDBField(string $table, string $fieldname, string $fieldtype = 'VARCHAR', int $size = 0, $attr = null)
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
 
@@ -842,14 +885,14 @@ class Utility extends Common\SysUtility
      * Rename an existing database field
      * MySQL Only!
      *
-     * @param        $table
-     * @param        $oldcol
-     * @param        $newcol
+     * @param string $table
+     * @param string $oldcol
+     * @param string $newcol
      * @param string $fieldtype
      * @param int    $size
      * @return resource SQL query resource
      */
-    public static function renameDBField($table, $oldcol, $newcol, $fieldtype = 'VARCHAR', $size = 0)
+    public static function renameDBField(string $table, string $oldcol, string $newcol, string $fieldtype = 'VARCHAR', int $size = 0)
     {
         $xoopsDB    = \XoopsDatabaseFactory::getDatabaseConnection();
         $column_def = $newcol;
@@ -864,11 +907,11 @@ class Utility extends Common\SysUtility
      * Remove an existing database field
      * MySQL Only!
      *
-     * @param $table
-     * @param $column
+     * @param string $table
+     * @param string $column
      * @return resource SQL query resource
      */
-    public static function removeDBField($table, $column)
+    public static function removeDBField(string $table, string $column)
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
         $sql     = \sprintf('ALTER TABLE %s DROP COLUMN `%s`', $xoopsDB->prefix($table), $column);
@@ -884,7 +927,9 @@ class Utility extends Common\SysUtility
      */
     public static function resetStaffUpdatedTime(): bool
     {
-        $staffHandler = Helper::getInstance()->getHandler('Staff');
+        /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+        $staffHandler = Helper::getInstance()
+            ->getHandler('Staff');
 
         return $staffHandler->updateAll('permTimestamp', \time());
     }
@@ -906,6 +951,7 @@ class Utility extends Common\SysUtility
         if (null !== $xoopsModule && \is_object($xoopsModule) && \XHELP_DIR_NAME == $xoopsModule->getVar('dirname')) {
             $_module = &$xoopsModule;
         } else {
+            /** @var \XoopsModuleHandler $moduleHandler */
             $moduleHandler = \xoops_getHandler('module');
             $_module       = $moduleHandler->getByDirname('xhelp');
         }
@@ -923,6 +969,7 @@ class Utility extends Common\SysUtility
         static $_config;
 
         if (null === $_config) {
+            /** @var \XoopsConfigHandler $configHandler */
             $configHandler = \xoops_getHandler('config');
             $_module       = self::getModule();
 
@@ -932,21 +979,21 @@ class Utility extends Common\SysUtility
         return $_config;
     }
 
-//    /**
-//     * Wrapper for the xoops_getModuleHandler function
-//     *
-//     * @param string $handler Name of the handler to return
-//     * @return \XoopsObjectHandler The object handler requested
-//     */
-//    public static function getHandler($handler)
-//    {
-//        //        $handler = xoops_getModuleHandler($handler, XHELP_DIR_NAME);
-//        require_once \dirname(__DIR__) . '/preloads/autoloader.php';
-//        $class      = '\\XoopsModules\\Xhelp\\' . $handler . 'Handler';
-//        $newHandler = new $class($GLOBALS['xoopsDB']);
-//
-//        return $newHandler;
-//    }
+    //    /**
+    //     * Wrapper for the xoops_getModuleHandler function
+    //     *
+    //     * @param string $handler Name of the handler to return
+    //     * @return \XoopsObjectHandler The object handler requested
+    //     */
+    //    public static function getHandler($handler)
+    //    {
+    //        //        $handler = xoops_getModuleHandler($handler, XHELP_DIR_NAME);
+    //        require_once \dirname(__DIR__) . '/preloads/autoloader.php';
+    //        $class      = '\\XoopsModules\\Xhelp\\' . $handler . 'Handler';
+    //        $newHandler = new $class($GLOBALS['xoopsDB']);
+    //
+    //        return $newHandler;
+    //    }
 
     /**
      * Retrieve all saved searches for the specified user(s)
@@ -956,7 +1003,9 @@ class Utility extends Common\SysUtility
      */
     public static function getSavedSearches($users)
     {
-        $savedSearchHandler = Helper::getInstance()->getHandler('SavedSearch');
+        /** @var \XoopsModules\Xhelp\SavedSearchHandler $savedSearchHandler */
+        $savedSearchHandler = Helper::getInstance()
+            ->getHandler('SavedSearch');
 
         if (\is_array($users)) {
             $criteria = new \Criteria('uid', '(' . \implode(',', $users) . ')', 'IN');
@@ -988,8 +1037,12 @@ class Utility extends Common\SysUtility
      */
     public static function createNotifications(): bool
     {
-        $roleHandler         = Helper::getInstance()->getHandler('Role');
-        $notificationHandler = Helper::getInstance()->getHandler('Notification');
+        /** @var \XoopsModules\Xhelp\RoleHandler $roleHandler */
+        $roleHandler = Helper::getInstance()
+            ->getHandler('Role');
+        /** @var \XoopsModules\Xhelp\NotificationHandler $notificationHandler */
+        $notificationHandler = Helper::getInstance()
+            ->getHandler('Notification');
 
         // Get list of all roles
         $roles = $roleHandler->getObjects();
@@ -1013,6 +1066,7 @@ class Utility extends Common\SysUtility
         ];
 
         foreach ($notifications as $notif) {
+            /** @var \XoopsModules\Xhelp\Notification $template */
             $template = $notificationHandler->create();
             $template->setVar('notif_id', $notif['id']);
             $template->setVar('staff_setting', $notif['staff']);
@@ -1036,8 +1090,9 @@ class Utility extends Common\SysUtility
      * @param int                                  $displayName XHELP_DISPLAYNAME_UNAME for username XHELP_DISPLAYNAME_REALNAME for realname
      * @return array True on success, False on failure
      */
-    public static function getUsers($criteria = null, $displayName = \XHELP_DISPLAYNAME_UNAME): array
+    public static function getUsers($criteria = null, int $displayName = \XHELP_DISPLAYNAME_UNAME): array
     {
+        /** @var \XoopsUserHandler $userHandler */
         $userHandler = \xoops_getHandler('user');
         $users       = $userHandler->getObjects($criteria, true);
         $ret         = [];
@@ -1056,14 +1111,15 @@ class Utility extends Common\SysUtility
      *
      * @return string username or real name
      */
-    public static function getUsername($xUser, $displayName = \XHELP_DISPLAYNAME_UNAME): string
+    public static function getUsername($xUser, int $displayName = \XHELP_DISPLAYNAME_UNAME): string
     {
         global $xoopsUser, $xoopsConfig;
-        $user          = false;
+        $user = false;
+        /** @var \XoopsMemberHandler $memberHandler */
         $memberHandler = \xoops_getHandler('member');
 
         if (\is_numeric($xUser)) {
-            if ($xUser != $xoopsUser->getVar('uid')) {
+            if ($xUser != (int)$xoopsUser->getVar('uid')) {
                 if (0 == $xUser) {
                     return $xoopsConfig['anonymous'];
                 }
@@ -1090,7 +1146,7 @@ class Utility extends Common\SysUtility
      * @param string $uname       {user's username}
      * @return string {username or real name}
      */
-    public static function getDisplayName($displayName, $name = '', $uname = ''): string
+    public static function getDisplayName(int $displayName, string $name = '', string $uname = ''): string
     {
         return ((\XHELP_DISPLAYNAME_REALNAME == $displayName && '' != $name) ? $name : $uname);
     }
@@ -1106,6 +1162,7 @@ class Utility extends Common\SysUtility
         if (null !== $xoopsConfig && isset($xoopsConfig['language'])) {
             $language = $xoopsConfig['language'];
         } else {
+            /** @var \XoopsConfigHandler $configHandler */
             $configHandler = \xoops_getHandler('config');
             $xoopsConfig   = $configHandler->getConfigsByCat(\XOOPS_CONF);
             $language      = $xoopsConfig['language'];
@@ -1120,7 +1177,7 @@ class Utility extends Common\SysUtility
      * @param string $filename file to include
      * @param null   $language translation to use
      */
-    public static function includeLang($filename, $language = null)
+    public static function includeLang(string $filename, $language = null)
     {
         $langFiles = ['admin', 'blocks', 'main', 'modinfo', 'noise_words'];
 
@@ -1136,9 +1193,9 @@ class Utility extends Common\SysUtility
     }
 
     /**
-     * @param $reportName
+     * @param string $reportName
      */
-    public static function includeReportLangFile($reportName)
+    public static function includeReportLangFile(string $reportName)
     {
         \xoops_loadLanguage($reportName, 'xhelp');
     }
@@ -1150,17 +1207,24 @@ class Utility extends Common\SysUtility
      * @internal param string $name {user's real name}
      * @internal param string $uname {user's username}
      */
-    public static function createDefaultTicketLists()
+    public static function createDefaultTicketLists(): bool
     {
-        $savedSearchHandler = Helper::getInstance()->getHandler('SavedSearch');
-        $ticketListHandler  = Helper::getInstance()->getHandler('TicketList');
-        $staffHandler       = Helper::getInstance()->getHandler('Staff');
+        /** @var \XoopsModules\Xhelp\SavedSearchHandler $savedSearchHandler */
+        $savedSearchHandler = Helper::getInstance()
+            ->getHandler('SavedSearch');
+        /** @var \XoopsModules\Xhelp\TicketListHandler $ticketListHandler */
+        $ticketListHandler = Helper::getInstance()
+            ->getHandler('TicketList');
+        /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+        $staffHandler = Helper::getInstance()
+            ->getHandler('Staff');
 
         $ticketLists = [\XHELP_QRY_STAFF_HIGHPRIORITY, \XHELP_QRY_STAFF_NEW, \XHELP_QRY_STAFF_MINE, \XHELP_QRY_STAFF_ALL];
         $i           = 1;
         foreach ($ticketLists as $ticketList) {
+            /** @var \XoopsModules\Xhelp\SavedSearch $newSearch */
             $newSearch = $savedSearchHandler->create();
-            $criteria      = new \CriteriaCompo();
+            $criteria  = new \CriteriaCompo();
             switch ($ticketList) {
                 case \XHELP_QRY_STAFF_HIGHPRIORITY:
                     $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID, '=', 'j'));
@@ -1206,6 +1270,7 @@ class Utility extends Common\SysUtility
 
             $staff = $staffHandler->getObjects(null, true);
             foreach ($staff as $stf) {
+                /** @var \XoopsModules\Xhelp\TicketList $list */
                 $list = $ticketListHandler->create();
                 $list->setVar('uid', $stf->getVar('uid'));
                 $list->setVar('searchid', $newSearch->getVar('id'));
@@ -1219,16 +1284,58 @@ class Utility extends Common\SysUtility
     }
 
     /**
+     * Generate publisher URL
+     *
+     * @param string $page
+     * @param array  $vars
+     * @param bool   $encodeAmp
+     * @return string
+     *
+     * @credit : xHelp module, developped by 3Dev
+     */
+    public static function makeUri(string $page, array $vars = [], bool $encodeAmp = true): string
+    {
+        $joinStr = '';
+
+        $amp = ($encodeAmp ? '&amp;' : '&');
+
+        if (!\count($vars)) {
+            return $page;
+        }
+
+        $qs = '';
+        foreach ($vars as $key => $value) {
+            $qs      .= $joinStr . $key . '=' . $value;
+            $joinStr = $amp;
+        }
+
+        return $page . '?' . $qs;
+    }
+
+    /**
      * @return EventService
      */
-//    public static function createNewEventService(): EventService
-//    {
-//        static $instance;
-//
-//        if (null === $instance) {
-//            $instance = new EventService();
-//        }
-//
-//        return $instance;
-//    }
+    //    public static function createNewEventService(): EventService
+    //    {
+    //        static $instance;
+    //
+    //        if (null === $instance) {
+    //            $instance = new EventService();
+    //        }
+    //
+    //        return $instance;
+    //    }
+
+    /**
+     * @param string $path
+     * @param string $image
+     * @param string $alt
+     * @return string
+     */
+    public static function iconSourceTag(string $path, string $image, string $alt): string
+    {
+        $imgSource = "<img src='" . $path . "$image'  alt='" . $alt . "' title='" . $alt . "' align='middle'>";
+
+        return $imgSource;
+    }
 }

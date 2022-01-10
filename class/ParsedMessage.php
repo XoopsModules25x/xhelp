@@ -31,7 +31,7 @@ class ParsedMessage
      * Class Constructor
      * @param array $msg Array of message values
      */
-    public function __construct($msg)
+    public function __construct(array $msg)
     {
         $struct         = $msg['mime_struct'];
         $this->_email   = $msg['email'];
@@ -43,7 +43,7 @@ class ParsedMessage
 
         $this->_msgtype     = ('' === $msg['hash'] ? _XHELP_MSGTYPE_TICKET : _XHELP_MSGTYPE_RESPONSE);
         $this->_attachments = [];
-        $this->_loadAttachments($struct);
+        $this->loadAttachments($struct);
     }
 
     /**
@@ -100,14 +100,17 @@ class ParsedMessage
     }
 
     /**
-     * @param $header
+     * @param string $header
      * @return bool
      */
-    public function getHeader($header): bool
+    public function getHeader(string $header): bool
     {
         return $this->_headers[$header] ?? false;
     }
 
+    /**
+     * @return mixed
+     */
     public function &getAllHeaders()
     {
         return $this->_headers;
@@ -130,38 +133,36 @@ class ParsedMessage
     }
 
     /**
-     * @param $part
+     * @param array|object $part
      */
-    public function _loadAttachments($part)
+    public function loadAttachments($part)
     {
         if (\is_array($part)) {
             foreach ($part as $subpart) {
-                $this->_loadAttachments($subpart);
+                $this->loadAttachments($subpart);
             }
+        } elseif (isset($part->parts)) {
+            $this->loadAttachments($part->parts);
         } else {
-            if (isset($part->parts)) {
-                $this->_loadAttachments($part->parts);
-            } else {
-                if ('text' === $part->ctype_primary && 'plain' === $part->ctype_secondary) {
-                    if (isset($part->disposition) && 'attachment' === $part->disposition) {
-                        $this->_addAttachment($part);
-                    }
-                    // Do Nothing
-                } else {
-                    $this->_addAttachment($part);
+            if ('text' === $part->ctype_primary && 'plain' === $part->ctype_secondary) {
+                if (isset($part->disposition) && 'attachment' === $part->disposition) {
+                    $this->addAttachment($part);
                 }
+                // Do Nothing
+            } else {
+                $this->addAttachment($part);
             }
         }
     }
 
     /**
-     * @param $part
+     * @param object $part
      */
-    public function _addAttachment($part)
+    private function addAttachment(object $part)
     {
         $_attach                 = [];
         $_attach['content-type'] = $part->ctype_primary . '/' . $part->ctype_secondary;
-        $_attach['filename']     = (isset($part->d_parameters) ? $this->_cleanFilename($part->d_parameters['filename']) : 'content_' . $part->ctype_primary . '_' . $part->ctype_secondary);
+        $_attach['filename']     = (isset($part->d_parameters) ? $this->cleanFilename($part->d_parameters['filename']) : 'content_' . $part->ctype_primary . '_' . $part->ctype_secondary);
         $_attach['content']      = $part->body;
         $this->_attachments[]    = $_attach;
         unset($_attach);
@@ -174,7 +175,7 @@ class ParsedMessage
      * @return string "cleaned" filename
      * @todo   Get list of other unsafe characters by platform
      */
-    public function _cleanFilename($name): string
+    private function cleanFilename(string $name): string
     {
         $name = \str_replace(' ', '_', $name);
 
