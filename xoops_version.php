@@ -20,8 +20,8 @@ $moduleDirName      = basename(__DIR__);
 $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
 $modversion['version']             = '1.0.0';
-$modversion['module_status']       = 'Alpha 1';
-$modversion['release_date']        = '2021/12/28';
+$modversion['module_status']       = 'Alpha 2';
+$modversion['release_date']        = '2022/01/20';
 $modversion['name']                = _MI_XHELP_NAME;
 $modversion['description']         = _MI_XHELP_DESC;
 $modversion['author']              = '3dev.org';

@@ -20,6 +20,7 @@ use Xmf\Yaml;
 use XoopsModules\Xhelp\{
     Helper,
     Common\Configurator,
+    Common\Confirm,
     Utility
 };
 
@@ -56,8 +57,33 @@ switch ($op) {
         saveSampleData();
         break;
     case 'clear':
-        clearSampleData();
+        if (Request::hasVar('ok', 'REQUEST') && 1 === Request::getInt('ok', 0)) {
+            if (!$GLOBALS['xoopsSecurity']->check()) {
+                redirect_header($helper->url('admin/index.php'), 3, implode(',', $GLOBALS['xoopsSecurity']->getErrors()));
+            }
+            clearSampleData();
+        } else {
+            xoops_cp_header();
+            xoops_confirm(['ok' => 1, 'op' => 'clear'], 'index.php',
+                          sprintf(constant('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA')),
+                          constant('CO_' . $moduleDirNameUpper . '_' . 'CONFIRM'), true);
+            xoops_cp_footer();
+        }
+
+//        if (isset($_REQUEST['ok']) && 1 === Request::getInt('ok', 0)) {
+//            if (!$GLOBALS['xoopsSecurity']->check()) {
+//                $helper->redirect($helper->url('admin/index.php'), 3, \implode(', ', $GLOBALS['xoopsSecurity']->getErrors()));
+//            }
+//            clearSampleData();
+//        } else {
+//            $customConfirm = new Confirm(['ok' => 1, 'op' => 'clear'], $_SERVER['REQUEST_URI'], sprintf(constant('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA')), constant('CO_' . $moduleDirNameUpper . '_' . 'CONFIRM'));
+//
+//            $form = $customConfirm->getFormConfirm();
+//            $GLOBALS['xoopsTpl']->assign('form', $form->render());
+//        }
+
         break;
+
 }
 
 // XMF TableLoad for SAMPLE data
@@ -74,9 +100,7 @@ function loadSampleData()
     $utility      = new Utility();
     $configurator = new Configurator();
 
-    $tables = \Xmf\Module\Helper::getHelper($moduleDirName)
-        ->getModule()
-        ->getInfo('tables');
+    $tables = Helper::getInstance()->getModule()->getInfo('tables');
 
     $language = 'english/';
     if (\is_dir(__DIR__ . '/' . $xoopsConfig['language'])) {
@@ -93,10 +117,9 @@ function loadSampleData()
     // load permissions
     $table     = 'group_permission';
     $tabledata = Yaml::readWrapped($language . $table . '.yml');
-    $mid       = \Xmf\Module\Helper::getHelper($moduleDirName)
-        ->getModule()
-        ->getVar('mid');
-    loadTableFromArrayWithReplace($table, $tabledata, 'gperm_modid', $mid);
+    $mid = Helper::getInstance()->getModule()->getVar('mid');
+
+    loadTableFromArrayWithReplace($table, $tabledata, 'gperm_modid', (string)$mid);
 
     //  ---  COPY test folder files ---------------
     if (\is_array($configurator->copyTestFolders) && \count($configurator->copyTestFolders) > 0) {

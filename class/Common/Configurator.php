@@ -58,7 +58,7 @@ class Configurator
         $this->oldFolders      = $config->oldFolders;
         $this->renameTables    = $config->renameTables;
         $this->renameColumns   = $config->renameColumns;
-        $this->moduleStats     = $config->moduleStats;
+//        $this->moduleStats     = $config->moduleStats;
         $this->modCopyright    = $config->modCopyright;
         //        $this->testimages      = $config->testimages;
 

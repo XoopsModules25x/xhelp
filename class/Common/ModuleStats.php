@@ -13,18 +13,13 @@ namespace XoopsModules\Xhelp\Common;
 trait ModuleStats
 {
     /**
-     * @param \XoopsModules\Xhelp\Common\Configurator $configurator
+     * @param Configurator $configurator
      * @return array
      */
 
-    public static function getModuleStats(Configurator $configurator): array
+    public static function getModuleStats(): array
     {
-        $moduleStats = [];
-        if (\count($configurator->moduleStats) > 0) {
-            foreach (\array_keys($configurator->moduleStats) as $i) {
-                $moduleStats[$i] = $configurator->moduleStats[$i];
-            }
-        }
+        $moduleStats = require \dirname(__DIR__, 2) . '/config/stats.php';
 
         return $moduleStats;
     }

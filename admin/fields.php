@@ -1,5 +1,23 @@
 <?php declare(strict_types=1);
 
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Brian Wahoff <ackbarr@xoops.org>
+ * @author       Eric Juden <ericj@epcusa.com>
+ * @author       XOOPS Development Team
+ */
+
 use Xmf\Module\Admin;
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -50,7 +68,7 @@ switch ($op) {
  */
 function manageFields()
 {
-    global $imagearray;
+    global $icons;
     $helper = Helper::getInstance();
     $errors = [];
 
@@ -227,11 +245,11 @@ function manageFields()
 
                 if ($field->getVar('required')) {
                     $req_link_params['setrequired'] = 0;
-                    $req_img                        = $imagearray['online'];
+                    $req_img                        = $icons['online'];
                     $req_title                      = _AM_XHELP_MESSAGE_DEACTIVATE;
                 } else {
                     $req_link_params['setrequired'] = 1;
-                    $req_img                        = $imagearray['offline'] ?? '';
+                    $req_img                        = $icons['offline'] ?? '';
                     $req_title                      = _AM_XHELP_MESSAGE_ACTIVATE;
                 }
 
@@ -244,8 +262,8 @@ function manageFields()
                     <td>' . $field->getVar('fieldname') . '</td>
                     <td>' . xhelpGetControlLabel((string)$field->getVar('controltype')) . "</td>
                     <td><a href='" . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/fields.php', $req_link_params) . "' title='$req_title'>$req_img</a></td>
-                    <td><a href='$edit_url'>" . ($imagearray['editimg'] ?? '') . "</a>
-                        <a href='$del_url'>" . ($imagearray['deleteimg'] ?? '') . '</a></td>
+                    <td><a href='$edit_url'>" . ($icons['edit'] ?? '') . "</a>
+                        <a href='$del_url'>" . ($icons['delete'] ?? '') . '</a></td>
                     </tr>';
             }
             echo '</table>';

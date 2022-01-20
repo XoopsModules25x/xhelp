@@ -337,10 +337,10 @@ function removeAccents(string $string): string
 }
 
 /**
- * @param array $str
+ * @param array|string $str
  * @return bool
  */
-function seemsUtf8(array $str): bool
+function seemsUtf8($str): bool
 { # by bmorel at ssi dot fr
     foreach ($str as $i => $iValue) {
         if (ord($iValue) < 0x80) {

@@ -90,9 +90,9 @@ class Ticket extends \XoopsObject
     /**
      * retrieve the department object associated with this ticket
      *
-     * @return object {@link Department} object
+     * @return Department|bool {@link Department}
      */
-    public function getDepartment(): object
+    public function getDepartment()
     {
         $departmentHandler = $this->helper->getHandler('Department');
 

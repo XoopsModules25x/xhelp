@@ -11,7 +11,7 @@
 
 /**
  * @copyright    XOOPS Project (https://xoops.org)
- * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @license      GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @author       XOOPS Development Team
  */
 
@@ -27,6 +27,8 @@ require \dirname(__DIR__) . '/preloads/autoloader.php';
 
 require \dirname(__DIR__, 3) . '/include/cp_header.php';
 require \dirname(__DIR__) . '/include/common.php';
+
+require \dirname(__DIR__) . '/include/functions_admin.php';
 //require \dirname(__DIR__) . '/include/events.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
@@ -120,7 +122,7 @@ $icons        = $configurator->icons;
 //    $xoopsTpl = new \XoopsTpl();
 //}
 
-//$imagearray = [
+//$icons = [
 //    'editimg'   => "<img src='" . XHELP_IMAGE_URL . "/button_edit.png' alt='" . _AM_XHELP_ICO_EDIT . "' align='middle'>",
 //    'deleteimg' => "<img src='" . XHELP_IMAGE_URL . "/button_delete.png' alt='" . _AM_XHELP_ICO_DELETE . "' align='middle'>",
 //    'online'    => "<img src='" . XHELP_IMAGE_URL . "/on.png' alt='" . _AM_XHELP_ICO_ONLINE . "' align='middle'>",

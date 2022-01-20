@@ -18,10 +18,8 @@ $displayName = $helper->getConfig('xhelp_displayName');    // Determines if user
 $aLimitByS = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' => 100];
 $aLimitByD = ['1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '10' => 10];
 
-$op = 'default';
-
-if (Request::hasVar('op', 'REQUEST')) {
-    $op = $_REQUEST['op'];
+if (isset($_REQUEST['op'])) {
+    $op = Request::getString('op', 'default', $_REQUEST);
 }
 
 switch ($op) {
@@ -211,7 +209,7 @@ function customDept()
     $uid    = Request::getInt('uid', 0, 'REQUEST');
     $deptid = 0;
     if (0 == $uid) {
-        $helper->redirect("staff.php?op=$lastPage", 3, _AM_XHELP_MSG_NEED_UID);
+        $helper->redirect("admin/staff.php?op=$lastPage", 3, _AM_XHELP_MSG_NEED_UID);
     }
     if (Request::hasVar('deptid', 'REQUEST')) {
         $deptid = Request::getInt('deptid', 0, 'REQUEST');
@@ -269,7 +267,7 @@ function customDept()
         if (!$lastPage = $session->get('xhelp_return_op2')) {
             $lastPage = $session->get('xhelp_return_op');
         }
-        $helper->redirect("staff.php?op=$lastPage&uid=$uid");
+        $helper->redirect("admin/staff.php?op=$lastPage&uid=$uid");
     } else {
         if (Request::hasVar('addRole', 'POST')) {
             $session->set('xhelp_return_op2', $lastPage);
@@ -404,10 +402,10 @@ function deleteRole($xhelp_id, string $return_op)
 
     if ($roleHandler->delete($role, true)) {
         $message = _AM_XHELP_MESSAGE_ROLE_DELETE;
-        $helper->redirect("staff.php?op=$return_op");
+        $helper->redirect("admin/staff.php?op=$return_op");
     } else {
         $message = _AM_XHELP_MESSAGE_ROLE_DELETE_ERROR;
-        $helper->redirect("staff.php?op=$return_op", 3, $message);
+        $helper->redirect("admin/staff.php?op=$return_op", 3, $message);
     }
 }
 
@@ -453,10 +451,10 @@ function editRole()
             Xhelp\Utility::resetStaffUpdatedTime();
 
             $message = _AM_XHELP_MESSAGE_ROLE_UPDATE;
-            $helper->redirect("staff.php?op=$lastPage&uid=$uid");
+            $helper->redirect("admin/staff.php?op=$lastPage&uid=$uid");
         } else {
             $message = _AM_XHELP_MESSAGE_ROLE_UPDATE_ERROR;
-            $helper->redirect("staff.php?op=$lastPage&uid=$uid", 3, $message);
+            $helper->redirect("admin/staff.php?op=$lastPage&uid=$uid", 3, $message);
         }
     } else {
         $session->set('xhelp_return_op2', $lastPage);
@@ -584,7 +582,7 @@ function editStaff()
             }
 
             foreach ($dept_roles as $role) {
-                $staffHandler->addStaffRole($uid, $role, $dept);
+                $staffHandler->addStaffRole($uid, (int)$role, $dept);
             }
         }
 

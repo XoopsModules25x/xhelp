@@ -11,7 +11,7 @@
 
 /**
  * @copyright       XOOPS Project (https://xoops.org)
- * @license         GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @license         GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @author          Xoops Development Team
  */
 $moduleDirName      = basename(dirname(__DIR__, 2));
@@ -67,7 +67,7 @@ $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 //Sample Data
 \define('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA', 'Import Sample Data (will delete ALL current data)');
 \define('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_CONFIRM', 'Are you sure to Import Sample Data? (It will delete ALL current data)');
-\define('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_SUCCESS', 'Sample Date saved successfully');
+\define('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_SUCCESS', 'Sample Date imported  successfully');
 \define('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA', 'Export Tables to YAML');
 \define('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA_SUCCESS', 'Export Tables to YAML successfully');
 \define('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA', 'Clear the Sample Data');
@@ -226,3 +226,9 @@ $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 \define('CO_' . $moduleDirNameUpper . '_' . 'ERROR_FOLDER_RENAME_FAILED', 'Could not rename upload folder, please rename manually');
 
 \define('CO_' . $moduleDirNameUpper . '_' . 'BAD_TOKEN', 'Invalid token, please try again');
+
+//Confirm
+
+\define('CO_' . $moduleDirNameUpper . '_' . 'CONFIRMDELETE_TITLE', 'Delete Confirmation');
+\define('CO_' . $moduleDirNameUpper . '_' . 'CONFIRMDELETE_LABEL', 'Are you OK to delete it?');
+

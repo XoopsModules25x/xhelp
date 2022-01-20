@@ -19,7 +19,7 @@
 //use Xmf\Module\Admin;
 use Xmf\Request;
 use XoopsModules\Xhelp;
-use XoopsModules\Publisher\MimetypesUtility;
+use XoopsModules\Xhelp\MimetypesUtility;
 
 require_once __DIR__ . '/admin_header.php';
 xoops_load('XoopsPagenav');

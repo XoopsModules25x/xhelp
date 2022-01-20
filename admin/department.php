@@ -1,5 +1,23 @@
 <?php declare(strict_types=1);
 
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Brian Wahoff <ackbarr@xoops.org>
+ * @author       Eric Juden <ericj@epcusa.com>
+ * @author       XOOPS Development Team
+ */
+
 use Xmf\Module\Admin;
 use Xmf\Request;
 use XoopsModules\Xhelp;
@@ -214,7 +232,7 @@ function editDepartment()
 {
     $deptID  = 0;
     $session = Xhelp\Session::getInstance();
-    global $imagearray, $xoopsModule, $limit, $start;
+    global $icons, $xoopsModule, $limit, $start;
     $helper = Xhelp\Helper::getInstance();
     $errors = [];
 
@@ -495,11 +513,11 @@ function editDepartment()
             foreach ($deptServers as $server) {
                 if ($server->getVar('active')) {
                     $activ_link  = '".XHELP_ADMIN_URL."/department.php?op=activateMailbox&amp;setstate=0&amp;id=' . $server->getVar('id');
-                    $activ_img   = $imagearray['online'];
+                    $activ_img   = $icons['online'];
                     $activ_title = _AM_XHELP_MESSAGE_DEACTIVATE;
                 } else {
                     $activ_link  = '".XHELP_ADMIN_URL."/department.php?op=activateMailbox&amp;setstate=1&amp;id=' . $server->getVar('id');
-                    $activ_img   = $imagearray['offline'];
+                    $activ_img   = $icons['offline'];
                     $activ_title = _AM_XHELP_MESSAGE_ACTIVATE;
                 }
 
@@ -509,8 +527,8 @@ function editDepartment()
                    <td>' . $server->getVar('server') . '</td>
                    <td>' . $server->getVar('serverport') . '</td>
                    <td> <a href="' . $activ_link . '" title="' . $activ_title . '">' . $activ_img . '</a>
-                        <a href="' . XHELP_ADMIN_URL . '/department.php?op=EditDepartmentServer&amp;id=' . $server->GetVar('id') . '">' . $imagearray['editimg'] . '</a>
-                        <a href="' . XHELP_ADMIN_URL . '/department.php?op=DeleteDepartmentServer&amp;id=' . $server->GetVar('id') . '">' . $imagearray['deleteimg'] . '</a>
+                        <a href="' . XHELP_ADMIN_URL . '/department.php?op=EditDepartmentServer&amp;id=' . $server->GetVar('id') . '">' . $icons['edit'] . '</a>
+                        <a href="' . XHELP_ADMIN_URL . '/department.php?op=DeleteDepartmentServer&amp;id=' . $server->GetVar('id') . '">' . $icons['delete'] . '</a>
 
                    </td>
                  </tr>';
@@ -790,7 +808,7 @@ function manageDepartments()
 
             // Set as default department?
             if (Request::hasVar('defaultDept', 'POST') && (1 == $_POST['defaultDept'])) {
-                Xhelp\Utility::setMeta('default_department', $deptID);
+                Xhelp\Utility::setMeta('default_department', (string)$deptID);
             }
 
             /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */

@@ -1,4 +1,17 @@
-<h5>1.00 Alpha 1   [WORK IN PROGRESS - NOT RELEASED]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<h5>1.00 Alpha 2   [2022-01-20]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<hr>
+- fix: when install i got blank white screen. No error. Module is installed (liomj/mamba)
+- fix: tried to install sample data. Failed with white screen. No error (liomj/mamba)
+- fix:  try to create department. Department is created but with errors (liomj/mamba)
+- fix:  create role 404 error (liomj/mamba)
+- fix:  404 error when trying to customize - department (liomj/mamba)
+- fix:  error When trying to create custom fields (liomj/mamba)
+- renamed $imagearray to $icons (mamba)
+- refactored ModuleStats (mamba)
+
+
+
+<h5>1.00 Alpha 1   [2022-01-09]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
 <hr>
 - namespaces (mamba)
 - class autoloading (mamba)
