@@ -1,5 +1,5 @@
 div#buttonNav {
-    border: 1px solid black;
+    border: 1px solid #000000;
     border-bottom: 0;
     padding: 0.5em 0.5em 0;
     background: #E7E7E7 url("../images/bg.gif") repeat-x bottom;

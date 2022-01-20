@@ -1,16 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+use Xmf\Module\Admin;
+use Xmf\Request;
+use XoopsModules\Xhelp\{
+    Helper,
+    FaqAdapterFactory,
+    Utility
+};
 
-require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
-require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+xoops_load('XoopsPagenav');
 // require_once XHELP_CLASS_PATH . '/faqAdapterFactory.php';
 // require_once XHELP_CLASS_PATH . '/faqAdapter.php';
 
 $op = 'default';
 
-if (isset($_REQUEST['op'])) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -18,22 +23,23 @@ switch ($op) {
     case 'updateActive':
         updateActive();
         break;
-
     case 'manage':
     default:
         manage();
         break;
-
 }
 
+/**
+ *
+ */
 function manage()
 {
     global $imagearray;
-    $faqAdapters = Xhelp\FaqAdapterFactory::installedAdapters();
-    $myAdapter   = Xhelp\FaqAdapterFactory::getFaqAdapter();
+    $faqAdapters = FaqAdapterFactory::installedAdapters();
+    $myAdapter   = FaqAdapterFactory::getFaqAdapter();
     xoops_cp_header();
     //echo $oAdminButton->renderButtons('manFaqAdapters');
-    $adminObject = \Xmf\Module\Admin::getInstance();
+    $adminObject = Admin::getInstance();
     $adminObject->displayNavigation(basename(__FILE__));
 
     echo "<form method='post' action='" . XHELP_ADMIN_URL . "/faqAdapter.php?op=updateActive'>";
@@ -49,13 +55,13 @@ function manage()
                   <td>' . _AM_XHELP_TEXT_ACTIVE . '</td>
               </tr>';
 
-        $activeAdapter = Xhelp\Utility::getMeta('faq_adapter');
+        $activeAdapter = Utility::getMeta('faq_adapter');
         foreach ($faqAdapters as $name => $oAdapter) {
             $modname     = $name;
             $author      = $oAdapter->meta['author'];
             $author_name = $author;
 
-            if ('' != $oAdapter->meta['url']) {   // If a website is specified
+            if ('' != $oAdapter->meta['url']) {                                                         // If a website is specified
                 $name = "<a href='" . $oAdapter->meta['url'] . "'>" . $oAdapter->meta['name'] . '</a>'; // Add link to module name
             }
             if ('' != $oAdapter->meta['author_email']) {
@@ -85,24 +91,28 @@ function manage()
     require_once __DIR__ . '/admin_footer.php';
 }
 
+/**
+ *
+ */
 function updateActive()
 {
-    if (!isset($_POST['modname'])) {
-        redirect_header(XHELP_ADMIN_URL . '/faqAdapter.php', 3, _AM_XHELP_MESSAGE_NO_NAME);
+    $helper = Helper::getInstance();
+    if ('' !== Request::getString('modname', '', 'POST')) {
+        $helper->redirect('admin/faqAdapter.php', 3, _AM_XHELP_MESSAGE_NO_NAME);
     } else {
-        $modname = $_POST['modname'];
+        $modname = Request::getString('modname', '', 'POST');
     }
 
-    $currentAdapter = Xhelp\Utility::getMeta('faq_adapter');
+    $currentAdapter = Utility::getMeta('faq_adapter');
     if ($currentAdapter == $modname) {    // Deactivate current adapter?
-        $ret = Xhelp\Utility::deleteMeta('faq_adapter');
+        $ret = Utility::deleteMeta('faq_adapter');
     } else {
-        $ret = Xhelp\FaqAdapterFactory::setFaqAdapter($modname);
+        $ret = FaqAdapterFactory::setFaqAdapter($modname);
     }
 
     if ($ret) {
-        header('Location: ' . XHELP_ADMIN_URL . '/faqAdapter.php');
+        $helper->redirect('admin/faqAdapter.php');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/faqAdapter.php', 3, _AM_XHELP_MSG_INSTALL_MODULE);
+        $helper->redirect('admin/faqAdapter.php', 3, _AM_XHELP_MSG_INSTALL_MODULE);
     }
 }

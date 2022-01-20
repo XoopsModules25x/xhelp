@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 require_once XOOPS_ROOT_PATH . '/class/xoopsform/formradio.php';
 
@@ -14,13 +14,13 @@ class FormRadio extends \XoopsFormRadio
      *
      * @return string HTML
      */
-    public function render()
+    public function render(): string
     {
         $ret = '';
         foreach ($this->getOptions() as $value => $name) {
             $ret      .= "<input type='radio' name='" . $this->getName() . "' id='" . $this->getName() . $value . "' value='" . $value . "'";
             $selected = $this->getValue();
-            if (isset($selected) && ($value == $selected)) {
+            if (null !== $selected && ($value == $selected)) {
                 $ret .= ' checked';
             }
             $ret .= $this->getExtra() . '>' . $name . "\n";

@@ -14,6 +14,7 @@ function cE(t) {
     var l = d.createElement(t);
     return l;
 }
+
 function gE(n) {
     var l = xoopsGetElementById(n);
     return l;
@@ -39,7 +40,7 @@ function selectAll(formObj, fieldname, isInverse) {
     }
 }
 
-function Xhelp\RoleCustOnClick(frmName, roleName, roleParam, joinChr, className) {
+function xhelpRoleCustOnClick(frmName, roleName, roleParam, joinChr, className) {
     if (joinChr.length == 0) {
         joinChr = '&amp;';
     }

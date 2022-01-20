@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,15 +14,11 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -30,28 +28,26 @@ if (!defined('XHELP_CLASS_PATH')) {
  * Xhelp\StaffReview class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
 class StaffReview extends \XoopsObject
 {
     /**
      * Xhelp\StaffReview constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('staffid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('rating', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('comments', XOBJ_DTYPE_TXTAREA, null, false, 1024);
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('responseid', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('submittedBy', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('userIP', XOBJ_DTYPE_TXTBOX, null, false, 255);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('staffid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('rating', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('comments', \XOBJ_DTYPE_TXTAREA, null, false, 1024);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('responseid', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('submittedBy', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('userIP', \XOBJ_DTYPE_TXTBOX, null, false, 255);
 
         if (null !== $id) {
-            if (is_array($id)) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -62,11 +58,10 @@ class StaffReview extends \XoopsObject
     /**
      * Gets a UNIX timestamp
      *
-     * @return int Timestamp of last update
-     * @access public
+     * @return string Timestamp of last update
      */
-    public function posted()
+    public function posted(): string
     {
-        return formatTimestamp($this->getVar('updateTime'));
+        return \formatTimestamp($this->getVar('updateTime'));
     }
 }

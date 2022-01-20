@@ -1,5 +1,4 @@
-<?php
-//
+<?php declare(strict_types=1);
 
 define('_XHELP_TBD_NAME', 'Tickets By Department');
 define('_XHELP_TBD_DESC', 'Retrieve the number of unresolved tickets in each department.');

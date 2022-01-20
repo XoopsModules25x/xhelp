@@ -1,32 +1,34 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
+use Amenadiel\JpGraph\Plot;
 
 require_once __DIR__ . '/header.php';
 require_once XHELP_INCLUDE_PATH . '/events.php';
 
-if (!file_exists(XHELP_JPGRAPH_PATH . '/jpgraph.php')) {
-    redirect_header(XHELP_BASE_URL . '/index.php', 5, _XHELP_TEXT_NO_JPGRAPH);
-}
+//if (!file_exists(XHELP_JPGRAPH_PATH . '/jpgraph.php')) {
+//    $helper->redirect('index.php', 5, _XHELP_TEXT_NO_JPGRAPH);
+//}
 
 // require_once XHELP_CLASS_PATH . '/reportFactory.php';
 // require_once XHELP_CLASS_PATH . '/ReportRendererFactory.php';
 
 if (!$xhelp_isStaff) {        // Is user a staff member?
-    redirect_header(XHELP_BASE_URL . '/index.php', 3, _NO_PERM);
+    $helper->redirect('index.php', 3, _AM_XHELP_NO_PERM);
 }
 
 $op = 'default';
-if (isset($_GET['op'])) {
+if (Request::hasVar('op', 'GET')) {
     $op = $_GET['op'];
 }
 
 switch ($op) {
     case 'run':
-        if (!isset($_REQUEST['name']) && '' == $_REQUEST['name']) {
-            redirect_header(XHELP_BASE_URL . '/report.php', 3, _XHELP_MSG_NO_REPORT);
+        if (!isset($_REQUEST['name']) && '' == \Xmf\Request::getString('name', '', 'REQUEST')) {
+            $helper->redirect('report.php', 3, _XHELP_MSG_NO_REPORT);
         }
-        $reportName = $_REQUEST['name'];
+        $reportName = \Xmf\Request::getString('name', '', 'REQUEST');
         /*
          if (!array_key_exists($reportName, $reports)) {         // If the report name is not in the acceptable names array
          redirect_header(XHELP_BASE_URL .'/report.php', 3, _XHELP_MSG_NO_REPORT_LOAD);
@@ -34,18 +36,16 @@ switch ($op) {
          */
         runReport($reportName);
         break;
-
     case 'graph':
-        if (!isset($_GET['name']) && '' == $_GET['name']) {
-            redirect_header(XHELP_BASE_URL . '/report.php', 3, _XHELP_MSG_NO_REPORT);
+        if (!isset($_GET['name']) && '' == \Xmf\Request::getString('name', '', 'GET')) {
+            $helper->redirect('report.php', 3, _XHELP_MSG_NO_REPORT);
         }
-        $reportName = $_REQUEST['name'];
+        $reportName = \Xmf\Request::getString('name', '', 'REQUEST');
         /*if (!array_key_exists($reportName, $reports)) {         // If the report name is not in the acceptable names array
          redirect_header(XHELP_BASE_URL .'/report.php', 3, _XHELP_MSG_NO_REPORT_LOAD);
          }*/
         makeGraph($reportName);
         break;
-
     default:        // Display list of reports
         $reports = Xhelp\ReportFactory::getReports();
 
@@ -63,21 +63,21 @@ function displayReports()
     global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser;
 
     $GLOBALS['xoopsOption']['template_main'] = 'xhelp_report.tpl';   // Set template
-    require XOOPS_ROOT_PATH . '/header.php';                 // Include page header
+    require_once XOOPS_ROOT_PATH . '/header.php';                    // Include page header
 
-    $aReports = _getReportsMeta();
+    $aReports = getReportsMeta();
 
     $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');
     $xoopsTpl->assign('xhelp_reports', $aReports);
     $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
 
-    require XOOPS_ROOT_PATH . '/footer.php';                    // Include page footer
+    require_once XOOPS_ROOT_PATH . '/footer.php';                    // Include page footer
 }
 
 /**
  * @return array
  */
-function _getReportsMeta()
+function getReportsMeta(): array
 {
     global $reports;
 
@@ -90,21 +90,27 @@ function _getReportsMeta()
 }
 
 /**
- * @param $reportName
+ * @param string $reportName
  */
-function runReport($reportName)
+function runReport(string $reportName)
 {
     global $xoopsOption, $xoopsTpl, $xoopsConfig, $xoopsUser, $xhelp_module_header, $paramVals;
 
-    $classname = 'xhelp' . $reportName . 'Report';
-    require_once XHELP_REPORT_PATH . '/' . $reportName . '.php';
+    //    $classname = 'xhelp' . $reportName . 'Report';
+    //    require_once XHELP_REPORT_PATH . '/' . $reportName . '.php';
+    //    if( strpos($filename,'Report') !== false ) {
+    //    $classname =  'XoopsModules\Xhelp\Reports\\' . \ucfirst($reportName). 'Report';
+    $classname = 'XoopsModules\Xhelp\Reports\\' . \ucfirst($reportName);
+    if (!\class_exists($classname)) {
+        throw new \RuntimeException("Class '$classname' not found");
+    }
     $report = new $classname();
 
     // Get any parameters for report
     $reportParams = $report->getParams();
 
     // Fill reportParameters with updated information
-    if (count($reportParams) > 0) {
+    if (is_countable($reportParams) && count($reportParams) > 0) {
         foreach ($reportParams as $param) {
             if (isset($_REQUEST[$param->fieldname])) {
                 if (XHELP_CONTROL_DATETIME == $param->controltype) {
@@ -130,26 +136,31 @@ function runReport($reportName)
     }
 
     //$GLOBALS['xoopsOption']['template_main'] = 'xhelp_report.tpl';   // Set template
-    require XOOPS_ROOT_PATH . '/header.php';                 // Include page header
+    require_once XOOPS_ROOT_PATH . '/header.php';                 // Include page header
 
     generateHeader($report);
 
+    /** @var \XoopsModules\Xhelp\ReportRenderer\HtmlReportRenderer $oRenderer */
     $oRenderer = Xhelp\ReportRendererFactory::getRenderer('html', $report);
     echo $oRenderer->render();
 
     $xoopsTpl->assign('xhelp_imagePath', XHELP_IMAGE_URL . '/');
     $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
 
-    require XOOPS_ROOT_PATH . '/footer.php';
+    require_once XOOPS_ROOT_PATH . '/footer.php';
 }
 
 /**
- * @param $reportName
+ * @param string $reportName
  */
-function makeGraph($reportName)
+function makeGraph(string $reportName)
 {
-    $classname = 'xhelp' . $reportName . 'Report';
-    require_once XHELP_REPORT_PATH . '/' . $reportName . '.php';
+    //    $classname = 'xhelp' . $reportName . 'Report';
+    //    require_once XHELP_REPORT_PATH . '/' . $reportName . '.php';
+    $classname = 'XoopsModules\Xhelp\Reports\\' . \ucfirst($reportName);
+    if (!\class_exists($classname)) {
+        throw new \RuntimeException("Class '$classname' not found");
+    }
     $report = new $classname();
 
     // Get any parameters for report
@@ -159,9 +170,9 @@ function makeGraph($reportName)
     foreach ($reportParams as $param) {
         if (isset($_REQUEST[$param->fieldname])) {
             if (XHELP_CONTROL_DATETIME == $param->controltype) {
-                $param->value = strtotime($_REQUEST[$param->fieldname]);
+                $param->value = strtotime(\Xmf\Request::getString($param->fieldname, '', 'REQUEST'));
             } else {
-                $param->value = $_REQUEST[$param->fieldname];
+                $param->value = \Xmf\Request::getString($param->fieldname, '', 'REQUEST');
             }
         }
     }
@@ -171,16 +182,16 @@ function makeGraph($reportName)
 }
 
 /**
- * @param $report
+ * @param Report $report
  */
-function generateHeader($report)
+function generateHeader(Report $report)
 {
     global $paramVals;
 
     // Get any parameters for report
     $reportParams = $report->getParams();
 
-    if (count($reportParams) > 0) {
+    if (is_countable($reportParams) && count($reportParams) > 0) {
         echo "<div id='xhelp_reportParams'>";
         echo "<form method='post' action='" . XHELP_BASE_URL . '/report.php?op=run&name=' . $report->name . "'>";
 

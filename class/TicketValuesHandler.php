@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,114 +14,108 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CONSTANTS_INCLUDED')) {
+if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-$helper->LoadLanguage('admin');
-
+// $helper->LoadLanguage('admin');
 
 /**
  * class TicketValuesHandler
  */
-class TicketValuesHandler extends Xhelp\BaseObjectHandler
+class TicketValuesHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = TicketValues::class;
-
     /**
      * DB Table Name
      *
      * @var string
-     * @access  private
      */
-    public $_dbtable = 'xhelp_ticket_values';
-    public $id       = 'ticketid';
-    public $_idfield = 'ticketid';
+    public $dbtable = 'xhelp_ticket_values';
+    public $id      = 'ticketid';
+    public $idfield = 'ticketid';
 
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {     // Assumes cleanVars has already been called
+        foreach ($object->cleanVars as $k => $v) {     // Assumes cleanVars has already been called
             ${$k} = $v;
         }
 
-        $myFields = $obj->getTicketFields();    // Returns array[$fieldname] = %s or %d for all custom fields
+        $myFields = $object->getTicketFields();    // Returns array[$fieldname] = %s or %d for all custom fields
 
         $count     = 1;
         $sqlFields = '';
         $sqlVars   = '';
         foreach ($myFields as $myField => $datatype) {      // Create sql name and value pairs
-            if (isset(${$myField}) && null != ${$myField}) {
+            if (null !== ${$myField}) {
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars   .= ', ';
                     $sqlFields .= ', ';
                 }
                 $sqlFields .= $myField;
-                if ('%s' == $datatype) {                      // If this field is a string
-                    $sqlVars .= $this->_db->quoteString(${$myField});     // Add text to sqlVars string
+                if ('%s' === $datatype) {                                 // If this field is a string
+                    $sqlVars .= $this->db->quoteString(${$myField});      // Add text to sqlVars string
                 } else {                                    // If this field is a number
-                    $sqlVars .= ${$myField};      // Add text to sqlVars string
+                    $sqlVars .= ${$myField};                // Add text to sqlVars string
                 }
                 ++$count;
             }
         }
         // Create sql statement
-        $sql = 'INSERT INTO ' . $this->_db->prefix($this->_dbtable) . ' (' . $sqlFields . ') VALUES (' . $sqlVars . ')';
+        $sql = 'INSERT INTO ' . $this->db->prefix($this->dbtable) . ' (' . $sqlFields . ') VALUES (' . $sqlVars . ')';
 
         return $sql;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $myFields = $obj->getTicketFields();    // Returns array[$fieldname] = %s or %u for all custom fields
+        $myFields = $object->getTicketFields();    // Returns array[$fieldname] = %s or %u for all custom fields
         $count    = 1;
         $sqlVars  = '';
         foreach ($myFields as $myField => $datatype) {      // Used to create sql field and value substrings
-            if (isset(${$myField}) && null !== ${$myField}) {
+            if (null !== ${$myField}) {
                 if ($count > 1) {                                // If we have been through the loop already
                     $sqlVars .= ', ';
                 }
-                if ('%s' == $datatype) {                      // If this field is a string
-                    $sqlVars .= $myField . ' = ' . $this->_db->quoteString(${$myField});     // Add text to sqlVars string
-                } else {                                    // If this field is a number
+                if ('%s' === $datatype) {                                                    // If this field is a string
+                    $sqlVars .= $myField . ' = ' . $this->db->quoteString(${$myField});      // Add text to sqlVars string
+                } else {                                             // If this field is a number
                     $sqlVars .= $myField . ' = ' . ${$myField};      // Add text to sqlVars string
                 }
                 ++$count;
@@ -127,18 +123,18 @@ class TicketValuesHandler extends Xhelp\BaseObjectHandler
         }
 
         // Create update statement
-        $sql = 'UPDATE ' . $this->_db->Prefix($this->_dbtable) . ' SET ' . $sqlVars . ' WHERE ticketid = ' . $obj->getVar('ticketid');
+        $sql = 'UPDATE ' . $this->db->prefix($this->dbtable) . ' SET ' . $sqlVars . ' WHERE ticketid = ' . $object->getVar('ticketid');
 
         return $sql;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = sprintf('DELETE FROM %s WHERE ticketid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar($this->id));
+        $sql = \sprintf('DELETE FROM `%s` WHERE ticketid = %u', $this->db->prefix($this->dbtable), $object->getVar($this->id));
 
         return $sql;
     }

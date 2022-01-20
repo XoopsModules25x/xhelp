@@ -1,33 +1,32 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 /**
- * Xhelp\ReportParameter class
+ * ReportParameter class
  *
  * Information about an individual report parameter
  *
  * @author  Eric Juden <eric@3dev.org>
- * @access  public
- * @package xhelp
  */
 class ReportParameter
 {
     public $controltype;
-    public $name;
+    public $dbaction;
+    public $dbfield;
+    public $fieldlength;
     public $fieldname;
+    public $maxlength;
+    public $name;
     public $value;
     public $values;
-    public $fieldlength;
-    public $dbfield;
-    public $dbaction;
 
     /**
-     * Xhelp\ReportParameter constructor.
+     * ReportParameter constructor.
      */
     public function __construct()
     {
@@ -35,14 +34,13 @@ class ReportParameter
     }
 
     /**
-     * Create a new Xhelp\ReportParameter
+     * Create a new ReportParameter
      *
-     * @return Xhelp\ReportParameter {@link Xhelp\ReportParameter}
-     * @access  public
+     * @return ReportParameter {@link ReportParameter}
      */
-    public static function create()
+    public static function create(): ReportParameter
     {
-        $ret = new Xhelp\ReportParameter();
+        $ret = new ReportParameter();
 
         return $ret;
     }
@@ -59,19 +57,18 @@ class ReportParameter
      * @param string $dbfield
      * @param string $dbaction
      *
-     * @return object {@link Xhelp\ReportParameter}
-     * @access  public
+     * @return object {@link ReportParameter}
      */
-    public static function addParam($controltype, $name, $fieldname, $value, $values, $fieldlength, $dbfield, $dbaction)
+    public static function addParam(int $controltype, string $name, string $fieldname, string $value, array $values, int $fieldlength, string $dbfield, string $dbaction)
     {
-        $param              = Xhelp\ReportParameter::create();
+        $param              = self::create();
         $param->controltype = $controltype;
         $param->name        = $name;
         $param->fieldname   = $fieldname;
         $param->value       = $value;
         $param->values      = $values;
         $param->fieldlength = $fieldlength;
-        $param->maxlength   = ($fieldlength < 50 ? $fieldlength : 50);
+        $param->maxlength   = (\min($fieldlength, 50));
         $param->dbfield     = $dbfield;
         $param->dbaction    = $dbaction;
 
@@ -83,32 +80,29 @@ class ReportParameter
      *
      * @param array $vals
      * @return string
-     * @access  public
      */
-    public function displayParam($vals = [])
+    public function displayParam(array $vals = []): ?string
     {
         $controltype = $this->controltype;
         $fieldlength = $this->maxlength;
 
         if (!empty($vals) && isset($vals[$this->fieldname])) {
-            if (!is_array($vals[$this->fieldname])) {
-                $this->value = $vals[$this->fieldname];
-            } else {
+            if (\is_array($vals[$this->fieldname])) {
                 $this->values = $vals[$this->fieldname][0];
                 $this->value  = $vals[$this->fieldname][1];
+            } else {
+                $this->value = $vals[$this->fieldname];
             }
         }
 
         switch ($controltype) {
-            case XHELP_CONTROL_TXTBOX:
+            case \XHELP_CONTROL_TXTBOX:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
                 break;
-
-            case XHELP_CONTROL_TXTAREA:
+            case \XHELP_CONTROL_TXTAREA:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<textarea name='" . $this->fieldname . "' id='" . $this->fieldname . "' cols='" . $this->fieldlength . "' rows='5'>" . $this->value . '</textarea>';
                 break;
-
-            case XHELP_CONTROL_SELECT:
+            case \XHELP_CONTROL_SELECT:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<select name='" . $this->fieldname . "' id='" . $this->fieldname . "' size='1'>";
                 foreach ($this->values as $key => $value) {
                     $ret .= "<option value='" . $key . "' " . (($this->value == $key) ? 'selected' : '') . '>' . $value . '</option>';
@@ -117,8 +111,7 @@ class ReportParameter
 
                 return $ret;
                 break;
-
-            case XHELP_CONTROL_MULTISELECT:
+            case \XHELP_CONTROL_MULTISELECT:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<select name='" . $this->fieldname . "' id='" . $this->fieldname . "' size='3' multiple='multiple'>";
                 foreach ($this->values as $key => $value) {
                     $ret .= "<option value='" . $key . "' " . (($this->value == $key) ? 'selected' : '') . '>' . $value . '</option>';
@@ -127,8 +120,7 @@ class ReportParameter
 
                 return $ret;
                 break;
-
-            case XHELP_CONTROL_YESNO:
+            case \XHELP_CONTROL_YESNO:
                 return "<label for='"
                        . $this->fieldname
                        . "'>"
@@ -141,7 +133,7 @@ class ReportParameter
                        . "1' value='1' "
                        . ((1 == $this->value) ? 'checked' : '')
                        . '>'
-                       . _XHELP_TEXT_YES
+                       . \_XHELP_TEXT_YES
                        . "<input type='radio' name='"
                        . $this->fieldname
                        . "' id='"
@@ -149,10 +141,9 @@ class ReportParameter
                        . "0' value='0' "
                        . ((1 == $this->value) ? 'checked' : '')
                        . '>'
-                       . _XHELP_TEXT_NO;
+                       . \_XHELP_TEXT_NO;
                 break;
-
-            case XHELP_CONTROL_RADIOBOX:
+            case \XHELP_CONTROL_RADIOBOX:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>';
                 foreach ($this->values as $key => $value) {
                     $ret .= "<input type='checkbox' name='" . $this->fieldname . "' id='" . $this->fieldname . "1' value='1' " . (($key == $this->value) ? 'checked' : '') . '>' . $value;
@@ -160,11 +151,9 @@ class ReportParameter
 
                 return $ret;
                 break;
-
-            case XHELP_CONTROL_DATETIME:
+            case \XHELP_CONTROL_DATETIME:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
                 break;
-
             default:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
                 break;

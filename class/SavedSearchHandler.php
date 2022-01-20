@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,128 +14,120 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
-
 /**
- * Xhelp\SavedSearchHandler class
+ * SavedSearchHandler class
  *
- * SavedSearch Handler for Xhelp\SavedSearch class
+ * SavedSearch Handler for SavedSearch class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
- * @access  public
- * @package xhelp
  */
-class SavedSearchHandler extends Xhelp\BaseObjectHandler
+class SavedSearchHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = SavedSearch::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
-    public $_dbtable = 'xhelp_saved_searches';
+    public $dbtable = 'xhelp_saved_searches';
 
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, NAME, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields);
+        $sql = \sprintf('INSERT INTO `%s` (id, uid, NAME, search, pagenav_vars, hasCustFields) VALUES (%u, %d, %s, %s, %s, %u)', $this->db->prefix($this->dbtable), $id, $uid, $this->db->quoteString($name), $this->db->quoteString($search), $this->db->quoteString($pagenav_vars), $hasCustFields);
 
         return $sql;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET uid = %d, NAME = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $this->_db->quoteString($name), $this->_db->quoteString($search), $this->_db->quoteString($pagenav_vars), $hasCustFields, $id);
+        $sql = \sprintf('UPDATE `%s` SET uid = %d, NAME = %s, search = %s, pagenav_vars = %s, hasCustFields = %u WHERE id = %u', $this->db->prefix($this->dbtable), $uid, $this->db->quoteString($name), $this->db->quoteString($search), $this->db->quoteString($pagenav_vars), $hasCustFields, $id);
 
         return $sql;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }
 
     /**
-     * @param      $uid
+     * @param int  $uid
      * @param bool $has_global
      * @return array
      */
-    public function getByUid($uid, $has_global = false)
+    public function getByUid(int $uid, bool $has_global = false): array
     {
-        $uid = (int)$uid;
+        $uid = $uid;
         if ($has_global) {
-            $crit = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
-            $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID), 'OR');
+            $criteria = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
+            $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID), 'OR');
         } else {
-            $crit = new \Criteria('uid', $uid);
+            $criteria = new \Criteria('uid', $uid);
         }
-        $crit->setOrder('ASC');
-        $crit->setSort('name');
-        $ret = $this->getObjects($crit);
+        $criteria->setOrder('ASC');
+        $criteria->setSort('name');
+        $ret = $this->getObjects($criteria);
 
         return $ret;
     }
 
     /**
-     * @param $crit
+     * @param \CriteriaElement|\CriteriaCompo $criteria
      * @return string
      */
-    public function createSQL($crit)
+    public function createSQL($criteria): string
     {
-        $sql = $this->_selectQuery($crit);
+        $sql = $this->selectQuery($criteria);
 
         return $sql;
     }
@@ -141,17 +135,16 @@ class SavedSearchHandler extends Xhelp\BaseObjectHandler
     /**
      * delete department matching a set of conditions
      *
-     * @param  \CriteriaElement $criteria {@link CriteriaElement}
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link \CriteriaElement}
      * @return bool   FALSE if deletion failed
-     * @access  public
      */
-    public function deleteAll($criteria = null)
+    public function deleteAll(\CriteriaElement $criteria = null, $force = true, $asObject = false): bool
     {
-        $sql = 'DELETE FROM ' . $this->_db->prefix($this->_dbtable);
-        if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
+        $sql = 'DELETE FROM ' . $this->db->prefix($this->dbtable);
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return false;
         }
 

@@ -1,11 +1,13 @@
-<?php
-//
+<?php declare(strict_types=1);
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
 require_once __DIR__ . '/header.php';
+$helper = Xhelp\Helper::getInstance();
 
-$hStaff = Xhelp\Helper::getInstance()->getHandler('Staff');
+/** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+$staffHandler = $helper->getHandler('Staff');
 
 //Allow only staff members to view this page
 if (!$xoopsUser) {
@@ -13,12 +15,12 @@ if (!$xoopsUser) {
 }
 
 $inadmin = 0;
-if (isset($_REQUEST['admin']) && 1 == $_REQUEST['admin']) {
+if (Request::hasVar('admin', 'REQUEST') && 1 === $_REQUEST['admin']) {
     $inadmin = 1;
 }
 
 if (!$inadmin && !$xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
-    if (!$hStaff->isStaff($xoopsUser->getVar('uid'))) {
+    if (!$staffHandler->isStaff($xoopsUser->getVar('uid'))) {
         redirect_header(XOOPS_URL . '/modules/xhelp/index.php', 3, _NOPERM);
     }
 }
@@ -33,25 +35,26 @@ $xoopsTpl->assign('xoops_url', XOOPS_URL);
 $xoopsTpl->assign('xhelp_inadmin', $inadmin);
 $xoopsTpl->assign('xhelp_adminURL', XHELP_ADMIN_URL);
 
-if (isset($_POST['search'])) {
-    if (isset($_POST['searchText'])) {
-        $text = $_POST['searchText'];
+if (Request::hasVar('search', 'POST')) {
+    if (Request::hasVar('searchText', 'POST')) {
+        $text = \Xmf\Request::getString('searchText', '', 'POST');
     }
-    if (isset($_POST['subject'])) {
-        $subject = $_POST['subject'];
+    if (Request::hasVar('subject', 'POST')) {
+        $subject = \Xmf\Request::getString('subject', '', 'POST');
     }
     $xoopsTpl->assign('xhelp_viewResults', true);
 
+    /** @var \XoopsUserHandler $userHandler */
     $userHandler = xoops_getHandler('user');
-    $crit        = new \Criteria($subject, '%' . $text . '%', 'LIKE');
-    $crit->setSort($subject);
-    $users = $userHandler->getObjects($crit);
+    $criteria    = new \Criteria($subject, '%' . $text . '%', 'LIKE');
+    $criteria->setSort($subject);
+    $users = $userHandler->getObjects($criteria);
     foreach ($users as $user) {
         $aUsers[] = [
             'uid'   => $user->getVar('uid'),
             'uname' => $user->getVar('uname'),
             'name'  => $user->getVar('name'),
-            'email' => $user->getVar('email')
+            'email' => $user->getVar('email'),
         ];
     }
 

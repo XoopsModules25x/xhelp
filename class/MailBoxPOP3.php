@@ -1,30 +1,25 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-//
+namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/mailbox.php';
-require_once XHELP_PEAR_PATH . '/Net/POP3.php';
+require_once \XHELP_PEAR_PATH . '/Net/POP3.php';
 
 /**
- * Xhelp\MailBoxPop3 class
+ * MailBoxPop3 class
  *
  * Part of the email submission subsystem. Implements access to a POP3 Mailbox
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
- * @access  public
- * @package xhelp
  */
-class MailBoxPOP3 extends Xhelp\MailBox
+class MailBoxPOP3 extends MailBox
 {
     /**
      * Instances of PEAR::POP3 class
-     * @access private
      */
     public $_pop3;
 
@@ -38,62 +33,62 @@ class MailBoxPOP3 extends Xhelp\MailBox
 
     /**
      * Connect to mailbox
-     * @param string IP or DNS name of server
-     * @param int    Service Port Number
+     * @param string $server
+     * @param int    $port
      * @return bool
      */
-    public function connect($server, $port = 110)
+    public function connect(string $server, int $port = 110): bool
     {
         if ($this->_pop3->connect($server, $port)) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
      * Send Authentication Credentials to mail server
-     * @param string account name
-     * @param string account password
+     * @param string $username
+     * @param string $password
      * @return bool
      */
-    public function login($username, $password)
+    public function login(string $username, string $password): bool
     {
         if (!PEAR::isError($this->_pop3->login($username, $password, false))) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
      * Number of messages on server
      * @return int Number of messages
      */
-    public function messageCount()
+    public function messageCount(): int
     {
         return $this->_pop3->numMsg();
     }
 
     /**
      * Get Headers for message
-     * @param $i
+     * @param int $i
      * @return bool|string|void
      * @internal param Message $msg_id number
      *                 Either raw headers or false on error
      */
-    public function getHeaders($i)
+    public function getHeaders(int $i)
     {
         return $this->_pop3->getRawHeaders($i);
     }
 
     /**
      * Get Message Body
-     * @param $i
+     * @param int $i
      * @return mixed Either message body or false on error
      * @internal param Message $msg_id number
      */
-    public function getBody($i)
+    public function getBody(int $i)
     {
         return $this->_pop3->getBody($i);
     }
@@ -101,11 +96,11 @@ class MailBoxPOP3 extends Xhelp\MailBox
     /**
      * Returns the entire message with given message number.
      *
-     * @param $i
+     * @param int $i
      * @return mixed Either entire message or false on error
      * @internal param Message $msg_id number
      */
-    public function getMsg($i)
+    public function getMsg(int $i)
     {
         return $this->_pop3->getMsg($i);
     }
@@ -114,11 +109,11 @@ class MailBoxPOP3 extends Xhelp\MailBox
      * Marks a message for deletion. Only will be deleted if the
      * disconnect() method is called.
      *
-     * @param $i
+     * @param int $i
      * @return bool Success/Failure
      * @internal param Message $msg_id to delete
      */
-    public function deleteMessage($i)
+    public function deleteMessage(int $i): bool
     {
         return $this->_pop3->deleteMsg($i);
     }
@@ -129,7 +124,7 @@ class MailBoxPOP3 extends Xhelp\MailBox
      *
      * @return bool Success/Failure
      */
-    public function disconnect()
+    public function disconnect(): bool
     {
         return $this->_pop3->disconnect();
     }

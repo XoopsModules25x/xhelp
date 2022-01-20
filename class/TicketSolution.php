@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,15 +14,11 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
@@ -32,27 +30,25 @@ if (!defined('XHELP_CLASS_PATH')) {
  * Represents an individual ticket solution
  *
  * @author  Brian Wahoff <brianw@epcusa.com>
- * @access  public
- * @package xhelp
  */
 class TicketSolution extends \XoopsObject
 {
     /**
      * Xhelp\TicketSolution constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('url', XOBJ_DTYPE_TXTAREA, null, true, 4096);
-        $this->initVar('title', XOBJ_DTYPE_TXTBOX, null, true, 255);
-        $this->initVar('description', XOBJ_DTYPE_TXTAREA, null, false, 10000);
-        $this->initVar('uid', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('posted', XOBJ_DTYPE_INT, null, true);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('url', \XOBJ_DTYPE_TXTAREA, null, true, 4096);
+        $this->initVar('title', \XOBJ_DTYPE_TXTBOX, null, true, 255);
+        $this->initVar('description', \XOBJ_DTYPE_TXTAREA, null, false, 10000);
+        $this->initVar('uid', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('posted', \XOBJ_DTYPE_INT, null, true);
 
-        if (isset($id)) {
-            if (is_array($id)) {
+        if (null !== $id) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -64,8 +60,8 @@ class TicketSolution extends \XoopsObject
      * @param string $format
      * @return string
      */
-    public function posted($format = 'l')
+    public function posted(string $format = 'l'): string
     {
-        return formatTimestamp($this->getVar('posted'), $format);
+        return \formatTimestamp($this->getVar('posted'), $format);
     }
 }   // end of class

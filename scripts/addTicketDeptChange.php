@@ -1,22 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-require_once __DIR__ . '/../../../mainfile.php';
+require_once \dirname(__DIR__, 3) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
 require_once XHELP_JPSPAN_PATH . '/JPSpan.php';       // Including this sets up the JPSPAN constants
-require_once JPSPAN . 'Server/PostOffice.php';      // Load the PostOffice server
+require_once JPSPAN . 'Server/PostOffice.php';        // Load the PostOffice server
 //require_once XHELP_BASE_PATH . '/functions.php';
 
 // Create the PostOffice server
 $server = new JPSpan_Server_PostOffice();
-$server->addHandler(new xhelpweblib());
+$webLib = new Xhelp\WebLib();
+$server->addHandler($webLib);
 
-if (isset($_SERVER['QUERY_STRING']) && 0 == strcasecmp($_SERVER['QUERY_STRING'], 'client')) {
-
+if (Request::hasVar('QUERY_STRING', 'SERVER') && 0 === strcasecmp($_SERVER['QUERY_STRING'], 'client')) {
     // Compress the output Javascript (e.g. strip whitespace)
     define('JPSPAN_INCLUDE_COMPRESS', true);
 
@@ -31,5 +32,3 @@ if (isset($_SERVER['QUERY_STRING']) && 0 == strcasecmp($_SERVER['QUERY_STRING'],
     // Start serving requests...
     $server->serve();
 }
-
-

@@ -1,9 +1,12 @@
-<?php
-//
+<?php declare(strict_types=1);
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-require_once __DIR__ . '/../../mainfile.php';
+/** @var Xhelp\Helper $helper */
+require_once __DIR__ . '/header.php';
+
+require_once \dirname(__DIR__, 2) . '/mainfile.php';
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
@@ -14,7 +17,7 @@ $helper->loadLanguage('main');
 
 $op = '';
 
-if (isset($_GET['op'])) {
+if (Request::hasVar('op', 'GET')) {
     $op = $_GET['op'];
 }
 
@@ -23,12 +26,10 @@ switch ($op) {
         global $xoopsModule;
         $myTopics = updateTopics();
         break;
-
     case 'updateDepts':
         global $xoopsModule;
         $myDepts = updateDepts();
         break;
-
     default:
         return false;
 }
@@ -36,9 +37,10 @@ switch ($op) {
 /**
  * @return bool
  */
-function updateDepts()
+function updateDepts(): bool
 {
     global $xoopsDB;
+    $helper = Xhelp\Helper::getInstance();
 
     echo "<link rel='stylesheet' type='text/css' media'screen' href='" . XOOPS_URL . "/xoops.css'>
           <link rel='stylesheet' type='text/css' media='screen' href='" . xoops_getcss() . "'>
@@ -52,21 +54,23 @@ function updateDepts()
     }
 
     //Retrieve list of departments
-    $hDept = Xhelp\Helper::getInstance()->getHandler('Department');
-    $depts = $hDept->getObjects();
+    /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+    $departmentHandler = $helper->getHandler('Department');
+    $depts             = $departmentHandler->getObjects();
 
     $class = 'odd';
     foreach ($depts as $dept) {
         $deptid   = $dept->getVar('id');
         $deptname = $dept->getVar('department');
 
-        $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
-        $newOption     = $hConfigOption->create();
+        /** @var \XoopsModules\Xhelp\ConfigOptionHandler $configOptionHandler */
+        $configOptionHandler = $helper->getHandler('ConfigOption');
+        $newOption           = $configOptionHandler->create();
         $newOption->setVar('confop_name', $deptname);
         $newOption->setVar('confop_value', $deptid);
         $newOption->setVar('conf_id', $xhelp_config);
 
-        if (!$hConfigOption->insert($newOption, true)) {
+        if (!$configOptionHandler->insert($newOption, true)) {
             return false;
         }
 
@@ -82,16 +86,18 @@ function updateDepts()
 /**
  * @return bool
  */
-function removeDepts()
+function removeDepts(): bool
 {
     global $xoopsDB;
+    $helper = Xhelp\Helper::getInstance();
 
     //Needs force on delete
-    $hConfig = xoops_getHandler('config');
+    /** @var \XoopsConfigHandler $configHandler */
+    $configHandler = xoops_getHandler('config');
 
     // Select the config from the xoops_config table
-    $crit   = new \Criteria('conf_name', 'xhelp_defaultDept');
-    $config =& $hConfig->getConfigs($crit);
+    $criteria = new \Criteria('conf_name', 'xhelp_defaultDept');
+    $config   = $configHandler->getConfigs($criteria);
 
     if (count($config) > 0) {
         $xhelp_config = $config[0]->getVar('conf_id');
@@ -100,19 +106,18 @@ function removeDepts()
     }
 
     // Remove the config options
-    $hConfigOption = Xhelp\Helper::getInstance()->getHandler('ConfigOption');
-    $crit          = new \Criteria('conf_id', $xhelp_config);
-    $configOptions = $hConfigOption->getObjects($crit);
+    /** @var \XoopsModules\Xhelp\ConfigOptionHandler $configOptionHandler */
+    $configOptionHandler = $helper->getHandler('ConfigOption');
+    $criteria            = new \Criteria('conf_id', $xhelp_config);
+    $configOptions       = $configOptionHandler->getObjects($criteria);
 
     if (count($configOptions) > 0) {
         foreach ($configOptions as $option) {
-            if (!$hConfigOption->deleteAll($option, true)) {   // Remove each config option
-
+            if (!$configOptionHandler->deleteAll($option, true)) {   // Remove each config option
                 return false;
             }
         }
     } else {    // If no config options were found
-
         return $xhelp_config;
     }
 
@@ -123,7 +128,7 @@ function removeDepts()
  * @param bool $onInstall
  * @return bool
  */
-function updateTopics($onInstall = false)
+function updateTopics(bool $onInstall = false): bool
 {
     if (!$onInstall) {    // Don't need to display anything if installing
         echo "<link rel='stylesheet' type='text/css' media='screen' href='" . XOOPS_URL . "/xoops.css'>
@@ -142,14 +147,14 @@ function updateTopics($onInstall = false)
     $ret                                    = $xoopsDB->query('SELECT topic_id, topic_title FROM ' . $xoopsDB->prefix('topics'));
     $myTopics                               = [];
     $myTopics[_MI_XHELP_ANNOUNCEMENTS_NONE] = 0;
-    while ($arr = $xoopsDB->fetchArray($ret)) {
+    while (false !== ($arr = $xoopsDB->fetchArray($ret))) {
         $myTopics[$arr['topic_title']] = $arr['topic_id'];
     }
 
     $class = 'odd';
     foreach ($myTopics as $topic => $value) {
         $xhelp_id = $xoopsDB->genId($xoopsDB->prefix('configoption') . '_uid_seq');
-        $sql      = sprintf('INSERT INTO %s (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)', $xoopsDB->prefix('configoption'), $xhelp_id, $xoopsDB->quoteString($topic), $xoopsDB->quoteString($value), $xhelp_config);
+        $sql      = sprintf('INSERT INTO `%s` (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)', $xoopsDB->prefix('configoption'), $xhelp_id, $xoopsDB->quoteString($topic), $xoopsDB->quoteString($value), $xhelp_config);
 
         if (!$result = $xoopsDB->queryF($sql)) {
             return false;
@@ -167,16 +172,17 @@ function updateTopics($onInstall = false)
         echo "<tr class='foot'><td>" . _XHELP_TEXT_UPDATE_COMP . "<br><br><input type='button' name='closeWindow' value='" . _XHELP_TEXT_CLOSE_WINDOW . "' class='formButton' onClick=\"javascript:window.opener.location=window.opener.location;window.close();\"></td></tr>";
         echo '</table>';
     }
+    return true;
 }
 
 /**
- * @return bool
+ * @return bool|string
  */
 function removeTopics()
 {
     global $xoopsDB;
     // Select the config from the xoops_config table
-    $sql = sprintf('SELECT * FROM %s WHERE conf_name = %s', $xoopsDB->prefix('config'), "'xhelp_announcements'");
+    $sql = sprintf('SELECT * FROM `%s` WHERE conf_name = %s', $xoopsDB->prefix('config'), "'xhelp_announcements'");
     if (!$ret = $xoopsDB->query($sql)) {
         return false;
     }
@@ -185,7 +191,7 @@ function removeTopics()
     $xhelp_config = $arr['conf_id'];
 
     // Remove the config options
-    $sql = sprintf('DELETE FROM %s WHERE conf_id = %s', $xoopsDB->prefix('configoption'), $xhelp_config);
+    $sql = sprintf('DELETE FROM `%s` WHERE conf_id = %s', $xoopsDB->prefix('configoption'), $xhelp_config);
     if (!$ret = $xoopsDB->queryF($sql)) {
         return false;
     }
@@ -194,10 +200,11 @@ function removeTopics()
 }
 
 /**
- * @param XoopsModule $module
+ *
+ * @param \XoopsModule $module
  * @return bool
  */
-function xoops_module_install_xhelp(\XoopsModule $module)
+function xoops_module_install_xhelp(\XoopsModule $module): bool
 {
     $myTopics         = updateTopics(true);
     $hasRoles         = Xhelp\Utility::createRoles();

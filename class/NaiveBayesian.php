@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  ***** BEGIN LICENSE BLOCK *****
@@ -34,8 +36,6 @@
  ***** END LICENSE BLOCK *****
  */
 
-use XoopsModules\Xhelp;
-
 /**
  * class NaiveBayesian
  */
@@ -52,31 +52,29 @@ class NaiveBayesian
     /** storage object
      * @see class NaiveBayesianStorage
      */
-    public $nbs = null;
+    public $nbs;
 
     /**
      * Xhelp\NaiveBayesian constructor.
-     * @param $nbs
+     * @param NaiveBayesianStorage $nbs
      */
-    public function __construct($nbs)
+    public function __construct(NaiveBayesianStorage $nbs)
     {
         $this->nbs = $nbs;
-
-        return true;
     }
 
     /** categorize a document.
      * Get list of categories in which the document can be categorized
      * with a score for each category.
      *
+     * @param mixed $document
      * @return array keys = category ids, values = scores
-     * @param string document
      */
-    public function categorize($document)
+    public function categorize($document): array
     {
         $scores     = [];
         $categories = $this->nbs->getCategories();
-        $tokens     = $this->_getTokens($document);
+        $tokens     = $this->getTokens($document);
         // calculate the score in each category
         $total_words = 0;
         $ncat        = 0;
@@ -102,13 +100,13 @@ class NaiveBayesian
                     } else {
                         $proba = $small_proba;
                     }
-                    $scores[$category] *= pow($proba, $count) * pow($total_words / $ncat, $count);
+                    $scores[$category] *= ($proba ** $count) * (($total_words / $ncat) ** $count);
                     // pow($total_words/$ncat, $count) is here to avoid underflow.
                 }
             }
         }
 
-        return $this->_rescale($scores);
+        return $this->rescale($scores);
     }
 
     /** training against a document.
@@ -116,16 +114,16 @@ class NaiveBayesian
      * and is saved in the table of references. After a set of training is done
      * the updateProbabilities() function must be run.
      *
+     * @param mixed $doc_id
+     * @param mixed $category_id
+     * @param mixed $content
+     * @return bool success
      * @see updateProbabilities()
      * @see untrain()
-     * @return bool success
-     * @param string document id, must be unique
-     * @param string category_id the category id in which the document should be
-     * @param string content of the document
      */
-    public function train($doc_id, $category_id, $content)
+    public function train($doc_id, $category_id, $content): bool
     {
-        $tokens = $this->_getTokens($content);
+        $tokens = $this->getTokens($content);
         //            while (list($token, $count) = each($tokens)) {
         foreach ($tokens as $token => $count) {
             $this->nbs->updateWord($token, $count, $category_id);
@@ -138,15 +136,15 @@ class NaiveBayesian
     /** untraining of a document.
      * To remove just one document from the references.
      *
+     * @param mixed $doc_id
+     * @return bool success
      * @see updateProbabilities()
      * @see untrain()
-     * @return bool success
-     * @param string document id, must be unique
      */
-    public function untrain($doc_id)
+    public function untrain($doc_id): bool
     {
         $ref    = $this->nbs->getReference($doc_id);
-        $tokens = $this->_getTokens($ref['content']);
+        $tokens = $this->getTokens($ref['content']);
         //            while (list($token, $count) = each($tokens)) {
         foreach ($tokens as $token => $count) {
             $this->nbs->removeWord($token, $count, $ref['category_id']);
@@ -158,12 +156,12 @@ class NaiveBayesian
 
     /** rescale the results between 0 and 1.
      *
+     * @param mixed $scores
+     * @return array normalized scores (keys => category, values => scores)
      * @author Ken Williams, ken@mathforum.org
      * @see    categorize()
-     * @return array normalized scores (keys => category, values => scores)
-     * @param array scores (keys => category, values => scores)
      */
-    public function _rescale($scores)
+    public function rescale($scores): array
     {
         // Scale everything back to a reasonable area in
         // logspace (near zero), un-loggify, and normalize
@@ -179,16 +177,16 @@ class NaiveBayesian
         //        reset($scores);
         //        while (list($cat, $score) = each($scores)) {
         foreach ($scores as $cat => $score) {
-            $scores[$cat] = exp($score - $max);
-            $total        += (float)pow($scores[$cat], 2);
+            $scores[$cat] = \exp($score - $max);
+            $total        += $scores[$cat] ** 2;
         }
-        $total = sqrt($total);
+        $total = \sqrt($total);
         //        reset($scores);
         //        while (list($cat, $score) = each($scores)) {
         foreach ($scores as $cat => $score) {
-            $scores[$cat] = (float)$scores[$cat] / $total;
+            $scores[$cat] = (float)$score / $total;
         }
-        reset($scores);
+        \reset($scores);
 
         return $scores;
     }
@@ -196,11 +194,11 @@ class NaiveBayesian
     /** update the probabilities of the categories and word count.
      * This function must be run after a set of training
      *
-     * @see train()
-     * @see untrain()
      * @return bool sucess
+     * @see untrain()
+     * @see train()
      */
-    public function updateProbabilities()
+    public function updateProbabilities(): bool
     {
         // this function is really only database manipulation
         // that is why all is done in the NaiveBayesianStorage
@@ -210,43 +208,44 @@ class NaiveBayesian
     /** Get the list of token to ignore.
      * @return array ignore list
      */
-    public function getIgnoreList()
+    public function getIgnoreList(): array
     {
         global $xhelp_noise_words;
-        @$helper->LoadLanguage('noise_words');
+        $helper = Helper::getInstance();
+        @$helper->loadLanguage('noise_words');
 
         return $xhelp_noise_words;
     }
 
     /** get the tokens from a string
      *
-     * @author   James Seng. [http://james.seng.cc/] (based on his perl version)
+     * @author   James Seng. [https://james.seng.cc/] (based on his perl version)
      *
      *
      * @param string $string
      * @return array tokens
      * @internal param the $string string to get the tokens from
      */
-    public function _getTokens($string)
+    private function getTokens(string $string): array
     {
         $rawtokens = [];
         $tokens    = [];
-        $string    = $this->_cleanString($string);
-        if (0 == count($this->ignore_list)) {
+        $string    = $this->cleanString($string);
+        if (0 == \count($this->ignore_list)) {
             $this->ignore_list = $this->getIgnoreList();
         }
-        $rawtokens = preg_split('[^-_A-Za-z0-9]+', $string);
+        $rawtokens = \preg_split('[^-_A-Za-z0-9]+', $string);
         // remove some tokens
         //        while (list(, $token) = each($rawtokens)) {
         foreach ($rawtokens as $key => $token) {
-            $token = trim($token);
+            $token = \trim($token);
             if (!isset($tokens[$token])) {
                 $tokens[$token] = 0;
             }
-            if (!(('' == $token) || (strlen($token) < $this->min_token_length)
-                  || (strlen($token) > $this->max_token_length)
-                  || preg_match('/^[0-9]+$/', $token)
-                  || in_array($token, $this->ignore_list))) {
+            if (!(('' == $token) || (mb_strlen($token) < $this->min_token_length)
+                  || (mb_strlen($token) > $this->max_token_length)
+                  || \preg_match('/^[0-9]+$/', $token)
+                  || \in_array($token, $this->ignore_list))) {
                 $tokens[$token]++;
             }
         }
@@ -256,28 +255,27 @@ class NaiveBayesian
 
     /** clean a string from the diacritics
      *
-     * @author Antoine Bajolet [phpdig_at_toiletoine.net]
-     * @author SPIP [http://uzine.net/spip/]
-     *
+     * @param mixed $string
      * @return string clean string
-     * @param  string string with accents
+     * @author Antoine Bajolet [phpdig_at_toiletoine.net]
+     * @author SPIP [https://uzine.net/spip/]
      */
-    public function _cleanString($string)
+    private function cleanString($string): string
     {
         $diac = /* A */
-            chr(192) . chr(193) . chr(194) . chr(195) . chr(196) . chr(197) . /* a */
-            chr(224) . chr(225) . chr(226) . chr(227) . chr(228) . chr(229) . /* O */
-            chr(210) . chr(211) . chr(212) . chr(213) . chr(214) . chr(216) . /* o */
-            chr(242) . chr(243) . chr(244) . chr(245) . chr(246) . chr(248) . /* E */
-            chr(200) . chr(201) . chr(202) . chr(203) . /* e */
-            chr(232) . chr(233) . chr(234) . chr(235) . /* Cc */
-            chr(199) . chr(231) . /* I */
-            chr(204) . chr(205) . chr(206) . chr(207) . /* i */
-            chr(236) . chr(237) . chr(238) . chr(239) . /* U */
-            chr(217) . chr(218) . chr(219) . chr(220) . /* u */
-            chr(249) . chr(250) . chr(251) . chr(252) . /* yNn */
-            chr(255) . chr(209) . chr(241);
+            \chr(192) . \chr(193) . \chr(194) . \chr(195) . \chr(196) . \chr(197) . /* a */
+            \chr(224) . \chr(225) . \chr(226) . \chr(227) . \chr(228) . \chr(229) . /* O */
+            \chr(210) . \chr(211) . \chr(212) . \chr(213) . \chr(214) . \chr(216) . /* o */
+            \chr(242) . \chr(243) . \chr(244) . \chr(245) . \chr(246) . \chr(248) . /* E */
+            \chr(200) . \chr(201) . \chr(202) . \chr(203) . /* e */
+            \chr(232) . \chr(233) . \chr(234) . \chr(235) . /* Cc */
+            \chr(199) . \chr(231) . /* I */
+            \chr(204) . \chr(205) . \chr(206) . \chr(207) . /* i */
+            \chr(236) . \chr(237) . \chr(238) . \chr(239) . /* U */
+            \chr(217) . \chr(218) . \chr(219) . \chr(220) . /* u */
+            \chr(249) . \chr(250) . \chr(251) . \chr(252) . /* yNn */
+            \chr(255) . \chr(209) . \chr(241);
 
-        return strtolower(strtr($string, $diac, 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn'));
+        return \mb_strtolower(strtr($string, $diac, 'AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn'));
     }
 }

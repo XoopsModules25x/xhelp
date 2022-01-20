@@ -1,39 +1,35 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Module\Admin;
+use Xmf\Request;
 use XoopsModules\Xhelp;
+use XoopsModules\Xhelp\Constants;
 
-require_once __DIR__ . '/../../../include/cp_header.php';
 require_once __DIR__ . '/admin_header.php';
-require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+xoops_load('XoopsPagenav');
 // require_once XHELP_CLASS_PATH . '/Form.php';
 // require_once XHELP_CLASS_PATH . '/FormRadio.php';
 // require_once XHELP_CLASS_PATH . '/FormCheckbox.php';
 
+$helper = Xhelp\Helper::getInstance();
 global $xoopsModule;
 $module_id = $xoopsModule->getVar('mid');
 
-$start = $limit = 0;
-if (isset($_REQUEST['limit'])) {
-    $limit = (int)$_REQUEST['limit'];
-}
-if (isset($_REQUEST['start'])) {
-    $start = (int)$_REQUEST['start'];
-}
-if (!$limit) {
-    $limit = 15;
-}
-if (isset($_REQUEST['order'])) {
+$limit = Request::getInt('limit', 15, 'REQUEST');
+$start = Request::getInt('start', 0, 'REQUEST');
+
+if (Request::hasVar('order', 'REQUEST')) {
     $order = $_REQUEST['order'];
 } else {
     $order = 'ASC';
 }
-if (isset($_REQUEST['sort'])) {
+if (Request::hasVar('sort', 'REQUEST')) {
     $sort = $_REQUEST['sort'];
 } else {
     $sort = 'department';
 }
 $dept_search = false;
-if (isset($_REQUEST['dept_search'])) {
+if (Request::hasVar('dept_search', 'REQUEST')) {
     $dept_search = $_REQUEST['dept_search'];
 }
 
@@ -43,7 +39,7 @@ $aLimitBy = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' =
 
 $op = 'default';
 
-if (isset($_REQUEST['op'])) {
+if (Request::hasVar('op', 'REQUEST')) {
     $op = $_REQUEST['op'];
 }
 
@@ -51,189 +47,209 @@ switch ($op) {
     case 'activateMailbox':
         activateMailbox();
         break;
-
     case 'AddDepartmentServer':
         addDepartmentServer();
         break;
-
     case 'DeleteDepartmentServer':
-        DeleteDepartmentServer();
+        deleteDepartmentServer();
         break;
-
     case 'deleteStaffDept':
         deleteStaffDept();
         break;
-
     case 'editDepartment':
         editDepartment();
         break;
-
     case 'EditDepartmentServer':
-        EditDepartmentServer();
+        editDepartmentServer();
         break;
-
     case 'manageDepartments':
         manageDepartments();
         break;
-
     case 'testMailbox':
         testMailbox();
         break;
-
     case 'clearAddSession':
         clearAddSession();
         break;
-
     case 'clearEditSession':
         clearEditSession();
         break;
-
     case 'updateDefault':
         updateDefault();
         break;
-
     default:
-        header('Location: ' . XHELP_BASE_URL . '/admin/index.php');
+        $helper->redirect('admin/index.php');
         break;
 }
 
+/**
+ *
+ */
 function activateMailbox()
 {
-    $id       = (int)$_GET['id'];
-    $setstate = (int)$_GET['setstate'];
+    $helper   = Xhelp\Helper::getInstance();
+    $id       = Request::getInt('id', 0, 'GET');
+    $setstate = Request::getInt('setstate', 0, 'GET');
 
-    $hMailbox = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-    if ($mailbox = $hMailbox->get($id)) {
+    /** @var \XoopsModules\Xhelp\DepartmentMailBoxHandler $departmentMailBoxHandler */
+    $departmentMailBoxHandler = $helper->getHandler('DepartmentMailBox');
+    $mailbox                  = $departmentMailBoxHandler->get($id);
+    if ($mailbox) {
         $url = XHELP_BASE_URL . '/admin/department.php?op=editDepartment&id=' . $mailbox->getVar('departmentid');
         $mailbox->setVar('active', $setstate);
-        if ($hMailbox->insert($mailbox, true)) {
-            header("Location: $url");
+        if ($departmentMailBoxHandler->insert($mailbox, true)) {
+            $helper->redirect($url);
         } else {
             redirect_header($url, 3, _AM_XHELP_DEPARTMENT_SERVER_ERROR);
         }
     } else {
-        redirect_header(XHELP_BASE_URL . '/admin/department.php?op=manageDepartments', 3, _XHELP_NO_MAILBOX_ERROR);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _XHELP_NO_MAILBOX_ERROR);
     }
 }
 
+/**
+ *
+ */
 function addDepartmentServer()
 {
-    if (isset($_GET['id'])) {
-        $deptID = (int)$_GET['id'];
+    $helper = Xhelp\Helper::getInstance();
+    $deptID = 0;
+
+    if (Request::hasVar('id', 'GET')) {
+        $deptID = Request::getInt('id', 0, 'GET');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_NO_ID);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_NO_ID);
     }
 
-    $hDeptServers = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-    $server       = $hDeptServers->create();
+    /** @var \XoopsModules\Xhelp\DepartmentMailBoxHandler $departmentMailBoxHandler */
+    $departmentMailBoxHandler = $helper->getHandler('DepartmentMailBox');
+    /** @var \XoopsModules\Xhelp\DepartmentMailBox $server */
+    $server = $departmentMailBoxHandler->create();
     $server->setVar('departmentid', $deptID);
-    $server->setVar('emailaddress', $_POST['emailaddress']);
-    $server->setVar('server', $_POST['server']);
-    $server->setVar('serverport', $_POST['port']);
-    $server->setVar('username', $_POST['username']);
-    $server->setVar('password', $_POST['password']);
+    $server->setVar('emailaddress', \Xmf\Request::getString('emailaddress', '', 'POST'));
+    $server->setVar('server', \Xmf\Request::getString('server', '', 'POST'));
+    $server->setVar('serverport', \Xmf\Request::getString('port', '', 'POST'));
+    $server->setVar('username', \Xmf\Request::getString('username', '', 'POST'));
+    $server->setVar('password', \Xmf\Request::getString('password', '', 'POST'));
     $server->setVar('priority', $_POST['priority']);
-    //
-    if ($hDeptServers->insert($server)) {
-        header('Location: ' . XHELP_ADMIN_URL . '/department.php?op=manageDepartments');
+
+    if ($departmentMailBoxHandler->insert($server)) {
+        $helper->redirect('admin/department.php?op=manageDepartments');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_SERVER_ERROR);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_SERVER_ERROR);
     }
 }
 
-function DeleteDepartmentServer()
+/**
+ *
+ */
+function deleteDepartmentServer()
 {
-    if (isset($_REQUEST['id'])) {
-        $emailID = (int)$_REQUEST['id'];
+    $helper = Xhelp\Helper::getInstance();
+    if (Request::hasVar('id', 'REQUEST')) {
+        $emailID = Request::getInt('id', 0, 'REQUEST');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_SERVER_NO_ID);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_SERVER_NO_ID);
     }
-
-    $hDeptServers = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-    $server       = $hDeptServers->get($emailID);
+    /** @var \XoopsModules\Xhelp\DepartmentMailBoxHandler $departmentMailBoxHandler */
+    $departmentMailBoxHandler = $helper->getHandler('DepartmentMailBox');
+    $server                   = $departmentMailBoxHandler->get($emailID);
 
     if (!isset($_POST['ok'])) {
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manDept');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation(basename(__FILE__));
 
         xoops_confirm(['op' => 'DeleteDepartmentServer', 'id' => $emailID, 'ok' => 1], XHELP_BASE_URL . '/admin/department.php', sprintf(_AM_XHELP_MSG_DEPT_MBOX_DEL_CFRM, $server->getVar('emailaddress')));
         xoops_cp_footer();
+    } elseif ($departmentMailBoxHandler->delete($server, true)) {
+        $helper->redirect('admin/department.php?op=manageDepartments');
     } else {
-        //get handler
-        if ($hDeptServers->delete($server, true)) {
-            header('Location: ' . XHELP_ADMIN_URL . '/department.php?op=manageDepartments');
-        } else {
-            redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_SERVER_DELETE_ERROR);
-        }
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_DEPARTMENT_SERVER_DELETE_ERROR);
     }
 }
 
+/**
+ *
+ */
 function deleteStaffDept()
 {
-    if (isset($_GET['deptid'])) {
-        $deptID = (int)$_GET['deptid'];
+    $deptID = 0;
+    $helper = Xhelp\Helper::getInstance();
+    if (Request::hasVar('deptid', 'GET')) {
+        $deptID = Request::getInt('deptid', 0, 'GET');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_NO_DEPTID);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_NO_DEPTID);
     }
-    if (isset($_GET['uid'])) {
-        $staffID = (int)$_GET['uid'];
-    } elseif (isset($_POST['staff'])) {
+    if (Request::hasVar('uid', 'GET')) {
+        $staffID = Request::getInt('uid', 0, 'GET');
+    } elseif (Request::hasVar('staff', 'POST')) {
         $staffID = $_POST['staff'];
     } else {
-        redirect_header(XHELP_ADMIN_URL . "/department.php?op=editDepartment&deptid=$deptID", 3, _AM_XHELP_MSG_NO_UID);
+        $helper->redirect("department.php?op=editDepartment&deptid=$deptID", 3, _AM_XHELP_MSG_NO_UID);
     }
 
-    $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
+    /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+    $membershipHandler = $helper->getHandler('Membership');
     if (is_array($staffID)) {
         foreach ($staffID as $sid) {
-            $ret = $hMembership->removeDeptFromStaff($deptID, $sid);
+            $ret = $membershipHandler->removeDeptFromStaff($deptID, $sid);
         }
     } else {
-        $ret = $hMembership->removeDeptFromStaff($deptID, $staffID);
+        $ret = $membershipHandler->removeDeptFromStaff($deptID, $staffID);
     }
 
     if ($ret) {
-        header('Location: ' . XHELP_ADMIN_URL . "/department.php?op=editDepartment&deptid=$deptID");
+        $helper->redirect("department.php?op=editDepartment&deptid=$deptID");
     } else {
-        redirect_header(XHELP_ADMIN_URL . "/department.php??op=editDepartment&deptid=$deptID", 3, _AM_XHELP_MSG_REMOVE_STAFF_DEPT_ERR);
+        $helper->redirect("department.php??op=editDepartment&deptid=$deptID", 3, _AM_XHELP_MSG_REMOVE_STAFF_DEPT_ERR);
     }
 }
 
+/**
+ *
+ */
 function editDepartment()
 {
-    $_xhelpSession = Xhelp\Session::getInstance();
-    global $imagearray, $xoopsModule, $limit, $start, $xoopsModuleConfig;
+    $deptID  = 0;
+    $session = Xhelp\Session::getInstance();
+    global $imagearray, $xoopsModule, $limit, $start;
+    $helper = Xhelp\Helper::getInstance();
+    $errors = [];
+
     $module_id   = $xoopsModule->getVar('mid');
-    $displayName = $xoopsModuleConfig['xhelp_displayName'];    // Determines if username or real name is displayed
+    $displayName = $helper->getConfig('xhelp_displayName');    // Determines if username or real name is displayed
 
-    $_xhelpSession->set('xhelp_return_page', substr(strstr($_SERVER['REQUEST_URI'], 'admin/'), 6));
+    $session->set('xhelp_return_page', mb_substr(mb_strstr($_SERVER['REQUEST_URI'], 'admin/'), 6));
 
-    if (isset($_REQUEST['deptid'])) {
-        $deptID = $_REQUEST['deptid'];
+    if (Request::hasVar('deptid', 'REQUEST')) {
+        $deptID = Request::getInt('deptid', 0);
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_NO_DEPTID);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_NO_DEPTID);
     }
 
-    $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-    $hGroups      = xoops_getHandler('group');
-    $hGroupPerm   = xoops_getHandler('groupperm');
+    /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+    $departmentHandler = $helper->getHandler('Department');
+    /** @var \XoopsGroupHandler $groupHandler */
+    $groupHandler = xoops_getHandler('group');
+    /** @var \XoopsGroupPermHandler $grouppermHandler */
+    $grouppermHandler = xoops_getHandler('groupperm');
 
-    if (isset($_POST['updateDept'])) {
-        $groups = (isset($_POST['groups']) ? $_POST['groups'] : []);
+    if (Request::hasVar('updateDept', 'POST')) {
+        $groups = ($_POST['groups'] ?? []);
 
         $hasErrors = false;
         //Department Name supplied?
-        if ('' == trim($_POST['newDept'])) {
+        if ('' === trim(\Xmf\Request::getString('newDept', '', 'POST'))) {
             $hasErrors           = true;
             $errors['newDept'][] = _AM_XHELP_MESSAGE_NO_DEPT;
         } else {
-
             //Department Name unique?
-            $crit = new \CriteriaCompo(new \Criteria('department', $_POST['newDept']));
-            $crit->add(new \Criteria('id', $deptID, '!='));
-            if ($existingDepts = $hDepartments->getCount($crit)) {
+            $criteria = new \CriteriaCompo(new \Criteria('department', \Xmf\Request::getString('newDept', '', 'POST')));
+            $criteria->add(new \Criteria('id', (string)$deptID, '!='));
+            $existingDepts = $departmentHandler->getCount($criteria);
+            if ($existingDepts) {
                 $hasErrors           = true;
                 $errors['newDept'][] = _XHELP_MESSAGE_DEPT_EXISTS;
             }
@@ -243,39 +259,38 @@ function editDepartment()
             $session = Xhelp\Session::getInstance();
             //Store existing dept info in session, reload addition page
             $aDept            = [];
-            $aDept['newDept'] = $_POST['newDept'];
+            $aDept['newDept'] = \Xmf\Request::getString('newDept', '', 'POST');
             $aDept['groups']  = $groups;
             $session->set("xhelp_editDepartment_$deptID", $aDept);
             $session->set("xhelp_editDepartmentErrors_$deptID", $errors);
-            header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'editDepartment', 'deptid' => $deptID], false));
-            exit();
+            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'editDepartment', 'deptid' => $deptID], false));
         }
 
-        $dept = $hDepartments->get($deptID);
+        $dept = $departmentHandler->get($deptID);
 
         $oldDept = $dept;
         $groups  = $_POST['groups'];
 
         // Need to remove old group permissions first
-        $crit = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
-        $crit->add(new \Criteria('gperm_itemid', $deptID));
-        $crit->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $hGroupPerm->deleteAll($crit);
+        $criteria = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
+        $criteria->add(new \Criteria('gperm_itemid', (string)$deptID));
+        $criteria->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
+        $grouppermHandler->deleteAll($criteria);
 
         foreach ($groups as $group) {     // Add new group permissions
-            $hGroupPerm->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
+            $grouppermHandler->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
         }
 
-        $dept->setVar('department', $_POST['newDept']);
+        $dept->setVar('department', \Xmf\Request::getString('newDept', '', 'POST'));
 
-        if ($hDepartments->insert($dept)) {
+        if ($departmentHandler->insert($dept)) {
             $message = _XHELP_MESSAGE_UPDATE_DEPT;
 
             // Update default dept
-            if (isset($_POST['defaultDept']) && (1 == $_POST['defaultDept'])) {
+            if (Request::hasVar('defaultDept', 'POST') && (1 == $_POST['defaultDept'])) {
                 Xhelp\Utility::setMeta('default_department', $dept->getVar('id'));
             } else {
-                $depts  = $hDepartments->getObjects();
+                $depts  = $departmentHandler->getObjects();
                 $aDepts = [];
                 foreach ($depts as $dpt) {
                     $aDepts[] = $dpt->getVar('id');
@@ -284,29 +299,30 @@ function editDepartment()
             }
 
             // Edit configoption for department
-            $hConfigOption = xoops_getHandler('configoption');
-            $crit          = new \CriteriaCompo(new \Criteria('confop_name', $oldDept->getVar('department')));
-            $crit->add(new \Criteria('confop_value', $oldDept->getVar('id')));
-            $confOption = $hConfigOption->getObjects($crit);
+            /** @var \XoopsModules\Xhelp\ConfigOptionHandler $configOptionHandler */
+            $configOptionHandler = $helper->getHandler('ConfigOption');
+            $criteria            = new \CriteriaCompo(new \Criteria('confop_name', $oldDept->getVar('department')));
+            $criteria->add(new \Criteria('confop_value', $oldDept->getVar('id')));
+            $confOption = $configOptionHandler->getObjects($criteria);
 
             if (count($confOption) > 0) {
                 $confOption[0]->setVar('confop_name', $dept->getVar('department'));
 
-                if (!$hConfigOption->insert($confOption[0])) {
-                    redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_UPDATE_CONFIG_ERR);
+                if (!$configOptionHandler->insert($confOption[0])) {
+                    $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_UPDATE_CONFIG_ERR);
                 }
             }
-            _clearEditSessionVars($deptID);
-            header('Location: ' . XHELP_ADMIN_URL . '/department.php?op=manageDepartments');
+            clearEditSessionVars($deptID);
+            $helper->redirect('admin/department.php?op=manageDepartments');
         } else {
             $message = _XHELP_MESSAGE_UPDATE_DEPT_ERROR . $dept->getHtmlErrors();
-            redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, $message);
+            $helper->redirect('admin/department.php?op=manageDepartments', 3, $message);
         }
     } else {
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manDept');
 
-        $dept = $hDepartments->get($deptID);
+        $dept = $departmentHandler->get($deptID);
 
         $session     = Xhelp\Session::getInstance();
         $sess_dept   = $session->get("xhelp_editDepartment_$deptID");
@@ -317,33 +333,33 @@ function editDepartment()
             xhelpRenderErrors($sess_errors, Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'clearEditSession', 'deptid' => $deptID]));
         }
 
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation('department.php?op=editDepartment');
 
         // Get list of groups with permission
-        $crit = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
-        $crit->add(new \Criteria('gperm_itemid', $deptID));
-        $crit->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $group_perms = $hGroupPerm->getObjects($crit);
+        $criteria = new \CriteriaCompo(new \Criteria('gperm_modid', $module_id));
+        $criteria->add(new \Criteria('gperm_itemid', (string)$deptID));
+        $criteria->add(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
+        $group_perms = $grouppermHandler->getObjects($criteria);
 
         $aPerms = [];      // Put group_perms in usable format
         foreach ($group_perms as $perm) {
             $aPerms[$perm->getVar('gperm_groupid')] = $perm->getVar('gperm_groupid');
         }
 
-        if (false === !$sess_dept) {
-            $fld_newDept = $sess_dept['newDept'];
-            $fld_groups  = $sess_dept['groups'];
-        } else {
+        if (false !== !$sess_dept) {
             $fld_newDept = $dept->getVar('department');
             $fld_groups  = $aPerms;
+        } else {
+            $fld_newDept = $sess_dept['newDept'];
+            $fld_groups  = $sess_dept['groups'];
         }
 
         // Get list of all groups
-        $crit = new \Criteria('', '');
-        $crit->setSort('name');
-        $crit->setOrder('ASC');
-        $groups = $hGroups->getObjects($crit, true);
+        $criteria = new \Criteria('', '');
+        $criteria->setSort('name');
+        $criteria->setOrder('ASC');
+        $groups = $groupHandler->getObjects($criteria, true);
 
         $aGroups = [];
         foreach ($groups as $group_id => $group) {
@@ -352,18 +368,20 @@ function editDepartment()
         asort($aGroups);    // Set groups in alphabetical order
 
         echo '<script type="text/javascript" src="' . XOOPS_URL . '/modules/xhelp/include/functions.js"></script>';
-        $form         = new Xhelp\Form(_AM_XHELP_EDIT_DEPARTMENT, 'edit_dept', Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', [
+        $form         = new Xhelp\Form(
+            _AM_XHELP_EDIT_DEPARTMENT, 'edit_dept', Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', [
             'op'     => 'editDepartment',
-            'deptid' => $deptID
-        ]));
+            'deptid' => $deptID,
+        ])
+        );
         $dept_name    = new \XoopsFormText(_AM_XHELP_TEXT_EDIT_DEPT, 'newDept', 20, 35, $fld_newDept);
         $group_select = new \XoopsFormSelect(_AM_XHELP_TEXT_EDIT_DEPT_PERMS, 'groups', $fld_groups, 6, true);
         $group_select->addOptionArray($aGroups);
         $defaultDeptID = Xhelp\Utility::getMeta('default_department');
         $defaultDept   = new Xhelp\FormCheckbox(_AM_XHELP_TEXT_DEFAULT_DEPT, 'defaultDept', (($defaultDeptID == $deptID) ? 1 : 0), 'defaultDept');
-        $defaultDept->addOption(1, '');
+        $defaultDept->addOption('1', '');
         $btn_tray = new \XoopsFormElementTray('');
-        $btn_tray->addElement(new \XoopsFormButton('', 'updateDept', _AM_XHELP_BUTTON_SUBMIT, 'submit'));
+        $btn_tray->addElement(new \XoopsFormButton('', 'updateDept', _SUBMIT, 'submit'));
         $form->addElement($dept_name);
         $form->addElement($group_select);
         $form->addElement($defaultDept);
@@ -372,15 +390,19 @@ function editDepartment()
         echo $form->render();
 
         // Get dept staff members
-        $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-        $hMember     = xoops_getHandler('member');
-        $hStaffRole  = new Xhelp\StaffRoleHandler($GLOBALS['xoopsDB']);
-        $hRole       = new Xhelp\RoleHandler($GLOBALS['xoopsDB']);
+        /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+        $membershipHandler = $helper->getHandler('Membership');
+        /** @var \XoopsMemberHandler $memberHandler */
+        $memberHandler = xoops_getHandler('member');
+        /** @var \XoopsModules\Xhelp\StaffRoleHandler $staffRoleHandler */
+        $staffRoleHandler = $helper->getHandler('StaffRole');
+        /** @var \XoopsModules\Xhelp\RoleHandler $roleHandler */
+        $roleHandler = $helper->getHandler('Role');
 
-        $staff      = $hMembership->membershipByDept($deptID, $limit, $start);
-        $crit       = new \Criteria('j.department', $deptID);
-        $staffCount = $hMembership->getCount($crit);
-        $roles      = $hRole->getObjects(null, true);
+        $staff      = $membershipHandler->membershipByDept($deptID, $limit, $start);
+        $criteria   = new \Criteria('j.department', (string)$deptID);
+        $staffCount = $membershipHandler->getCount($criteria);
+        $roles      = $roleHandler->getObjects(null, true);
 
         echo "<form action='" . XHELP_ADMIN_URL . '/department.php?op=deleteStaffDept&amp;deptid=' . $deptID . "' method='post'>";
         echo $GLOBALS['xoopsSecurity']->getTokenHTML();
@@ -394,14 +416,14 @@ function editDepartment()
             }
 
             // Get user list
-            $crit = new \Criteria('uid', '(' . implode($aStaff, ',') . ')', 'IN');
-            //$members =& $hMember->getUserList($crit);
-            $members = Xhelp\Utility::getUsers($crit, $displayName);
+            $criteria = new \Criteria('uid', '(' . implode(',', $aStaff) . ')', 'IN');
+            //$members = $memberHandler->getUserList($criteria);
+            $members = Xhelp\Utility::getUsers($criteria, $displayName);
 
             // Get staff roles
-            $crit = new \CriteriaCompo(new \Criteria('uid', '(' . implode($aStaff, ',') . ')', 'IN'));
-            $crit->add(new \Criteria('deptid', $deptID));
-            $staffRoles = $hStaffRole->getObjects($crit);
+            $criteria = new \CriteriaCompo(new \Criteria('uid', '(' . implode(',', $aStaff) . ')', 'IN'));
+            $criteria->add(new \Criteria('deptid', (string)$deptID));
+            $staffRoles = $staffRoleHandler->getObjects($criteria);
             unset($aStaff);
 
             $staffInfo = [];
@@ -414,7 +436,7 @@ function editDepartment()
                     if ($role->getVar('uid') == $staff_uid) {
                         $aRoles[$role_id] = $roles[$role_id]->getVar('name');
                     }
-                    $staffInfo[$staff_uid]['roles'] = implode($aRoles, ', ');
+                    $staffInfo[$staff_uid]['roles'] = implode(', ', $aRoles);
                 }
             }
             $nav = new \XoopsPageNav($staffCount, $limit, $start, 'start', "op=editDepartment&amp;deptid=$deptID&amp;limit=$limit");
@@ -453,8 +475,9 @@ function editDepartment()
         }
 
         //now do the list of servers
-        $hDeptServers = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-        $deptServers  = $hDeptServers->getByDepartment($deptID);
+        /** @var \XoopsModules\Xhelp\DepartmentMailBoxHandler $departmentMailBoxHandler */
+        $departmentMailBoxHandler = $helper->getHandler('DepartmentMailBox');
+        $deptServers              = $departmentMailBoxHandler->getByDepartment($deptID);
         //iterate
         if (count($deptServers) > 0) {
             echo "<br><table width='100%' cellspacing='1' class='outer'>
@@ -505,13 +528,13 @@ function editDepartment()
             'pass_text',
             'priority_radio',
             'email_text',
-            'btn_tray'
+            'btn_tray',
         ];
         $form         = new Xhelp\Form(_AM_XHELP_DEPARTMENT_ADD_SERVER, 'add_server', Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'AddDepartmentServer', 'id' => $deptID]));
 
         $type_select = new \XoopsFormSelect(_AM_XHELP_DEPARTMENT_SERVERS_TYPE, 'mboxtype');
         $type_select->setExtra("id='mboxtype'");
-        $type_select->addOption(_XHELP_MAILBOXTYPE_POP3, _AM_XHELP_MBOX_POP3);
+        $type_select->addOption((string)Constants::XHELP_MAILBOXTYPE_POP3, _AM_XHELP_MBOX_POP3);
 
         $server_text = new \XoopsFormText(_AM_XHELP_DEPARTMENT_SERVERS_SERVERNAME, 'server', 40, 50);
         $server_text->setExtra("id='txtServer'");
@@ -525,13 +548,13 @@ function editDepartment()
         $pass_text = new \XoopsFormText(_AM_XHELP_DEPARTMENT_SERVER_PASSWORD, 'password', 25, 50);
         $pass_text->setExtra("id='txtPassword'");
 
-        $priority_radio = new Xhelp\FormRadio(_AM_XHELP_DEPARTMENT_SERVERS_PRIORITY, 'priority', XHELP_DEFAULT_PRIORITY);
+        $priority_radio = new Xhelp\FormRadio(_AM_XHELP_DEPARTMENT_SERVERS_PRIORITY, 'priority', (string)XHELP_DEFAULT_PRIORITY);
         $priority_array = [
-            '1' => "<label for='priority1'><img src='" . XHELP_IMAGE_URL . "/priority1.png' title='" . Xhelp\Utility::getPriority(1) . "' alt='priority1'></label>",
-            '2' => "<label for='priority2'><img src='" . XHELP_IMAGE_URL . "/priority2.png' title='" . Xhelp\Utility::getPriority(2) . "' alt='priority2'></label>",
-            '3' => "<label for='priority3'><img src='" . XHELP_IMAGE_URL . "/priority3.png' title='" . Xhelp\Utility::getPriority(3) . "' alt='priority3'></label>",
-            '4' => "<label for='priority4'><img src='" . XHELP_IMAGE_URL . "/priority4.png' title='" . Xhelp\Utility::getPriority(4) . "' alt='priority4'></label>",
-            '5' => "<label for='priority5'><img src='" . XHELP_IMAGE_URL . "/priority5.png' title='" . Xhelp\Utility::getPriority(5) . "' alt='priority5'></label>"
+            1 => "<label for='priority1'><img src='" . XHELP_IMAGE_URL . "/priority1.png' title='" . Xhelp\Utility::getPriority(1) . "' alt='priority1'></label>",
+            2 => "<label for='priority2'><img src='" . XHELP_IMAGE_URL . "/priority2.png' title='" . Xhelp\Utility::getPriority(2) . "' alt='priority2'></label>",
+            3 => "<label for='priority3'><img src='" . XHELP_IMAGE_URL . "/priority3.png' title='" . Xhelp\Utility::getPriority(3) . "' alt='priority3'></label>",
+            4 => "<label for='priority4'><img src='" . XHELP_IMAGE_URL . "/priority4.png' title='" . Xhelp\Utility::getPriority(4) . "' alt='priority4'></label>",
+            5 => "<label for='priority5'><img src='" . XHELP_IMAGE_URL . "/priority5.png' title='" . Xhelp\Utility::getPriority(5) . "' alt='priority5'></label>",
         ];
         $priority_radio->addOptionArray($priority_array);
 
@@ -541,7 +564,7 @@ function editDepartment()
         $btn_tray    = new \XoopsFormElementTray('');
         $test_button = new \XoopsFormButton('', 'email_test', _AM_XHELP_BUTTON_TEST, 'button');
         $test_button->setExtra("id='test'");
-        $submit_button  = new \XoopsFormButton('', 'updateDept2', _AM_XHELP_BUTTON_SUBMIT, 'submit');
+        $submit_button  = new \XoopsFormButton('', 'updateDept2', _SUBMIT, 'submit');
         $cancel2_button = new \XoopsFormButton('', 'cancel2', _AM_XHELP_BUTTON_CANCEL, 'button');
         $cancel2_button->setExtra("onclick='history.go(-1)'");
         $btn_tray->addElement($test_button);
@@ -578,35 +601,40 @@ function editDepartment()
     }
 }
 
-function EditDepartmentServer()
+/**
+ *
+ */
+function editDepartmentServer()
 {
-    if (isset($_GET['id'])) {
-        $id = (int)$_GET['id'];
+    $helper = Xhelp\Helper::getInstance();
+    if (Request::hasVar('id', 'GET')) {
+        $id = Request::getInt('id', 0, 'GET');
     } else {
-        redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3);       // TODO: Make message for no mbox_id
+        $helper->redirect('admin/department.php?op=manageDepartments', 3);       // TODO: Make message for no mbox_id
     }
 
-    $hDeptServers = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-    $deptServer   = $hDeptServers->get($id);
+    /** @var \XoopsModules\Xhelp\DepartmentMailBoxHandler $departmentMailBoxHandler */
+    $departmentMailBoxHandler = $helper->getHandler('DepartmentMailBox');
+    $deptServer               = $departmentMailBoxHandler->get($id);
 
-    if (isset($_POST['updateMailbox'])) {
-        $deptServer->setVar('emailaddress', $_POST['emailaddress']);
-        $deptServer->setVar('server', $_POST['server']);
-        $deptServer->setVar('serverport', $_POST['port']);
-        $deptServer->setVar('username', $_POST['username']);
-        $deptServer->setVar('password', $_POST['password']);
+    if (Request::hasVar('updateMailbox', 'POST')) {
+        $deptServer->setVar('emailaddress', \Xmf\Request::getString('emailaddress', '', 'POST'));
+        $deptServer->setVar('server', \Xmf\Request::getString('server', '', 'POST'));
+        $deptServer->setVar('serverport', \Xmf\Request::getString('port', '', 'POST'));
+        $deptServer->setVar('username', \Xmf\Request::getString('username', '', 'POST'));
+        $deptServer->setVar('password', \Xmf\Request::getString('password', '', 'POST'));
         $deptServer->setVar('priority', $_POST['priority']);
         $deptServer->setVar('active', $_POST['activity']);
 
-        if ($hDeptServers->insert($deptServer)) {
-            header('Location: ' . XHELP_ADMIN_URL . '/department.php?op=editDepartment&deptid=' . $deptServer->getVar('departmentid'));
+        if ($departmentMailBoxHandler->insert($deptServer)) {
+            $helper->redirect('admin/department.php?op=editDepartment&deptid=' . $deptServer->getVar('departmentid'));
         } else {
-            redirect_header(XHELP_ADMIN_URL . '/department.php?op=editDepartment&deptid=' . $deptServer->getVar('departmentid'), 3);
+            $helper->redirect('admin/department.php?op=editDepartment&deptid=' . $deptServer->getVar('departmentid'), 3);
         }
     } else {
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manDept');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation(basename(__FILE__));
         echo '<script type="text/javascript" src="' . XOOPS_URL . '/modules/xhelp/include/functions.js"></script>';
         echo "<form method='post' id='edit_server' action='department.php?op=EditDepartmentServer&amp;id=" . $id . "'>
@@ -618,7 +646,7 @@ function EditDepartmentServer()
                    <td class='head' width='20%'><label for='mboxtype'>" . _AM_XHELP_DEPARTMENT_SERVERS_TYPE . "</label></td>
                    <td class='even'>
                      <select name='mboxtype' id='mboxtype' onchange='xhelpPortOnChange(this.options[this.selectedIndex].text, \"txtPort\")'>
-                       <option value='" . _XHELP_MAILBOXTYPE_POP3 . "'>" . _AM_XHELP_MBOX_POP3 . "</option>
+                       <option value='" . Constants::XHELP_MAILBOXTYPE_POP3 . "'>" . _AM_XHELP_MBOX_POP3 . "</option>
                        <!--<option value='" . _XHELP_MAILBOXTYPE_IMAP . "'>" . _AM_XHELP_MBOX_IMAP . "</option>-->
                      </select>
                    </td>
@@ -703,29 +731,37 @@ function EditDepartmentServer()
     }
 }
 
+/**
+ *
+ */
 function manageDepartments()
 {
     global $xoopsModule, $aSortBy, $aOrderBy, $aLimitBy, $order, $limit, $start, $sort, $dept_search;
     $module_id = $xoopsModule->getVar('mid');
+    $helper    = Xhelp\Helper::getInstance();
+    $deptID    = 0;
 
-    $hGroups    = xoops_getHandler('group');
-    $hGroupPerm = xoops_getHandler('groupperm');
+    /** @var \XoopsGroupHandler $groupHandler */
+    $groupHandler = xoops_getHandler('group');
+    /** @var \XoopsGroupPermHandler $grouppermHandler */
+    $grouppermHandler = xoops_getHandler('groupperm');
 
-    if (isset($_POST['addDept'])) {
-        $hasErrors    = false;
-        $errors       = [];
-        $groups       = (isset($_POST['groups']) ? $_POST['groups'] : []);
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
+    if (Request::hasVar('addDept', 'POST')) {
+        $hasErrors = false;
+        $errors    = [];
+        $groups    = ($_POST['groups'] ?? []);
+        /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+        $departmentHandler = $helper->getHandler('Department');
 
         //Department Name supplied?
-        if ('' == trim($_POST['newDept'])) {
+        if ('' === trim(\Xmf\Request::getString('newDept', '', 'POST'))) {
             $hasErrors           = true;
             $errors['newDept'][] = _AM_XHELP_MESSAGE_NO_DEPT;
         } else {
-
             //Department Name unique?
-            $crit = new \Criteria('department', $_POST['newDept']);
-            if ($existingDepts = $hDepartments->getCount($crit)) {
+            $criteria      = new \Criteria('department', \Xmf\Request::getString('newDept', '', 'POST'));
+            $existingDepts = $departmentHandler->getCount($criteria);
+            if ($existingDepts) {
                 $hasErrors           = true;
                 $errors['newDept'][] = _XHELP_MESSAGE_DEPT_EXISTS;
             }
@@ -735,33 +771,35 @@ function manageDepartments()
             $session = Xhelp\Session::getInstance();
             //Store existing dept info in session, reload addition page
             $aDept            = [];
-            $aDept['newDept'] = $_POST['newDept'];
+            $aDept['newDept'] = \Xmf\Request::getString('newDept', '', 'POST');
             $aDept['groups']  = $groups;
             $session->set('xhelp_addDepartment', $aDept);
             $session->set('xhelp_addDepartmentErrors', $errors);
-            header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'manageDepartments'], false));
-            exit();
+            redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'manageDepartments'], false));
         }
 
-        $department = $hDepartments->create();
-        $department->setVar('department', $_POST['newDept']);
+        /** @var \XoopsModules\Xhelp\Department $department */
+        $department = $departmentHandler->create();
+        $department->setVar('department', \Xmf\Request::getString('newDept', '', 'POST'));
 
-        if ($hDepartments->insert($department)) {
+        if ($departmentHandler->insert($department)) {
             $deptID = $department->getVar('id');
             foreach ($groups as $group) {     // Add new group permissions
-                $hGroupPerm->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
+                $grouppermHandler->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
             }
 
             // Set as default department?
-            if (isset($_POST['defaultDept']) && (1 == $_POST['defaultDept'])) {
+            if (Request::hasVar('defaultDept', 'POST') && (1 == $_POST['defaultDept'])) {
                 Xhelp\Utility::setMeta('default_department', $deptID);
             }
 
-            $hStaff       = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-            $allDeptStaff = $hStaff->getByAllDepts();
+            /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+            $staffHandler = $helper->getHandler('Staff');
+            $allDeptStaff = $staffHandler->getByAllDepts();
             if (count($allDeptStaff) > 0) {
-                $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-                if ($hMembership->addStaffToDept($allDeptStaff, $department->getVar('id'))) {
+                /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+                $membershipHandler = $helper->getHandler('Membership');
+                if ($membershipHandler->addStaffToDept($allDeptStaff, $department->getVar('id'))) {
                     $message = _XHELP_MESSAGE_ADD_DEPT;
                 } else {
                     $message = _AM_XHELP_MESSAGE_STAFF_UPDATE_ERROR;
@@ -771,24 +809,26 @@ function manageDepartments()
             }
 
             // Add configoption for new department
-            $hConfig       = xoops_getHandler('config');
-            $hConfigOption = xoops_getHandler('configoption');
+            /** @var \XoopsConfigHandler $configHandler */
+            $configHandler = xoops_getHandler('config');
+            /** @var \XoopsModules\Xhelp\ConfigOptionHandler $configOptionHandler */
+            $configOptionHandler = $helper->getHandler('ConfigOption');
 
-            $crit   = new \Criteria('conf_name', 'xhelp_defaultDept');
-            $config = $hConfig->getConfigs($crit);
+            $criteria = new \Criteria('conf_name', 'xhelp_defaultDept');
+            $config   = $configHandler->getConfigs($criteria);
 
             if (count($config) > 0) {
-                $newOption = $hConfigOption->create();
+                $newOption = $configOptionHandler->create();
                 $newOption->setVar('confop_name', $department->getVar('department'));
                 $newOption->setVar('confop_value', $department->getVar('id'));
                 $newOption->setVar('conf_id', $config[0]->getVar('conf_id'));
 
-                if (!$hConfigOption->insert($newOption)) {
-                    redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_ADD_CONFIG_ERR);
+                if (!$configOptionHandler->insert($newOption)) {
+                    $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_MSG_ADD_CONFIG_ERR);
                 }
             }
-            _clearAddSessionVars();
-            header('Location: ' . XHELP_ADMIN_URL . '/department.php?op=manageDepartments');
+            clearAddSessionVars();
+            $helper->redirect('admin/department.php?op=manageDepartments');
         } else {
             $message = _XHELP_MESSAGE_ADD_DEPT_ERROR . $department->getHtmlErrors();
         }
@@ -797,32 +837,33 @@ function manageDepartments()
 
         /* Not sure if this is needed. Already exists in if block above (ej)
          foreach ($groups as $group) {
-         $hGroupPerm->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
+         $grouppermHandler->addRight(_XHELP_GROUP_PERM_DEPT, $deptID, $group, $module_id);
          }
          */
 
-        redirect_header(XHELP_ADMIN_URL . '/department.php?op=manageDepartments', 3, $message);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, $message);
     } else {
-        $hDepartments = new Xhelp\DepartmentHandler($GLOBALS['xoopsDB']);
-        if (false === $dept_search) {
-            $crit = new \Criteria('', '');
+        /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+        $departmentHandler = $helper->getHandler('Department');
+        if (false !== $dept_search) {
+            $criteria = new \Criteria('department', "%$dept_search%", 'LIKE');
         } else {
-            $crit = new \Criteria('department', "%$dept_search%", 'LIKE');
+            $criteria = new \Criteria('', '');
         }
-        $crit->setOrder($order);
-        $crit->setSort($sort);
-        $crit->setLimit($limit);
-        $crit->setStart($start);
-        $total          = $hDepartments->getCount($crit);
-        $departmentInfo = $hDepartments->getObjects($crit);
+        $criteria->setOrder($order);
+        $criteria->setSort($sort);
+        $criteria->setLimit($limit);
+        $criteria->setStart($start);
+        $total          = $departmentHandler->getCount($criteria);
+        $departmentInfo = $departmentHandler->getObjects($criteria);
 
         $nav = new \XoopsPageNav($total, $limit, $start, 'start', "op=manageDepartments&amp;limit=$limit");
 
         // Get list of all groups
-        $crit = new \Criteria('', '');
-        $crit->setSort('name');
-        $crit->setOrder('ASC');
-        $groups = $hGroups->getObjects($crit, true);
+        $criteria = new \Criteria('', '');
+        $criteria->setSort('name');
+        $criteria->setOrder('ASC');
+        $groups = $groupHandler->getObjects($criteria, true);
 
         $aGroups = [];
         foreach ($groups as $group_id => $group) {
@@ -832,7 +873,7 @@ function manageDepartments()
 
         xoops_cp_header();
         //echo $oAdminButton->renderButtons('manDept');
-        $adminObject = \Xmf\Module\Admin::getInstance();
+        $adminObject = Admin::getInstance();
         $adminObject->displayNavigation('department.php?op=manageDepartments');
 
         $session     = Xhelp\Session::getInstance();
@@ -844,12 +885,12 @@ function manageDepartments()
             xhelpRenderErrors($sess_errors, Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'clearAddSession'], false));
         }
 
-        if (false === !$sess_dept) {
-            $fld_newDept = $sess_dept['newDept'];
-            $fld_groups  = $sess_dept['groups'];
-        } else {
+        if (false !== !$sess_dept) {
             $fld_newDept = '';
             $fld_groups  = [];
+        } else {
+            $fld_newDept = $sess_dept['newDept'];
+            $fld_groups  = $sess_dept['groups'];
         }
 
         echo "<form method='post' action='" . XHELP_ADMIN_URL . "/department.php?op=manageDepartments'>";
@@ -860,7 +901,7 @@ function manageDepartments()
         echo "<tr><td class='head' width='20%' valign='top'>" . _AM_XHELP_TEXT_EDIT_DEPT_PERMS . "</td><td class='even'>";
         echo "<select name='groups[]' multiple='multiple'>";
         foreach ($aGroups as $group_id => $group) {
-            if (in_array($group_id, $fld_groups, true)) {
+            if (in_array($group_id, $fld_groups)) {
                 echo "<option value='$group_id' selected>$group</option>";
             } else {
                 echo "<option value='$group_id'>$group</option>";
@@ -910,7 +951,7 @@ function manageDepartments()
                   <tr><th colspan='4'>" . _AM_XHELP_EXISTING_DEPARTMENTS . "</th></tr>
                   <tr><td class='head'>" . _AM_XHELP_TEXT_ID . "</td><td class='head'>" . _AM_XHELP_TEXT_DEPARTMENT . "</td><td class='head'>" . _AM_XHELP_TEXT_DEFAULT . "</td><td class='head'>" . _AM_XHELP_TEXT_ACTIONS . '</td></tr>';
 
-            if (isset($departmentInfo)) {
+            if (null !== $departmentInfo) {
                 $defaultDept = Xhelp\Utility::getMeta('default_department');
                 foreach ($departmentInfo as $dept) {
                     echo "<tr><td class='even'>" . $dept->getVar('id') . "</td><td class='even'>" . $dept->getVar('department') . '</td>';
@@ -949,15 +990,20 @@ function manageDepartments()
     }
 }
 
+/**
+ *
+ */
 function testMailbox()
 {
-    $hDeptServers = new Xhelp\DepartmentMailBoxHandler($GLOBALS['xoopsDB']);
-    $server       = $hDeptServers->create();
-    $server->setVar('emailaddress', $_POST['emailaddress']);
-    $server->setVar('server', $_POST['server']);
-    $server->setVar('serverport', $_POST['port']);
-    $server->setVar('username', $_POST['username']);
-    $server->setVar('password', $_POST['password']);
+    $helper = Xhelp\Helper::getInstance();
+    /** @var \XoopsModules\Xhelp\DepartmentMailBoxHandler $departmentMailBoxHandler */
+    $departmentMailBoxHandler = $helper->getHandler('DepartmentMailBox');
+    $server                   = $departmentMailBoxHandler->create();
+    $server->setVar('emailaddress', \Xmf\Request::getString('emailaddress', '', 'POST'));
+    $server->setVar('server', \Xmf\Request::getString('server', '', 'POST'));
+    $server->setVar('serverport', \Xmf\Request::getString('port', '', 'POST'));
+    $server->setVar('username', \Xmf\Request::getString('username', '', 'POST'));
+    $server->setVar('password', \Xmf\Request::getString('password', '', 'POST'));
     $server->setVar('priority', $_POST['priority']);
     echo '<html>';
     echo '<head>';
@@ -980,40 +1026,52 @@ function testMailbox()
     echo '</html>';
 }
 
+/**
+ *
+ */
 function clearAddSession()
 {
-    _clearAddSessionVars();
-    header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'manageDepartments'], false));
+    clearAddSessionVars();
+    redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'manageDepartments'], false));
 }
 
-function _clearAddSessionVars()
+/**
+ *
+ */
+function clearAddSessionVars()
 {
     $session = Xhelp\Session::getInstance();
     $session->del('xhelp_addDepartment');
     $session->del('xhelp_addDepartmentErrors');
 }
 
+/**
+ *
+ */
 function clearEditSession()
 {
     $deptid = $_REQUEST['deptid'];
-    _clearEditSessionVars($deptid);
-    header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'editDepartment', 'deptid' => $deptid], false));
+    clearEditSessionVars($deptid);
+    redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'editDepartment', 'deptid' => $deptid], false));
 }
 
 /**
- * @param $id
+ * @param int $id
  */
-function _clearEditSessionVars($id)
+function clearEditSessionVars(int $id)
 {
-    $id      = (int)$id;
+    $id      = $id;
     $session = Xhelp\Session::getInstance();
     $session->del("xhelp_editDepartment_$id");
     $session->del("xhelp_editDepartmentErrors_$id");
 }
 
+/**
+ *
+ */
 function updateDefault()
 {
-    $id = (int)$_REQUEST['id'];
-    Xhelp\Utility::setMeta('default_department', $id);
-    header('Location: ' . Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'manageDepartments'], false));
+    $id = Request::getInt('id', 0, 'REQUEST');
+    Xhelp\Utility::setMeta('default_department', (string)$id);
+    redirect_header(Xhelp\Utility::createURI(XHELP_ADMIN_URL . '/department.php', ['op' => 'manageDepartments'], false));
 }

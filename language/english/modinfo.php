@@ -1,5 +1,5 @@
-<?php
-//
+<?php declare(strict_types=1);
+
 define('_MI_XHELP_NAME', 'xHelp');
 define('_MI_XHELP_DESC', 'Used to store client requests for help with their problems');
 
@@ -86,7 +86,7 @@ define('_MI_XHELP_ACTION2', 'Block-Style');
 define('_MI_XHELP_DEFAULT_DEPT', 'Default Department');
 define(
     '_MI_XHELP_DEFAULT_DEPT_DSC',
-       "This will be the default department that is selected in the list when adding a ticket. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateDepts\", \"xoops_module_install_Xhelp\",400, 300);'>Click here</a> to update the departments."
+    "This will be the default department that is selected in the list when adding a ticket. <a href='javascript:openWithSelfMain(\"" . XOOPS_URL . "/modules/xhelp/install.php?op=updateDepts\", \"xoops_module_install_Xhelp\",400, 300);'>Click here</a> to update the departments."
 );
 define('_MI_XHELP_OVERDUE_TIME', 'Ticket Overdue Time');
 define('_MI_XHELP_OVERDUE_TIME_DSC', 'This determines how long the staff have to finish a ticket before it is late (in hours).');
@@ -280,7 +280,7 @@ define('_MI_XHELP_TICKET_NEWTICKET_EMAIL_NOTIFYTPL', 'ticket_newticket_byemail_n
 define('_MI_XHELP_MENU_MANAGER', 'Manager');
 
 //Help
-define('_MI_XHELP_DIRNAME', basename(dirname(dirname(__DIR__))));
+define('_MI_XHELP_DIRNAME', basename(dirname(__DIR__, 2)));
 define('_MI_XHELP_HELP_HEADER', __DIR__ . '/help/helpheader.tpl');
 define('_MI_XHELP_BACK_2_ADMIN', 'Back to Administration of ');
 define('_MI_XHELP_OVERVIEW', 'Overview');
@@ -293,3 +293,6 @@ define('_MI_XHELP_LICENSE', 'License');
 define('_MI_XHELP_SUPPORT', 'Support');
 
 define('_MI_XHELP_MENU_HOME', 'Home');
+
+define('MI_XHELP_MIMETYPES', 'Mime Types');
+define('MI_XHELP_MIMETYPES_DESC', 'Set the mime types selected');

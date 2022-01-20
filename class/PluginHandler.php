@@ -1,13 +1,11 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 /**
  * Manages the retrieval, loading, and unloading of plugins
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
 class PluginHandler
 {
@@ -15,35 +13,33 @@ class PluginHandler
      * Database connection
      *
      * @var object
-     * @access  private
      */
-    public $_db;
-    public $_active;
-    public $_plugins;
+    public $db;
+    public $active;
+    public $plugins;
 
     /**
-     * Xhelp\PluginHandler constructor.
-     * @param \XoopsDatabase $db
+     * PluginHandler constructor.
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
-        $this->_db     = $db;
-        $this->_active = unserialize(Xhelp\Utility::getMeta('plugins'));
+        $this->db     = $db;
+        $this->active = \unserialize(Utility::getMeta('plugins'));
     }
 
     /**
      * @return array
      */
-    public function _pluginList()
+    private function pluginList(): array
     {
         $plugins = [];
         //Open Directory
-        $d = @ dir(XHELP_PLUGIN_PATH);
+        $d = @\dir(XHELP_PLUGIN_PATH);
 
         if ($d) {
             while (false !== ($entry = $d->read())) {
-                if (!preg_match('|^\.+$|', $entry) && preg_match('|\.php$|', $entry)) {
-                    $plugins[] = basename(XHELP_PLUGIN_PATH . '/' . $entry, '.php');
+                if (!\preg_match('|^\.+$|', $entry) && \preg_match('|\.php$|', $entry)) {
+                    $plugins[] = \basename(XHELP_PLUGIN_PATH . '/' . $entry, '.php');
                 }
             }
         }
@@ -53,47 +49,47 @@ class PluginHandler
 
     public function getActivePlugins()
     {
-        $plugin_files = $this->_pluginList();
+        $plugin_files = $this->pluginList();
 
         foreach ($plugin_files as $plugin) {
-            if (in_array($plugin, $this->_active)) {
+            if (\in_array($plugin, $this->active)) {
             }
         }
     }
 
     /**
-     * @param $script
+     * @param string $script
      */
-    public function activatePlugin($script)
+    public function activatePlugin(string $script)
     {
     }
 
     /**
-     * @param $script
+     * @param string $script
      */
-    public function deactivatePlugin($script)
+    public function deactivatePlugin(string $script)
     {
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return bool
      */
-    public function getPluginInstance($filename)
+    public function getPluginInstance(string $filename): bool
     {
-        if (!isset($this->_plugins[$filename])) {
-            if (file_exists($plug_file = XHELP_PLUGIN_PATH . '/' . $filename . '.php')) {
+        if (!isset($this->plugins[$filename])) {
+            if (\is_file($plug_file = XHELP_PLUGIN_PATH . '/' . $filename . '.php')) {
                 require_once $plug_file;
             }
-            $class = strtolower(XHELP_DIRNAME) . ucfirst($filename);
-            if (class_exists($class)) {
-                $this->_plugins[$filename] = new $class($GLOBALS['_eventsrv']);
+            $class = \mb_strtolower(XHELP_DIRNAME) . \ucfirst($filename);
+            if (\class_exists($class)) {
+                $this->plugins[$filename] = new $class($GLOBALS['_eventsrv']);
             }
         }
-        if (!isset($this->_plugins[$filename])) {
-            trigger_error('Plugin does not exist<br>Module: ' . XHELP_DIRNAME . '<br>Name: ' . $filename, E_USER_ERROR);
+        if (!isset($this->plugins[$filename])) {
+            \trigger_error('Plugin does not exist<br>Module: ' . XHELP_DIRNAME . '<br>Name: ' . $filename, \E_USER_ERROR);
         }
 
-        return isset($this->_plugins[$filename]) ? $this->_plugins[$filename] : false;
+        return $this->plugins[$filename] ?? false;
     }
 }

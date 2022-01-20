@@ -1,4 +1,21 @@
-<h5>0.90 Alpha 1    [NOT RELEASED]</h5>  Dev: Xoops 2.5.9, PHP 7.2.0
+<h5>1.00 Alpha 1   [WORK IN PROGRESS - NOT RELEASED]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<hr>
+- namespaces (mamba)
+- class autoloading (mamba)
+- update to JpGraph 4.2.2 (mamba)
+- added Blocksadmin class (mamba)
+- PHP 8 Smarty template defaults (mamba)
+- strict type checking (mamba)
+- refactored FaqAdapters with Interface and Abstract class (mamba)
+- refactored Handler classes to inherit from XoopsPersistableObjectHandler (mamba)
+- added module cloning (mamba)
+- included Confirm class from Goffy (mamba)
+- included MigrateHelper class from Goffy (mamba)
+
+WORK IN PROGRESS
+
+
+<h5>0.90 Alpha 1    [NOT RELEASED]</h5>  Dev: Xoops 2.5.9, PHP 7.2.3
 <hr>
 - XOOPS 2.5.9, PHP 7 (mamba)
 - Converted to XOOPS 2.5.8 Admin GUI (mamba)

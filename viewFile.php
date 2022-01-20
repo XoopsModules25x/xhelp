@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
+use Xmf\Request;
 use XoopsModules\Xhelp;
 
-//include('header.php');
-require_once __DIR__ . '/../../mainfile.php';
+require __DIR__ . '/header.php';
+require_once \dirname(__DIR__, 2) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
     require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
@@ -11,22 +12,29 @@ if (!defined('XHELP_CONSTANTS_INCLUDED')) {
 
 //require_once XHELP_BASE_PATH . '/functions.php';
 
-if (!$xoopsUser) {
-    redirect_header(XOOPS_URL . '/user.php?xoops_redirect=' . htmlencode($xoopsRequestUri), 3);
-}
+global $xoopsUser, $xoopsDB, $xoopsConfig, $xoopsModuleConfig, $xoopsModule, $xoopsTpl, $xoopsRequestUri;
+$helper = Xhelp\Helper::getInstance();
 
-if (isset($_GET['id'])) {
-    $xhelp_id = (int)$_GET['id'];
+if (!$xoopsUser) {
+    redirect_header(XOOPS_URL . '/user.php?xoops_redirect=' . htmlspecialchars($xoopsRequestUri, ENT_QUOTES | ENT_HTML5), 3);
+}
+$xhelp_id = 0;
+
+if (Request::hasVar('id', 'GET')) {
+    $xhelp_id = Request::getInt('id', 0, 'GET');
 }
 
 $viewFile = false;
 
-$hFiles   = new Xhelp\FileHandler($GLOBALS['xoopsDB']);
-$hTicket  = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
-$hStaff   = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
-$file     =& $hFiles->get($xhelp_id);
-$mimeType = $file->getVar('mimetype');
-$ticket   =& $hTicket->get($file->getVar('ticketid'));
+/** @var \XoopsModules\Xhelp\FileHandler $fileHandler */
+$fileHandler = $helper->getHandler('File');
+/** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+$ticketHandler = $helper->getHandler('Ticket');
+/** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+$staffHandler = $helper->getHandler('Staff');
+$file         = $fileHandler->get($xhelp_id);
+$mimeType     = $file->getVar('mimetype');
+$ticket       = $ticketHandler->get($file->getVar('ticketid'));
 
 $filename_full = $file->getVar('filename');
 if ($file->getVar('responseid') > 0) {
@@ -38,22 +46,22 @@ $filename = str_replace($removeText, '', $filename_full);
 
 //Security:
 // Only Staff Members, Admins, or ticket Submitter should be able to see file
-if (_userAllowed($ticket, $xoopsUser)) {
+if (userAllowed($ticket, $xoopsUser)) {
     $viewFile = true;
-} elseif ($hStaff->isStaff($xoopsUser->getVar('uid'))) {
+} elseif ($staffHandler->isStaff($xoopsUser->getVar('uid'))) {
     $viewFile = true;
 } elseif ($xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
     $viewFile = true;
 }
 
 if (!$viewFile) {
-    redirect_header(XHELP_BASE_URL . '/index.php', 3, _NOPERM);
+    $helper->redirect('index.php', 3, _NOPERM);
 }
 
 //Check if the file exists
 $fileAbsPath = XHELP_UPLOAD_PATH . '/' . $filename_full;
 if (!file_exists($fileAbsPath)) {
-    redirect_header(XHELP_BASE_URL . '/index.php', 3, _XHELP_NO_FILES_ERROR);
+    $helper->redirect('index.php', 3, _XHELP_NO_FILES_ERROR);
 }
 
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -71,7 +79,7 @@ if (isset($mimeType)) {
 header('Content-Disposition: attachment; filename=' . $filename);
 
 // Open the file
-if (isset($mimeType) && false !== strpos($mimeType, 'text/')) {
+if (isset($mimeType) && false !== mb_strpos($mimeType, 'text/')) {
     $fp = fopen($fileAbsPath, 'rb');
 } else {
     $fp = fopen($fileAbsPath, 'rb');
@@ -81,13 +89,13 @@ if (isset($mimeType) && false !== strpos($mimeType, 'text/')) {
 fpassthru($fp);
 
 /**
- * @param $ticket
- * @param $user
+ * @param Xhelp\Ticket $ticket
+ * @param XoopsUser    $user
  * @return bool
  */
-function _userAllowed(&$ticket, &$user)
+function userAllowed(Xhelp\Ticket $ticket, XoopsUser $user): bool
 {
-    $emails =& $ticket->getEmails(true);
+    $emails = $ticket->getEmails(true);
     foreach ($emails as $email) {
         if ($email->getVar('email') == $user->getVar('email')) {
             return true;

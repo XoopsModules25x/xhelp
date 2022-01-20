@@ -1,6 +1,6 @@
 <{include file='db:xhelp_user_header.tpl'}>
 
-<{if $xhelp_noStaff}>
+<{if $xhelp_noStaff|default:''}>
     <div id="readOnly" class="errorMsg"
          style="border:1px solid #D24D00; background:#FEFECC no-repeat 7px 50%;color:#333;padding-left:45px;">
         <{$smarty.const._XHELP_MESSAGE_NO_STAFF}>
@@ -18,7 +18,7 @@
             </th>
 
         </tr>
-        <{if $xhelp_has_userTickets neq 0}>
+        <{if $xhelp_has_userTickets|default:0 neq 0}>
             <tr class="head">
                 <td>
                     <{$smarty.const._XHELP_TEXT_ID}>
@@ -67,7 +67,7 @@
 </div>
 
 <br>
-<{if $xhelp_useAnnouncements eq true}>
+<{if $xhelp_useAnnouncements|default:false eq true}>
     <div id="announcements">
         <table width="100%" border="1" cellpadding="0" cellspacing="2" class="formButton">
             <tr>

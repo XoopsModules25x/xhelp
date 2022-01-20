@@ -10,7 +10,7 @@
                 <td class="odd">
                     <{foreach from=$xhelp_priorities item=priority}>
                         <input type="radio" value="<{$priority}>" id="priority<{$priority}>" name="priority"
-                               <{if $xhelp_priority eq $priority}>checked="checked"<{/if}>>
+                               <{if $xhelp_priority eq $priority}>checked<{/if}>>
                         <label for="priority<{$priority}>"><img src="<{$xhelp_imagePath}>priority<{$priority}>.png"
                                                                 alt="<{$xhelp_priorities_desc.$priority}>"></label>
                     <{/foreach}>

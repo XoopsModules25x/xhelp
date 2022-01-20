@@ -1,33 +1,26 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
+namespace XoopsModules\Xhelp;
+
+use const _XHELP_MAILBOXTYPE_POP3;
+use const XHELP_ROLE_PERM_1;
+use const XHELP_ROLE_PERM_2;
+use const XHELP_ROLE_PERM_3;
 use Xmf\Request;
-use XoopsModules\Xhelp;
-use XoopsModules\Xhelp\Common;
-
-//include __DIR__ . '/../preloads/autoloader.php';
 
 /**
  * Class Utility
  */
-class Utility
+class Utility extends Common\SysUtility
 {
-    use common\VersionChecks; //checkVerXoops, checkVerPhp Traits
-
-    use common\ServerStats; // getServerStats Trait
-
-    use common\FilesManagement; // Files Management Trait
-
     //--------------- Custom module methods -----------------------------
-
     /**
      * Format a time as 'x' years, 'x' weeks, 'x' days, 'x' hours, 'x' minutes, 'x' seconds
      *
-     * @param  int $time UNIX timestamp
+     * @param int $time UNIX timestamp
      * @return string formatted time
-     *
-     * @access public
      */
-    public static function formatTime($time)
+    public static function formatTime(int $time): string
     {
         $values = self::getElapsedTime($time);
 
@@ -37,39 +30,37 @@ class Utility
 
         $ret = [];
         if ($years) {
-            $ret[] = $years . ' ' . (1 == $years ? _XHELP_TIME_YEAR : _XHELP_TIME_YEARS);
+            $ret[] = $years . ' ' . (1 == $years ? \_XHELP_TIME_YEAR : \_XHELP_TIME_YEARS);
         }
 
         if ($weeks) {
-            $ret[] = $weeks . ' ' . (1 == $weeks ? _XHELP_TIME_WEEK : _XHELP_TIME_WEEKS);
+            $ret[] = $weeks . ' ' . (1 == $weeks ? \_XHELP_TIME_WEEK : \_XHELP_TIME_WEEKS);
         }
 
         if ($days) {
-            $ret[] = $days . ' ' . (1 == $days ? _XHELP_TIME_DAY : _XHELP_TIME_DAYS);
+            $ret[] = $days . ' ' . (1 == $days ? \_XHELP_TIME_DAY : \_XHELP_TIME_DAYS);
         }
 
         if ($hours) {
-            $ret[] = $hours . ' ' . (1 == $hours ? _XHELP_TIME_HOUR : _XHELP_TIME_HOURS);
+            $ret[] = $hours . ' ' . (1 == $hours ? \_XHELP_TIME_HOUR : \_XHELP_TIME_HOURS);
         }
 
         if ($minutes) {
-            $ret[] = $minutes . ' ' . (1 == $minutes ? _XHELP_TIME_MIN : _XHELP_TIME_MINS);
+            $ret[] = $minutes . ' ' . (1 == $minutes ? \_XHELP_TIME_MIN : \_XHELP_TIME_MINS);
         }
 
-        $ret[] = $seconds . ' ' . (1 == $seconds ? _XHELP_TIME_SEC : _XHELP_TIME_SECS);
+        $ret[] = $seconds . ' ' . (1 == $seconds ? \_XHELP_TIME_SEC : \_XHELP_TIME_SECS);
 
-        return implode(', ', $ret);
+        return \implode(', ', $ret);
     }
 
     /**
      * Changes UNIX timestamp into array of time units of measure
      *
-     * @param  int $time UNIX timestamp
-     * @return array $elapsed_time
-     *
-     * @access public
+     * @param int $time UNIX timestamp
+     * @return array
      */
-    public static function getElapsedTime($time)
+    public static function getElapsedTime(int $time): array
     {
         //Define the units of measure
         $units = [
@@ -78,7 +69,7 @@ class Utility
             'days'    => 60 * 60 * 24,
             'hours'   => 60 * 60,
             'minutes' => 60,
-            'seconds' => 1
+            'seconds' => 1,
         ];
 
         $local_time   = $time;
@@ -86,7 +77,7 @@ class Utility
 
         //Calculate the total for each unit measure
         foreach ($units as $key => $single_unit) {
-            $elapsed_time[$key] = floor($local_time / $single_unit);
+            $elapsed_time[$key] = \floor($local_time / $single_unit);
             $local_time         -= ($elapsed_time[$key] * $single_unit);
         }
 
@@ -100,15 +91,14 @@ class Utility
      * @param array  $vars
      * @param bool   $encodeAmp
      * @return string
-     * @access public
      */
-    public static function createURI($page, array $vars = [], $encodeAmp = true)
+    public static function createURI(string $page, array $vars = [], bool $encodeAmp = true): string
     {
         $joinStr = '';
 
         $amp = ($encodeAmp ? '&amp;' : '&');
 
-        if (!count($vars)) {
+        if (!\count($vars)) {
             return $page;
         }
         $qs = '';
@@ -123,64 +113,60 @@ class Utility
     /**
      * Changes a ticket priority (int) into its string equivalent
      *
-     * @param  int $priority
-     * @return string $priority
-     *
-     * @access public
+     * @param int $priority
+     * @return string
      */
-    public static function getPriority($priority)
+    public static function getPriority(int $priority)
     {
         $priorities = [
-            1 => _XHELP_TEXT_PRIORITY1,
-            2 => _XHELP_TEXT_PRIORITY2,
-            3 => _XHELP_TEXT_PRIORITY3,
-            4 => _XHELP_TEXT_PRIORITY4,
-            5 => _XHELP_TEXT_PRIORITY5
+            1 => \_XHELP_TEXT_PRIORITY1,
+            2 => \_XHELP_TEXT_PRIORITY2,
+            3 => \_XHELP_TEXT_PRIORITY3,
+            4 => \_XHELP_TEXT_PRIORITY4,
+            5 => \_XHELP_TEXT_PRIORITY5,
         ];
 
-        $priority = (int)$priority;
+        $priority = $priority;
 
-        return (isset($priorities[$priority]) ? $priorities[$priority] : $priority);
+        return ($priorities[$priority] ?? $priority);
     }
 
     /**
      * Gets a tickets state (unresolved/resolved)
      *
-     * @param  int $state
-     * @return string $state
-     *
-     * @access public
+     * @param int $state
+     * @return string
      */
-    public static function getState($state)
+    public static function getState(int $state)
     {
-        $state       = (int)$state;
+        $state       = $state;
         $stateValues = [
-            1 => _XHELP_STATE1,
-            2 => _XHELP_STATE2
+            1 => \_XHELP_STATE1,
+            2 => \_XHELP_STATE2,
         ];
 
-        return (isset($stateValues[$state]) ? $stateValues[$state] : $state);
+        return ($stateValues[$state] ?? $state);
     }
 
     /**
      * Changes a ticket status (int) into its string equivalent
      * Do not use this function in loops
      *
-     * @param  int $status
+     * @param string|int $status
      * @return string Status Description
-     *
-     * @access public
      */
     public static function getStatus($status)
     {
         static $statuses;
 
-        $status  = (int)$status;
-        $hStatus = self::getHandler('status');
+        $status = (int)$status;
+        /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+        $statusHandler = Helper::getInstance()
+            ->getHandler('Status');
 
         //Get Statuses from database if first request
         if (!$statuses) {
-            $statuses = $hStatus->getObjects(null, true);
+            $statuses = $statusHandler->getObjects(null, true);
         }
 
         return (isset($statuses[$status]) ? $statuses[$status]->getVar('description') : $status);
@@ -189,92 +175,90 @@ class Utility
     /**
      * Changes a response rating (int) into its string equivalent
      *
-     * @param  int $rating
-     * @return string $rating
-     *
-     * @access public
+     * @param int $rating
+     * @return string
      */
-    public static function getRating($rating)
+    public static function getRating(int $rating)
     {
         $ratings = [
-            0 => _XHELP_RATING0,
-            1 => _XHELP_RATING1,
-            2 => _XHELP_RATING2,
-            3 => _XHELP_RATING3,
-            4 => _XHELP_RATING4,
-            5 => _XHELP_RATING5
+            0 => \_XHELP_RATING0,
+            1 => \_XHELP_RATING1,
+            2 => \_XHELP_RATING2,
+            3 => \_XHELP_RATING3,
+            4 => \_XHELP_RATING4,
+            5 => \_XHELP_RATING5,
         ];
-        $rating  = (int)$rating;
+        $rating  = $rating;
 
-        return (isset($ratings[$rating]) ? $ratings[$rating] : $rating);
+        return ($ratings[$rating] ?? $rating);
     }
 
     /**
-     * @param $class
+     * @param int $class
      * @return int|mixed
      */
-    public static function getEventClass($class)
+    public static function getEventClass(int $class)
     {
         $classes = [
-            0 => _XHELP_MAIL_CLASS0,
-            1 => _XHELP_MAIL_CLASS1,
-            2 => _XHELP_MAIL_CLASS2,
-            3 => _XHELP_MAIL_CLASS3
+            0 => \_XHELP_MAIL_CLASS0,
+            1 => \_XHELP_MAIL_CLASS1,
+            2 => \_XHELP_MAIL_CLASS2,
+            3 => \_XHELP_MAIL_CLASS3,
         ];
-        $class   = (int)$class;
+        $class   = $class;
 
-        return (isset($classes[$class]) ? $classes[$class] : $class);
+        return ($classes[$class] ?? $class);
     }
 
     /**
      * Move specified tickets into department
      *
-     * @param  array $tickets array of ticket ids (int)
-     * @param  int   $dept    department ID
+     * @param array $tickets array of ticket ids (int)
+     * @param int   $dept    department ID
      * @return bool  True on success, False on error
-     *
-     * @access public
      */
-    public static function setDept($tickets, $dept)
+    public static function setDept(array $tickets, int $dept): bool
     {
-        $hTicket = self::getHandler('ticket');
-        $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $hTicket->updateAll('department', (int)$dept, $crit);
+        return $ticketHandler->updateAll('department', $dept, $criteria);
     }
 
     /**
      * Set specified tickets to a priority
      *
-     * @param  array $tickets  array of ticket ids (int)
-     * @param  int   $priority priority value
+     * @param array $tickets  array of ticket ids (int)
+     * @param int   $priority priority value
      * @return bool  True on success, False on error
-     *
-     * @access public
      */
-    public static function setPriority($tickets, $priority)
+    public static function setPriority(array $tickets, int $priority): bool
     {
-        $hTicket = self::getHandler('ticket');
-        $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $hTicket->updateAll('priority', (int)$priority, $crit);
+        return $ticketHandler->updateAll('priority', $priority, $criteria);
     }
 
     /**
      * Set specified tickets to a status
      *
-     * @param  array $tickets array of ticket ids (int)
-     * @param  int   $status  status value
+     * @param array $tickets array of ticket ids (int)
+     * @param int   $status  status value
      * @return bool  True on success, False on error
-     *
-     * @access public
      */
-    public static function setStatus($tickets, $status)
+    public static function setStatus(array $tickets, int $status): bool
     {
-        $hTicket = self::getHandler('ticket');
-        $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $hTicket->updateAll('status', (int)$status, $crit);
+        return $ticketHandler->updateAll('status', $status, $criteria);
     }
 
     /**
@@ -282,46 +266,50 @@ class Utility
      *
      * Assumes that owner is a member of all departments in specified tickets
      *
-     * @param  array $tickets array of ticket ids (int)
-     * @param  int   $owner   uid of new owner
+     * @param array $tickets array of ticket ids (int)
+     * @param int   $owner   uid of new owner
      * @return bool  True on success, False on error
-     *
-     * @access public
      */
-    public static function setOwner($tickets, $owner)
+    public static function setOwner(array $tickets, int $owner): bool
     {
-        $hTicket = self::getHandler('ticket');
-        $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $hTicket->updateAll('ownership', (int)$owner, $crit);
+        return $ticketHandler->updateAll('ownership', $owner, $criteria);
     }
 
     /**
      * Add the response to each ticket
      *
      *
-     * @param  array $tickets   array of ticket ids (int)
-     * @param        $sresponse
-     * @param  int   $timespent Number of minutes spent on ticket
-     * @param  bool  $private   Should this be a private message?
-     * @return Xhelp\Responses Response information
+     * @param array  $tickets   array of ticket ids (int)
+     * @param string $sresponse
+     * @param int    $timespent Number of minutes spent on ticket
+     * @param bool   $private   Should this be a private message?
+     * @return false|\XoopsModules\Xhelp\Response
      *
      * @internal param string $response response text to add
-     * @access   public
      */
-    public static function addResponse($tickets, $sresponse, $timespent = 0, $private = false)
+    public static function addResponse(array $tickets, string $sresponse, int $timespent = 0, bool $private = false)
     {
         global $xoopsUser;
-        $hResponse    = self::getHandler('responses');
-        $hTicket      = self::getHandler('ticket');
-        $updateTime   = time();
-        $uid          = $xoopsUser->getVar('uid');
-        $ret          = true;
-        $userIP       = getenv('REMOTE_ADDR');
-        $ticket_count = count($tickets);
-        $i            = 1;
+        /** @var \XoopsModules\Xhelp\ResponseHandler $responseHandler */
+        $responseHandler = Helper::getInstance()
+            ->getHandler('Response');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $updateTime    = \time();
+        $uid           = $xoopsUser->getVar('uid');
+        $ret           = true;
+        $userIP        = \getenv('REMOTE_ADDR');
+        $ticket_count  = \count($tickets);
+        $i             = 1;
         foreach ($tickets as $ticketid) {
-            $response = $hResponse->create();
+            /** @var \XoopsModules\Xhelp\Response $response */
+            $response = $responseHandler->create();
             $response->setVar('uid', $uid);
             $response->setVar('ticketid', $ticketid);
             $response->setVar('message', $sresponse);
@@ -329,16 +317,16 @@ class Utility
             $response->setVar('updateTime', $updateTime);
             $response->setVar('userIP', $userIP);
             $response->setVar('private', $private);
-            $ret = $ret && $hResponse->insert($response);
+            $ret = $ret && $responseHandler->insert($response);
             if ($ticket_count != $i) {
                 unset($response);
             }
             ++$i;
         }
         if ($ret) {
-            $crit = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
-            $ret  = $hTicket->incrementAll('totalTimeSpent', $timespent, $crit);
-            $ret  = $hTicket->updateAll('lastUpdated', $updateTime, $crit);
+            $criteria = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
+            $ret      = $ticketHandler->incrementAll('totalTimeSpent', $timespent, $criteria);
+            $ret      = $ticketHandler->updateAll('lastUpdated', $updateTime, $criteria);
             $response->setVar('ticketid', 0);
             $response->setVar('id', 0);
 
@@ -351,59 +339,57 @@ class Utility
     /**
      * Remove the specified tickets
      *
-     * @param  array $tickets array of ticket ids (int)
+     * @param array $tickets array of ticket ids (int)
      * @return bool  True on success, False on error
-     *
-     * @access public
      */
-    public static function deleteTickets($tickets)
+    public static function deleteTickets(array $tickets): bool
     {
-        $hTicket = self::getHandler('ticket');
-        $crit    = new \Criteria('id', '(' . implode($tickets, ',') . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $hTicket->deleteAll($crit);
+        return $ticketHandler->deleteAll($criteria);
     }
 
     /**
      * Retrieves an array of tickets in one query
      *
-     * @param  array $tickets array of ticket ids (int)
+     * @param array $tickets array of ticket ids (int)
      * @return array Array of ticket objects
-     *
-     * @access public
      */
-    public static function getTickets(&$tickets)
+    public static function getTickets(array $tickets): array
     {
-        $hTicket = self::getHandler('ticket');
-        $crit    = new \Criteria('t.id', '(' . implode($tickets, ',') . ')', 'IN');
+        /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
+        $ticketHandler = Helper::getInstance()
+            ->getHandler('Ticket');
+        $criteria      = new \Criteria('t.id', '(' . \implode(',', $tickets) . ')', 'IN');
 
-        return $hTicket->getObjects($crit);
+        return $ticketHandler->getObjects($criteria);
     }
 
     /**
      * Check if all supplied rules pass, and return any errors
      *
-     * @param  array $rules  array of {@link Validator} classes
-     * @param  array $errors array of errors found (if any)
+     * @param array|Validation\Validator $rules  array of {@link Validator} classes
+     * @param array|null                 $errors array of errors found (if any)
      * @return bool  True if all rules pass, false if any fail
-     *
-     * @access public
      */
-    public static function checkRules(&$rules, &$errors)
+    public static function checkRules($rules, ?array &$errors): bool
     {
         $ret = true;
-        if (is_array($rules)) {
+        if (\is_array($rules)) {
             foreach ($rules as $rule) {
                 $ret    = $ret && self::checkRules($rule, $error);
-                $errors = array_merge($errors, $error);
+                $errors = \array_merge($errors, $error);
             }
         } else {
-            if (!$rules->isValid()) {
-                $ret    = false;
-                $errors = $rules->getErrors();
-            } else {
+            if ($rules->isValid()) {
                 $ret    = true;
                 $errors = [];
+            } else {
+                $ret    = false;
+                $errors = $rules->getErrors();
             }
         }
 
@@ -413,27 +399,22 @@ class Utility
     /**
      * Output the specified variable (for debugging)
      *
-     * @param  mixed $var Variable to output
-     * @return void
-     *
-     * @access public
+     * @param mixed $var Variable to output
      */
-    public static function debug(&$var)
+    public static function debug($var)
     {
         echo '<pre>';
-        print_r($var);
+        \print_r($var);
         echo '</pre>';
     }
 
     /**
      * Detemines if a table exists in the current db
      *
-     * @param  string $table the table name (without XOOPS prefix)
+     * @param string $table the table name (without XOOPS prefix)
      * @return bool   True if table exists, false if not
-     *
-     * @access public
      */
-    public static function tableExists($table)
+    public static function tableExists(string $table): bool
     {
         $bRetVal = false;
         //Verifies that a MySQL table exists
@@ -442,7 +423,7 @@ class Utility
         $dbname   = XOOPS_DB_NAME;
         $sql      = "SHOW TABLES FROM $dbname";
         $ret      = $xoopsDB->queryF($sql);
-        while (list($m_table) = $xoopsDB->fetchRow($ret)) {
+        while ([$m_table] = $xoopsDB->fetchRow($ret)) {
             if ($m_table == $realname) {
                 $bRetVal = true;
                 break;
@@ -456,20 +437,18 @@ class Utility
     /**
      * Gets a value from a key in the xhelp_meta table
      *
-     * @param  string $key
-     * @return string $value
-     *
-     * @access public
+     * @param string $key
+     * @return string|bool|null
      */
-    public static function getMeta($key)
+    public static function getMeta(string $key)
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
-        $sql     = sprintf('SELECT metavalue FROM %s WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
-        $ret     = $xoopsDB->query($sql);
-        if (!$ret) {
+        $sql     = \sprintf('SELECT metavalue FROM `%s` WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
+        $result  = $xoopsDB->query($sql);
+        if (!$result || $xoopsDB->getRowsNum($result) < 1) {
             $value = false;
         } else {
-            list($value) = $xoopsDB->fetchRow($ret);
+            [$value] = $xoopsDB->fetchRow($result);
         }
 
         return $value;
@@ -478,20 +457,18 @@ class Utility
     /**
      * Sets a value for a key in the xhelp_meta table
      *
-     * @param  string $key
-     * @param  string $value
+     * @param string $key
+     * @param string $value
      * @return bool   TRUE if success, FALSE if failure
-     *
-     * @access public
      */
-    public static function setMeta($key, $value)
+    public static function setMeta(string $key, string $value): bool
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
         $ret     = self::getMeta($key);
         if (false !== $ret) {
-            $sql = sprintf('UPDATE %s SET metavalue = %s WHERE metakey = %s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($value), $xoopsDB->quoteString($key));
+            $sql = \sprintf('UPDATE `%s` SET metavalue = %s WHERE metakey = %s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($value), $xoopsDB->quoteString($key));
         } else {
-            $sql = sprintf('INSERT INTO %s (metakey, metavalue) VALUES (%s, %s)', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key), $xoopsDB->quoteString($value));
+            $sql = \sprintf('INSERT INTO `%s` (metakey, metavalue) VALUES (%s, %s)', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key), $xoopsDB->quoteString($value));
         }
         $ret = $xoopsDB->queryF($sql);
         if (!$ret) {
@@ -504,99 +481,94 @@ class Utility
     /**
      * Deletes a record from the xhelp_meta table
      *
-     * @param  string $key
+     * @param string $key
      * @return bool   TRUE if success, FALSE if failure
-     *
-     * @access public
      */
-    public static function deleteMeta($key)
+    public static function deleteMeta(string $key): bool
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
-        $sql     = sprintf('DELETE FROM %s WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
+        $sql     = \sprintf('DELETE FROM `%s` WHERE metakey=%s', $xoopsDB->prefix('xhelp_meta'), $xoopsDB->quoteString($key));
         $ret     = $xoopsDB->query($sql);
         if (!$ret) {
             return false;
-        } else {
-            return $ret;
         }
+
+        return $ret;
     }
 
     /**
      * Does the supplied email belong to an existing xoops user
      *
-     * @param  string $email
-     * @return bool <a href='psi_element://xoopsUser'>xoopsUser</a> object if success, FALSE if failure
+     * @param string $email
+     * @return \XoopsUser|bool \xoopsUser object if success, FALSE if failure
      * object if success, FALSE if failure
-     * @access public
      */
-    public static function emailIsXoopsUser($email)
+    public static function emailIsXoopsUser(string $email)
     {
-        $hXoopsMember = xoops_getHandler('member');
-        $crit         = new \Criteria('email', $email);
-        $crit->setLimit(1);
+        /** @var \XoopsMemberHandler $memberHandler */
+        $memberHandler = \xoops_getHandler('member');
+        $criteria      = new \Criteria('email', $email);
+        $criteria->setLimit(1);
 
-        $users =& $hXoopsMember->getUsers($crit);
-        if (count($users) > 0) {
+        $users = $memberHandler->getUsers($criteria);
+        if (\count($users) > 0) {
             return $users[0];
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Detemines if a field exists in the current db
-     *
-     * @param  string $table the table name (without XOOPS prefix)
-     * @param  string $field the field name
-     * @return mixed  false if field does not exist, array containing field info if does
-     *
-     * @access public
-     */
-    public static function fieldExists($table, $field)
-    {
-        $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
-        $tblname = $xoopsDB->prefix($table);
-        $ret     = $xoopsDB->query("DESCRIBE $tblname");
-
-        if (!$ret) {
-            return false;
-        }
-
-        while ($row = $xoopsDB->fetchRow($ret)) {
-            if (0 == strcasecmp($row['Field'], $field)) {
-                return $row;
-            }
         }
 
         return false;
     }
 
     /**
+     * Detemines if a field exists in the current db
+     *
+     * @param string $table the table name (without XOOPS prefix)
+     * @param string $field the field name
+     * @return mixed  false if field does not exist, array containing field info if does
+     */
+    //    public static function fieldExists($table, $field)
+    //    {
+    //        $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
+    //        $tblname = $xoopsDB->prefix($table);
+    //        $ret = $xoopsDB->query("DESCRIBE $tblname");
+    //
+    //        if (!$ret) {
+    //            return false;
+    //        }
+    //
+    //        while (false !== ($row = $xoopsDB->fetchRow($ret))) {
+    //            if (0 == \strcasecmp($row['Field'], $field)) {
+    //                return $row;
+    //            }
+    //        }
+    //
+    //        return false;
+    //    }
+
+    /**
      * Creates a xoops account from an email address and password
      *
-     * @param  string $email
-     * @param         $name
-     * @param  string $password
-     * @param         $level
-     * @return bool <a href='psi_element://xoopsUser'>xoopsUser</a> object if success, FALSE if failure
-     * object if success, FALSE if failure
-     * @access public
+     * @param string $email
+     * @param string $name
+     * @param string $password
+     * @param int    $level
+     * @return \XoopsUser|bool \xoopsUser object if success, FALSE if failure
      */
-    public static function getXoopsAccountFromEmail($email, $name, &$password, $level)
+    public static function getXoopsAccountFromEmail(string $email, string $name, string &$password, int $level)
     {
-        $memberHandler = xoops_getHandler('member');
+        /** @var \XoopsMemberHandler $memberHandler */
+        $memberHandler = \xoops_getHandler('member');
 
         $unamecount = 10;
-        if ('' == $password) {
-            $password = substr(md5(uniqid(mt_rand(), 1)), 0, 6);
+        if ('' === $password) {
+            $password = mb_substr(\md5(\uniqid((string)\mt_rand(), true)), 0, 6);
         }
 
         $usernames = self::generateUserNames($email, $name, $unamecount);
         $newuser   = false;
         $i         = 0;
-        while (false === $newuser) {
-            $crit  = new \Criteria('uname', $usernames[$i]);
-            $count = $memberHandler->getUserCount($crit);
+        while (!$newuser) {
+            $criteria = new \Criteria('uname', $usernames[$i]);
+            $count    = $memberHandler->getUserCount($criteria);
             if (0 == $count) {
                 $newuser = true;
             } else {
@@ -614,12 +586,12 @@ class Utility
         $xuser->setVar('uname', $usernames[$i]);
         $xuser->setVar('loginname', $usernames[$i]);
         $xuser->setVar('user_avatar', 'blank.gif');
-        $xuser->setVar('user_regdate', time());
+        $xuser->setVar('user_regdate', \time());
         $xuser->setVar('timezone_offset', 0);
-        $xuser->setVar('actkey', substr(md5(uniqid(mt_rand(), 1)), 0, 8));
+        $xuser->setVar('actkey', mb_substr(\md5(\uniqid((string)\mt_rand(), true)), 0, 8));
         $xuser->setVar('email', $email);
         $xuser->setVar('name', $name);
-        $xuser->setVar('pass', md5($password));
+        $xuser->setVar('pass', \md5($password));
         $xuser->setVar('notify_method', 2);
         $xuser->setVar('level', $level);
 
@@ -636,17 +608,15 @@ class Utility
     /**
      * Generates an array of usernames
      *
-     * @param  string $email email of user
-     * @param  string $name  name of user
-     * @param  int    $count number of names to generate
-     * @return array  $names
-     *
-     * @access public
+     * @param string $email email of user
+     * @param string $name  name of user
+     * @param int    $count number of names to generate
+     * @return array
      */
-    public static function generateUserNames($email, $name, $count = 20)
+    public static function generateUserNames(string $email, string $name, int $count = 20): array
     {
         $names  = [];
-        $userid = explode('@', $email);
+        $userid = \explode('@', $email);
 
         $basename    = '';
         $hasbasename = false;
@@ -654,31 +624,31 @@ class Utility
 
         $names[] = $emailname;
 
-        if (strlen($name) > 0) {
-            $name = explode(' ', trim($name));
-            if (count($name) > 1) {
-                $basename = strtolower(substr($name[0], 0, 1) . $name[count($name) - 1]);
+        if ('' !== $name) {
+            $name = \explode(' ', \trim($name));
+            if (\count($name) > 1) {
+                $basename = \mb_strtolower(mb_substr($name[0], 0, 1) . $name[\count($name) - 1]);
             } else {
-                $basename = strtolower($name[0]);
+                $basename = \mb_strtolower($name[0]);
             }
-            $basename = xoops_substr($basename, 0, 60, '');
+            $basename = \xoops_substr($basename, 0, 60, '');
             //Prevent Duplication of Email Username and Name
-            if (!in_array($basename, $names)) {
+            if (!\in_array($basename, $names)) {
                 $names[]     = $basename;
                 $hasbasename = true;
             }
         }
 
-        $i          = count($names);
+        $i          = \count($names);
         $onbasename = 1;
         while ($i < $count) {
             $num = self::generateRandNumber();
             if ($onbasename < 0 && $hasbasename) {
-                $names[] = xoops_substr($basename, 0, 58, '') . $num;
+                $names[] = \xoops_substr($basename, 0, 58, '') . $num;
             } else {
-                $names[] = xoops_substr($emailname, 0, 58, '') . $num;
+                $names[] = \xoops_substr($emailname, 0, 58, '') . $num;
             }
-            $i          = count($names);
+            $i          = \count($names);
             $onbasename = ~$onbasename;
             $num        = '';
         }
@@ -697,7 +667,7 @@ class Utility
     {
         static $randCalled = false;
         if (!$randCalled) {
-            mt_srand((double)microtime() * 1000000);
+            // mt_srand((double)microtime() * 1000000);
             $randCalled = true;
         }
     }
@@ -705,59 +675,54 @@ class Utility
     /**
      * Creates a random number with a specified number of $digits
      *
-     * @param  int $digits number of digits
-     * @return int random number
-     *
-     * @access public
+     * @param int $digits number of digits
+     * @return string random number
      */
-    public static function generateRandNumber($digits = 2)
+    public static function generateRandNumber(int $digits = 2): string
     {
         self::initRand();
         $tmp = [];
 
-        for ($i = 0; $i < $digits; ++$i) {
-            $tmp[$i] = (mt_rand() % 9);
+        for ($i = 0; $i < $digits; $i++) {
+            $tmp[$i] = (\mt_rand() % 9);
         }
 
-        return implode('', $tmp);
+        return \implode('', $tmp);
     }
 
     /**
      * Converts int $type into its string equivalent
      *
-     * @param  int $type
-     * @return string $type
-     *
-     * @access public
+     * @param int $type
+     * @return string
      */
-    public static function getMBoxType($type)
+    public static function getMBoxType(int $type): string
     {
         $mboxTypes = [
-            _XHELP_MAILBOXTYPE_POP3 => 'POP3',
-            _XHELP_MAILBOXTYPE_IMAP => 'IMAP'
+            \_XHELP_MAILBOXTYPE_POP3 => 'POP3',
+            \_XHELP_MAILBOXTYPE_IMAP => 'IMAP',
         ];
 
-        return (isset($mboxTypes[$type]) ? $mboxTypes[$type] : 'NA');
+        return ($mboxTypes[$type] ?? 'NA');
     }
 
     /**
      * Retrieve list of all staff members
      *
-     * @param $displayName
-     * @return array <a href='psi_element://Xhelp\Staff'>Xhelp\Staff</a> objects
+     * @param int $displayName
+     * @return array Staff objects
      * objects
-     * @access public
      */
-    public static function getStaff($displayName)
+    public static function getStaff(int $displayName): array
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
 
-        $sql = sprintf('SELECT u.uid, u.uname, u.name FROM %s u INNER JOIN %s s ON u.uid = s.uid ORDER BY u.uname', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
+        $sql = \sprintf('SELECT u.uid, u.uname, u.name FROM `%s` u INNER JOIN %s s ON u.uid = s.uid ORDER BY u.uname', $xoopsDB->prefix('users'), $xoopsDB->prefix('xhelp_staff'));
         $ret = $xoopsDB->query($sql);
 
-        $staff[-1] = _XHELP_TEXT_SELECT_ALL;
-        $staff[0]  = _XHELP_NO_OWNER;
-        while ($member = $xoopsDB->fetchArray($ret)) {
+        $staff[-1] = \_XHELP_TEXT_SELECT_ALL;
+        $staff[0]  = \_XHELP_NO_OWNER;
+        while (false !== ($member = $xoopsDB->fetchArray($ret))) {
             $staff[$member['uid']] = self::getDisplayName($displayName, $member['name'], $member['uname']);
         }
 
@@ -767,31 +732,32 @@ class Utility
     /**
      * Create default staff roles for a new installation
      *
-     * @return TRUE if success, FALSE if failure
-     *
-     * @access public
+     * @return bool true if success, FALSE if failure
      */
-    public static function createRoles()
+    public static function createRoles(): bool
     {
-        if (!defined('_XHELP_ROLE_NAME1')) {
+        if (!\defined('_XHELP_ROLE_NAME1')) {
             self::includeLang('main', 'english');
         }
 
         $defaultRolePermissions = [
-            1 => ['name' => _XHELP_ROLE_NAME1, 'desc' => _XHELP_ROLE_DSC1, 'value' => XHELP_ROLE_PERM_1],
-            2 => ['name' => _XHELP_ROLE_NAME2, 'desc' => _XHELP_ROLE_DSC2, 'value' => XHELP_ROLE_PERM_2],
-            3 => ['name' => _XHELP_ROLE_NAME3, 'desc' => _XHELP_ROLE_DSC3, 'value' => XHELP_ROLE_PERM_3]
+            1 => ['name' => \_XHELP_ROLE_NAME1, 'desc' => \_XHELP_ROLE_DSC1, 'value' => XHELP_ROLE_PERM_1],
+            2 => ['name' => \_XHELP_ROLE_NAME2, 'desc' => \_XHELP_ROLE_DSC2, 'value' => XHELP_ROLE_PERM_2],
+            3 => ['name' => \_XHELP_ROLE_NAME3, 'desc' => \_XHELP_ROLE_DSC3, 'value' => XHELP_ROLE_PERM_3],
         ];
 
-        $hRole = self::getHandler('role');
+        /** @var \XoopsModules\Xhelp\RoleHandler $roleHandler */
+        $roleHandler = Helper::getInstance()
+            ->getHandler('Role');
 
         foreach ($defaultRolePermissions as $key => $aRole) {
-            $role = $hRole->create();
+            /** @var \XoopsModules\Xhelp\Role $role */
+            $role = $roleHandler->create();
             $role->setVar('id', $key);
             $role->setVar('name', $aRole['name']);
             $role->setVar('description', $aRole['desc']);
             $role->setVar('tasks', $aRole['value']);
-            if (!$hRole->insert($role)) {
+            if (!$roleHandler->insert($role)) {
                 return false;
             }
         }
@@ -802,29 +768,31 @@ class Utility
     /**
      * Create ticket statuses for a new installation
      *
-     * @return TRUE if success, FALSE if failure
-     * @access public
+     * @return bool true if success, FALSE if failure
      */
-    public static function createStatuses()
+    public static function createStatuses(): bool
     {
-        if (!defined('_XHELP_STATUS0')) {
+        if (!\defined('_XHELP_STATUS0')) {
             self::includeLang('main', 'english');
         }
 
         $statuses = [
-            1 => ['description' => _XHELP_STATUS0, 'state' => XHELP_STATE_UNRESOLVED],
-            2 => ['description' => _XHELP_STATUS1, 'state' => XHELP_STATE_UNRESOLVED],
-            3 => ['description' => _XHELP_STATUS2, 'state' => XHELP_STATE_RESOLVED]
+            1 => ['description' => \_XHELP_STATUS0, 'state' => \XHELP_STATE_UNRESOLVED],
+            2 => ['description' => \_XHELP_STATUS1, 'state' => \XHELP_STATE_UNRESOLVED],
+            3 => ['description' => \_XHELP_STATUS2, 'state' => \XHELP_STATE_RESOLVED],
         ];
 
-        $hStatus = self::getHandler('status');
+        /** @var \XoopsModules\Xhelp\StatusHandler $statusHandler */
+        $statusHandler = Helper::getInstance()
+            ->getHandler('Status');
         foreach ($statuses as $id => $status) {
-            $newStatus = $hStatus->create();
+            /** @var \XoopsModules\Xhelp\Status $newStatus */
+            $newStatus = $statusHandler->create();
             $newStatus->setVar('id', $id);
             $newStatus->setVar('description', $status['description']);
             $newStatus->setVar('state', $status['state']);
 
-            if (!$hStatus->insert($newStatus)) {
+            if (!$statusHandler->insert($newStatus)) {
                 return false;
             }
         }
@@ -835,29 +803,28 @@ class Utility
     /**
      * Convert Bytes to a human readable size (GB, MB, KB, etc)
      *
-     * @param $bytes
+     * @param int $bytes
      * @return string Human readable size
-     * @access public
      */
-    public static function prettyBytes($bytes)
+    public static function prettyBytes(int $bytes): string
     {
-        $bytes = (int)$bytes;
+        $bytes = $bytes;
 
         if ($bytes >= 1099511627776) {
-            $return = number_format($bytes / 1024 / 1024 / 1024 / 1024, 2);
-            $suffix = _XHELP_SIZE_TB;
+            $return = \number_format($bytes / 1024 / 1024 / 1024 / 1024, 2);
+            $suffix = \_XHELP_SIZE_TB;
         } elseif ($bytes >= 1073741824) {
-            $return = number_format($bytes / 1024 / 1024 / 1024, 2);
-            $suffix = _XHELP_SIZE_GB;
+            $return = \number_format($bytes / 1024 / 1024 / 1024, 2);
+            $suffix = \_XHELP_SIZE_GB;
         } elseif ($bytes >= 1048576) {
-            $return = number_format($bytes / 1024 / 1024, 2);
-            $suffix = _XHELP_SIZE_MB;
+            $return = \number_format($bytes / 1024 / 1024, 2);
+            $suffix = \_XHELP_SIZE_MB;
         } elseif ($bytes >= 1024) {
-            $return = number_format($bytes / 1024, 2);
-            $suffix = _XHELP_SIZE_KB;
+            $return = \number_format($bytes / 1024, 2);
+            $suffix = \_XHELP_SIZE_KB;
         } else {
             $return = $bytes;
-            $suffix = _XHELP_SIZE_BYTES;
+            $suffix = \_XHELP_SIZE_BYTES;
         }
 
         return $return . ' ' . $suffix;
@@ -867,25 +834,24 @@ class Utility
      * Add a new database field to an existing table
      * MySQL Only!
      *
-     * @param        $table
-     * @param        $fieldname
+     * @param string $table
+     * @param string $fieldname
      * @param string $fieldtype
      * @param int    $size
      * @param null   $attr
-     * @return RESOURCE SQL query resource
-     * @access public
+     * @return resource SQL query resource
      */
-    public static function addDBField($table, $fieldname, $fieldtype = 'VARCHAR', $size = 0, $attr = null)
+    public static function addDBField(string $table, string $fieldname, string $fieldtype = 'VARCHAR', int $size = 0, $attr = null)
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
 
         $column_def = $fieldname;
         if ($size) {
-            $column_def .= sprintf(' %s(%s)', $fieldtype, $size);
+            $column_def .= \sprintf(' %s(%s)', $fieldtype, $size);
         } else {
             $column_def .= " $fieldtype";
         }
-        if (is_array($attr)) {
+        if (\is_array($attr)) {
             if (isset($attr['nullable']) && true === $attr['nullable']) {
                 $column_def .= ' NULL';
             } else {
@@ -909,7 +875,7 @@ class Utility
             }
         }
 
-        $sql = sprintf('ALTER TABLE %s ADD COLUMN %s', $xoopsDB->prefix($table), $column_def);
+        $sql = \sprintf('ALTER TABLE %s ADD COLUMN %s', $xoopsDB->prefix($table), $column_def);
         $ret = $xoopsDB->query($sql);
 
         return $ret;
@@ -919,20 +885,19 @@ class Utility
      * Rename an existing database field
      * MySQL Only!
      *
-     * @param        $table
-     * @param        $oldcol
-     * @param        $newcol
+     * @param string $table
+     * @param string $oldcol
+     * @param string $newcol
      * @param string $fieldtype
      * @param int    $size
-     * @return RESOURCE SQL query resource
-     * @access public
+     * @return resource SQL query resource
      */
-    public static function renameDBField($table, $oldcol, $newcol, $fieldtype = 'VARCHAR', $size = 0)
+    public static function renameDBField(string $table, string $oldcol, string $newcol, string $fieldtype = 'VARCHAR', int $size = 0)
     {
         $xoopsDB    = \XoopsDatabaseFactory::getDatabaseConnection();
         $column_def = $newcol;
-        $column_def .= ($size ? sprintf(' %s(%s)', $fieldtype, $size) : " $fieldtype");
-        $sql        = sprintf('ALTER TABLE %s CHANGE %s %s', $xoopsDB->prefix($table), $oldcol, $column_def);
+        $column_def .= ($size ? \sprintf(' %s(%s)', $fieldtype, $size) : " $fieldtype");
+        $sql        = \sprintf('ALTER TABLE %s CHANGE %s %s', $xoopsDB->prefix($table), $oldcol, $column_def);
         $ret        = $xoopsDB->query($sql);
 
         return $ret;
@@ -942,15 +907,14 @@ class Utility
      * Remove an existing database field
      * MySQL Only!
      *
-     * @param $table
-     * @param $column
-     * @return RESOURCE SQL query resource
-     * @access public
+     * @param string $table
+     * @param string $column
+     * @return resource SQL query resource
      */
-    public static function removeDBField($table, $column)
+    public static function removeDBField(string $table, string $column)
     {
         $xoopsDB = \XoopsDatabaseFactory::getDatabaseConnection();
-        $sql     = sprintf('ALTER TABLE %s DROP COLUMN `%s`', $xoopsDB->prefix($table), $column);
+        $sql     = \sprintf('ALTER TABLE %s DROP COLUMN `%s`', $xoopsDB->prefix($table), $column);
         $ret     = $xoopsDB->query($sql);
 
         return $ret;
@@ -959,36 +923,37 @@ class Utility
     /**
      * Mark all staff accounts as being updated
      *
-     * @return BOOL True on success, False on Error
-     * @access public
+     * @return bool True on success, False on Error
      */
-    public static function resetStaffUpdatedTime()
+    public static function resetStaffUpdatedTime(): bool
     {
-        $hStaff = self::getHandler('staff');
+        /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+        $staffHandler = Helper::getInstance()
+            ->getHandler('Staff');
 
-        return $hStaff->updateAll('permTimestamp', time());
+        return $staffHandler->updateAll('permTimestamp', \time());
     }
 
     /**
      * Retrieve the XoopsModule object representing this application
      *
      * @return \XoopsModule object representing this application
-     * @access public
      */
-    public static function getModule()
+    public static function getModule(): \XoopsModule
     {
         global $xoopsModule;
         static $_module;
 
-        if (isset($_module)) {
+        if (null !== $_module) {
             return $_module;
         }
 
-        if (isset($xoopsModule) && is_object($xoopsModule) && XHELP_DIR_NAME == $xoopsModule->getVar('dirname')) {
-            $_module =& $xoopsModule;
+        if (null !== $xoopsModule && \is_object($xoopsModule) && \XHELP_DIR_NAME == $xoopsModule->getVar('dirname')) {
+            $_module = &$xoopsModule;
         } else {
-            $hModule = xoops_getHandler('module');
-            $_module =& $hModule->getByDirname('xhelp');
+            /** @var \XoopsModuleHandler $moduleHandler */
+            $moduleHandler = \xoops_getHandler('module');
+            $_module       = $moduleHandler->getByDirname('xhelp');
         }
 
         return $_module;
@@ -998,58 +963,57 @@ class Utility
      * Retrieve this modules configuration variables
      *
      * @return array Key = config variable name, Value = current value
-     * @access public
      */
-
-    public static function getModuleConfig()
+    public static function getModuleConfig(): array
     {
         static $_config;
 
-        if (!isset($_config)) {
-            $hModConfig = xoops_getHandler('config');
-            $_module    = self::getModule();
+        if (null === $_config) {
+            /** @var \XoopsConfigHandler $configHandler */
+            $configHandler = \xoops_getHandler('config');
+            $_module       = self::getModule();
 
-            $_config =& $hModConfig->getConfigsByCat(0, $_module->getVar('mid'));
+            $_config = &$configHandler->getConfigsByCat(0, $_module->getVar('mid'));
         }
 
         return $_config;
     }
 
-    /**
-     * Wrapper for the xoops_getModuleHandler function
-     *
-     * @param  string $handler Name of the handler to return
-     * @return \XoopsObjectHandler The object handler requested
-     * @access public
-     */
-    public static function getHandler($handler)
-    {
-//        $handler = xoops_getModuleHandler($handler, XHELP_DIR_NAME);
-        include __DIR__ . '/../preloads/autoloader.php';
-        $class = '\\XoopsModules\\Xhelp\\' . $handler . 'Handler';
-        $newHandler = new $class($GLOBALS['xoopsDB']);
-
-        return $newHandler;
-    }
+    //    /**
+    //     * Wrapper for the xoops_getModuleHandler function
+    //     *
+    //     * @param string $handler Name of the handler to return
+    //     * @return \XoopsObjectHandler The object handler requested
+    //     */
+    //    public static function getHandler($handler)
+    //    {
+    //        //        $handler = xoops_getModuleHandler($handler, XHELP_DIR_NAME);
+    //        require_once \dirname(__DIR__) . '/preloads/autoloader.php';
+    //        $class      = '\\XoopsModules\\Xhelp\\' . $handler . 'Handler';
+    //        $newHandler = new $class($GLOBALS['xoopsDB']);
+    //
+    //        return $newHandler;
+    //    }
 
     /**
      * Retrieve all saved searches for the specified user(s)
      *
-     * @param  mixed $users Either an integer (UID) or an array of UIDs
-     * @return array Xhelp\SavedSearch objects
-     * @access public
+     * @param mixed $users Either an integer (UID) or an array of UIDs
+     * @return bool|array SavedSearch objects
      */
     public static function getSavedSearches($users)
     {
-        $hSavedSearch = self::getHandler('SavedSearch');
+        /** @var \XoopsModules\Xhelp\SavedSearchHandler $savedSearchHandler */
+        $savedSearchHandler = Helper::getInstance()
+            ->getHandler('SavedSearch');
 
-        if (is_array($users)) {
-            $crit = new \Criteria('uid', '(' . implode($users, ',') . ')', 'IN');
+        if (\is_array($users)) {
+            $criteria = new \Criteria('uid', '(' . \implode(',', $users) . ')', 'IN');
         } else {
-            $crit = new \Criteria('uid', (int)$users);
+            $criteria = new \Criteria('uid', (int)$users);
         }
 
-        $savedSearches = $hSavedSearch->getObjects($crit);
+        $savedSearches = $savedSearchHandler->getObjects($criteria);
 
         $ret = [];
         foreach ($savedSearches as $obj) {
@@ -1057,28 +1021,31 @@ class Utility
                 'id'            => $obj->getVar('id'),
                 'uid'           => $obj->getVar('uid'),
                 'name'          => $obj->getVar('name'),
-                'search'        => unserialize($obj->getVar('search')),
+                'search'        => \unserialize($obj->getVar('search')),
                 'pagenav_vars'  => $obj->getVar('pagenav_vars'),
-                'hasCustFields' => $obj->getVar('hasCustFields')
+                'hasCustFields' => $obj->getVar('hasCustFields'),
             ];
         }
 
-        return (count($ret) > 0 ? $ret : false);
+        return (\count($ret) > 0 ? $ret : false);
     }
 
     /**
      * Set default notification settings for all xhelp events
      *
-     * @return BOOL True on success, False on failure
-     * @access public
+     * @return bool True on success, False on failure
      */
-    public static function createNotifications()
+    public static function createNotifications(): bool
     {
-        $hRole         = self::getHandler('Role');
-        $hNotification = self::getHandler('Notification');
+        /** @var \XoopsModules\Xhelp\RoleHandler $roleHandler */
+        $roleHandler = Helper::getInstance()
+            ->getHandler('Role');
+        /** @var \XoopsModules\Xhelp\NotificationHandler $notificationHandler */
+        $notificationHandler = Helper::getInstance()
+            ->getHandler('Notification');
 
         // Get list of all roles
-        $roles = $hRole->getObjects();
+        $roles = $roleHandler->getObjects();
 
         $allRoles = [];
         foreach ($roles as $role) {
@@ -1086,30 +1053,31 @@ class Utility
         }
 
         $notifications = [
-            ['id' => 1, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 2, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 3, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 4, 'staff' => XHELP_NOTIF_STAFF_OWNER, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 5, 'staff' => XHELP_NOTIF_STAFF_OWNER, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 6, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 7, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 8, 'staff' => XHELP_NOTIF_STAFF_OWNER, 'user' => XHELP_NOTIF_USER_NO],
-            ['id' => 9, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES],
-            ['id' => 10, 'staff' => XHELP_NOTIF_STAFF_DEPT, 'user' => XHELP_NOTIF_USER_YES]
+            ['id' => 1, 'staff' => \XHELP_NOTIF_STAFF_DEPT, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 2, 'staff' => \XHELP_NOTIF_STAFF_DEPT, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 3, 'staff' => \XHELP_NOTIF_STAFF_DEPT, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 4, 'staff' => \XHELP_NOTIF_STAFF_OWNER, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 5, 'staff' => \XHELP_NOTIF_STAFF_OWNER, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 6, 'staff' => \XHELP_NOTIF_STAFF_DEPT, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 7, 'staff' => \XHELP_NOTIF_STAFF_DEPT, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 8, 'staff' => \XHELP_NOTIF_STAFF_OWNER, 'user' => \XHELP_NOTIF_USER_NO],
+            ['id' => 9, 'staff' => \XHELP_NOTIF_STAFF_DEPT, 'user' => \XHELP_NOTIF_USER_YES],
+            ['id' => 10, 'staff' => \XHELP_NOTIF_STAFF_DEPT, 'user' => \XHELP_NOTIF_USER_YES],
         ];
 
         foreach ($notifications as $notif) {
-            $template = $hNotification->create();
+            /** @var \XoopsModules\Xhelp\Notification $template */
+            $template = $notificationHandler->create();
             $template->setVar('notif_id', $notif['id']);
             $template->setVar('staff_setting', $notif['staff']);
             $template->setVar('user_setting', $notif['user']);
             //Set the notification for all staff roles (if necessary)
-            if (XHELP_NOTIF_STAFF_DEPT == $notif['staff']) {
+            if (\XHELP_NOTIF_STAFF_DEPT == $notif['staff']) {
                 $template->setVar('staff_options', $allRoles);
             } else {
                 $template->setVar('staff_options', []);
             }
-            $hNotification->insert($template, true);
+            $notificationHandler->insert($template, true);
         }
 
         return true;
@@ -1118,16 +1086,16 @@ class Utility
     /**
      * Get the XOOPS username or realname for the specified users
      *
-     * @param  CriteriaElement $criteria    Which users to retrieve
-     * @param  INTEGER         $displayName XHELP_DISPLAYNAME_UNAME for username XHELP_DISPLAYNAME_REALNAME for realname
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria    Which users to retrieve
+     * @param int                                  $displayName XHELP_DISPLAYNAME_UNAME for username XHELP_DISPLAYNAME_REALNAME for realname
      * @return array True on success, False on failure
-     * @access public
      */
-    public static function getUsers($criteria = null, $displayName = XHELP_DISPLAYNAME_UNAME)
+    public static function getUsers($criteria = null, int $displayName = \XHELP_DISPLAYNAME_UNAME): array
     {
-        $hUser = xoops_getHandler('user');
-        $users = $hUser->getObjects($criteria, true);
-        $ret   = [];
+        /** @var \XoopsUserHandler $userHandler */
+        $userHandler = \xoops_getHandler('user');
+        $users       = $userHandler->getObjects($criteria, true);
+        $ret         = [];
         foreach ($users as $i => $user) {
             $ret[$i] = self::getDisplayName($displayName, $user->getVar('name'), $user->getVar('uname'));
         }
@@ -1142,25 +1110,24 @@ class Utility
      * @param int   $displayName {xhelp_displayName preference value}
      *
      * @return string username or real name
-     *
-     * @access public
      */
-    public static function getUsername($xUser, $displayName = XHELP_DISPLAYNAME_UNAME)
+    public static function getUsername($xUser, int $displayName = \XHELP_DISPLAYNAME_UNAME): string
     {
         global $xoopsUser, $xoopsConfig;
-        $user    = false;
-        $hMember = xoops_getHandler('member');
+        $user = false;
+        /** @var \XoopsMemberHandler $memberHandler */
+        $memberHandler = \xoops_getHandler('member');
 
-        if (is_numeric($xUser)) {
-            if ($xUser <> $xoopsUser->getVar('uid')) {
+        if (\is_numeric($xUser)) {
+            if ($xUser != (int)$xoopsUser->getVar('uid')) {
                 if (0 == $xUser) {
                     return $xoopsConfig['anonymous'];
                 }
-                $user =& $hMember->getUser($xUser);
+                $user = $memberHandler->getUser($xUser);
             } else {
                 $user = $xoopsUser;
             }
-        } elseif (is_object($xUser)) {
+        } elseif (\is_object($xUser)) {
             $user = $xUser;
         } else {
             return $xoopsConfig['anonymous'];
@@ -1174,31 +1141,30 @@ class Utility
     /**
      * Retrieve the Displayname for the user
      *
-     * @param  int    $displayName {xhelp_displayName preference value}
-     * @param  string $name        {user's real name}
-     * @param  string $uname       {user's username}
+     * @param int    $displayName {xhelp_displayName preference value}
+     * @param string $name        {user's real name}
+     * @param string $uname       {user's username}
      * @return string {username or real name}
-     * @access public
      */
-    public static function getDisplayName($displayName, $name = '', $uname = '')
+    public static function getDisplayName(int $displayName, string $name = '', string $uname = ''): string
     {
-        return ((XHELP_DISPLAYNAME_REALNAME == $displayName && '' <> $name) ? $name : $uname);
+        return ((\XHELP_DISPLAYNAME_REALNAME == $displayName && '' != $name) ? $name : $uname);
     }
 
     /**
      * Retrieve the site's active language
      *
      * @return string Name of language
-     * @access public
      */
-    public static function getSiteLanguage()
+    public static function getSiteLanguage(): string
     {
         global $xoopsConfig;
-        if (isset($xoopsConfig) && isset($xoopsConfig['language'])) {
+        if (null !== $xoopsConfig && isset($xoopsConfig['language'])) {
             $language = $xoopsConfig['language'];
         } else {
-            $configHandler = xoops_getHandler('config');
-            $xoopsConfig   = $configHandler->getConfigsByCat(XOOPS_CONF);
+            /** @var \XoopsConfigHandler $configHandler */
+            $configHandler = \xoops_getHandler('config');
+            $xoopsConfig   = $configHandler->getConfigsByCat(\XOOPS_CONF);
             $language      = $xoopsConfig['language'];
         }
 
@@ -1208,123 +1174,108 @@ class Utility
     /**
      * Include the specified language translation
      *
-     * @param  string $filename file to include
-     * @param  string $language translation to use
-     * @return null
-     * @access public
+     * @param string $filename file to include
+     * @param null   $language translation to use
      */
-    public static function includeLang($filename, $language = null)
+    public static function includeLang(string $filename, $language = null)
     {
         $langFiles = ['admin', 'blocks', 'main', 'modinfo', 'noise_words'];
 
-        if (!in_array($filename, $langFiles)) {
-            trigger_error('Invalid language file inclusion attempt', E_USER_ERROR);
+        if (!\in_array($filename, $langFiles)) {
+            \trigger_error('Invalid language file inclusion attempt', \E_USER_ERROR);
         }
 
         if (null === $language) {
             $language = self::getSiteLanguage();
         }
 
-        if (file_exists(XHELP_BASE_PATH . "/language/$language/$filename.php")) {
-            require_once XHELP_BASE_PATH . "/language/$language/$filename.php";
-        } else {
-            if (file_exists(XHELP_BASE_PATH . "/language/english/$filename.php")) {
-                require_once XHELP_BASE_PATH . "/language/english/$filename.php";
-            } else {
-                trigger_error("Unable to load language file $filename", E_USER_NOTICE);
-            }
-        }
+        \xoops_loadLanguage($filename, 'xhelp');
     }
 
     /**
-     * @param $reportName
+     * @param string $reportName
      */
-    public static function includeReportLangFile($reportName)
+    public static function includeReportLangFile(string $reportName)
     {
-        $language = self::getSiteLanguage();
-
-        if (file_exists(XHELP_BASE_PATH . "/language/$language/reports/$reportName.php")) {
-            require_once XHELP_BASE_PATH . "/language/$language/reports/$reportName.php";
-        } else {
-            if (file_exists(XHELP_BASE_PATH . "/language/english/reports/$reportName.php")) {
-                require_once XHELP_BASE_PATH . "/language/english/reports/$reportName.php";
-            }
-        }
+        \xoops_loadLanguage($reportName, 'xhelp');
     }
 
     /**
      * Retrieve the Displayname for the user
-     * @return string {username or real name}
+     * @return bool {username or real name}
      * @internal param int $displayName {xhelp_displayName preference value}
      * @internal param string $name {user's real name}
      * @internal param string $uname {user's username}
-     * @access   public
      */
-    public static function createDefaultTicketLists()
+    public static function createDefaultTicketLists(): bool
     {
-        $hSavedSearch = self::getHandler('savedSearch');
-        $hTicketList  = self::getHandler('ticketList');
-        $hStaff       = self::getHandler('staff');
+        /** @var \XoopsModules\Xhelp\SavedSearchHandler $savedSearchHandler */
+        $savedSearchHandler = Helper::getInstance()
+            ->getHandler('SavedSearch');
+        /** @var \XoopsModules\Xhelp\TicketListHandler $ticketListHandler */
+        $ticketListHandler = Helper::getInstance()
+            ->getHandler('TicketList');
+        /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+        $staffHandler = Helper::getInstance()
+            ->getHandler('Staff');
 
-        $ticketLists = [XHELP_QRY_STAFF_HIGHPRIORITY, XHELP_QRY_STAFF_NEW, XHELP_QRY_STAFF_MINE, XHELP_QRY_STAFF_ALL];
+        $ticketLists = [\XHELP_QRY_STAFF_HIGHPRIORITY, \XHELP_QRY_STAFF_NEW, \XHELP_QRY_STAFF_MINE, \XHELP_QRY_STAFF_ALL];
         $i           = 1;
         foreach ($ticketLists as $ticketList) {
-            $newSearch = $hSavedSearch->create();
-            $crit      = new \CriteriaCompo();
+            /** @var \XoopsModules\Xhelp\SavedSearch $newSearch */
+            $newSearch = $savedSearchHandler->create();
+            $criteria  = new \CriteriaCompo();
             switch ($ticketList) {
-                case XHELP_QRY_STAFF_HIGHPRIORITY:
-                    $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 'j'));
-                    $crit->add(new \Criteria('state', 1, '=', 's'));
-                    $crit->add(new \Criteria('ownership', 0, '=', 't'));
-                    $crit->setSort('t.priority, t.posted');
-                    $newSearch->setVar('name', _XHELP_TEXT_HIGH_PRIORITY);
+                case \XHELP_QRY_STAFF_HIGHPRIORITY:
+                    $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID, '=', 'j'));
+                    $criteria->add(new \Criteria('state', 1, '=', 's'));
+                    $criteria->add(new \Criteria('ownership', 0, '=', 't'));
+                    $criteria->setSort('t.priority, t.posted');
+                    $newSearch->setVar('name', \_XHELP_TEXT_HIGH_PRIORITY);
                     $newSearch->setVar('pagenav_vars', 'limit=50&state=1');
                     break;
-
-                case XHELP_QRY_STAFF_NEW:
-                    $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 'j'));
-                    $crit->add(new \Criteria('ownership', 0, '=', 't'));
-                    $crit->add(new \Criteria('state', 1, '=', 's'));
-                    $crit->setSort('t.posted');
-                    $crit->setOrder('DESC');
-                    $newSearch->setVar('name', _XHELP_TEXT_NEW_TICKETS);
+                case \XHELP_QRY_STAFF_NEW:
+                    $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID, '=', 'j'));
+                    $criteria->add(new \Criteria('ownership', 0, '=', 't'));
+                    $criteria->add(new \Criteria('state', 1, '=', 's'));
+                    $criteria->setSort('t.posted');
+                    $criteria->setOrder('DESC');
+                    $newSearch->setVar('name', \_XHELP_TEXT_NEW_TICKETS);
                     $newSearch->setVar('pagenav_vars', 'limit=50&state=1');
                     break;
-
-                case XHELP_QRY_STAFF_MINE:
-                    $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 'j'));
-                    $crit->add(new \Criteria('ownership', XHELP_GLOBAL_UID, '=', 't'));
-                    $crit->add(new \Criteria('state', 1, '=', 's'));
-                    $crit->setSort('t.posted');
-                    $newSearch->setVar('name', _XHELP_TEXT_MY_TICKETS);
-                    $newSearch->setVar('pagenav_vars', 'limit=50&state=1&ownership=' . XHELP_GLOBAL_UID);
+                case \XHELP_QRY_STAFF_MINE:
+                    $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID, '=', 'j'));
+                    $criteria->add(new \Criteria('ownership', \XHELP_GLOBAL_UID, '=', 't'));
+                    $criteria->add(new \Criteria('state', 1, '=', 's'));
+                    $criteria->setSort('t.posted');
+                    $newSearch->setVar('name', \_XHELP_TEXT_MY_TICKETS);
+                    $newSearch->setVar('pagenav_vars', 'limit=50&state=1&ownership=' . \XHELP_GLOBAL_UID);
                     break;
-
-                case XHELP_QRY_STAFF_ALL:
-                    $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 'j'));
-                    $crit->add(new \Criteria('state', 1, '=', 's'));
-                    $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID, '=', 't'));
-                    $newSearch->setVar('name', _XHELP_TEXT_SUBMITTED_TICKETS);
-                    $newSearch->setVar('pagenav_vars', 'limit=50&state=1&submittedBy=' . XHELP_GLOBAL_UID);
+                case \XHELP_QRY_STAFF_ALL:
+                    $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID, '=', 'j'));
+                    $criteria->add(new \Criteria('state', 1, '=', 's'));
+                    $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID, '=', 't'));
+                    $newSearch->setVar('name', \_XHELP_TEXT_SUBMITTED_TICKETS);
+                    $newSearch->setVar('pagenav_vars', 'limit=50&state=1&submittedBy=' . \XHELP_GLOBAL_UID);
                     break;
-
                 default:
                     return false;
                     break;
             }
 
-            $newSearch->setVar('uid', XHELP_GLOBAL_UID);
-            $newSearch->setVar('search', serialize($crit));
+            $newSearch->setVar('uid', \XHELP_GLOBAL_UID);
+            $newSearch->setVar('search', \serialize($criteria));
             $newSearch->setVar('hasCustFields', 0);
-            $ret = $hSavedSearch->insert($newSearch, true);
+            $ret = $savedSearchHandler->insert($newSearch, true);
 
-            $staff = $hStaff->getObjects(null, true);
+            $staff = $staffHandler->getObjects(null, true);
             foreach ($staff as $stf) {
-                $list = $hTicketList->create();
+                /** @var \XoopsModules\Xhelp\TicketList $list */
+                $list = $ticketListHandler->create();
                 $list->setVar('uid', $stf->getVar('uid'));
                 $list->setVar('searchid', $newSearch->getVar('id'));
                 $list->setVar('weight', $i);
-                $ret = $hTicketList->insert($list, true);
+                $ret = $ticketListHandler->insert($list, true);
             }
             ++$i;
         }
@@ -1333,16 +1284,58 @@ class Utility
     }
 
     /**
-     * @return Xhelp\EventService
+     * Generate publisher URL
+     *
+     * @param string $page
+     * @param array  $vars
+     * @param bool   $encodeAmp
+     * @return string
+     *
+     * @credit : xHelp module, developped by 3Dev
      */
-    public static function createNewEventService()
+    public static function makeUri(string $page, array $vars = [], bool $encodeAmp = true): string
     {
-        static $instance;
+        $joinStr = '';
 
-        if (null === $instance) {
-            $instance = new Xhelp\EventService();
+        $amp = ($encodeAmp ? '&amp;' : '&');
+
+        if (!\count($vars)) {
+            return $page;
         }
 
-        return $instance;
+        $qs = '';
+        foreach ($vars as $key => $value) {
+            $qs      .= $joinStr . $key . '=' . $value;
+            $joinStr = $amp;
+        }
+
+        return $page . '?' . $qs;
+    }
+
+    /**
+     * @return EventService
+     */
+    //    public static function createNewEventService(): EventService
+    //    {
+    //        static $instance;
+    //
+    //        if (null === $instance) {
+    //            $instance = new EventService();
+    //        }
+    //
+    //        return $instance;
+    //    }
+
+    /**
+     * @param string $path
+     * @param string $image
+     * @param string $alt
+     * @return string
+     */
+    public static function iconSourceTag(string $path, string $image, string $alt): string
+    {
+        $imgSource = "<img src='" . $path . "$image'  alt='" . $alt . "' title='" . $alt . "' align='middle'>";
+
+        return $imgSource;
     }
 }

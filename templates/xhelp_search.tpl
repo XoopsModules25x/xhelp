@@ -73,7 +73,7 @@
                                  alt="<{$xhelp_priorities_desc.$priority}>">
                         <{/foreach}>
                         <input type="radio" value="-1" name="priority"
-                               checked="checked"><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
+                               checked><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                     </td>
                 </tr>
                 <tr>
@@ -189,7 +189,7 @@
                                                value="0"><{$smarty.const._XHELP_TEXT_NO}>
                                         <br>
                                         <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
-                                               value="-1" checked="checked"><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
+                                               value="-1" checked><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_CHECKBOX}>
                                         <{foreach from=$field.fieldvalues item=value key=key}>
                                             <input type="checkbox" name="<{$field.fieldname}>"
@@ -197,7 +197,7 @@
                                             <br>
                                         <{/foreach}>
                                         <input type="checkbox" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
-                                               value="-1" checked="checked"><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
+                                               value="-1" checked><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_RADIOBOX}>
                                         <{foreach from=$field.fieldvalues item=value key=key}>
                                             <input type="radio" name="<{$field.fieldname}>"
@@ -205,7 +205,7 @@
                                             <br>
                                         <{/foreach}>
                                         <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
-                                               value="-1" checked="checked"><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
+                                               value="-1" checked><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_DATETIME}>
                                         <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                                value="" maxlength="<{$field.maxlength}>" size="<{$field.fieldlength}>">

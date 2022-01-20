@@ -1,5 +1,5 @@
 <table width="100%" border="1" cellpadding="0" cellspacing="2" class="formButton">
-    <{if $block.xhelp_has_changeOwner}>
+    <{if $block.xhelp_has_changeOwner|default:''}>
         <tr>
             <td class="head" width="20%">
                 <{$smarty.const._XHELP_TEXT_OWNERSHIP}>
@@ -53,7 +53,7 @@
             <{/if}>
         </td>
     </tr>
-    <{if $block.xhelp_has_editTicket}>
+    <{if $block.xhelp_has_editTicket|default:''}>
         <tr>
             <td class="even center">
                 <a href="ticket.php?id=<{$block.ticketid}>&amp;op=edit"><img src="<{$block.imagePath}>edit.png"
@@ -62,7 +62,7 @@
             </td>
         </tr>
     <{/if}>
-    <{if $block.xhelp_has_deleteTicket}>
+    <{if $block.xhelp_has_deleteTicket|default:''}>
         <tr>
             <td class="even center">
                 <form method="post" action="ticket.php?id=<{$block.ticketid}>&amp;op=delete">
@@ -83,7 +83,7 @@
             </td>
         </tr>
     <{/if}>
-    <{if $block.xhelp_has_mergeTicket}>
+    <{if $block.xhelp_has_mergeTicket|default:''}>
         <td class="even center">
             <form method="post" action="ticket.php?id=<{$block.ticketid}>&amp;op=merge">
                 <input type="text" name="ticket2" size="8" title="<{$smarty.const._XHELP_TEXT_MERGE_TITLE}>"
@@ -102,7 +102,7 @@
             <br><{$smarty.const._XHELP_TEXT_PRINT_TICKET}>
         </td>
     </tr>
-    <{if $block.xhelp_has_changePriority}>
+    <{if $block.xhelp_has_changePriority|default:''}>
         <tr>
             <td class="head">
                 <{$smarty.const._XHELP_TEXT_UPDATE_PRIORITY}>
@@ -111,7 +111,7 @@
                 <form method="post" action="ticket.php?id=<{$block.ticketid}>&amp;op=updatePriority">
                     <{foreach from=$block.xhelp_priorities item=priority}>
                         <input type="radio" value="<{$priority}>" id="priority<{$priority}>" name="priority"
-                               <{if $block.ticket_priority eq $priority}>checked="checked"<{/if}>>
+                               <{if $block.ticket_priority eq $priority}>checked<{/if}>>
                         <label for="priority<{$priority}>"><img src="<{$block.imagePath}>priority<{$priority}>.png"
                                                                 alt="<{$block.xhelp_priorities_desc.$priority}>"></label>
                         <br>

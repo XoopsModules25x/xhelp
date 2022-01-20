@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,15 +14,11 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 //
@@ -30,25 +28,23 @@ if (!defined('XHELP_CLASS_PATH')) {
  * Xhelp\LogMessage class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
 class LogMessage extends \XoopsObject
 {
     /**
      * Xhelp\LogMessage constructor.
-     * @param null $id
+     * @param int|array|null $id
      */
     public function __construct($id = null)
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('uid', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('lastUpdated', XOBJ_DTYPE_INT, null, true);
-        $this->initVar('action', XOBJ_DTYPE_TXTBOX, null, true, 255);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('uid', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('lastUpdated', \XOBJ_DTYPE_INT, null, true);
+        $this->initVar('action', \XOBJ_DTYPE_TXTBOX, null, true, 255);
 
         if (null !== $id) {
-            if (is_array($id)) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -59,11 +55,10 @@ class LogMessage extends \XoopsObject
     /**
      * determine when the log message was updated
      *
-     * @return int Timestamp of last update
-     * @access  public
+     * @return string Timestamp of last update
      */
-    public function lastUpdated()
+    public function lastUpdated(): string
     {
-        return formatTimestamp($this->getVar('lastUpdated'));
+        return \formatTimestamp($this->getVar('lastUpdated'));
     }
 }   //end of class

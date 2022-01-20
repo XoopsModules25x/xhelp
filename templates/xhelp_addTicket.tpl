@@ -42,7 +42,7 @@
                        style="float:right;"><{$smarty.const._XHELP_TEXT_SWITCH_TO}><{$smarty.const._XHELP_TEXT_VIEW1}></a>
                 <{/if}>
                 <img src="<{$xhelp_imagePath}>addTicket.png"
-                     alt="<{$smart.const._XHELP_TITLE_ADDTICKET}>"> <{$smarty.const._XHELP_TITLE_ADDTICKET}>
+                     alt="<{$smarty.const._XHELP_TITLE_ADDTICKET}>"> <{$smarty.const._XHELP_TITLE_ADDTICKET}>
             </th>
         </tr>
         <tr>
@@ -83,7 +83,7 @@
             <td class="even">
                 <{foreach from=$xhelp_priorities item=priority}>
                     <input type="radio" value="<{$priority}>" id="priority<{$priority}>" name="priority"
-                           <{if $xhelp_ticket_priority eq $priority}>checked="checked"<{/if}>>
+                           <{if $xhelp_ticket_priority eq $priority}>checked<{/if}>>
                     <label for="priority<{$priority}>"><img src="<{$xhelp_imagePath}>priority<{$priority}>.png"
                                                             alt="<{$xhelp_priorities_desc.$priority}>"></label>
                 <{/foreach}>
@@ -146,7 +146,7 @@
                 </td>
                 <td class="even">
                     <textarea name="response" id="response" rows="5" cols="50"
-                              class="<{$xhelp_element_response}>"><{$xhelp_response_message}></textarea>
+                              class="<{$xhelp_element_response|default:''}>"><{$xhelp_response_message}></textarea>
                 </td>
             </tr>
             <tr>
@@ -154,8 +154,8 @@
                     <{$smarty.const._XHELP_TEXT_TIMESPENT}>
                 </td>
                 <td class="even">
-                    <input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent}>"
-                           class="<{$xhelp_element_timespent}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
+                    <input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent|default:''}>"
+                           class="<{$xhelp_element_timespent|default:''}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
                 </td>
             </tr>
             <{if $xhelp_isStaff && $xhelp_logMode neq 1}>
@@ -210,7 +210,7 @@
                     <{if $xhelp_response_private eq false}>
                         <input type="checkbox" name="private" value="1" class="formButton">
                     <{else}>
-                        <input type="checkbox" name="private" value="1" class="formButton" checked="checked">
+                        <input type="checkbox" name="private" value="1" class="formButton" checked>
                     <{/if}>
                 </td>
             </tr>
@@ -222,7 +222,7 @@
                 <tr class="custfld">
                     <td class="head" width="20%">
                         <{$field.name}>:
-                        <{if $field.desc != ""}>
+                        <{if $field.desc|default:'' != ''}>
                             <br>
                             <br>
                             <{$field.desc}>
@@ -252,22 +252,22 @@
                             </select>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_YESNO}>
                             <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>1" value="1"
-                                   <{if $field.defaultvalue == 1}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
+                                   <{if $field.defaultvalue == 1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                             <br>
                             <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>0" value="0"
-                                   <{if $field.defaultvalue == 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                                   <{if $field.defaultvalue == 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_CHECKBOX}>
                             <{foreach from=$field.fieldvalues item=value key=key}>
                                 <input type="checkbox" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                        value="<{$key}>"
-                                       <{if $key == $field.defaultvalue}>checked="checked"<{/if}>><{$value}>
+                                       <{if $key == $field.defaultvalue}>checked<{/if}>><{$value}>
                                 <br>
                             <{/foreach}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_RADIOBOX}>
                             <{foreach from=$field.fieldvalues item=value key=key}>
                                 <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                        value="<{$key}>"
-                                       <{if $key == $field.defaultvalue}>checked="checked"<{/if}>><{$value}>
+                                       <{if $key == $field.defaultvalue}>checked<{/if}>><{$value}>
                                 <br>
                             <{/foreach}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_DATETIME}>

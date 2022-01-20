@@ -26,7 +26,7 @@
                                           alt="<{$smarty.const._XHELP_MENU_SEARCH}>"></a> <a
                         href="search.php"><{$smarty.const._XHELP_MENU_SEARCH}></a>
             </td>
-            <{if $xhelp_savedSearches neq false}>
+            <{if $xhelp_savedSearches|default:false neq false}>
                 <td>
                     <form name="savedSearches" method="post" action="search.php">
                         <select name="savedSearch">

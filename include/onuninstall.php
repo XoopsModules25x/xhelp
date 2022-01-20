@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * uninstall.php - cleanup on module uninstall
  *
  * @author          XOOPS Module Development Team
  * @copyright       {@link https://xoops.org 2001-2016 XOOPS Project}
- * @license         {@link http://www.fsf.org/copyleft/gpl.html GNU public license}
+ * @license         {@link https://www.fsf.org/copyleft/gpl.html GNU public license}
  * @link            https://xoops.org XOOPS
  */
 
@@ -12,34 +13,30 @@ use XoopsModules\Xhelp;
 
 /**
  * Prepares system prior to attempting to uninstall module
- * @param XoopsModule $module {@link XoopsModule}
+ * @param \XoopsModule $module {@link XoopsModule}
  *
  * @return bool true if ready to uninstall, false if not
  */
-
-function xoops_module_pre_uninstall_xhelp(\XoopsModule $module)
+function xoops_module_pre_uninstall_xhelp(\XoopsModule $module): bool
 {
     // Do some synchronization
     return true;
 }
 
 /**
- *
  * Performs tasks required during uninstallation of the module
- * @param XoopsModule $module {@link XoopsModule}
+ * @param \XoopsModule $module {@link XoopsModule}
  *
  * @return bool true if uninstallation successful, false if not
  */
-function xoops_module_uninstall_xhelp(\XoopsModule $module)
+function xoops_module_uninstall_xhelp(\XoopsModule $module): bool
 {
-    include __DIR__ . '/../preloads/autoloader.php';
-    $moduleDirName = basename(dirname(__DIR__));
-    $moduleDirNameUpper = strtoupper($moduleDirName); //$capsDirName
+    require_once \dirname(__DIR__) . '/preloads/autoloader.php';
+    $moduleDirName      = \basename(\dirname(__DIR__));
+    $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
-    /** @var Xhelp\Helper $helper */
-    /** @var Xhelp\Utility $utility */
-    $helper = Xhelp\Helper::getInstance();
-    $utility      = new Xhelp\Utility();
+    $helper  = Xhelp\Helper::getInstance();
+    $utility = new Xhelp\Utility();
     //    $configurator = new Xhelp\Common\Configurator();
 
     // Load language files
@@ -53,7 +50,7 @@ function xoops_module_uninstall_xhelp(\XoopsModule $module)
     /*
         $old_directories = [$GLOBALS['xoops']->path("uploads/{$moduleDirName}")];
         foreach ($old_directories as $old_dir) {
-            $dirInfo = new SplFileInfo($old_dir);
+            $dirInfo = new \SplFileInfo($old_dir);
             if ($dirInfo->isDir()) {
                 // The directory exists so delete it
                 if (false === $utility::rrmdir($old_dir)) {

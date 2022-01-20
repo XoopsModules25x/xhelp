@@ -11,7 +11,7 @@
 <{/if}>
 <{include file='db:xhelp_staff_header.tpl'}>   <{* Include staff header *}>
 
-<div class="formButton" style="border:1px solid black;">
+<div class="formButton" style="border:1px solid #000000;">
     <table width="100%" cellpadding="0" cellspacing="2">
         <tr>
             <th colspan="2">
@@ -101,9 +101,9 @@
                     </td>
                     <td class="even">
                         <input name="claimOwner" value="<{$xhelp_currentUser}>" type="radio" class="formButton"
-                               <{if $xhelp_has_owner eq 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
+                               <{if $xhelp_has_owner eq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                         <input name="claimOwner" value="0" type="radio" class="formButton"
-                               <{if $xhelp_has_owner neq 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                               <{if $xhelp_has_owner neq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                     </td>
                 </tr>
             <{/if}>

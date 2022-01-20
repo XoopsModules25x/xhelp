@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,67 +14,58 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
-
 /**
  * class StaffRoleHandler
  */
-class StaffRoleHandler extends Xhelp\BaseObjectHandler
+class StaffRoleHandler extends BaseObjectHandler
 {
-    public $_idfield = 'roleid';
-
+    public $idfield = 'roleid';
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = StaffRole::class;
-
     /**
      * DB Table Name
      *
      * @var string
-     * @access  private
      */
-    public $_dbtable = 'xhelp_staffroles';
+    public $dbtable = 'xhelp_staffroles';
 
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
 
     /**
-     * @param int  $uid
-     * @param null $roleid
-     * @param null $deptid
+     * @param int      $id
+     * @param int|null $roleid
+     * @param int|null $deptid
      * @return array|bool
      */
-    public function get($uid, $roleid = null, $deptid = null)
+    public function get($id = null, $fields = null, int $roleid = null, int $deptid = null)
     {
-        $crit = new \CriteriaCompo('uid', $uid);
-        $crit->add(new \Criteria('roleid', $roleid));
-        $crit->add(new \Criteria('deptid', $deptid));
+        $criteria = new \CriteriaCompo(new \Criteria('uid', (string)$id));
+        $criteria->add(new \Criteria('roleid', (string)$roleid));
+        $criteria->add(new \Criteria('deptid', (string)$deptid));
 
-        if (!$role = $this->getObjects($crit)) {
+        if (!$role = $this->getObjects($criteria)) {
             return false;
         }
 
@@ -80,18 +73,18 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param      $uid
+     * @param int  $uid
      * @param bool $id_as_key
      * @return array|bool
      */
-    public function &getObjectsByStaff($uid, $id_as_key = false)
+    public function &getObjectsByStaff(int $uid, bool $id_as_key = false)
     {
-        $uid  = (int)$uid;
-        $crit = new \Criteria('uid', $uid);
+        $uid      = $uid;
+        $criteria = new \Criteria('uid', (string)$uid);
 
-        $arr = $this->getObjects($crit, $id_as_key);
+        $arr = $this->getObjects($criteria, $id_as_key);
 
-        if (0 == count($arr)) {
+        if (0 == \count($arr)) {
             $arr = false;
         }
 
@@ -99,16 +92,16 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $uid
-     * @param $roleid
+     * @param int $uid
+     * @param int $roleid
      * @return bool
      */
-    public function staffInRole($uid, $roleid)
+    public function staffInRole(int $uid, int $roleid): bool
     {
-        $crit = new \CriteriaCompo('uid', $uid);
-        $crit->add(new \Criteria('roleid', $roleid));
+        $criteria = new \CriteriaCompo(new \Criteria('uid', $uid));
+        $criteria->add(new \Criteria('roleid', $roleid));
 
-        if (!$role = $this->getObjects($crit)) {
+        if (!$role = $this->getObjects($criteria)) {
             return false;
         }
 
@@ -116,28 +109,29 @@ class StaffRoleHandler extends Xhelp\BaseObjectHandler
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (uid, roleid, deptid) VALUES (%u, %u, %u)', $this->_db->prefix($this->_dbtable), $uid, $roleid, $deptid);
+        $sql = \sprintf('INSERT INTO `%s` (uid, roleid, deptid) VALUES (%u, %u, %u)', $this->db->prefix($this->dbtable), $uid, $roleid, $deptid);
 
         return $sql;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = sprintf('DELETE FROM %s WHERE uid = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('uid'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE uid = %u', $this->db->prefix($this->dbtable), $object->getVar('uid'));
 
         return $sql;
     }

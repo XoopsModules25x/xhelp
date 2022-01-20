@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,96 +14,88 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
 
-
 /**
- * Xhelp\TicketListHandler class
+ * TicketListHandler class
  *
- * TicketList Handler for Xhelp\TicketList class
+ * TicketList Handler for TicketList class
  *
  * @author  Eric Juden <ericj@epcusa.com> &
- * @access  public
- * @package xhelp
  */
-class TicketListHandler extends Xhelp\BaseObjectHandler
+class TicketListHandler extends BaseObjectHandler
 {
     /**
      * Name of child class
      *
      * @var string
-     * @access  private
      */
     public $classname = TicketList::class;
-
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
-    public $_dbtable = 'xhelp_ticket_lists';
+    public $dbtable = 'xhelp_ticket_lists';
 
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
         parent::init($db);
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf('INSERT INTO %s (id, uid, searchid, weight) VALUES (%u, %d, %u, %u)', $this->_db->prefix($this->_dbtable), $id, $uid, $searchid, $weight);
+        $sql = \sprintf('INSERT INTO `%s` (id, uid, searchid, weight) VALUES (%u, %d, %u, %u)', $this->db->prefix($this->dbtable), $id, $uid, $searchid, $weight);
 
         return $sql;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
+        //TODO mb replace with individual variables
         // Copy all object vars into local variables
-        foreach ($obj->cleanVars as $k => $v) {
+        foreach ($object->cleanVars as $k => $v) {
             ${$k} = $v;
         }
 
-        $sql = sprintf('UPDATE %s SET uid = %d, searchid = %u, weight = %u WHERE id = %u', $this->_db->prefix($this->_dbtable), $uid, $searchid, $weight, $id);
+        $sql = \sprintf('UPDATE `%s` SET uid = %d, searchid = %u, weight = %u WHERE id = %u', $this->db->prefix($this->dbtable), $uid, $searchid, $weight, $id);
 
         return $sql;
     }
 
     /**
-     * @param $obj
+     * @param \XoopsObject $object
      * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        $sql = sprintf('DELETE FROM %s WHERE id = %u', $this->_db->prefix($this->_dbtable), $obj->getVar('id'));
+        $sql = \sprintf('DELETE FROM `%s` WHERE id = %u', $this->db->prefix($this->dbtable), $object->getVar('id'));
 
         return $sql;
     }
@@ -109,40 +103,41 @@ class TicketListHandler extends Xhelp\BaseObjectHandler
     // Weight of last ticketList(from staff) and +1
 
     /**
-     * @param $uid
+     * @param int $uid
      * @return int
      */
-    public function createNewWeight($uid)
+    public function createNewWeight(int $uid): int
     {
-        $uid = (int)$uid;
+        $uid = $uid;
 
-        $crit = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
-        $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID), 'OR');
-        $crit->setSort('weight');
-        $crit->setOrder('desc');
-        $crit->setLimit(1);
-        $ticketList = $this->getObjects($crit);
-        $weight     = (is_object($ticketList[0]) ? $ticketList[0]->getVar('weight') : 0);
+        $criteria = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
+        $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID), 'OR');
+        $criteria->setSort('weight');
+        $criteria->setOrder('desc');
+        $criteria->setLimit(1);
+        $ticketList = $this->getObjects($criteria);
+        $weight     = (\is_object($ticketList[0]) ? $ticketList[0]->getVar('weight') : 0);
 
         return $weight + 1;
     }
 
     /**
-     * @param      $listID
+     * @param int  $listID
      * @param bool $up
      * @return bool
      */
-    public function changeWeight($listID, $up = true)
+    public function changeWeight(int $listID, bool $up = true): ?bool
     {
-        $listID           = (int)$listID;
+        $listID           = $listID;
         $ticketList       = $this->get($listID);     // Get ticketList being changed
         $origTicketWeight = $ticketList->getVar('weight');
-        $crit             = new \Criteria('weight', $origTicketWeight, ($up ? '<' : '>'));
-        $crit->setSort('weight');
-        $crit->setOrder($up ? 'DESC' : 'ASC');
-        $crit->setLimit(1);
+        $criteria         = new \Criteria('weight', $origTicketWeight, ($up ? '<' : '>'));
+        $criteria->setSort('weight');
+        $criteria->setOrder($up ? 'DESC' : 'ASC');
+        $criteria->setLimit(1);
 
-        $changeTicketList = $this->getObject($crit);               // Get ticketList being changed with
+        /** @var \XoopsModules\Xhelp\TicketList $changeTicketList */
+        $changeTicketList = $this->getObject($criteria);               // Get ticketList being changed with
         $newTicketWeight  = $changeTicketList->getVar('weight');
 
         $ticketList->setVar('weight', $newTicketWeight);
@@ -154,68 +149,71 @@ class TicketListHandler extends Xhelp\BaseObjectHandler
         } else {
             return false;
         }
+        return true;
     }
 
     /**
-     * @param null $criteria
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria
      * @return array|bool
      */
-    public function &getObject($criteria = null)
+    public function getObject($criteria = null)
     {
         $ret   = [];
         $limit = $start = 0;
-        $sql   = $this->_selectQuery($criteria);
-        $id    = $this->_idfield;
+        $sql   = $this->selectQuery($criteria);
+        $id    = $this->idfield;
 
-        if (isset($criteria)) {
+        if (null !== $criteria) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
         }
-        $result = $this->_db->query($sql, $limit, $start);
+        $result = $this->db->query($sql, $limit, $start);
         // If no records from db, return empty array
         if (!$result) {
             return $ret;
         }
-        $numrows = $this->_db->getRowsNum($result);
+        $numrows = $this->db->getRowsNum($result);
         if (1 == $numrows) {
-            $obj = new $this->classname($this->_db->fetchArray($result));
+            $object = new $this->classname($this->db->fetchArray($result));
 
-            return $obj;
-        } else {
-            return false;
+            return $object;
         }
+
+        return false;
     }
 
     /**
-     * @param $uid
+     * @param int $uid
      * @return array
      */
-    public function &getListsByUser($uid)
+    public function &getListsByUser(int $uid): array
     {
-        $uid  = (int)$uid;
-        $crit = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
-        $crit->add(new \Criteria('uid', XHELP_GLOBAL_UID), 'OR');
-        $crit->setSort('weight');
-        $ret = $this->getObjects($crit);
+        $uid      = $uid;
+        $criteria = new \CriteriaCompo(new \Criteria('uid', $uid), 'OR');
+        $criteria->add(new \Criteria('uid', \XHELP_GLOBAL_UID), 'OR');
+        $criteria->setSort('weight');
+        $ret = $this->getObjects($criteria);
 
         return $ret;
     }
 
     /**
-     * @param $uid
-     * @return bool|void
+     * @param int $uid
+     * @return bool
      */
-    public function createStaffGlobalLists($uid)
+    public function createStaffGlobalLists(int $uid): bool
     {
-        $hSavedSearches = new Xhelp\SavedSearchHandler($GLOBALS['xoopsDB']);
-        $uid            = (int)$uid;
+        $ret            = false;
+        $hSavedSearches = $this->helper->getHandler('SavedSearch');
+        $uid            = $uid;
 
-        $crit = new \Criteria('uid', XHELP_GLOBAL_UID);
-        $crit->setSort('id');
-        $crit->setOrder('ASC');
-        $globalSearches = $hSavedSearches->getObjects($crit, true);
+        $criteria = new \Criteria('uid', \XHELP_GLOBAL_UID);
+        $criteria->setSort('id');
+        $criteria->setOrder('ASC');
+        $globalSearches = $hSavedSearches->getObjects($criteria, true);
         $i              = 1;
         foreach ($globalSearches as $search) {
+            /** @var \XoopsModules\Xhelp\TicketList $list */
             $list = $this->create();
             $list->setVar('uid', $uid);
             $list->setVar('searchid', $search->getVar('id'));

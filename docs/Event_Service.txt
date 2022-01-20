@@ -62,7 +62,7 @@ function batch_priority($tickets, $priority)
  * Triggered after a batch response addition
  * Note: the $response->getVar('ticketid') field is empty for this function
  * @param array $tickets The Xhelp\Ticket objects that were modified
- * @param Xhelp\Responses $response The response added to each ticket
+ * @param Xhelp\Response $response The response added to each ticket
  */
 function batch_response($tickets, $response)
 {}
@@ -140,9 +140,9 @@ function delete_ticket($ticket)
  * Triggered after a response has been modified
  * Also See: new_response
  * @param Xhelp\Ticket $newTicket Ticket after modifications
- * @param Xhelp\Responses $newResponse Modified response
+ * @param Xhelp\Response $newResponse Modified response
  * @param Xhelp\Ticket $oldTicket Ticket before modifications
- * @param Xhelp\Responses $oldResponse Response modifications
+ * @param Xhelp\Response $oldResponse Response modifications
  */
 function edit_response($newTicket, $newResponse, $oldTicket, $oldResponse)
 {}
@@ -188,7 +188,7 @@ function new_file($ticket, $file)
  * Event: new_response
  * Triggered after a response has been added to a ticket
  * @param Xhelp\Ticket $ticket Ticket containing response
- * @param Xhelp\Responses $newResponse Response that was added
+ * @param Xhelp\Response $newResponse Response that was added
  */
 function new_response($ticket, $newResponse)
 {}
@@ -198,7 +198,7 @@ function new_response($ticket, $newResponse)
  * Triggered after a user rates a staff member response
  * @param Xhelp\StaffReview $review Review specifics
  * @param Xhelp\Ticket $ticket Ticket that was reviewed
- * @param Xhelp\Responses $response Exact response that was reviewed
+ * @param Xhelp\Response $response Exact response that was reviewed
  */
 function new_response_rating($review, $ticket, $response)
 {}
@@ -215,7 +215,7 @@ function new_ticket($ticket)
  * Event: new_user_by_email
  * Triggered after new user account is created during ticket submission
  * @param string $password Password for new account
- * @param XoopsUser $xoopsUser XOOPS user object for new account
+ * @param \XoopsUser $xoopsUser XOOPS user object for new account
  */
 function new_user_by_email($password, $xoopsUser)
 {}

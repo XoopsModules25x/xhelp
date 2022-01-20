@@ -11,7 +11,7 @@
 <{/if}>
 <{include file='db:xhelp_staff_header.tpl'}>
 
-<div class="formButton" style="border:1px solid black;">
+<div class="formButton" style="border:1px solid #000000;">
     <table width="100%" cellpadding="0" cellspacing="2">
         <tr>
             <th colspan="2">
@@ -88,7 +88,7 @@
                     <{if $xhelp_response_private eq false}>
                         <input type="checkbox" name="private" value="1" class="formButton">
                     <{else}>
-                        <input type="checkbox" name="private" value="1" class="formButton" checked="checked">
+                        <input type="checkbox" name="private" value="1" class="formButton" checked>
                     <{/if}>
                 </td>
             </tr>
@@ -101,14 +101,14 @@
                         <td class="even">
                             <{if $xhelp_response_ownership}>
                                 <input name="claimOwner" value="<{$xhelp_currentUser}>" type="radio" class="formButton"
-                                       <{if $xhelp_response_ownership eq 1}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
+                                       <{if $xhelp_response_ownership eq 1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                                 <input name="claimOwner" value="0" type="radio" class="formButton"
-                                       <{if $xhelp_response_ownership eq 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                                       <{if $xhelp_response_ownership eq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                             <{else}>
                                 <input name="claimOwner" value="<{$xhelp_currentUser}>" type="radio" class="formButton"
-                                       <{if $xhelp_has_owner eq 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
+                                       <{if $xhelp_has_owner eq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                                 <input name="claimOwner" value="0" type="radio" class="formButton"
-                                       <{if $xhelp_has_owner neq 0}>checked="checked"<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                                       <{if $xhelp_has_owner neq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                             <{/if}>
                         </td>
                     </tr>

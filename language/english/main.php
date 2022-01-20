@@ -1,5 +1,4 @@
-<?php
-//
+<?php declare(strict_types=1);
 
 define('_XHELP_CATEGORY1', 'Assign Ownership');
 define('_XHELP_CATEGORY2', 'Delete Responses');
@@ -514,3 +513,6 @@ define('_XHELP_TEXT_VIEW_REPORT', 'View Report');
 
 define('_XHELP_TEXT_TOTAL', 'Total');
 define('_XHELP_TEXT_NO_JPGRAPH', 'Error: JPGraph is not installed on your server. Please look at readme.txt for xHelp.');
+
+define('_XHELP_MESSAGE_NOT_FLOAT', ' is not float.');
+define('_XHELP_MESSAGE_NOT_INTEGER', ' is not integer.');

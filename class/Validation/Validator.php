@@ -1,6 +1,22 @@
-<?php namespace XoopsModules\Xhelp\Validation;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp\Validation;
+
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    XOOPS Project (https://xoops.org)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author       XOOPS Development Team
+ */
 
 /**
  *  Validator superclass for form validation
@@ -12,11 +28,10 @@ class Validator
      * $errorMsg stores error messages if not valid
      */
     public $errorMsg;
-
     //! A constructor.
 
     /**
-     * Constucts a new Validator object
+     * Constructs a new Validator object
      */
     public function __construct()
     {
@@ -26,9 +41,6 @@ class Validator
 
     //! A manipulator
 
-    /**
-     * @return void
-     */
     public function validate()
     {
         // Superclass method does nothing
@@ -38,10 +50,9 @@ class Validator
 
     /**
      * Adds an error message to the array
-     * @param $msg
-     * @return void
+     * @param string $msg
      */
-    public function setError($msg)
+    public function setError(string $msg)
     {
         $this->errorMsg[] = $msg;
     }
@@ -50,15 +61,15 @@ class Validator
 
     /**
      * Returns true is string valid, false if not
-     * @return boolean
+     * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
-        if (count($this->errorMsg)) {
+        if (\count($this->errorMsg)) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     //! An accessor
@@ -67,15 +78,15 @@ class Validator
      * Pops the last error message off the array
      * @return string
      */
-    public function getError()
+    public function getError(): string
     {
-        return array_pop($this->errorMsg);
+        return \array_pop($this->errorMsg);
     }
 
     /**
      * @return array
      */
-    public function &getErrors()
+    public function &getErrors(): array
     {
         return $this->errorMsg;
     }

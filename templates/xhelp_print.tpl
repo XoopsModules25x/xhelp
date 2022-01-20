@@ -1,6 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html xml:lang="en" lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=<{$xoops_charset}>">
     <meta http-equiv="content-language" content="<{$xoops_langcode}>">
@@ -63,7 +62,7 @@
                 <tr>
                     <td>
                         <{$smarty.const._XHELP_TEXT_OWNER}>
-                        <{if $xhelp_ticket_ownership neq ''}>
+                        <{if $xhelp_ticket_ownership|default:'' neq ''}>
                             <{$xhelp_ticket_ownership}>
                         <{else}>
                             <{$smarty.const._XHELP_NO_OWNER}>
@@ -88,7 +87,7 @@
                 <tr>
                     <td>
                         <{foreach from=$xhelp_custFields item=field}>
-                            <{if $field.value != ""}>
+                            <{if $field.value|default:'' != ''}>
                                 <{$field.name}>: <{$field.value}>
                                 <br>
                             <{/if}>
@@ -105,7 +104,7 @@
     <tr>
         <th><{$smarty.const._XHELP_TEXT_RESPONSES}></th>
     </tr>
-    <{if $xhelp_hasResponses eq true}>
+    <{if $xhelp_hasResponses|default:false eq true}>
         <{foreach from=$xhelp_aResponses item=response}>
             <tr>
                 <td><{$response.uname}><{if $response.private eq true}> (<{$smarty.const._XHELP_TEXT_PRIVATE}>)<{/if}>

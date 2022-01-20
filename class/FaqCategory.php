@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 /**
  * class FaqCategory
@@ -12,16 +12,16 @@ class FaqCategory extends \XoopsObject
      */
     public function __construct()
     {
-        $this->initVar('id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('name', XOBJ_DTYPE_TXTBOX, null, true, 255);
-        $this->initVar('parent', XOBJ_DTYPE_INT, null, false);
+        $this->initVar('id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('name', \XOBJ_DTYPE_TXTBOX, null, true, 255);
+        $this->initVar('parent', \XOBJ_DTYPE_INT, null, false);
     }
 
     /**
-     * @return Xhelp\FaqCategory
+     * @return FaqCategory
      */
-    public function &create()
+    public function &create(): FaqCategory
     {
-        return new Xhelp\FaqCategory();
+        return new FaqCategory();
     }
 }

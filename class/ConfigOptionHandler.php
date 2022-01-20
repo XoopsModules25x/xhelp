@@ -1,6 +1,8 @@
-<?php namespace XoopsModules\Xhelp;
+<?php
 
-use XoopsModules\Xhelp;
+declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /**
  * class ConfigOptionHandler
@@ -8,62 +10,49 @@ use XoopsModules\Xhelp;
 class ConfigOptionHandler extends \XoopsConfigOptionHandler
 {
     /**
-     * Database connection
-     *
-     * @var object
-     * @access  private
-     */
-    public $_db;
-
-    /**
      * Autoincrementing DB fieldname
      * @var string
-     * @access private
      */
-    public $_idfield = 'confop_id';
+    public $idfield = 'confop_id';
 
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function init(\XoopsDatabase $db)
+    public function init(\XoopsDatabase $db = null)
     {
-        $this->_db = $db;
+        $this->db = $db;
     }
 
     /**
      * DB table name
      *
      * @var string
-     * @access private
      */
-    public $_dbtable = 'configoption';
+    public $dbtable = 'configoption';
 
     /**
      * delete configoption matching a set of conditions
      *
-     * @param  \CriteriaElement $criteria {@link CriteriaElement}
-     * @param bool    $force
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link CriteriaElement}
+     * @param bool                                 $force
      * @return bool FALSE if deletion failed
-     * @access  public
      */
-    public function deleteAll($criteria = null, $force = false)
+    public function deleteAll($criteria = null, bool $force = false): bool
     {
-        $sql = 'DELETE FROM ' . $this->db->prefix($this->_dbtable);
-        if (null !== $criteria && is_subclass_of($criteria, 'CriteriaElement')) {
+        $sql = 'DELETE FROM ' . $this->db->prefix($this->dbtable);
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$force) {
-            if (!$result = $this->db->query($sql)) {
-                return false;
-            }
+        if ($force) {
+            $result = $this->db->queryF($sql);
         } else {
-            if (!$result = $this->db->queryF($sql)) {
-                return false;
-            }
+            $result = $this->db->query($sql);
         }
-
+        if (!$result) {
+            return false;
+        }
         return true;
     }
 
@@ -72,11 +61,11 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      *
      * @param \XoopsObject $confoption reference to a {@link XoopsConfigOption}
      * @param bool         $force
-     * @return bool TRUE if successfull.
+     * @return bool|int TRUE if successfull.
      */
-    public function insert(\XoopsObject $confoption, $force = false)
+    public function insert(\XoopsObject $confoption, bool $force = false)
     {
-        if ('xoopsconfigoption' !== strtolower(get_class($confoption))) {
+        if ('xoopsconfigoption' !== \mb_strtolower(\get_class($confoption))) {
             return false;
         }
         if (!$confoption->isDirty()) {
@@ -85,24 +74,24 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
         if (!$confoption->cleanVars()) {
             return false;
         }
+        //TODO mb replace with individual variables
         foreach ($confoption->cleanVars as $k => $v) {
             ${$k} = $v;
         }
         if ($confoption->isNew()) {
             $confop_id = $this->db->genId('configoption_confop_id_seq');
-            $sql       = sprintf('INSERT INTO %s (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)', $this->db->prefix('configoption'), $confop_id, $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $conf_id);
+            $sql       = \sprintf('INSERT INTO `%s` (confop_id, confop_name, confop_value, conf_id) VALUES (%u, %s, %s, %u)', $this->db->prefix('configoption'), $confop_id, $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $conf_id);
         } else {
-            $sql = sprintf('UPDATE %s SET confop_name = %s, confop_value = %s WHERE confop_id = %u', $this->db->prefix('configoption'), $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $confop_id);
+            $sql = \sprintf('UPDATE `%s` SET confop_name = %s, confop_value = %s WHERE confop_id = %u', $this->db->prefix('configoption'), $this->db->quoteString($confop_name), $this->db->quoteString($confop_value), $confop_id);
         }
 
-        if (!$force) {
-            if (!$result = $this->db->query($sql)) {
-                return false;
-            }
+        if ($force) {
+            $result = $this->db->queryF($sql);
         } else {
-            if (!$result = $this->db->queryF($sql)) {
-                return false;
-            }
+            $result = $this->db->query($sql);
+        }
+        if (!$result) {
+            return false;
         }
         if (empty($confop_id)) {
             $confop_id = $this->db->getInsertId();

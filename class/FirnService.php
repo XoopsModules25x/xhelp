@@ -1,63 +1,65 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-//
-
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 // require_once XHELP_CLASS_PATH . '/Service.php';
 
 /**
- * Xhelp\FirnService class
+ * FirnService class
  *
  * Trains the FIRN (Find It Right Now) service
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
-class FirnService extends Xhelp\Service
+class FirnService extends Service
 {
     /**
-     * Xhelp\FirnService constructor.
+     * FirnService constructor.
      */
     public function __construct()
     {
         $this->init();
     }
 
-    public function _attachEvents()
+    /**
+     *
+     */
+    public function attachEvents()
     {
-        $this->_attachEvent('new_faq', $this);
+        $this->attachEvent('new_faq', $this);
     }
 
     /**
      * Event: new_faq
      * Triggered after FAQ addition
-     * @param Xhelp\Ticket $ticket Ticket used as base for FAQ
-     * @param Xhelp\Faq    $faq    FAQ that was added
+     * @param Ticket $ticket Ticket used as base for FAQ
+     * @param Faq    $faq    FAQ that was added
+     * @return bool
      */
-    public function new_faq($ticket, $faq)
+    public function new_faq(Ticket $ticket, Faq $faq): bool
     {
         global $xoopsUser;
+        $helper = Helper::getInstance();
 
         //Create a new solution from the supplied ticket / faq
-        $hTicketSol = new Xhelp\TicketSolutionHandler($GLOBALS['xoopsDB']);
-        $sol        = $hTicketSol->create();
+        /** @var \XoopsModules\Xhelp\TicketSolutionHandler $ticketSolutionHandler */
+        $ticketSolutionHandler = $helper->getHandler('TicketSolution');
+        /** @var \XoopsModules\Xhelp\TicketSolution $ticketSolution */
+        $ticketSolution = $ticketSolutionHandler->create();
 
-        $sol->setVar('ticketid', $ticket->getVar('id'));
-        $sol->setVar('url', $faq->getVar('url'));
-        $sol->setVar('title', $faq->getVar('subject'));
-        $sol->setVar('uid', $xoopsUser->getVar('uid'));
+        $ticketSolution->setVar('ticketid', $ticket->getVar('id'));
+        $ticketSolution->setVar('url', $faq->getVar('url'));
+        $ticketSolution->setVar('title', $faq->getVar('subject'));
+        $ticketSolution->setVar('uid', $xoopsUser->getVar('uid'));
 
-        return $hTicketSol->addSolution($ticket, $sol);
+        return $ticketSolutionHandler->addSolution($ticket, $ticketSolution);
     }
 
     /**
      * Only have 1 instance of class used
-     * @return object {@link xhelp_eventService}
-     * @access  public
+     * @return Service {@link Service}
      */
-    public static function getInstance()
+    public static function getInstance(): Service
     {
         static $instance;
         if (null === $instance) {

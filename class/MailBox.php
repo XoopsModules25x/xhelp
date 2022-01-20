@@ -1,11 +1,9 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
-define('_XHELP_MAILBOXTYPE_POP3', 1);
-define('_XHELP_MAILBOXTYPE_IMAP', 2);
-
-//
+\define('_XHELP_MAILBOXTYPE_POP3', 1);
+\define('_XHELP_MAILBOXTYPE_IMAP', 2);
 
 /**
  * Xhelp\MailBox class
@@ -14,70 +12,58 @@ define('_XHELP_MAILBOXTYPE_IMAP', 2);
  * needed to interact with a mailstore
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
- * @access  public
  * @abstract
- * @package xhelp
  */
 class MailBox
 {
     /**
-     * @param     $server
-     * @param int $port
+     * @param string $server
+     * @param int    $port
      */
-    public function connect($server, $port = 110)
+    public function connect(string $server, int $port = 110)
     {
     }
-
-    //
 
     /**
-     * @param $username
-     * @param $password
+     * @param string $username
+     * @param string $password
      */
-    public function login($username, $password)
+    public function login(string $username, string $password)
     {
     }
 
-    //
     public function messageCount()
     {
     }
 
-    //
-
     /**
-     * @param $i
+     * @param int $i
      */
-    public function getHeaders($i)
-    {
-    }
-
-    //
-
-    /**
-     * @param $i
-     */
-    public function getBody($i)
+    public function getHeaders(int $i)
     {
     }
 
     /**
-     * @param $i
+     * @param int $i
      */
-    public function getMsg($i)
+    public function getBody(int $i)
     {
     }
-
-    //
 
     /**
-     * @param $i
+     * @param int $i
      */
-    public function deleteMessage($i)
+    public function getMsg(int $i)
     {
     }
 
-    //
+    /**
+     * @param int $i
+     */
+    public function deleteMessage(int $i)
+    {
+    }
+
     public function disconnect()
     {
     }

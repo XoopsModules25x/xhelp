@@ -6,9 +6,10 @@
     <script type="text/javascript">
         <!--
         var http;
+
         function tester_onClick() {
             http = xhelpGetHTTPObject();
-            http.open("GET", "http://bwahoff2/xoops/modules/xhelp/scripts/addTicketDeptChange.php?deptid=1", true);
+            http.open("GET", "https://bwahoff2/xoops/modules/xhelp/scripts/addTicketDeptChange.php?deptid=1", true);
             http.onreadystatechange = function () {
                 if (http.readyState == 4) {
                     if (http.status == 200) {

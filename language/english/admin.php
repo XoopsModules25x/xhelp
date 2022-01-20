@@ -1,5 +1,4 @@
-<?php
-//
+<?php declare(strict_types=1);
 
 //Menu choices
 define('_AM_XHELP_ADMIN_TITLE', '%s Administrator Menu');
@@ -189,7 +188,7 @@ define('_AM_XHELP_TEXT_FILENAME', 'Filename');
 define('_AM_XHELP_TEXT_MIMETYPE', 'Mimetype');
 define('_AM_XHELP_TEXT_TOTAL_USED_SPACE', 'Total Used Space');
 define('_AM_XHELP_TEXT_SIZE', 'Size');
-define('_AM_XHELP_TEXT_DELETE_RESOLVED', 'DELETE attachments FROM resolved tickets?');
+define('_AM_XHELP_TEXT_DELETE_RESOLVED', 'Delet attachments from resolved tickets?');
 define('_AM_XHELP_TEXT_NO_FILES', 'No Files Found');
 define('_AM_XHELP_TEXT_RESOLVED_ATTACH', 'Resolved Attachments');
 define('_AM_XHELP_TEXT_ALL_ATTACH', 'All Attachments');
@@ -223,11 +222,14 @@ define('_AM_XHELP_MIME_USERFINFO', '<b>Mimetypes that are available for User upl
 define('_AM_XHELP_MIME_NOMIMEINFO', 'No mimetypes selected.');
 define('_AM_XHELP_MIME_FINDMIMETYPE', 'Find New Mimetype?');
 define('_AM_XHELP_MIME_EXTFIND', "Search File Extension<div style='padding-top: 8px;'><span style='font-weight: normal;'>Enter file extension you wish to search.</span></div>");
-define('_AM_XHELP_MIME_INFOTEXT', '<ul><li>New mimetypes can be created, edit or deleted easily via this form.</li>
+define(
+    '_AM_XHELP_MIME_INFOTEXT',
+    '<ul><li>New mimetypes can be created, edit or deleted easily via this form.</li>
     <li>Search for a new mimetypes via an external website.</li>
     <li>View displayed mimetypes for Admin and User uploads.</li>
     <li>Change mimetype upload status.</li></ul>
-    ');
+    '
+);
 
 // Mimetype Buttons
 define('_AM_XHELP_MIME_CREATE', 'Create');
@@ -252,6 +254,7 @@ define('_AM_XHELP_ICO_ONLINE', 'Online');
 define('_AM_XHELP_ICO_OFFLINE', 'Offline');
 define('_AM_XHELP_ICO_APPROVED', 'Approved');
 define('_AM_XHELP_ICO_NOTAPPROVED', 'Not Approved');
+define('_AM_XHELP_REJECTED_EDIT', 'Edit this rejected item');
 
 define('_AM_XHELP_ICO_LINK', 'Related Link');
 define('_AM_XHELP_ICO_URL', 'Add Related URL');
@@ -476,5 +479,38 @@ define('_AM_XHELP_ERROR_COLUMN', 'Could not create column in database : %s');
 define('_AM_XHELP_ERROR_BAD_XOOPS', 'This module requires XOOPS %s+ (%s installed)');
 define('_AM_XHELP_ERROR_BAD_PHP', 'This module requires PHP version %s+ (%s installed)');
 define('_AM_XHELP_ERROR_TAG_REMOVAL', 'Could not remove tags from Tag Module');
+
 //0.90
-define('_AM_XHELP_EDIT_ERR', "Error: Can't find the notification" );
+define('_AM_XHELP_EDIT_ERR', "Error: Can't find the notification");
+
+//1.0.0
+
+define('_AM_XHELP_TOTAL_DEPARTMENTS', 'Departments');
+define('_AM_XHELP_TOTAL_FILES', 'Files');
+define('_AM_XHELP_TOTAL_LOGMESSAGES', 'Log Messages');
+define('_AM_XHELP_TOTAL_RESPONSES', 'Responses');
+define('_AM_XHELP_TOTALS_STAFF', 'Staff Members');
+define('_AM_XHELP_TOTAL_STAFF_REVIEWS', 'Staff Reviews');
+define('_AM_XHELP_TOTAL_TICKETS', 'Tickets');
+define('_AM_XHELP_TOTAL_ROLES', 'Roles');
+define('_AM_XHELP_TOTAL_NOTIFICATIONS', 'Notifications');
+define('_AM_XHELP_TOTAL_TICKET_SOLUTIONS', 'Ticket Solutions');
+
+define('_AM_XHELP_MESSAGE_NO_FIELD', 'There are no extra fields');
+
+//define('_XHELP_EMAIL_SCANNER_IP_COLUMN', 'IP Column');
+//define('_XHELP_MESSAGE_NO_DELETE_FILE', 'File not deleted');
+//define('_XHELP_MESSAGE_NO_DEPARTMENT', 'No Department');
+//define('_XHELP_MESSAGE_NO_OWNER', 'No Owner');
+//define('_XHELP_MESSAGE_NO_RESPONSE', 'No Response');
+//define('_XHELP_MESSAGE_NO_STATUS', 'No Status');
+//define('XHELP_MESSAGE_NO_ADD_FAQ', 'No FAQ added');
+
+define('_AM_XHELP_EMAIL_SCANNER_IP_COLUMN', 'IP Column');
+define('_AM_XHELP_MESSAGE_NO_DELETE_FILE', 'File not deleted');
+define('_AM_XHELP_MESSAGE_NO_DEPARTMENT', 'No Department');
+define('_AM_XHELP_MESSAGE_NO_OWNER', 'No Owner');
+define('_AM_XHELP_MESSAGE_NO_RESPONSE', 'No Response');
+define('_AM_XHELP_MESSAGE_NO_STATUS', 'No Status');
+define('_AM_XHELP_MESSAGE_NO_ADD_FAQ', 'No FAQ added');
+define('_AM_XHELP_NO_PERM', 'You do not have the permission for this action');

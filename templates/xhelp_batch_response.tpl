@@ -1,7 +1,7 @@
 <{include file='db:xhelp_staff_header.tpl'}>
 
 <div class="formButton" style="" id="xhelp_batchaddresponse">
-    <div class="formButton" style="border:1px solid black;" id="xhelp_batchaddresponse_inner">
+    <div class="formButton" style="border:1px solid #000000;" id="xhelp_batchaddresponse_inner">
         <table width="100%" cellpadding="0" cellspacing="2">
             <tr>
                 <th colspan="2">
@@ -50,7 +50,7 @@
                     </td>
                     <td class="even">
                         <input type="checkbox" name="private" value="1" class="formButton"
-                               <{if $xhelp_private eq true}>checked="checked"<{/if}>>
+                               <{if $xhelp_private eq true}>checked<{/if}>>
                     </td>
                 </tr>
                 <tr>

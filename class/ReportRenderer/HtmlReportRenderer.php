@@ -1,10 +1,10 @@
-<?php namespace XoopsModules\Xhelp\ReportRenderer;
+<?php declare(strict_types=1);
 
-//
+namespace XoopsModules\Xhelp\ReportRenderer;
 
 use XoopsModules\Xhelp;
 
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -20,7 +20,7 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
 {
     /**
      * Xhelp\HtmlReportRenderer constructor.
-     * @param $report
+     * @param Report $report
      */
     public function __construct($report)
     {
@@ -32,20 +32,20 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
      * @param int $graphHeight
      * @return string
      */
-    public function render($graphWidth = 500, $graphHeight = 300)
+    public function render(int $graphWidth = 500, int $graphHeight = 300): string
     {
         global $paramVals;
         $report = $this->report;
 
         if (0 == $report->getVar('hasResults')) {
-            $report->_setResults();
+            $report->setResults();
         }
         $aResults = $report->getVar('results');
 
         $params = '';
         if (!empty($paramVals)) {
             foreach ($paramVals as $key => $value) {
-                if (is_array($value)) {
+                if (\is_array($value)) {
                     $params .= "&$key=$value[1]";
                 } else {
                     $params .= "&$key=$value";
@@ -58,7 +58,7 @@ class HtmlReportRenderer extends Xhelp\ReportRenderer
 
         if ($report->getVar('hasGraph')) {
             $myReport .= "<div id='xhelp_graph'>";
-            $myReport .= "<img src='" . XHELP_BASE_URL . '/report.php?op=graph&name=' . $report->name . $params . "' align='center' width='" . $graphWidth . "' height='" . $graphHeight . "'>";
+            $myReport .= "<img src='" . \XHELP_BASE_URL . '/report.php?op=graph&name=' . $report->name . $params . "' align='center' width='" . $graphWidth . "' height='" . $graphHeight . "'>";
             $myReport .= '</div>';
         }
 

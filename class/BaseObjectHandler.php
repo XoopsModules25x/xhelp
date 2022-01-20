@@ -1,47 +1,37 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 /**
- * Xhelp\BaseObjectHandler class
+ * BaseObjectHandler class
  *
  * @author  Nazar Aziz <nazar@panthersoftware.com>
- * @access  public
- * @package xhelp
  */
-class BaseObjectHandler extends \XoopsObjectHandler
+class BaseObjectHandler extends \XoopsPersistableObjectHandler
 {
-    /**
-     * Database connection
-     *
-     * @var object
-     * @access  private
-     */
-    public $_db;
-
     /**
      * Autoincrementing DB fieldname
      * @var string
-     * @access private
      */
-    public $_idfield = 'id';
+    public $idfield = 'id';
+    public $helper;
 
     /**
      * Constructor
      *
-     * @param \XoopsDatabase $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function init(\XoopsDatabase $db)
+    public function init(\XoopsMySQLDatabase $db = null)
     {
-        $this->_db = $db;
+        $this->db     = $db;
+        $this->helper = Helper::getInstance();
     }
 
     /**
      * create a new  object
-     * @return object {@link Xhelp\BaseObject}
-     * @access public
+     * @return object {@link BaseObject}
      */
-    public function create()
+    public function create($isNew = true): object
     {
         $obj = new $this->classname();
 
@@ -50,22 +40,27 @@ class BaseObjectHandler extends \XoopsObjectHandler
 
     /**
      * retrieve an object from the database, based on. use in child classes
-     * @param  int $id ID
+     * @param int $id ID
      * @return mixed object if id exists, false if not
-     * @access public
      */
-    public function get($id)
+    public function get($id = null, $fields = null) //$id)
     {
         $ret = false;
         $id  = (int)$id;
         if ($id > 0) {
-            $sql = $this->_selectQuery(new \Criteria($this->_idfield, $id));
-            if (!$result = $this->_db->query($sql)) {
+            $sql = $this->selectQuery(new \Criteria($this->idfield, (string)$id));
+            if (!$result = $this->db->query($sql)) {
                 return $ret;
             }
-            $numrows = $this->_db->getRowsNum($result);
+            $numrows = $this->db->getRowsNum($result);
+            if (0 == $numrows) {
+                $obj = new $this->classname();
+                $obj->setVar('notif_id', $id);
+                return $obj;
+            }
             if (1 == $numrows) {
-                $obj = new $this->classname($this->_db->fetchArray($result));
+                $objData = $this->db->fetchArray($result);
+                $obj     = new $this->classname($objData);
 
                 return $obj;
             }
@@ -77,36 +72,36 @@ class BaseObjectHandler extends \XoopsObjectHandler
     /**
      * retrieve objects from the database
      *
-     * @param  object $criteria  {@link CriteriaElement} conditions to be met
-     * @param  bool   $id_as_key Should the department ID be used as array key
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria  {@link \CriteriaElement} conditions to be met
+     * @param bool                                 $id_as_key Should the department ID be used as array key
      * @return array  array of objects
-     * @access  public
      */
-    public function &getObjects($criteria = null, $id_as_key = false)
+    //    public function &getObjects($criteria = null, bool $id_as_key = false)
+    public function &getObjects(\CriteriaElement $criteria = null, $id_as_key = false, $as_object = true): array
     {
         $ret   = [];
         $limit = $start = 0;
-        $sql   = $this->_selectQuery($criteria);
-        $id    = $this->_idfield;
+        $sql   = $this->selectQuery($criteria);
+        $id    = $this->idfield;
 
-        if (isset($criteria)) {
+        if (null !== $criteria) {
             $limit = $criteria->getLimit();
             $start = $criteria->getStart();
         }
 
-        $result = $this->_db->query($sql, $limit, $start);
+        $result = $this->db->query($sql, $limit, $start);
         // If no records from db, return empty array
-        if (!$result) {
+        if (!$result || $this->db->getRowsNum($result) < 0) {
             return $ret;
         }
 
         // Add each returned record to the result array
-        while ($myrow = $this->_db->fetchArray($result)) {
+        while (false !== ($myrow = $this->db->fetchArray($result))) {
             $obj = new $this->classname($myrow);
-            if (!$id_as_key) {
-                $ret[] = $obj;
-            } else {
+            if ($id_as_key) {
                 $ret[$obj->getVar($id)] = $obj;
+            } else {
+                $ret[] = $obj;
             }
             unset($obj);
         }
@@ -115,47 +110,47 @@ class BaseObjectHandler extends \XoopsObjectHandler
     }
 
     /**
-     * @param \XoopsObject $obj
+     * @param \XoopsObject $object
      * @param bool         $force
      * @return bool
      */
-    public function insert(\XoopsObject $obj, $force = false)
+    public function insert(\XoopsObject $object, $force = true): bool
     {
         // Make sure object is of correct type
-        if (0 != strcasecmp($this->classname, get_class($obj))) {
-            $obj->setErrors('Object is not a ' . $this->classname);
+        if (0 != \strcasecmp($this->classname, \get_class($object))) {
+            $object->setErrors('Object is not a ' . $this->classname);
 
             return false;
         }
 
         // Make sure object needs to be stored in DB
-        if (!$obj->isDirty()) {
-            $obj->setErrors('Object does not need to be saved');
+        if (!$object->isDirty()) {
+            $object->setErrors('Object does not need to be saved');
 
             return true;
         }
 
         // Make sure object fields are filled with valid values
-        if (!$obj->cleanVars()) {
-            $obj->setErrors('Object cannot be sanitized for storage');
+        if (!$object->cleanVars()) {
+            $object->setErrors('Object cannot be sanitized for storage');
 
             return false;
         }
 
         // Create query for DB update
-        if ($obj->isNew()) {
+        if ($object->isNew()) {
             // Determine next auto-gen ID for table
-            $id  = $this->_db->genId($this->_db->prefix($this->_dbtable) . '_uid_seq');
-            $sql = $this->_insertQuery($obj);
+            $id  = $this->db->genId($this->db->prefix($this->dbtable) . '_uid_seq');
+            $sql = $this->insertQuery($object);
         } else {
-            $sql = $this->_updateQuery($obj);
+            $sql = $this->updateQuery($object);
         }
 
         // Update DB
-        if (false != $force) {
-            $result = $this->_db->queryF($sql);
+        if ($force) {
+            $result = $this->db->queryF($sql);
         } else {
-            $result = $this->_db->query($sql);
+            $result = $this->db->query($sql);
         }
 
         if (!$result) {
@@ -163,8 +158,8 @@ class BaseObjectHandler extends \XoopsObjectHandler
         }
 
         //Make sure auto-gen ID is stored correctly in object
-        if ($obj->isNew()) {
-            $obj->assignVar($this->_idfield, $this->_db->getInsertId());
+        if ($object->isNew()) {
+            $object->assignVar($this->idfield, $this->db->getInsertId());
         }
 
         return true;
@@ -172,14 +167,13 @@ class BaseObjectHandler extends \XoopsObjectHandler
 
     /**
      * Create a "select" SQL query
-     * @param  \CriteriaElement $criteria {@link CriteriaElement} to match
+     * @param \CriteriaElement|null $criteria {@link \CriteriaElement} to match
      * @return string SQL query
-     * @access private
      */
-    public function _selectQuery(\CriteriaElement $criteria = null)
+    public function selectQuery(\CriteriaElement $criteria = null): string
     {
-        $sql = sprintf('SELECT * FROM %s', $this->_db->prefix($this->_dbtable));
-        if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
+        $sql = \sprintf('SELECT * FROM `%s`', $this->db->prefix($this->dbtable));
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
             if ('' != $criteria->getSort()) {
                 $sql .= ' ORDER BY ' . $criteria->getSort() . '
@@ -193,45 +187,42 @@ class BaseObjectHandler extends \XoopsObjectHandler
     /**
      * count objects matching a criteria
      *
-     * @param  \CriteriaElement $criteria {@link CriteriaElement} to match
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link \CriteriaElement} to match
      * @return int    count of objects
-     * @access public
      */
-    public function getCount($criteria = null)
+    public function getCount($criteria = null): int
     {
-        $sql = 'SELECT COUNT(*) FROM ' . $this->_db->prefix($this->_dbtable);
-        if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
+        $sql = 'SELECT COUNT(*) FROM ' . $this->db->prefix($this->dbtable);
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return 0;
         }
-        list($count) = $this->_db->fetchRow($result);
+        [$count] = $this->db->fetchRow($result);
 
-        return $count;
+        return (int)$count;
     }
 
     /**
      * delete object based on id
      *
-     * @param \XoopsObject $obj         {@link XoopsObject}
-     *                                  to delete
-     * @param  bool        $force       override XOOPS delete protection
-     * @return bool deletion successful?
-     * @access public
+     * @param \XoopsObject $object {@link XoopsObject} reference to the object to delete
+     * @param bool         $force
+     * @return bool        FALSE if failed.
      */
-    public function delete(\XoopsObject $obj, $force = false)
+    public function delete(\XoopsObject $object, $force = false): bool
     {
-        if (0 != strcasecmp($this->classname, get_class($obj))) {
+        if (0 != \strcasecmp($this->classname, \get_class($object))) {
             return false;
         }
 
-        $sql = $this->_deleteQuery($obj);
+        $sql = $this->deleteQuery($object);
 
-        if (false != $force) {
-            $result = $this->_db->queryF($sql);
+        if ($force) {
+            $result = $this->db->queryF($sql);
         } else {
-            $result = $this->_db->query($sql);
+            $result = $this->db->query($sql);
         }
         if (!$result) {
             return false;
@@ -243,17 +234,16 @@ class BaseObjectHandler extends \XoopsObjectHandler
     /**
      * delete department matching a set of conditions
      *
-     * @param  \CriteriaElement $criteria {@link CriteriaElement}
+     * @param \CriteriaElement|\CriteriaCompo|null $criteria {@link \CriteriaElement}
      * @return bool   FALSE if deletion failed
-     * @access  public
      */
-    public function deleteAll($criteria = null)
+    public function deleteAll(\CriteriaElement $criteria = null, $force = true, $asObject = false): bool
     {
-        $sql = 'DELETE FROM ' . $this->_db->prefix($this->_dbtable);
-        if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
+        $sql = 'DELETE FROM ' . $this->db->prefix($this->dbtable);
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return false;
         }
 
@@ -263,20 +253,20 @@ class BaseObjectHandler extends \XoopsObjectHandler
     /**
      * Assign a value to 1 field for tickets matching a set of conditions
      *
-     * @param         $fieldname
-     * @param         $fieldvalue
-     * @param  \CriteriaElement $criteria {@link CriteriaElement}
+     * @param string         $fieldname
+     * @param string|int     $fieldvalue
+     * @param \Criteria|null $criteria {@link \CriteriaElement}
      * @return bool FALSE if update failed
-     * @access  public
      */
-    public function updateAll($fieldname, $fieldvalue, $criteria = null)
+    //    public function updateAll(string $fieldname, $fieldvalue, \CriteriaElement $criteria = null): bool
+    public function updateAll($fieldname, $fieldvalue, \CriteriaElement $criteria = null, $force = false): bool
     {
-        $set_clause = is_numeric($fieldvalue) ? $fieldname . ' = ' . $fieldvalue : $fieldname . ' = ' . $this->_db->quoteString($fieldvalue);
-        $sql        = 'UPDATE ' . $this->_db->prefix($this->_dbtable) . ' SET ' . $set_clause;
-        if (isset($criteria) && is_subclass_of($criteria, 'CriteriaElement')) {
+        $set_clause = \is_numeric($fieldvalue) ? $fieldname . ' = ' . $fieldvalue : $fieldname . ' = ' . $this->db->quoteString($fieldvalue);
+        $sql        = 'UPDATE ' . $this->db->prefix($this->dbtable) . ' SET ' . $set_clause;
+        if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
             $sql .= ' ' . $criteria->renderWhere();
         }
-        if (!$result = $this->_db->query($sql)) {
+        if (!$result = $this->db->query($sql)) {
             return false;
         }
 
@@ -284,40 +274,39 @@ class BaseObjectHandler extends \XoopsObjectHandler
     }
 
     /**
-     * @param $obj
-     * @return bool
+     * @param \XoopsObject $object
+     * @return string
      */
-    public function _insertQuery($obj)
+    public function insertQuery(\XoopsObject $object): string
     {
-        return false;
+        return '';
     }
 
     /**
-     * @param $obj
-     * @return bool
+     * @param \XoopsObject $object
+     * @return string
      */
-    public function _updateQuery($obj)
+    public function updateQuery(\XoopsObject $object): string
     {
-        return false;
+        return '';
     }
 
     /**
-     * @param $obj
-     * @return bool
+     * @param \XoopsObject $object
+     * @return string
      */
-    public function _deleteQuery($obj)
+    public function deleteQuery(\XoopsObject $object): string
     {
-        return false;
+        return '';
     }
 
     /**
      * Singleton - prevent multiple instances of this class
      *
-     * @param \XoopsDatabase $db
-     * @return object <a href='psi_element://pagesCategoryHandler'>pagesCategoryHandler</a>
-     * @access public
+     * @param \XoopsDatabase|null $db
+     * @return \XoopsModules\Xhelp\BaseObjectHandler
      */
-    public function getInstance(\XoopsDatabase $db)
+    public function getInstance(\XoopsDatabase $db = null): BaseObjectHandler
     {
         static $instance;
         if (null === $instance) {

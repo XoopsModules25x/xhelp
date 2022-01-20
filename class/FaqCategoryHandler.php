@@ -1,6 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
 
 /**
  * class FaqCategoryHandler
@@ -8,10 +8,10 @@ use XoopsModules\Xhelp;
 class FaqCategoryHandler extends \XoopsObjectHandler
 {
     /**
-     * @return Xhelp\FaqCategory
+     * @return FaqCategory
      */
-    public function &create()
+    public function &create(): FaqCategory
     {
-        return new Xhelp\FaqCategory();
+        return new FaqCategory();
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,15 +14,11 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CLASS_PATH')) {
+if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }
 
@@ -30,24 +28,22 @@ if (!defined('XHELP_CLASS_PATH')) {
  * Xhelp\Notification class
  *
  * @author  Eric Juden <ericj@epcusa.com>
- * @access  public
- * @package xhelp
  */
 class Notification extends \XoopsObject
 {
     /**
      * Xhelp\Notification constructor.
-     * @param null $id
+     * @param array|null $id
      */
-    public function __construct($id = null)
+    public function __construct(array $id = null)
     {
-        $this->initVar('notif_id', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('staff_setting', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('user_setting', XOBJ_DTYPE_INT, null, false);
-        $this->initVar('staff_options', XOBJ_DTYPE_ARRAY, null, false, 1000000);
+        $this->initVar('notif_id', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('staff_setting', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('user_setting', \XOBJ_DTYPE_INT, null, false);
+        $this->initVar('staff_options', \XOBJ_DTYPE_ARRAY, null, false, 1000000);
 
         if (null !== $id) {
-            if (is_array($id)) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {

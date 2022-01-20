@@ -1,10 +1,11 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-use XoopsModules\Xhelp;
+namespace XoopsModules\Xhelp;
+
+use RuntimeException;
 
 /**
  * A wrapper around PHP's session functions
- * @package xhelp
  * @author  Harry Fuecks (PHP Anthology Volume II)
  */
 class Session
@@ -14,19 +15,18 @@ class Session
      * Starts the session with session_start()
      * <b>Note:</b> that if the session has already started,
      * session_start() does nothing
-     * @access public
      */
     public function __construct()
     {
-        @session_start();
+        if (!@\session_start()) {
+            throw new RuntimeException('Session could not start.');
+        }
     }
 
     /**
      * Sets a session variable
-     * @param string name of variable
-     * @param mixed  value of variable
-     * @return void
-     * @access public
+     * @param mixed $name
+     * @param mixed $value
      */
     public function set($name, $value)
     {
@@ -35,24 +35,17 @@ class Session
 
     /**
      * Fetches a session variable
-     * @param string name of variable
-     * @return mixed value of session variable
-     * @access public
+     * @param mixed $name
+     * @return string|array|bool session variable
      */
     public function get($name)
     {
-        if (isset($_SESSION[$name])) {
-            return $_SESSION[$name];
-        } else {
-            return false;
-        }
+        return $_SESSION[$name] ?? false;
     }
 
     /**
      * Deletes a session variable
-     * @param string name of variable
-     * @return void
-     * @access public
+     * @param mixed $name
      */
     public function del($name)
     {
@@ -61,19 +54,17 @@ class Session
 
     /**
      * Destroys the whole session
-     * @return void
-     * @access public
      */
     public function destroy()
     {
         $_SESSION = [];
-        session_destroy();
+        \session_destroy();
     }
 
     /**
      * @return static
      */
-    public static function getInstance()
+    public static function getInstance(): Session
     {
         static $instance;
         if (null === $instance) {

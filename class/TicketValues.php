@@ -1,4 +1,6 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
+
+namespace XoopsModules\Xhelp;
 
 /*
  * You may not change or alter any portion of this comment or credits
@@ -12,64 +14,60 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Xhelp;
-
-if (!defined('XHELP_CONSTANTS_INCLUDED')) {
+if (!\defined('XHELP_CONSTANTS_INCLUDED')) {
     exit();
 }
 
 // require_once XHELP_CLASS_PATH . '/BaseObjectHandler.php';
-$helper->LoadLanguage('admin');
 
 /**
- * Xhelp\TicketValues class
+ * TicketValues class
  *
  * Metadata that represents a custom value created for xhelp
  *
  * @author  Eric Juden <eric@3dev.org>
- * @access  public
- * @package xhelp
  */
 class TicketValues extends \XoopsObject
 {
-    public $_fields = [];
+    private $fields = [];
+    private $helper;
 
     /**
      * Class Constructor
      *
-     * @param null $id
-     * @internal param mixed $ticketid null for a new object, hash table for an existing object
-     * @access   public
+     * @param int|array|null $id
+     * @internal param mixed $ticketid: null for a new object, hash table for an existing object
      */
     public function __construct($id = null)
     {
-        $this->initVar('ticketid', XOBJ_DTYPE_INT, null, false);
+        $this->initVar('ticketid', \XOBJ_DTYPE_INT, null, false);
+        $this->helper = Helper::getInstance();
+        $this->helper->loadLanguage('admin');
 
-        $hFields = new Xhelp\TicketFieldHandler($GLOBALS['xoopsDB']);
-        $fields  = $hFields->getObjects(null, true);
+        /** @var \XoopsModules\Xhelp\TicketFieldHandler $ticketFieldHandler */
+        $ticketFieldHandler = $this->helper->getHandler('TicketField');
+        $fields             = $ticketFieldHandler->getObjects(null, true);
 
         foreach ($fields as $field) {
             $key       = $field->getVar('fieldname');
-            $datatype  = $this->_getDataType($field->getVar('datatype'), $field->getVar('controltype'));
-            $value     = $this->_getValueFromXoopsDataType($datatype);
+            $datatype  = $this->getDataType($field->getVar('datatype'), $field->getVar('controltype'));
+            $value     = $this->getValueFromXoopsDataType($datatype);
             $required  = $field->getVar('required');
             $maxlength = ($field->getVar('fieldlength') < 50 ? $field->getVar('fieldlength') : 50);
             $options   = '';
 
             $this->initVar($key, $datatype, null, $required, $maxlength, $options);
 
-            $this->_fields[$key] = ((_XHELP_DATATYPE_TEXT == $field->getVar('datatype')) ? '%s' : '%d');
+            $this->fields[$key] = ((\_XHELP_DATATYPE_TEXT == $field->getVar('datatype')) ? '%s' : '%d');
         }
-        $this->_fields['ticketid'] = '%u';
+        $this->fields['ticketid'] = '%u';
 
-        if (isset($id)) {
-            if (is_array($id)) {
+        if (null !== $id) {
+            if (\is_array($id)) {
                 $this->assignVars($id);
             }
         } else {
@@ -78,92 +76,79 @@ class TicketValues extends \XoopsObject
     }
 
     /**
-     * @param $datatype
-     * @param $controltype
+     * @param string $datatype
+     * @param int    $controltype
      * @return int
      */
-    public function _getDataType($datatype, $controltype)
+    private function getDataType(string $datatype, int $controltype): ?int
     {
         switch ($controltype) {
-            case XHELP_CONTROL_TXTBOX:
-                return $this->_getXoopsDataType($datatype);
+            case \XHELP_CONTROL_TXTBOX:
+                return $this->getXoopsDataType($datatype);
                 break;
-
-            case XHELP_CONTROL_TXTAREA:
-                return $this->_getXoopsDataType($datatype);
+            case \XHELP_CONTROL_TXTAREA:
+                return $this->getXoopsDataType($datatype);
                 break;
-
-            case XHELP_CONTROL_SELECT:
-                return XOBJ_DTYPE_TXTAREA;
+            case \XHELP_CONTROL_SELECT:
+                return \XOBJ_DTYPE_TXTAREA;
                 break;
-
-            case XHELP_CONTROL_YESNO:
-                return XOBJ_DTYPE_INT;
+            case \XHELP_CONTROL_YESNO:
+                return \XOBJ_DTYPE_INT;
                 break;
-
-            case XHELP_CONTROL_RADIOBOX:
-                return XOBJ_DTYPE_TXTBOX;
+            case \XHELP_CONTROL_RADIOBOX:
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
-
-            case XHELP_CONTROL_DATETIME:
-                return $this->_getXoopsDataType($datatype);
+            case \XHELP_CONTROL_DATETIME:
+                return $this->getXoopsDataType($datatype);
                 break;
-
-            case XHELP_CONTROL_FILE:
-                return XOBJ_DTYPE_TXTBOX;
+            case \XHELP_CONTROL_FILE:
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
-
             default:
-                return XOBJ_DTYPE_TXTBOX;
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
         }
     }
 
     /**
-     * @param $datatype
+     * @param string $datatype
      * @return int
      */
-    public function _getXoopsDataType($datatype)
+    private function getXoopsDataType(string $datatype): ?int
     {
         switch ($datatype) {
-            case _XHELP_DATATYPE_TEXT:
-                return XOBJ_DTYPE_TXTBOX;
+            case \_XHELP_DATATYPE_TEXT:
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
-
-            case _XHELP_DATATYPE_NUMBER_INT:
-                return XOBJ_DTYPE_INT;
+            case \_XHELP_DATATYPE_NUMBER_INT:
+                return \XOBJ_DTYPE_INT;
                 break;
-
-            case _XHELP_DATATYPE_NUMBER_DEC:
-                return XOBJ_DTYPE_OTHER;
+            case \_XHELP_DATATYPE_NUMBER_DEC:
+                return \XOBJ_DTYPE_OTHER;
                 break;
-
             default:
-                return XOBJ_DTYPE_TXTBOX;
+                return \XOBJ_DTYPE_TXTBOX;
                 break;
         }
     }
 
     /**
-     * @param $datatype
+     * @param int $datatype
      * @return float|int|null|string
      */
-    public function _getValueFromXoopsDataType($datatype)
+    private function getValueFromXoopsDataType(int $datatype)
     {
         switch ($datatype) {
-            case XOBJ_DTYPE_TXTBOX:
-            case XOBJ_DTYPE_TXTAREA:
+            case \XOBJ_DTYPE_TXTBOX:
+            case \XOBJ_DTYPE_TXTAREA:
                 return '';
                 break;
-
-            case XOBJ_DTYPE_INT:
+            case \XOBJ_DTYPE_INT:
                 return 0;
                 break;
-
-            case XOBJ_DTYPE_OTHER:
+            case \XOBJ_DTYPE_OTHER:
                 return 0.0;
                 break;
-
             default:
                 return null;
                 break;
@@ -173,8 +158,8 @@ class TicketValues extends \XoopsObject
     /**
      * @return array
      */
-    public function getTicketFields()
+    public function getTicketFields(): array
     {
-        return $this->_fields;
+        return $this->fields;
     }
 }

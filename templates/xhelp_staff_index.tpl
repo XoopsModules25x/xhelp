@@ -1,7 +1,7 @@
 <{include file='db:xhelp_staff_header.tpl'}>
 
 <form name="tickets" method="post" action="<{$xhelp_baseURL}>/index.php">
-    <{if $xhelp_viewAllTickets}>    <{* view all tickets? *}>
+    <{if $xhelp_viewAllTickets|default:''}>    <{* view all tickets? *}>
         <table id="allTickets" width="100%" border="1" cellpadding="0" cellspacing="2" class="outer">
             <tr>
                 <th colspan="8">
@@ -9,7 +9,7 @@
                          alt="<{$smarty.const._XHELP_TEXT_ALL_TICKETS}>"><{$smarty.const._XHELP_TEXT_ALL_TICKETS}>
                 </th>
             </tr>
-            <{if $xhelp_has_tickets eq true}>
+            <{if $xhelp_has_tickets|default:false eq true}>
                 <tr>
                     <td class="head">
                         <{$smarty.const._XHELP_TEXT_ID}>
@@ -62,7 +62,7 @@
                             <{$ticket.posted}>
                         </td>
                         <td class="owner" nowrap="nowrap">
-                            <{if $ticket.ownerinfo neq ''}>
+                            <{if $ticket.ownerinfo|default:'' neq ''}>
                                 <a href="<{$ticket.ownerinfo}>"><{$ticket.ownership}></a>
                             <{else}>
                                 <{$ticket.ownership}>
@@ -80,7 +80,7 @@
         </table>
         <div id="xhelp_nav"><{$xhelp_pagenav}></div>
     <{else}>
-        <{if $xhelp_hasTicketLists}>
+        <{if $xhelp_hasTicketLists|default:''}>
             <{foreach from=$xhelp_ticketLists item=ticketList}>
                 <table id="<{$ticketList.tableid}>" width="100%" border="1" cellpadding="0" cellspacing="2"
                        class="outer searchlist">
@@ -91,7 +91,7 @@
                             <{$ticketList.searchname}>
                         </th>
                     </tr>
-                    <{if $ticketList.hasTickets}>
+                    <{if $ticketList.hasTickets|default:''}>
                         <tr>
                             <td class="head">
                                 <{$smarty.const._XHELP_TEXT_ID}>
@@ -144,7 +144,7 @@
                                     <{$ticket.posted}>
                                 </td>
                                 <td class="owner" nowrap="nowrap">
-                                    <{if $ticket.ownerinfo neq ''}>
+                                    <{if $ticket.ownerinfo|default:'' neq ''}>
                                         <a href="<{$ticket.ownerinfo}>"><{$ticket.ownership}></a>
                                     <{else}>
                                         <{$ticket.ownership}>
@@ -191,7 +191,7 @@
 </form>
 
 <br>
-<{if $xhelp_viewAllTickets eq false}>
+<{if $xhelp_viewAllTickets|default:true eq false}>
     <div id="staffSideBar">
         <table class="formButton">
 
@@ -218,7 +218,7 @@
     </div>
 <{/if}>
 
-<{if $xhelp_viewAllTickets eq false}>
+<{if $xhelp_viewAllTickets|default:true eq false}>
     <{if $xhelp_useAnnouncements eq true}>
         <br>
         <div id="announcements">

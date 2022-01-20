@@ -1,14 +1,18 @@
-<?php
-global $xoopsModule;
-$xhelp_imagePath = XOOPS_URL . '/modules/xhelp/images';
+<?php declare(strict_types=1);
 
-/** @var XoopsModuleHandler $moduleHandler */
+require_once __DIR__ . '/admin_header.php';
+xoops_cp_header();
+
+global $xoopsModule;
+$xhelp_imagePath = XOOPS_URL . '/modules/xhelp/assets/images';
+
+/** @var \XoopsModuleHandler $moduleHandler */
 $moduleHandler = xoops_getHandler('module');
-$xhelp_info    =& $moduleHandler->get($xoopsModule->getVar('mid'));
+$xhelp_info    = $moduleHandler->get($xoopsModule->getVar('mid'));
 
 echo "<table border='0'>";
 echo '<tr>';
-echo "<td><img src='" . $xhelp_imagePath . "/xhelp_slogo.png'></td>";
+echo "<td><img src='" . $xhelp_imagePath . "/logoModule.png'></td>";
 echo "<td><div style='margin-top: 0px; color: #2F5376; margin-bottom: 4px; font-size: 18px; line-height: 18px; font-weight: bold; display: block;'>" . $xhelp_info->getInfo('name') . ' version ' . $xhelp_info->getInfo('version') . ' (' . $xhelp_info->getInfo('version_info') . ')</div>';
 echo "<div style = 'line-height: 16px; font-weight: bold; display: block;'>" . _AM_XHELP_TEXT_BY . ' ' . $xhelp_info->getInfo('creator') . '</div>';
 echo '<div>' . $xhelp_info->getInfo('license') . '</div>';
@@ -35,14 +39,12 @@ if (isset($contributors['translators']) && (count($contributors['translators']) 
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for translators
     foreach ($translators as $tran) {
-        if ('' != $tran['website']) {
+        if ('' !== $tran['website']) {
             $tran_contact = "<a href='" . $tran['website'] . "'>" . $tran['uname'] . '</a>';
+        } elseif ('' !== $tran['email']) {
+            $tran_contact = "<a href='mailto: " . $tran['email'] . "'>" . $tran['uname'] . '</a>';
         } else {
-            if ('' != $tran['email']) {
-                $tran_contact = "<a href='mailto: " . $tran['email'] . "'>" . $tran['uname'] . '</a>';
-            } else {
-                $tran_contact = $tran['uname'];
-            }
+            $tran_contact = $tran['uname'];
         }
         echo '<tr><td>' . $tran_contact . ' (' . $tran['language'] . ')</td>
                   </tr>';
@@ -57,14 +59,12 @@ if (isset($contributors['testers']) && (count($contributors['testers']) > 0)) {
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for testers
     foreach ($testers as $tester) {
-        if ('' != $tester['website']) {
+        if ('' !== $tester['website']) {
             $tester_contact = "<a href='" . $tester['website'] . "'>" . $tester['uname'] . '</a>';
+        } elseif ('' !== $tester['email']) {
+            $tester_contact = "<a href='mailto: " . $tester['email'] . "'>" . $tester['uname'] . '</a>';
         } else {
-            if ('' != $tester['email']) {
-                $tester_contact = "<a href='mailto: " . $tester['email'] . "'>" . $tester['uname'] . '</a>';
-            } else {
-                $tester_contact = $tester['uname'];
-            }
+            $tester_contact = $tester['uname'];
         }
         echo '<tr><td>' . $tester_contact . ' (' . $tester['name'] . ')</td>
                   </tr>';
@@ -79,14 +79,12 @@ if (isset($contributors['documenters']) && (count($contributors['documenters']) 
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for documenters
     foreach ($documenters as $doc) {
-        if ('' != $doc['website']) {
+        if ('' !== $doc['website']) {
             $doc_contact = "<a href='" . $doc['website'] . "'>" . $doc['uname'] . '</a>';
+        } elseif ('' !== $doc['email']) {
+            $doc_contact = "<a href='mailto: " . $doc['email'] . "'>" . $doc['uname'] . '</a>';
         } else {
-            if ('' != $doc['email']) {
-                $doc_contact = "<a href='mailto: " . $doc['email'] . "'>" . $doc['uname'] . '</a>';
-            } else {
-                $doc_contact = $doc['uname'];
-            }
+            $doc_contact = $doc['uname'];
         }
         echo '<tr><td>' . $doc_contact . ' (' . $doc['name'] . ')</td>
                   </tr>';
@@ -101,14 +99,12 @@ if (isset($contributors['code']) && (count($contributors['code']) > 0)) {
     echo "<td class='even' valign='top'>";
     echo "<table border='0'>";      //Create nested table for code contributors
     foreach ($coders as $coder) {
-        if ('' != $coder['website']) {
+        if ('' !== $coder['website']) {
             $coder_contact = "<a href='" . $coder['website'] . "'>" . $coder['uname'] . '</a>';
+        } elseif ('' !== $coder['email']) {
+            $coder_contact = "<a href='mailto: " . $coder['email'] . "'>" . $coder['uname'] . '</a>';
         } else {
-            if ('' != $coder['email']) {
-                $coder_contact = "<a href='mailto: " . $coder['email'] . "'>" . $coder['uname'] . '</a>';
-            } else {
-                $coder_contact = $coder['uname'];
-            }
+            $coder_contact = $coder['uname'];
         }
         echo '<tr><td>' . $coder_contact . ' (' . $coder['name'] . ')</td>
                   </tr>';

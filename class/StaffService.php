@@ -1,8 +1,8 @@
-<?php namespace XoopsModules\Xhelp;
+<?php declare(strict_types=1);
 
-//
+namespace XoopsModules\Xhelp;
 
-use XoopsModules\Xhelp;
+use Xmf\Request;
 
 /**
  * xhelp_staffService class
@@ -11,111 +11,103 @@ use XoopsModules\Xhelp;
  *
  *
  * @author  Brian Wahoff <ackbarr@xoops.org>
- * @access  public
- * @package xhelp
  */
-class StaffService extends Xhelp\Service
+class StaffService extends Service
 {
     /**
      * Instance of the xoopsStaffHandler
      *
      * @var object
-     * @access  private
      */
-    public $_hStaff;
+    public $staffHandler;
 
     /**
      * Class Constructor
-     *
-     * @access  public
      */
     public function __construct()
     {
-        $this->_hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $this->helper       = Helper::getInstance();
+        $this->staffHandler = $this->helper->getHandler('Staff');
         $this->init();
     }
 
     /**
      * Update staff response time if first staff response
-     * @param  Xhelp\Ticket    $ticket   Ticket for response
-     * @param  Xhelp\Responses $response Response
-     * @return bool           True on success, false on error
-     * @access public
+     * @param Ticket   $ticket   Ticket for response
+     * @param Response $response Response
      */
-    public function new_response($ticket, $response)
+    public function new_response(Ticket $ticket, Response $response)
     {
         global $xoopsUser;
 
         //if first response for ticket, update staff responsetime
-        $hResponse   = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
-        $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-        if (1 == $hResponse->getStaffResponseCount($ticket->getVar('id'))) {
-            if ($hMembership->isStaffMember($response->getVar('uid'), $ticket->getVar('department'))) {
-                $responseTime = abs($response->getVar('updateTime') - $ticket->getVar('posted'));
-                $this->_hStaff->updateResponseTime($response->getVar('uid'), $responseTime);
+        /** @var \XoopsModules\Xhelp\ResponseHandler $responseHandler */
+        $responseHandler = $this->helper->getHandler('Response');
+        /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+        $membershipHandler = $this->helper->getHandler('Membership');
+        if (1 == $responseHandler->getStaffResponseCount($ticket->getVar('id'))) {
+            if ($membershipHandler->isStaffMember($response->getVar('uid'), $ticket->getVar('department'))) {
+                $responseTime = \abs($response->getVar('updateTime') - $ticket->getVar('posted'));
+                $this->staffHandler->updateResponseTime($response->getVar('uid'), $responseTime);
             }
         }
     }
 
     /**
      * Update staff response time if first staff response
-     * @param                 $tickets
-     * @param  Xhelp\Responses $response Response
-     * @return bool True on success, false on error
-     * @internal param Xhelp\Ticket $ticket Ticket for response
+     * @param array    $tickets
+     * @param Response $response Response
+     * @internal param Ticket $ticket Ticket for response
      * @internal param int $timespent Number of minutes spent on ticket
      * @internal param bool $private Is the response private?
-     * @access   public
      */
-    public function batch_response($tickets, $response)
+    public function batch_response(array $tickets, Response $response)
     {
         global $xoopsUser;
 
-        $update    = time();
-        $uid       = $xoopsUser->getVar('uid');
-        $hResponse = new Xhelp\ResponsesHandler($GLOBALS['xoopsDB']);
+        $update          = \time();
+        $uid             = $xoopsUser->getVar('uid');
+        $responseHandler = $this->helper->getHandler('Response');
         foreach ($tickets as $ticket) {
             //if first response for ticket, update staff responsetime
 
-            $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-            if (1 == $hResponse->getStaffResponseCount($ticket->getVar('id'))) {
-                $responseTime = abs($update - $ticket->getVar('posted'));
-                $this->_hStaff->updateResponseTime($uid, $responseTime);
+            $membershipHandler = $this->helper->getHandler('Membership');
+            if (1 == $responseHandler->getStaffResponseCount($ticket->getVar('id'))) {
+                $responseTime = \abs($update - $ticket->getVar('posted'));
+                $this->staffHandler->updateResponseTime($uid, $responseTime);
             }
         }
     }
 
     /**
      * Handler for the 'batch_status' event
-     * @param  array $tickets   Array of Xhelp\Ticket objects
-     * @param  int   $newstatus New Status of all tickets
-     * @return bool  True on success, false on error
-     * @access public
+     * @param array  $tickets   Array of Ticket objects
+     * @param Status $newstatus New Status of all tickets
      */
-    public function batch_status($tickets, $newstatus)
+    public function batch_status(array $tickets, Status $newstatus)
     {
         global $xoopsUser;
 
         $uid = $xoopsUser->getVar('uid');
 
-        if (XHELP_STATE_RESOLVED == $newstatus->getVar('state')) {
-            $this->_hStaff->increaseCallsClosed($uid, count($tickets));
+        if (\XHELP_STATE_RESOLVED == $newstatus->getVar('state')) {
+            $this->staffHandler->increaseCallsClosed($uid, \count($tickets));
         }
     }
 
     /**
      * Callback function for the 'close_ticket' event
-     * @param  Xhelp\Ticket $ticket Closed ticket
+     * @param Ticket $ticket Closed ticket
      * @return bool        True on success, false on error
-     * @access public
      */
-    public function close_ticket($ticket)
+    public function close_ticket(Ticket $ticket): bool
     {
         global $xoopsUser;
 
-        $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-        if ($hMembership->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
-            $this->_hStaff->increaseCallsClosed($ticket->getVar('closedBy'), 1);
+        /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+        $membershipHandler = $this->helper->getHandler('Membership');
+        if ($membershipHandler->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
+            $this->staffHandler->increaseCallsClosed($ticket->getVar('closedBy'), 1);
         }
 
         return true;
@@ -123,16 +115,16 @@ class StaffService extends Xhelp\Service
 
     /**
      * Callback function for the 'reopen_ticket' event
-     * @param $ticket
+     * @param Ticket $ticket
      * @return bool True on success, false on error
      * @internal param array $args Array of arguments passed to EventService
-     * @access   public
      */
-    public function reopen_ticket($ticket)
+    public function reopen_ticket(Ticket $ticket): bool
     {
-        $hMembership = new Xhelp\MembershipHandler($GLOBALS['xoopsDB']);
-        if ($hMembership->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
-            $this->_hStaff->increaseCallsClosed($ticket->getVar('closedBy'), -1);
+        /** @var \XoopsModules\Xhelp\MembershipHandler $membershipHandler */
+        $membershipHandler = $this->helper->getHandler('Membership');
+        if ($membershipHandler->isStaffMember($ticket->getVar('closedBy'), $ticket->getVar('department'))) {
+            $this->staffHandler->increaseCallsClosed($ticket->getVar('closedBy'), -1);
         }
 
         return true;
@@ -140,66 +132,61 @@ class StaffService extends Xhelp\Service
 
     /**
      * Callback function for the 'new_response_rating' event
-     * @param  Xhelp\Rating   $rating   Rating
-     * @param  Xhelp\Ticket   $ticket   Ticket that was rated
-     * @param  xhelpResponse $response Response that was rated
+     * @param \XoopsModules\Xhelp\StaffReview $rating   Rating
+     * @param Ticket                          $ticket   Ticket that was rated
+     * @param Response                        $response Response that was rated
      * @return bool          True on success, false on error
-     * @access public
      */
-    public function new_response_rating($rating, $ticket, $response)
+    public function new_response_rating(StaffReview $rating, Ticket $ticket, Response $response): bool
     {
         global $xoopsUser;
 
-        $hStaff = new Xhelp\StaffHandler($GLOBALS['xoopsDB']);
+        $staffHandler = $this->helper->getHandler('Staff');
 
-        return $hStaff->updateRating($rating->getVar('staffid'), $rating->getVar('rating'));
+        return $staffHandler->updateRating($rating->getVar('staffid'), $rating->getVar('rating'));
     }
 
     /**
      * Event Handler for 'view_ticket'
-     * @param  Xhelp\Ticket $ticket Ticket being viewd
-     * @return bool        True on success, false on error
-     * @access public
+     * @param Ticket $ticket Ticket being viewd
      */
-    public function view_ticket($ticket)
+    public function view_ticket(Ticket $ticket)
     {
         $value = [];
 
         //Store a list of recent tickets in the xhelp_recent_tickets cookie
-        if (isset($_COOKIE['xhelp_recent_tickets'])) {
-            $oldvalue = explode(',', $_COOKIE['xhelp_recent_tickets']);
+        if (Request::hasVar('xhelp_recent_tickets', 'COOKIE')) {
+            $oldvalue = \explode(',', $_COOKIE['xhelp_recent_tickets']);
         } else {
             $oldvalue = [];
         }
 
         $value[] = $ticket->getVar('id');
 
-        $value = array_merge($value, $oldvalue);
-        $value = $this->_array_unique($value);
-        $value = array_slice($value, 0, 5);
+        $value = \array_merge($value, $oldvalue);
+        $value = $this->uniqueArray($value);
+        $value = \array_slice($value, 0, 5);
         //Keep this value for 15 days
-        setcookie('xhelp_recent_tickets', implode(',', $value), time() + 15 * 24 * 60 * 60, '/');
+        setcookie('xhelp_recent_tickets', \implode(',', $value), \time() + 15 * 24 * 60 * 60, '/');
     }
 
     /**
      * Event Handler for 'delete_staff' event
-     * @param  Xhelp\Staff $staff Staff member being deleted
+     * @param Staff $staff Staff member being deleted
      * @return bool       True on success, false on error
-     * @access public
      */
-    public function delete_staff($staff)
+    public function delete_staff(Staff $staff): bool
     {
-        $hTicket = new Xhelp\TicketHandler($GLOBALS['xoopsDB']);
+        $ticketHandler = $this->helper->getHandler('Ticket');
 
-        return $hTicket->updateAll('ownership', 0, new \Criteria('ownership', $staff->getVar('uid')));
+        return $ticketHandler->updateAll('ownership', 0, new \Criteria('ownership', $staff->getVar('uid')));
     }
 
     /**
      * Only have 1 instance of class used
-     * @return object {@link xhelp_staffService}
-     * @access  public
+     * @return StaffService {@link StaffService}
      */
-    public static function getInstance()
+    public static function getInstance(): StaffService
     {
         static $instance;
         if (null === $instance) {
@@ -210,17 +197,17 @@ class StaffService extends Xhelp\Service
     }
 
     /**
-     * @param $array
+     * @param array $array
      * @return array
      */
-    public function _array_unique($array)
+    private function uniqueArray(array $array): array
     {
         $out = [];
 
         //    loop through the inbound
         foreach ($array as $key => $value) {
             //    if the item isn't in the array
-            if (!in_array($value, $out)) { //    add it to the array
+            if (!\in_array($value, $out)) { //    add it to the array
                 $out[$key] = $value;
             }
         }
@@ -228,15 +215,15 @@ class StaffService extends Xhelp\Service
         return $out;
     }
 
-    public function _attachEvents()
+    public function attachEvents()
     {
-        $this->_attachEvent('batch_response', $this);
-        $this->_attachEvent('batch_status', $this);
-        $this->_attachEvent('close_ticket', $this);
-        $this->_attachEvent('delete_staff', $this);
-        $this->_attachEvent('new_response', $this);
-        $this->_attachEvent('new_response_rating', $this);
-        $this->_attachEvent('reopen_ticket', $this);
-        $this->_attachEvent('view_ticket', $this);
+        $this->attachEvent('batch_response', $this);
+        $this->attachEvent('batch_status', $this);
+        $this->attachEvent('close_ticket', $this);
+        $this->attachEvent('delete_staff', $this);
+        $this->attachEvent('new_response', $this);
+        $this->attachEvent('new_response_rating', $this);
+        $this->attachEvent('reopen_ticket', $this);
+        $this->attachEvent('view_ticket', $this);
     }
 }

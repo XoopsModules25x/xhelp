@@ -1,5 +1,4 @@
-<?php
-//
+<?php declare(strict_types=1);
 
 define('_XHELP_UTBD_NAME', 'Unresolved Tickets By Departments');
 define('_XHELP_UTBD_DESC', 'Retrieve unresolved tickets by department.');
