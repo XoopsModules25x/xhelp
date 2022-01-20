@@ -16,7 +16,7 @@ namespace XoopsModules\Xhelp\Common;
  * Custom form confirm for XOOPS modules
  *
  * @copyright      2020 XOOPS Project (https://xoops.org)
- * @license        GPL 2.0 or later
+ * @license         GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @package        general
  * @since          1.0
  * @min_xoops      2.5.9

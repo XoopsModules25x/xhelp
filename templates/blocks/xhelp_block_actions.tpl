@@ -6,12 +6,14 @@
             </td>
             <td class="even" colspan="2">
                 <form method="post" action="ticket.php?id=<{$block.ticketid}>&amp;op=ownership">
-                    <select name="uid" class="formButton">
-                        <{foreach from=$block.ownership item=staff}>
-                            <option value="<{$staff.uid}>"
-                                    <{if $block.ticket_ownership eq $staff.uid}>selected="selected"<{/if}>><{$staff.uname}></option>
-                        <{/foreach}>
-                    </select>
+                    <label>
+                        <select name="uid" class="formButton">
+                            <{foreach from=$block.ownership item=staff}>
+                                <option value="<{$staff.uid}>"
+                                        <{if $block.ticket_ownership eq $staff.uid}>selected="selected"<{/if}>><{$staff.uname}></option>
+                            <{/foreach}>
+                        </select>
+                    </label>
                     <br>
                     <input type="image" src="<{$block.imagePath}>assignOwner.png"
                            title="<{$smarty.const._XHELP_TEXT_ASSIGN_OWNER}>" name="assignOwner"
@@ -27,9 +29,11 @@
             <td class="even" colspan="2">
                 <form method="post" action="index.php?op=setdept">
                     <{securityToken}><{*//mb*}>
-                    <select name="department">
-                        <{html_options options=$block.departments selected=$block.departmentid}>
-                    </select>
+                    <label>
+                        <select name="department">
+                            <{html_options options=$block.departments selected=$block.departmentid}>
+                        </select>
+                    </label>
                     <input type="hidden" name="tickets" value="<{$block.ticketid}>">
                     <input type="hidden" name="setdept" value="1">
                     <input type="image" src="<{$block.imagePath}>assignOwner.png"
@@ -129,13 +133,15 @@
             </td>
             <td class="even" colspan="4">
                 <form method="post" action="ticket.php?id=<{$block.ticketid}>&amp;op=updateStatus">
-                    <select name="status">
-                        <{foreach from=$block.statuses item=status}>
-                            <option value="<{$status.id}>"
-                                    <{if $block.ticket_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
-                        <{/foreach}>
-                    </select><br>
-                    <input type="text" name="response" id="response" value="" class="formButton"><br>
+                    <label>
+                        <select name="status">
+                            <{foreach from=$block.statuses item=status}>
+                                <option value="<{$status.id}>"
+                                        <{if $block.ticket_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
+                            <{/foreach}>
+                        </select>
+                    </label><br>
+                    <label for="response"></label><input type="text" name="response" id="response" value="" class="formButton"><br>
                     <input type="submit" name="updateStatus" value="<{$smarty.const._XHELP_BUTTON_UPDATE_STATUS}>"
                            class="formButton">
                 </form>

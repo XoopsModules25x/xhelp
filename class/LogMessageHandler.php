@@ -47,14 +47,22 @@ class LogMessageHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_logmessages';
 
+    private const TABLE = 'xhelp_logmessages';
+    private const ENTITY = LogMessage::class;
+    private const ENTITYNAME = 'LogMessage';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'ticketid';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**

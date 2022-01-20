@@ -26,10 +26,12 @@
                 </td>
                 <td class="even">
                     <form name="formRefresh" method="get" action="<{$xhelp_baseURL}>/response.php">
-                        <select name="replies"
-                                onchange="window.location='<{$xhelp_baseURL}>/response.php?id=<{$xhelp_ticketID}>&amp;op=staffFrm&amp;refresh='+this.options[this.selectedIndex].value;">
-                            <{html_options values=$xhelp_responseTpl_ids selected=$xhelp_responseTpl_selected output=$xhelp_responseTpl_values}>
-                        </select>
+                        <label>
+                            <select name="replies"
+                                    onchange="window.location='<{$xhelp_baseURL}>/response.php?id=<{$xhelp_ticketID}>&amp;op=staffFrm&amp;refresh='+this.options[this.selectedIndex].value;">
+                                <{html_options values=$xhelp_responseTpl_ids selected=$xhelp_responseTpl_selected output=$xhelp_responseTpl_values}>
+                            </select>
+                        </label>
                     </form>
                 </td>
             </tr>
@@ -44,8 +46,8 @@
                     <{$smarty.const._XHELP_TEXT_RESPONSE}>
                 </td>
                 <td class="even">
-                    <textarea name="response" id="response" rows="10" cols="50"
-                              class="<{$xhelp_element_response}>"><{$xhelp_response_message}></textarea>
+                    <label for="response"></label><textarea name="response" id="response" rows="10" cols="50"
+                                                            class="<{$xhelp_element_response}>"><{$xhelp_response_message}></textarea>
                 </td>
             </tr>
             <tr>
@@ -53,8 +55,8 @@
                     <{$smarty.const._XHELP_TEXT_TIMESPENT}>
                 </td>
                 <td class="even">
-                    <input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent}>"
-                           class="<{$xhelp_element_timespent}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
+                    <label for="timespent"></label><input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent}>"
+                                                          class="<{$xhelp_element_timespent}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
                 </td>
             </tr>
             <{if $xhelp_allowUpload eq 1}>
@@ -72,12 +74,14 @@
                     <{$smarty.const._XHELP_TEXT_STATUS}>
                 </td>
                 <td class="even">
-                    <select name="status">
-                        <{foreach from=$xhelp_statuses item=status}>
-                            <option value="<{$status.id}>"
-                                    <{if $xhelp_ticket_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
-                        <{/foreach}>
-                    </select>
+                    <label>
+                        <select name="status">
+                            <{foreach from=$xhelp_statuses item=status}>
+                                <option value="<{$status.id}>"
+                                        <{if $xhelp_ticket_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
+                            <{/foreach}>
+                        </select>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -86,9 +90,13 @@
                 </td>
                 <td class="even">
                     <{if $xhelp_response_private eq false}>
-                        <input type="checkbox" name="private" value="1" class="formButton">
+                        <label>
+                            <input type="checkbox" name="private" value="1" class="formButton">
+                        </label>
                     <{else}>
-                        <input type="checkbox" name="private" value="1" class="formButton" checked>
+                        <label>
+                            <input type="checkbox" name="private" value="1" class="formButton" checked>
+                        </label>
                     <{/if}>
                 </td>
             </tr>
@@ -100,15 +108,23 @@
                         </td>
                         <td class="even">
                             <{if $xhelp_response_ownership}>
+                                <label>
                                 <input name="claimOwner" value="<{$xhelp_currentUser}>" type="radio" class="formButton"
-                                       <{if $xhelp_response_ownership eq 1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
+                                       <{if $xhelp_response_ownership eq 1}>checked<{/if}>>
+                                </label><{$smarty.const._XHELP_TEXT_YES}>
+                                <label>
                                 <input name="claimOwner" value="0" type="radio" class="formButton"
-                                       <{if $xhelp_response_ownership eq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                                       <{if $xhelp_response_ownership eq 0}>checked<{/if}>>
+                                </label><{$smarty.const._XHELP_TEXT_NO}>
                             <{else}>
+                                <label>
                                 <input name="claimOwner" value="<{$xhelp_currentUser}>" type="radio" class="formButton"
-                                       <{if $xhelp_has_owner eq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
+                                       <{if $xhelp_has_owner eq 0}>checked<{/if}>>
+                                </label><{$smarty.const._XHELP_TEXT_YES}>
+                                <label>
                                 <input name="claimOwner" value="0" type="radio" class="formButton"
-                                       <{if $xhelp_has_owner neq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                                       <{if $xhelp_has_owner neq 0}>checked<{/if}>>
+                                </label><{$smarty.const._XHELP_TEXT_NO}>
                             <{/if}>
                         </td>
                     </tr>

@@ -69,7 +69,7 @@ abstract class FaqAdapterAbstract implements FaqAdapterInterface
     /**
      * Stub function (does nothing)
      */
-    public function &getCategories(): array
+    public function &getCategories()
     {
     }
 
@@ -130,10 +130,10 @@ abstract class FaqAdapterAbstract implements FaqAdapterInterface
     /**
      * Create the url going to the Faq article
      *
-     * @param \XoopsModules\Xhelp\Xhelp\Faq $faq
+     * @param \XoopsModules\Xhelp\Faq $faq
      * @return string
      */
-    public function makeFaqUrl(Xhelp\Faq $faq): string
+    public function makeFaqUrl(\XoopsModules\Xhelp\Faq $faq): string
     {
     }
 }

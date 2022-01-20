@@ -43,14 +43,22 @@ class TicketEmailsHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_ticket_submit_emails';
 
+    private const TABLE = 'xhelp_ticket_submit_emails';
+    private const ENTITY = TicketEmails::class;
+    private const ENTITYNAME = 'TicketEmails';
+    private const KEYNAME = 'ticketid';
+    private const IDENTIFIER = 'uid';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**

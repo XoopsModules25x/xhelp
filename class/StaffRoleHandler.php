@@ -44,14 +44,22 @@ class StaffRoleHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_staffroles';
 
+    private const TABLE = 'xhelp_staffroles';
+    private const ENTITY = StaffRole::class;
+    private const ENTITYNAME = 'StaffRole';
+    private const KEYNAME = 'uid';
+    private const IDENTIFIER = 'roleid';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**

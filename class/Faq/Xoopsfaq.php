@@ -75,7 +75,7 @@ class Xoopsfaq extends Xhelp\FaqAdapterAbstract
             $this->dirname = $this->helper->dirname();
         }
 
-        parent::init();
+        $this->init();
     }
 
     /**
@@ -152,7 +152,7 @@ class Xoopsfaq extends Xhelp\FaqAdapterAbstract
      * @param \XoopsModules\Xhelp\Faq $faq
      * @return string
      */
-    public function makeFaqUrl(Xhelp\Faq $faq): string
+    public function makeFaqUrl(\XoopsModules\Xhelp\Faq $faq): string
     {
         return \XHELP_XFAQ_URL . '/index.php?cat_id=' . $faq->getVar('categories') . '#q' . $faq->getVar('id');
     }

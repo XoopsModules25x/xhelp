@@ -17,7 +17,6 @@
 // |          Chuck Hagenbuch <chuck@horde.org>                           |
 // +----------------------------------------------------------------------+
 //
-// $Id: Socket.php,v 1.1 2005/02/08 20:13:02 ackbarr Exp $
 //
 
 require_once XHELP_PEAR_PATH . '/PEAR.php';
@@ -228,11 +227,11 @@ class Net_Socket extends PEAR
     /**
      * Get a specified line of data
      *
-     * @param $size
+     * @param int|null $size
      * @return bool|object|string bytes of data from the socket, or a PEAR_Error if
      *               not connected.
      */
-    public function gets($size)
+    public function gets(?int $size)
     {
         if (is_resource($this->fp)) {
             return fgets($this->fp, $size);

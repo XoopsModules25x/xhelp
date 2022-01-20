@@ -28,8 +28,8 @@
                 Email:
             </td>
             <td class="even">
-                <input type="textbox" name="email" id="email" value="<{$xhelp_email}>"
-                       class="<{$xhelp_element_email}>">
+                <label for="email"></label><input type="textbox" name="email" id="email" value="<{$xhelp_email}>"
+                                                  class="<{$xhelp_element_email}>">
             </td>
         </tr>
         <tr>
@@ -37,7 +37,7 @@
                 <{$smarty.const._XHELP_TEXT_ASSIGNTO}>
             </td>
             <td class="even">
-                <select name="departments" id="departments">
+                <label for="departments"></label><select name="departments" id="departments">
                     <{foreach from=$xhelp_departments item=dept}>
                         <{if $xhelp_ticket_department eq $dept.id || $xhelp_default_dept eq $dept.id}>
                             <option value="<{$dept.id}>" selected="selected"><{$dept.department}></option>
@@ -66,8 +66,8 @@
                 <{$smarty.const._XHELP_TEXT_SUBJECT}>
             </td>
             <td class="even">
-                <input type="text" name="subject" id="subject" maxlength="100" size="67"
-                       value="<{$xhelp_ticket_subject}>" class="<{$xhelp_element_subject}>">
+                <label for="subject"></label><input type="text" name="subject" id="subject" maxlength="100" size="67"
+                                                    value="<{$xhelp_ticket_subject}>" class="<{$xhelp_element_subject}>">
             </td>
         </tr>
         <tr>
@@ -75,8 +75,8 @@
                 <{$smarty.const._XHELP_TEXT_DESCRIPTION}>
             </td>
             <td class="even">
-                <textarea name="description" id="description" rows="10" cols="50"
-                          class="<{$xhelp_element_description}>"><{$xhelp_ticket_description}></textarea>
+                <label for="description"></label><textarea name="description" id="description" rows="10" cols="50"
+                                                           class="<{$xhelp_element_description}>"><{$xhelp_ticket_description}></textarea>
             </td>
         </tr>
         <{if $xhelp_allowUpload eq 1}>
@@ -131,13 +131,16 @@
                     </td>
                     <td class="even">
                         <{if $field.controltype == $smarty.const.XHELP_CONTROL_TXTBOX}>
+                            <label for="<{$field.fieldname}>"></label>
                             <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                    value="<{$field.defaultvalue}>" maxlength="<{$field.maxlength}>"
                                    size="<{$field.fieldlength}>">
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_TXTAREA}>
+                            <label for="<{$field.fieldname}>"></label>
                             <textarea name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                       cols="<{$field.fieldlength}>" rows="5"><{$field.defaultvalue}></textarea>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_SELECT}>
+                            <label for="<{$field.fieldname}>"></label>
                             <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="1">
                                 <{foreach from=$field.fieldvalues item=value key=key}>
                                     <option value="<{$key}>"
@@ -145,6 +148,7 @@
                                 <{/foreach}>
                             </select>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_MULTISELECT}>
+                            <label for="<{$field.fieldname}>"></label>
                             <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="3" multiple="multiple">
                                 <{foreach from=$field.fieldvalues item=value key=key}>
                                     <option value="<{$key}>"
@@ -152,13 +156,16 @@
                                 <{/foreach}>
                             </select>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_YESNO}>
+                            <label for="<{$field.fieldname}>1"></label>
                             <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>1" value="1"
                                    <{if $field.defaultvalue == 1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                             <br>
+                            <label for="<{$field.fieldname}>0"></label>
                             <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>0" value="0"
                                    <{if $field.defaultvalue == 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_CHECKBOX}>
                             <{foreach from=$field.fieldvalues item=value key=key}>
+                                <label for="<{$field.fieldname}><{$key}>"></label>
                                 <input type="checkbox" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                        value="<{$key}>"
                                        <{if $key == $field.defaultvalue}>checked<{/if}>><{$value}>
@@ -166,12 +173,14 @@
                             <{/foreach}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_RADIOBOX}>
                             <{foreach from=$field.fieldvalues item=value key=key}>
+                                <label for="<{$field.fieldname}><{$key}>"></label>
                                 <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                        value="<{$key}>"
                                        <{if $key == $field.defaultvalue}>checked<{/if}>><{$value}>
                                 <br>
                             <{/foreach}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_DATETIME}>
+                            <label for="<{$field.fieldname}>"></label>
                             <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                    value="<{$field.defaultvalue}>" maxlength="<{$field.maxlength}>"
                                    size="<{$field.fieldlength}>">

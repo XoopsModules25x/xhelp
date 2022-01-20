@@ -31,7 +31,7 @@ class Form extends \XoopsForm
     /**
      * @param string $width
      */
-    public function setLabelWidth(string $width)
+    public function setLabelWidth(string $width): void
     {
         $this->_labelWidth = $width;
     }

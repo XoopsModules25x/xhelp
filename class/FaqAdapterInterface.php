@@ -51,8 +51,8 @@ interface FaqAdapterInterface
     public function isActive(): bool;
 
     /**
-     * @param \XoopsModules\Xhelp\Xhelp\Faq $faq
+     * @param \XoopsModules\Xhelp\Faq $faq
      * @return string
      */
-    public function makeFaqUrl(Xhelp\Faq $faq): string;
+    public function makeFaqUrl(\XoopsModules\Xhelp\Faq $faq): string;
 }

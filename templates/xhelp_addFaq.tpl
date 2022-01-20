@@ -13,7 +13,7 @@
                 <{$smarty.const._XHELP_TEXT_SUBJECT}>
             </td>
             <td class="even">
-                <input type="text" id="subject" name="subject" maxlength="100" size="55" value="<{$xhelp_faqSubject}>">
+                <label for="subject"></label><input type="text" id="subject" name="subject" maxlength="100" size="55" value="<{$xhelp_faqSubject}>">
             </td>
         </tr>
         <tr>
@@ -21,7 +21,7 @@
                 <{$smarty.const._XHELP_TEXT_PROBLEM}>
             </td>
             <td class="even">
-                <textarea name="problem" id="problem" rows="5" cols="50"><{$xhelp_faqProblem}></textarea>
+                <label for="problem"></label><textarea name="problem" id="problem" rows="5" cols="50"><{$xhelp_faqProblem}></textarea>
             </td>
         </tr>
         <tr>
@@ -29,7 +29,7 @@
                 <{$smarty.const._XHELP_TEXT_SOLUTION}>
             </td>
             <td class="even">
-                <textarea name="solution" id="solution" rows="5" cols="50"><{$xhelp_faqSolution}></textarea>
+                <label for="solution"></label><textarea name="solution" id="solution" rows="5" cols="50"><{$xhelp_faqSolution}></textarea>
             </td>
         </tr>
         <tr>

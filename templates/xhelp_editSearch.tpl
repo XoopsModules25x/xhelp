@@ -24,7 +24,7 @@
                     <{$smarty.const._XHELP_TEXT_ID}>
                 </td>
                 <td class="even">
-                    <input type="text" name="ticketid" id="ticketid" value="<{$xhelp_searchticketid}>" size="6">
+                    <label for="ticketid"></label><input type="text" name="ticketid" id="ticketid" value="<{$xhelp_searchticketid}>" size="6">
                 </td>
             </tr>
             <tr>
@@ -32,9 +32,11 @@
                     <{$smarty.const._XHELP_TEXT_DEPARTMENT}>
                 </td>
                 <td class="even">
-                    <select name="department[]" multiple="multiple" size="6">
-                        <{html_options options=$xhelp_depts selected=$xhelp_searchdepartment}>
-                    </select>
+                    <label>
+                        <select name="department[]" multiple="multiple" size="6">
+                            <{html_options options=$xhelp_depts selected=$xhelp_searchdepartment}>
+                        </select>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -43,13 +45,17 @@
                 </td>
                 <td class="even">
                     <{foreach from=$xhelp_priorities item=priority}>
-                        <input type="radio" value="<{$priority}>" name="priority"
-                               <{if $xhelp_searchpriority == $priority}>checked <{/if}>>
+                        <label>
+                            <input type="radio" value="<{$priority}>" name="priority"
+                                   <{if $xhelp_searchpriority == $priority}>checked <{/if}>>
+                        </label>
                         <img src="<{$xhelp_imagePath}>priority<{$priority}>.png"
                              alt="<{$xhelp_priorities_desc.$priority}>">
                     <{/foreach}>
-                    <input type="radio" value="-1" name="priority"
-                           <{if $xhelp_searchpriority == -1}>checked <{/if}>><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
+                    <label>
+                        <input type="radio" value="-1" name="priority"
+                               <{if $xhelp_searchpriority == -1}>checked <{/if}>>
+                    </label><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                 </td>
             </tr>
             <tr>
@@ -59,18 +65,26 @@
                 <td class="even">
                     <b><{$smarty.const._XHELP_TEXT_BY_STATUS}></b>
                     <br>
-                    &nbsp;&nbsp;&nbsp;<select name="status[]" multiple="multiple">
-                        <{html_options options=$xhelp_statuses selected=$xhelp_searchstatus}>
-                    </select>
+                    &nbsp;&nbsp;&nbsp;<label>
+                        <select name="status[]" multiple="multiple">
+                            <{html_options options=$xhelp_statuses selected=$xhelp_searchstatus}>
+                        </select>
+                    </label>
                     <br><br><b><{$smarty.const._XHELP_TEXT_SEARCH_OR}></b><br><br>
                     <b><{$smarty.const._XHELP_TEXT_BY_STATE}></b>
                     <br>
-                    &nbsp;&nbsp;&nbsp;<input type="radio" value="1" name="state"
-                                             <{if $xhelp_searchstate == 1}>checked <{/if}>><{$smarty.const._XHELP_STATE1}>
-                    <input type="radio" value="2" name="state"
-                           <{if $xhelp_searchstate == 2}>checked <{/if}>><{$smarty.const._XHELP_STATE2}>
-                    <input type="radio" value="-1" name="state"
-                           <{if $xhelp_searchstate == -1 || $xhelp_searchstate == ''}>checked <{/if}>><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
+                    &nbsp;&nbsp;&nbsp;<label>
+                        <input type="radio" value="1" name="state"
+                                                 <{if $xhelp_searchstate == 1}>checked <{/if}>>
+                    </label><{$smarty.const._XHELP_STATE1}>
+                    <label>
+                        <input type="radio" value="2" name="state"
+                               <{if $xhelp_searchstate == 2}>checked <{/if}>>
+                    </label><{$smarty.const._XHELP_STATE2}>
+                    <label>
+                        <input type="radio" value="-1" name="state"
+                               <{if $xhelp_searchstate == -1 || $xhelp_searchstate == ''}>checked <{/if}>>
+                    </label><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                 </td>
             </tr>
             <tr>
@@ -78,7 +92,9 @@
                     <{$smarty.const._XHELP_TEXT_SUBJECT}>
                 </td>
                 <td class="even">
-                    <input type="text" name="subject" value="<{$xhelp_searchsubject}>">
+                    <label>
+                        <input type="text" name="subject" value="<{$xhelp_searchsubject}>">
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -86,7 +102,9 @@
                     <{$smarty.const._XHELP_TEXT_DESCRIPTION}>
                 </td>
                 <td class="even">
-                    <input type="text" name="description" value="<{$xhelp_searchdescription}>">
+                    <label>
+                        <input type="text" name="description" value="<{$xhelp_searchdescription}>">
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -94,7 +112,9 @@
                     <{$smarty.const._XHELP_TEXT_SUBMITTEDBY}>
                 </td>
                 <td class="even">
-                    <input type="text" name="submittedBy" value="<{$xhelp_searchsubmittedBy}>">
+                    <label>
+                        <input type="text" name="submittedBy" value="<{$xhelp_searchsubmittedBy}>">
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -102,9 +122,11 @@
                     <{$smarty.const._XHELP_TEXT_OWNER}>
                 </td>
                 <td class="even">
-                    <select name="ownership">
-                        <{html_options options=$xhelp_staff selected=$xhelp_searchownership}>
-                    </select>
+                    <label>
+                        <select name="ownership">
+                            <{html_options options=$xhelp_staff selected=$xhelp_searchownership}>
+                        </select>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -112,9 +134,11 @@
                     <{$smarty.const._XHELP_TEXT_CLOSEDBY}>
                 </td>
                 <td class="even">
-                    <select name="closedBy">
-                        <{html_options options=$xhelp_staff selected=$xhelp_searchclosedBy}>
-                    </select>
+                    <label>
+                        <select name="closedBy">
+                            <{html_options options=$xhelp_staff selected=$xhelp_searchclosedBy}>
+                        </select>
+                    </label>
                 </td>
             </tr>
             <{if $xhelp_hasCustFields}>
@@ -126,13 +150,16 @@
                             </td>
                             <td class="even">
                                 <{if $field.controltype == $smarty.const.XHELP_CONTROL_TXTBOX}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                            value="<{$field.defaultvalue}>" maxlength="<{$field.maxlength}>"
                                            size="<{$field.fieldlength}>">
                                 <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_TXTAREA}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <textarea name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                               cols="<{$field.fieldlength}>" rows="5"><{$field.defaultvalue}></textarea>
                                 <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_SELECT}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="1">
                                         <option value="-1"
                                                 <{if $field.defaultvalue == -1}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_SELECT_ALL}></option>
@@ -142,6 +169,7 @@
                                         <{/foreach}>
                                     </select>
                                 <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_MULTISELECT}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="3"
                                             multiple="multiple">
                                         <{foreach from=$field.fieldvalues item=value key=key}>
@@ -150,34 +178,42 @@
                                         <{/foreach}>
                                     </select>
                                 <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_YESNO}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>" value="1"
                                            <{if $field.defaultvalue == 1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                                     <br>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>" value="0"
                                            <{if $field.defaultvalue == 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                                     <br>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>" value="-1"
                                            <{if $field.defaultvalue == -1}>checked<{/if}> ><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                                 <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_CHECKBOX}>
                                     <{foreach from=$field.fieldvalues item=value key=key}>
+                                        <label for="<{$field.fieldname}><{$key}>"></label>
                                         <input type="checkbox" name="<{$field.fieldname}>"
                                                id="<{$field.fieldname}><{$key}>" value="<{$key}>"
                                                <{if $field.defaultvalue == $key}>checked<{/if}>><{$value}>
                                         <br>
                                     <{/foreach}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <input type="checkbox" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                            value="-1"
                                            <{if $field.defaultvalue == -1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                                 <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_RADIOBOX}>
                                     <{foreach from=$field.fieldvalues item=value key=key}>
+                                        <label for="<{$field.fieldname}><{$key}>"></label>
                                         <input type="radio" name="<{$field.fieldname}>"
                                                id="<{$field.fieldname}><{$key}>" value="<{$key}>"
                                                <{if $field.defaultvalue == $key}>checked<{/if}>><{$value}>
                                         <br>
                                     <{/foreach}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>" value="-1"
                                            <{if $field.defaultvalue == -1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_SELECT_ALL}>
                                 <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_DATETIME}>
+                                    <label for="<{$field.fieldname}>"></label>
                                     <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                            value="<{$field.defaultvalue}>" maxlength="<{$field.maxlength}>"
                                            size="<{$field.fieldlength}>">
@@ -195,16 +231,18 @@
                     <{$smarty.const._XHELP_TEXT_NUMRESULTS}>
                 </td>
                 <td class="even">
-                    <select name="limit">
-                        <option value="<{$smarty.const._XHELP_TEXT_RESULT1}>"
-                                <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT1}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT1}></option>
-                        <option value="<{$smarty.const._XHELP_TEXT_RESULT2}>"
-                                <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT2}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT2}></option>
-                        <option value="<{$smarty.const._XHELP_TEXT_RESULT3}>"
-                                <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT3}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT3}></option>
-                        <option value="<{$smarty.const._XHELP_TEXT_RESULT4}>"
-                                <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT4}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT4}></option>
-                    </select>
+                    <label>
+                        <select name="limit">
+                            <option value="<{$smarty.const._XHELP_TEXT_RESULT1}>"
+                                    <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT1}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT1}></option>
+                            <option value="<{$smarty.const._XHELP_TEXT_RESULT2}>"
+                                    <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT2}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT2}></option>
+                            <option value="<{$smarty.const._XHELP_TEXT_RESULT3}>"
+                                    <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT3}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT3}></option>
+                            <option value="<{$smarty.const._XHELP_TEXT_RESULT4}>"
+                                    <{if $xhelp_searchLimit == $smarty.const._XHELP_TEXT_RESULT4}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_RESULT4}></option>
+                        </select>
+                    </label>
                 </td>
             </tr>
             <tr class="foot">

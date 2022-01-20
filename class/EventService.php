@@ -80,7 +80,7 @@ class EventService
      * @param int    $cookie  The Event ID returned by xhelp_eventService::advise()
      * @param int    $priority
      */
-    public function unadvise(string $context, int $cookie, int $priority = 10)
+    public function unadvise(string $context, int $cookie, int $priority = 10): void
     {
         $this->_ctx[$context][(string)$priority][$cookie] = false;
     }
@@ -104,7 +104,7 @@ class EventService
      * @param string $context Event raised by the system
      * @param array  $args    Any arguments that need to be passed to the callback functions
      */
-    public function trigger(string $context, array $args)
+    public function trigger(string $context, array $args): void
     {
         if (isset($this->_ctx[$context])) {
             \ksort($this->_ctx[$context]);

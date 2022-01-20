@@ -15,10 +15,12 @@
                 </td>
                 <td class="odd">
                     <form name="formRefresh" method="get" action="<{$xhelp_formaction}>">
-                        <select name="tpl"
-                                onchange="window.location='<{$xhelp_formaction}>?op=addresponse&amp;tpl='+this.options[this.selectedIndex].value;">
-                            <{html_options options=$xhelp_responseTpl_options selected=$xhelp_responseTpl}>
-                        </select>
+                        <label>
+                            <select name="tpl"
+                                    onchange="window.location='<{$xhelp_formaction}>?op=addresponse&amp;tpl='+this.options[this.selectedIndex].value;">
+                                <{html_options options=$xhelp_responseTpl_options selected=$xhelp_responseTpl}>
+                            </select>
+                        </label>
                     </form>
                 </td>
             </tr>
@@ -31,8 +33,10 @@
                         <{$smarty.const._XHELP_TEXT_RESPONSE}>
                     </td>
                     <td class="even">
-                        <textarea name="response" rows="10" cols="50"
-                                  class="formButton"><{$xhelp_response_message}></textarea>
+                        <label>
+<textarea name="response" rows="10" cols="50"
+          class="formButton"><{$xhelp_response_message}></textarea>
+                        </label>
                     </td>
                 </tr>
                 <tr>
@@ -40,8 +44,10 @@
                         <{$smarty.const._XHELP_TEXT_TIMESPENT}>
                     </td>
                     <td class="odd">
-                        <input type="text" name="timespent" value="<{$xhelp_timespent}>"
-                               class="formButton"><{$smarty.const._XHELP_TEXT_MINUTES}>
+                        <label>
+                            <input type="text" name="timespent" value="<{$xhelp_timespent}>"
+                                   class="formButton">
+                        </label><{$smarty.const._XHELP_TEXT_MINUTES}>
                     </td>
                 </tr>
                 <tr>
@@ -49,8 +55,10 @@
                         <{$smarty.const._XHELP_TEXT_PRIVATE_RESPONSE}>
                     </td>
                     <td class="even">
-                        <input type="checkbox" name="private" value="1" class="formButton"
-                               <{if $xhelp_private eq true}>checked<{/if}>>
+                        <label>
+                            <input type="checkbox" name="private" value="1" class="formButton"
+                                   <{if $xhelp_private eq true}>checked<{/if}>>
+                        </label>
                     </td>
                 </tr>
                 <tr>

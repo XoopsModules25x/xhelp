@@ -40,6 +40,7 @@ class DepartmentHandler extends BaseObjectHandler
      * @var string
      */
     public $classname = Department::class;
+//    public $classname;
     /**
      * DB table name
      *
@@ -47,14 +48,25 @@ class DepartmentHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_departments';
 
+    private const TABLE = 'xhelp_departments';
+    private const ENTITY = Department::class;
+    private const ENTITYNAME = 'Department';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'department';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
         $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
+
+//        parent::__construct($db, 'xhelp_departments', Department::class, 'id', 'id');
+//        $this->classname = Department::class;
     }
 
     /**

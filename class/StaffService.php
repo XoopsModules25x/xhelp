@@ -53,7 +53,7 @@ class StaffService extends Service
      * @param Ticket   $ticket   Ticket for response
      * @param Response $response Response
      */
-    public function new_response(Ticket $ticket, Response $response)
+    public function new_response(Ticket $ticket, Response $response): void
     {
         global $xoopsUser;
 
@@ -78,7 +78,7 @@ class StaffService extends Service
      * @internal param int $timespent Number of minutes spent on ticket
      * @internal param bool $private Is the response private?
      */
-    public function batch_response(array $tickets, Response $response)
+    public function batch_response(array $tickets, Response $response): void
     {
         global $xoopsUser;
 
@@ -101,7 +101,7 @@ class StaffService extends Service
      * @param array  $tickets   Array of Ticket objects
      * @param Status $newstatus New Status of all tickets
      */
-    public function batch_status(array $tickets, Status $newstatus)
+    public function batch_status(array $tickets, Status $newstatus): void
     {
         global $xoopsUser;
 
@@ -167,7 +167,7 @@ class StaffService extends Service
      * Event Handler for 'view_ticket'
      * @param Ticket $ticket Ticket being viewd
      */
-    public function view_ticket(Ticket $ticket)
+    public function view_ticket(Ticket $ticket): void
     {
         $value = [];
 
@@ -232,7 +232,7 @@ class StaffService extends Service
         return $out;
     }
 
-    public function attachEvents()
+    public function attachEvents(): void
     {
         $this->attachEvent('batch_response', $this);
         $this->attachEvent('batch_status', $this);

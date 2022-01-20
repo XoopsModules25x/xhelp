@@ -171,12 +171,14 @@
                     <td class="even" colspan="3">
                         <form method="post"
                               action="<{$xhelp_baseURL}>/ticket.php?id=<{$xhelp_ticketID}>&amp;op=ownership">
-                            <select name="uid" class="formButton">
-                                <{foreach from=$xhelp_aOwnership item=staff}>
-                                    <option value="<{$staff.uid}>"
-                                            <{if $xhelp_ticket_ownerUid eq $staff.uid}>selected="selected"<{/if}>><{$staff.uname}></option>
-                                <{/foreach}>
-                            </select>
+                            <label>
+                                <select name="uid" class="formButton">
+                                    <{foreach from=$xhelp_aOwnership item=staff}>
+                                        <option value="<{$staff.uid}>"
+                                                <{if $xhelp_ticket_ownerUid eq $staff.uid}>selected="selected"<{/if}>><{$staff.uname}></option>
+                                    <{/foreach}>
+                                </select>
+                            </label>
                             <input type="image" src="<{$xhelp_imagePath}>assignOwner.png"
                                    title="<{$smarty.const._XHELP_TEXT_ASSIGN_OWNER}>" name="assignOwner"
                                    style="border:0;background:transparent;">
@@ -203,9 +205,11 @@
                     <td class="even" colspan="5">
                         <form method="post" action="<{$xhelp_baseURL}>/index.php?op=setdept">
                             <{securityToken}><{*//mb*}>
-                            <select name="department">
-                                <{html_options options=$xhelp_departments selected=$xhelp_departmentid}>
-                            </select>
+                            <label>
+                                <select name="department">
+                                    <{html_options options=$xhelp_departments selected=$xhelp_departmentid}>
+                                </select>
+                            </label>
                             <input type="hidden" name="tickets[]" value="<{$xhelp_ticketID}>">
                             <input type="hidden" name="setdept" value="1">
                             <input type="image" src="<{$xhelp_imagePath}>assignOwner.png"
@@ -296,13 +300,16 @@
                     <td class="even" colspan="5">
                         <form method="post"
                               action="<{$xhelp_baseURL}>/ticket.php?id=<{$xhelp_ticketID}>&amp;op=updateStatus">
-                            <select name="status">
-                                <{foreach from=$xhelp_statuses item=status}>
-                                    <option value="<{$status.id}>"
-                                            <{if $xhelp_ticket_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
-                                <{/foreach}>
-                            </select><br>
+                            <label>
+                                <select name="status">
+                                    <{foreach from=$xhelp_statuses item=status}>
+                                        <option value="<{$status.id}>"
+                                                <{if $xhelp_ticket_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
+                                    <{/foreach}>
+                                </select>
+                            </label><br>
                             <{if $xhelp_has_addResponse}>
+                                <label for="response"></label>
                                 <textarea name="response" id="response" rows="5" cols="60"
                                           class="formButton"></textarea>
                                 <br>

@@ -46,14 +46,22 @@ class TicketValuesHandler extends BaseObjectHandler
     public $id      = 'ticketid';
     public $idfield = 'ticketid';
 
+    private const TABLE = 'xhelp_ticket_values';
+    private const ENTITY = TicketValues::class;
+    private const ENTITYNAME = 'TicketValues';
+    private const KEYNAME = 'ticketid';
+    private const IDENTIFIER = 'ticketid';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**

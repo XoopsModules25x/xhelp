@@ -150,7 +150,7 @@ $modversion['contributors']['testers'][1]['uname'] = 'theBIGmick';
 $modversion['contributors']['testers'][1]['email'] = 'thebigmick@epcgamers.com';
 $modversion['contributors']['testers'][1]['website'] = '';
 
-$modversion['contributors']['testers'][2]['name']    = 'Marc-Andr� Lanciault';
+$modversion['contributors']['testers'][2]['name']    = 'Marc-Andre Lanciault';
 $modversion['contributors']['testers'][2]['uname'] = 'marcan';
 $modversion['contributors']['testers'][2]['email'] = '';
 $modversion['contributors']['testers'][2]['website'] = 'https://www.smartfactory.ca';
@@ -166,7 +166,7 @@ $modversion['contributors']['code'][0]['uname'] = 'Nazar';
 $modversion['contributors']['code'][0]['email'] = 'nazar@panthersoftware.com';
 $modversion['contributors']['code'][0]['website'] = '';
 
-$modversion['contributors']['code'][1]['name']    = 'Marc-Andr� Lanciault';
+$modversion['contributors']['code'][1]['name']    = 'Marc-Andre Lanciault';
 $modversion['contributors']['code'][1]['uname'] = 'marcan';
 $modversion['contributors']['code'][1]['email'] = '';
 $modversion['contributors']['code'][1]['website'] = 'https://www.smartfactory.ca';
@@ -225,14 +225,6 @@ $modversion['helpsection'] = [
     ['name' => _MI_XHELP_DISCLAIMER, 'link' => 'page=disclaimer'],
     ['name' => _MI_XHELP_LICENSE, 'link' => 'page=license'],
     ['name' => _MI_XHELP_SUPPORT, 'link' => 'page=support'],
-
-    //    array('name' => _MI_XHELP_HELP1, 'link' => 'page=help1'),
-    //    array('name' => _MI_XHELP_HELP2, 'link' => 'page=help2'),
-    //    array('name' => _MI_XHELP_HELP3, 'link' => 'page=help3'),
-    //    array('name' => _MI_XHELP_HELP4, 'link' => 'page=help4'),
-    //    array('name' => _MI_XHELP_HOWTO, 'link' => 'page=__howto'),
-    //    array('name' => _MI_XHELP_REQUIREMENTS, 'link' => 'page=__requirements'),
-    //    array('name' => _MI_XHELP_CREDITS, 'link' => 'page=__credits'),
 ];
 
 // ------------------- Templates ------------------- //

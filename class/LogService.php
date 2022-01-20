@@ -48,7 +48,7 @@ class LogService extends Service
         $this->init();
     }
 
-    public function attachEvents()
+    public function attachEvents(): void
     {
         $this->attachEvent('batch_dept', $this);
         $this->attachEvent('batch_owner', $this);

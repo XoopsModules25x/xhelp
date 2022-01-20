@@ -46,7 +46,7 @@ class Plugin implements PluginInterface
 
     /**
      * Class Constructor
-     * @param EventService $eventService a reference to a {@link EventService} object
+     * @param \XoopsModules\Xhelp\EventService|null $eventService a reference to a {@link EventService} object
      */
     public function __construct(EventService $eventService = null)
     {
@@ -58,7 +58,7 @@ class Plugin implements PluginInterface
     /**
      * Retrieve the specified meta field
      * @param string $var name of variable to return
-     * @return string if var is set, false if not
+     * @return string|false string if var is set, false if not
      */
     public function getMeta(string $var)
     {
@@ -69,7 +69,7 @@ class Plugin implements PluginInterface
      * @param string $var
      * @param string $value
      */
-    public function setMeta(string $var, string $value)
+    public function setMeta(string $var, string $value): void
     {
         $this->_meta[$var] = $value;
     }
@@ -77,7 +77,7 @@ class Plugin implements PluginInterface
     /**
      * Initialization function, triggered when a plugin is "loaded" by the system
      */
-    public function onLoad()
+    public function onLoad(): void
     {
         //Initialize any event handlers
         $this->registerEventHandler('new_event', 'on_new_event');
@@ -86,7 +86,7 @@ class Plugin implements PluginInterface
     /**
      * Destruction function, triggered when a plugin is "un-loaded" by the system
      */
-    public function onUnload()
+    public function onUnload(): void
     {
         //Remove any registered events
         foreach ($this->_events as $event_ctx => $event_cookies) {
@@ -101,7 +101,7 @@ class Plugin implements PluginInterface
      * @param string $event_ctx
      * @param string $event_func
      */
-    public function registerEventHandler(string $event_ctx, string $event_func)
+    public function registerEventHandler(string $event_ctx, string $event_func): void
     {
         if (!isset($this->_events[$event_ctx])) {
             $this->_events[$event_ctx] = [];

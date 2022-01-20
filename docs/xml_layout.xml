@@ -33,7 +33,7 @@
                     </file>
                 </files>
 
-                <staffReviews>
+                <staffReview>
                     <review id=''>
                         <staffid></staffid>
                         <comments></comments>
@@ -52,7 +52,7 @@
             </file>
         </files>
 
-        <logMessages>
+        <logMessage>
             <log id=''>
                 <uid></uid>
                 <lastUpdated></lastUpdated>
@@ -63,9 +63,9 @@
         <subscribedUsers>
             <user>
                 <uid></uid>
-                <ticketid></tickedid>
+                <ticketid></ticketid>
                 <email></email>
-                <suppress></supress>
+                <supress></supress>
             </user>
         </subscribedUsers>
     </ticket>

@@ -79,14 +79,14 @@ class TicketField extends \XoopsObject
     /**
      * @param Validation\Validator $validator
      */
-    public function addValidator(Validation\Validator $validator)
+    public function addValidator(Validation\Validator $validator): void
     {
     }
 
     /**
      * @param array $val_arr
      */
-    public function setValues(array $val_arr)
+    public function setValues(array $val_arr): void
     {
         $this->setVar('fieldvalues', $val_arr);
     }
@@ -94,7 +94,7 @@ class TicketField extends \XoopsObject
     /**
      * @param array $val_arr
      */
-    public function addValues(array $val_arr)
+    public function addValues(array $val_arr): void
     {
         if (\is_array($val_arr)) {
             $values = @$this->getVar('fieldvalues');
@@ -112,7 +112,7 @@ class TicketField extends \XoopsObject
      * @param string $desc
      * @param null   $value
      */
-    public function addValue(string $desc, $value = null)
+    public function addValue(string $desc, $value = null): void
     {
         //Add value to array
         $values        = $this->getVar('fieldvalues');
@@ -123,7 +123,7 @@ class TicketField extends \XoopsObject
     /**
      * @param int $dept
      */
-    public function addDepartment(int $dept)
+    public function addDepartment(int $dept): void
     {
         $dept                     = $dept;
         $this->departments[$dept] = $dept;
@@ -148,7 +148,7 @@ class TicketField extends \XoopsObject
     /**
      * @param int $dept
      */
-    public function removeDepartment(int $dept)
+    public function removeDepartment(int $dept): void
     {
         $dept                     = $dept;
         $this->departments[$dept] = 0;

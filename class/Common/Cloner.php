@@ -13,7 +13,7 @@ class Cloner
     /**
      * @param string $path
      */
-    public static function cloneFileFolder(string $path)
+    public static function cloneFileFolder(string $path): void
     {
         global $patKeys;
         global $patValues;

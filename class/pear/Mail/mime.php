@@ -33,7 +33,6 @@
 // |         Tomas V.V.Cox <cox@idecnet.com> (port to PEAR)                |
 // +-----------------------------------------------------------------------+
 //
-// $Id: mime.php,v 1.1 2005/02/08 20:12:56 ackbarr Exp $
 
 require_once XHELP_PEAR_PATH . '/PEAR.php';
 require_once XHELP_PEAR_PATH . '/Mail/mimePart.php';

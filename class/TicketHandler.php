@@ -48,6 +48,12 @@ class TicketHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_tickets';
 
+    private const TABLE = 'xhelp_tickets';
+    private const ENTITY = Ticket::class;
+    private const ENTITYNAME = 'Ticket';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'uid';
+
     /**
      * Constructor
      *
@@ -56,6 +62,8 @@ class TicketHandler extends BaseObjectHandler
     public function __construct(\XoopsMySQLDatabase $db = null)
     {
         $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**
@@ -312,7 +320,6 @@ class TicketHandler extends BaseObjectHandler
                 break;
             default:
                 return $arr;
-                break;
         }
 
         return $this->getObjectsByStaff($criteria);
@@ -354,7 +361,6 @@ class TicketHandler extends BaseObjectHandler
                 break;
             default:
                 return 0;
-                break;
         }
 
         return $this->getCountByStaff($criteria);

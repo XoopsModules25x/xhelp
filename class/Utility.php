@@ -419,7 +419,7 @@ class Utility extends Common\SysUtility
      *
      * @param mixed $var Variable to output
      */
-    public static function debug($var)
+    public static function debug($var): void
     {
         echo '<pre>';
         \print_r($var);
@@ -681,7 +681,7 @@ class Utility extends Common\SysUtility
      *
      * @access public
      */
-    public static function initRand()
+    public static function initRand(): void
     {
         static $randCalled = false;
         if (!$randCalled) {
@@ -1108,7 +1108,7 @@ class Utility extends Common\SysUtility
      * @param int                                  $displayName XHELP_DISPLAYNAME_UNAME for username XHELP_DISPLAYNAME_REALNAME for realname
      * @return array True on success, False on failure
      */
-    public static function getUsers($criteria = null, int $displayName = \XHELP_DISPLAYNAME_UNAME): array
+    public static function getUsers(\CriteriaElement $criteria = null, int $displayName = \XHELP_DISPLAYNAME_UNAME): array
     {
         /** @var \XoopsUserHandler $userHandler */
         $userHandler = \xoops_getHandler('user');
@@ -1195,7 +1195,7 @@ class Utility extends Common\SysUtility
      * @param string $filename file to include
      * @param null   $language translation to use
      */
-    public static function includeLang(string $filename, $language = null)
+    public static function includeLang(string $filename, $language = null): void
     {
         $langFiles = ['admin', 'blocks', 'main', 'modinfo', 'noise_words'];
 
@@ -1213,7 +1213,7 @@ class Utility extends Common\SysUtility
     /**
      * @param string $reportName
      */
-    public static function includeReportLangFile(string $reportName)
+    public static function includeReportLangFile(string $reportName): void
     {
         \xoops_loadLanguage($reportName, 'xhelp');
     }
@@ -1278,7 +1278,6 @@ class Utility extends Common\SysUtility
                     break;
                 default:
                     return false;
-                    break;
             }
 
             $newSearch->setVar('uid', \XHELP_GLOBAL_UID);

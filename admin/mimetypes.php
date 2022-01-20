@@ -388,7 +388,7 @@ switch ($op) {
 //
 //function manage()
 //{
-//    global $mimetypeHandler, $imagearray, $start, $limit, $aSortBy, $aOrderBy, $aLimitBy, $aSearchBy;
+//    global $mimetypeHandler, $icons, $start, $limit, $aSortBy, $aOrderBy, $aLimitBy, $aSearchBy;
 //    $helper = Xhelp\Helper::getInstance();
 //
 //    if (Request::hasVar('deleteMimes', 'POST')) {
@@ -500,15 +500,15 @@ switch ($op) {
 //                  <td>' . $mime->getVar('mime_ext') . "</td>
 //                  <td>
 //                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=updateMimeValue&amp;id=' . $mime->getVar('mime_id') . '&amp;mime_admin=' . $mime->getVar('mime_admin') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>
-//                      " . (($mime->getVar('mime_admin') && isset($imagearray['online'])) ? $imagearray['online'] : $imagearray['offline'] ?? '') . "</a>
+//                      " . (($mime->getVar('mime_admin') && isset($icons['online'])) ? $icons['online'] : $icons['offline'] ?? '') . "</a>
 //                  </td>
 //                  <td>
 //                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=updateMimeValue&amp;id=' . $mime->getVar('mime_id') . '&amp;mime_user=' . $mime->getVar('mime_user') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>
-//                      " . ($mime->getVar('mime_user') ? $imagearray['online'] ?? '' : $imagearray['offline'] ?? '') . "</a>
+//                      " . ($mime->getVar('mime_user') ? $icons['online'] ?? '' : $icons['offline'] ?? '') . "</a>
 //                  </td>
 //                  <td>
-//                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=edit&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . ($imagearray['editimg'] ?? '') . "</a>
-//                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=delete&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . ($imagearray['deleteimg'] ?? '') . '</a>
+//                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=edit&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . ($icons['edit'] ?? '') . "</a>
+//                      <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=delete&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . ($icons['delete'] ?? '') . '</a>
 //                  </td>
 //              </tr>';
 //    }
@@ -528,7 +528,7 @@ switch ($op) {
 //
 //function search()
 //{
-//    global $mimetypeHandler, $limit, $start, $imagearray, $aSearchBy, $aOrderBy, $aLimitBy, $aSortBy;
+//    global $mimetypeHandler, $limit, $start, $icons, $aSearchBy, $aOrderBy, $aLimitBy, $aSortBy;
 //    $helper = Xhelp\Helper::getInstance();
 //
 //    if (Request::hasVar('deleteMimes', 'POST')) {
@@ -671,15 +671,15 @@ switch ($op) {
 //                          <td>' . $mime->getVar('mime_ext') . "</td>
 //                          <td>
 //                              <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=updateMimeValue&amp;id=' . $mime->getVar('mime_id') . '&amp;mime_admin=' . $mime->getVar('mime_admin') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>
-//                              " . ($mime->getVar('mime_admin') ? $imagearray['online'] : $imagearray['offline']) . "</a>
+//                              " . ($mime->getVar('mime_admin') ? $icons['online'] : $icons['offline']) . "</a>
 //                          </td>
 //                          <td>
 //                              <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=updateMimeValue&amp;id=' . $mime->getVar('mime_id') . '&amp;mime_user=' . $mime->getVar('mime_user') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>
-//                              " . ($mime->getVar('mime_user') ? $imagearray['online'] : $imagearray['offline']) . "</a>
+//                              " . ($mime->getVar('mime_user') ? $icons['online'] : $icons['offline']) . "</a>
 //                          </td>
 //                          <td>
-//                              <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=edit&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . $imagearray['editimg'] . "</a>
-//                              <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=delete&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . $imagearray['deleteimg'] . '</a>
+//                              <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=edit&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . $icons['edit'] . "</a>
+//                              <a href='" . XHELP_ADMIN_URL . '/mimetypes.php?op=delete&amp;id=' . $mime->getVar('mime_id') . '&amp;limit=' . $limit . '&amp;start=' . $start . "'>" . $icons['delete'] . '</a>
 //                          </td>
 //                      </tr>';
 //            }

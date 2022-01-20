@@ -41,7 +41,7 @@ class FirnService extends Service
     /**
      *
      */
-    public function attachEvents()
+    public function attachEvents(): void
     {
         $this->attachEvent('new_faq', $this);
     }

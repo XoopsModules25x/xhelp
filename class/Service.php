@@ -37,23 +37,23 @@ class Service
      * @param string  $eventName
      * @param Service $callback
      */
-    public function attachEvent(string $eventName, Service $callback)
+    public function attachEvent(string $eventName, Service $callback): void
     {
         $this->addCookie($eventName, (string)$this->eventService->advise($eventName, $callback));
     }
 
-    public function init()
+    public function init(): void
     {
         $this->eventService = EventService::getInstance();
         $this->attachEvents();
     }
 
-    public function attachEvents()
+    public function attachEvents(): void
     {
         //Do nothing (must implement this function in subclasses)
     }
 
-    public function detachEvents()
+    public function detachEvents(): void
     {
         foreach ($this->_cookies as $event => $cookie) {
             if (\is_array($cookie)) {
@@ -70,7 +70,7 @@ class Service
     /**
      * @param string $eventName
      */
-    public function detachFromEvent(string $eventName)
+    public function detachFromEvent(string $eventName): void
     {
         if (isset($this->_cookies[$eventName])) {
             $cookie = $this->_cookies[$eventName];
@@ -89,7 +89,7 @@ class Service
      * @param string $eventName
      * @param string $cookie
      */
-    private function addCookie(string $eventName, string $cookie)
+    private function addCookie(string $eventName, string $cookie): void
     {
         //Check if the cookie already exist
         if (!isset($this->_cookies[$eventName])) {

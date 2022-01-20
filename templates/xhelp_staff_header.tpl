@@ -29,11 +29,13 @@
             <{if $xhelp_savedSearches|default:false neq false}>
                 <td>
                     <form name="savedSearches" method="post" action="search.php">
-                        <select name="savedSearch">
-                            <{foreach from=$xhelp_savedSearches item=search}>
-                                <option value="<{$search.id}>"><{$search.name}></option>
-                            <{/foreach}>
-                        </select>
+                        <label>
+                            <select name="savedSearch">
+                                <{foreach from=$xhelp_savedSearches item=search}>
+                                    <option value="<{$search.id}>"><{$search.name}></option>
+                                <{/foreach}>
+                            </select>
+                        </label>
                         <input type="submit" name="runSavedSearch" id="runSavedSearch"
                                value="<{$smarty.const._XHELP_BUTTON_RUN}>">
                     </form>
@@ -41,7 +43,9 @@
             <{/if}>
             <td>
                 <form method="post" action="ticket.php">
-                    <input type="text" name="id" size="6">
+                    <label>
+                        <input type="text" name="id" size="6">
+                    </label>
                     <input type="submit" name="getTicket" value="<{$smarty.const._GO}>">
                 </form>
             </td>

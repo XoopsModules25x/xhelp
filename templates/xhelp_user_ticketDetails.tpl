@@ -179,7 +179,9 @@
                         <{/if}>
                     </td>
                     <td class="even">
-                        <textarea name="userResponse" rows="10" cols="50" class="formButton"></textarea>
+                        <label>
+                            <textarea name="userResponse" rows="10" cols="50" class="formButton"></textarea>
+                        </label>
                     </td>
                 </tr>
                 <{if $xhelp_allowUpload eq 1}>
@@ -198,7 +200,9 @@
                             <{$smarty.const._XHELP_TEXT_CLOSE_TICKET}>
                         </td>
                         <td class="even">
-                            <input type="checkbox" name="closeTicket" value="1">
+                            <label>
+                                <input type="checkbox" name="closeTicket" value="1">
+                            </label>
                         </td>
                     </tr>
                 <{/if}>

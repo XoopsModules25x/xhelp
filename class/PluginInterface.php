@@ -39,24 +39,25 @@ interface PluginInterface
      * @param string $var
      * @param string $value
      */
-    public function setMeta(string $var, string $value);
+    public function setMeta(string $var, string $value): void;
 
     /**
      * Initialization function, triggered when a plugin is "loaded" by the system
      */
-    public function onLoad();
+    public function onLoad(): void;
+
 
     /**
      * Destruction function, triggered when a plugin is "un-loaded" by the system
      */
-    public function onUnload();
+    public function onUnload(): void;
 
     /**
      * Add a function to be called when an event is triggered by the system
      * @param string $event_ctx
      * @param string $event_func
      */
-    public function registerEventHandler(string $event_ctx, string $event_func);
+    public function registerEventHandler(string $event_ctx, string $event_func): void;
 
     /**
      * Only have 1 instance of class used

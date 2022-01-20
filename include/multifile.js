@@ -60,7 +60,7 @@ function MultiSelector(list_target, max) {
     this.addElement = function (element) {
 
         // Make sure it's a file input element
-        if (element.tagName == 'INPUT' && element.type == 'file') {
+        if (element.tagName === 'INPUT' && element.type === 'file') {
 
             // Element name -- what number am I?
             element.name = 'userfile_' + this.id++;
@@ -90,10 +90,10 @@ function MultiSelector(list_target, max) {
 
             };
             // If we've reached maximum number, disable input element
-            if (this.max != -1 && this.count >= this.max) {
+            if (this.max !== -1 && this.count >= this.max) {
                 element.disabled = true;
             }
-            ;
+
 
             // File element counter
             this.count++;
@@ -104,7 +104,7 @@ function MultiSelector(list_target, max) {
             // This can only be applied to file input elements!
             alert('Error: not a file input element');
         }
-        ;
+
 
     };
 
@@ -156,4 +156,4 @@ function MultiSelector(list_target, max) {
 
     };
 
-};
+}

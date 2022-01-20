@@ -47,14 +47,22 @@ class FileHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_files';
 
+    private const TABLE = 'xhelp_files';
+    private const ENTITY = File::class;
+    private const ENTITYNAME = 'File';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'filename';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**

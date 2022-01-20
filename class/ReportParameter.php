@@ -115,10 +115,8 @@ class ReportParameter
         switch ($controltype) {
             case \XHELP_CONTROL_TXTBOX:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
-                break;
             case \XHELP_CONTROL_TXTAREA:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<textarea name='" . $this->fieldname . "' id='" . $this->fieldname . "' cols='" . $this->fieldlength . "' rows='5'>" . $this->value . '</textarea>';
-                break;
             case \XHELP_CONTROL_SELECT:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<select name='" . $this->fieldname . "' id='" . $this->fieldname . "' size='1'>";
                 foreach ($this->values as $key => $value) {
@@ -127,7 +125,6 @@ class ReportParameter
                 $ret .= '</select>';
 
                 return $ret;
-                break;
             case \XHELP_CONTROL_MULTISELECT:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<select name='" . $this->fieldname . "' id='" . $this->fieldname . "' size='3' multiple='multiple'>";
                 foreach ($this->values as $key => $value) {
@@ -136,7 +133,6 @@ class ReportParameter
                 $ret .= '</select>';
 
                 return $ret;
-                break;
             case \XHELP_CONTROL_YESNO:
                 return "<label for='"
                        . $this->fieldname
@@ -159,7 +155,6 @@ class ReportParameter
                        . ((1 == $this->value) ? 'checked' : '')
                        . '>'
                        . \_XHELP_TEXT_NO;
-                break;
             case \XHELP_CONTROL_RADIOBOX:
                 $ret = "<label for='" . $this->fieldname . "'>" . $this->name . '</label>';
                 foreach ($this->values as $key => $value) {
@@ -167,13 +162,10 @@ class ReportParameter
                 }
 
                 return $ret;
-                break;
             case \XHELP_CONTROL_DATETIME:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
-                break;
             default:
                 return "<label for='" . $this->fieldname . "'>" . $this->name . '</label>' . "<input type='text' name='" . $this->fieldname . "' id='" . $this->fieldname . "' value='" . $this->value . "' maxlength='" . $this->maxlength . "' size='" . $this->fieldlength . "'>";
-                break;
         }
     }
 }

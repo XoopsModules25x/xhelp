@@ -49,7 +49,7 @@ class CacheService extends Service
     /**
      *
      */
-    public function attachEvents()
+    public function attachEvents(): void
     {
         $this->attachEvent('batch_status', $this);
         $this->attachEvent('close_ticket', $this);

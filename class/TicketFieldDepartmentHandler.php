@@ -22,11 +22,17 @@ namespace XoopsModules\Xhelp;
 /**
  * class TicketFieldDepartmentHandler
  */
-class TicketFieldDepartmentHandler
+class TicketFieldDepartmentHandler // extends BaseObjectHandler
 {
     private $db;
     private $ticketFieldHandler;
     private $departmentHandler;
+
+//    private const TABLE = 'xhelp_ticket_field_departments';
+//    private const ENTITY = TicketFieldDepartment::class;
+//    private const ENTITYNAME = 'TicketFieldDepartment';
+//    private const KEYNAME = 'fieldid';
+//    private const IDENTIFIER = 'deptid';
 
     /**
      * Constructor
@@ -35,10 +41,13 @@ class TicketFieldDepartmentHandler
     {
         $this->db     = $db;
         $this->helper = Helper::getInstance();
+
         /** @var \XoopsModules\Xhelp\TicketFieldHandler $this- >ticketFieldHandler */
         $this->ticketFieldHandler = $this->helper->getHandler('TicketField');
         /** @var \XoopsModules\Xhelp\DepartmentHandler $this- >ticketFieldHandler */
         $this->departmentHandler = $this->helper->getHandler('Department');
+
+//        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**
@@ -235,7 +244,7 @@ class TicketFieldDepartmentHandler
      * @param bool                                 $force
      * @return bool
      */
-    public function deleteAll($criteria = null, bool $force = false): bool
+    public function deleteAll(\CriteriaElement $criteria = null, bool $force = false): bool
     {
         $sql = 'DELETE FROM ' . $this->db->prefix('xhelp_ticket_field_departments');
         if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {
@@ -286,7 +295,7 @@ class TicketFieldDepartmentHandler
     /**
      * @param int $fieldid
      * @param int $deptid
-     * @return mixed
+     * @return bool|\mysqli_result
      */
     private function addJoinerRecord(int $fieldid, int $deptid)
     {
@@ -326,7 +335,7 @@ class TicketFieldDepartmentHandler
     /**
      * @param int $fieldid
      * @param int $deptid
-     * @return mixed
+     * @return bool|\mysqli_result
      */
     private function removeJoinerRecord(int $fieldid, int $deptid)
     {

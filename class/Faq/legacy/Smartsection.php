@@ -97,7 +97,7 @@ class Smartsection extends Xhelp\FaqAdapterAbstract
         }
         // Every class should call parent::init() to ensure that all class level
         // variables are initialized properly.
-        parent::init();
+        $this->init();
     }
 
     /**
@@ -221,10 +221,10 @@ class Smartsection extends Xhelp\FaqAdapterAbstract
     /**
      * Create the url going to the faq article
      *
-     * @param Xhelp\Faq $faq object
+     * @param \XoopsModules\Xhelp\Faq $faq object
      * @return string
      */
-    public function makeFaqUrl(Xhelp\Faq $faq): string
+    public function makeFaqUrl(\XoopsModules\Xhelp\Faq $faq): string
     {
         return \XHELP_SSECTION_URL . '/item.php?itemid=' . $faq->getVar('id');
     }

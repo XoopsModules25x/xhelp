@@ -105,7 +105,7 @@ class Ticket extends \XoopsObject
      *
      * @param string $email
      */
-    public function createEmailHash(string $email)
+    public function createEmailHash(string $email): void
     {
         if ('' === $this->getVar('posted')) {
             $this->setVar('posted', \time());
@@ -260,7 +260,7 @@ class Ticket extends \XoopsObject
      * @param string                                   $post_field
      * @param \XoopsModules\Xhelp\Response|string|null $response
      * @param array|string|null                        $allowed_mimetypes
-     * @return array|false|string|void
+     * @return \XoopsModules\Xhelp\File|array|false|string|void
      */
     public function storeUpload(string $post_field, $response = null, $allowed_mimetypes = null)
     {

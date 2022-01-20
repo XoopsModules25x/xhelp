@@ -30,7 +30,7 @@
                 <{$smarty.const._XHELP_TEXT_ASSIGNTO}>
             </td>
             <td class="even">
-                <select name="departments" id="departments">
+                <label for="departments"></label><select name="departments" id="departments">
                     <{foreach from=$xhelp_departments item=dept}>
                         <option value="<{$dept.id}>"
                                 <{if $xhelp_ticket_department eq $dept.id}>selected="selected"<{/if}>><{$dept.department}></option>
@@ -44,6 +44,7 @@
             </td>
             <td class="even">
                 <{foreach from=$xhelp_priorities item=priority}>
+                    <label for="priority"></label>
                     <input type="radio" value="<{$priority}>" name="priority" id="priority"
                            <{if $xhelp_ticket_priority eq $priority}>checked<{/if}>>
                     <img src="<{$xhelp_imagePath}>priority<{$priority}>.png"
@@ -56,8 +57,8 @@
                 <{$smarty.const._XHELP_TEXT_SUBJECT}>
             </td>
             <td class="even">
-                <input type="text" name="subject" id="subject" maxlength="100" size="50"
-                       value="<{$xhelp_ticket_subject}>" class="<{$xhelp_element_subject}>">
+                <label for="subject"></label><input type="text" name="subject" id="subject" maxlength="100" size="50"
+                                                    value="<{$xhelp_ticket_subject}>" class="<{$xhelp_element_subject}>">
             </td>
         </tr>
         <tr>
@@ -65,8 +66,8 @@
                 <{$smarty.const._XHELP_TEXT_DESCRIPTION}>
             </td>
             <td class="even">
-                <textarea name="description" id="description" rows="5" cols="50"
-                          class="<{$xhelp_element_description}>"><{$xhelp_ticket_description}></textarea>
+                <label for="description"></label><textarea name="description" id="description" rows="5" cols="50"
+                                                           class="<{$xhelp_element_description}>"><{$xhelp_ticket_description}></textarea>
             </td>
         </tr>
         <{if $xhelp_allowUpload eq 1}>
@@ -86,12 +87,15 @@
                 </td>
                 <td class="even">
                     <{if $field.controltype == $smarty.const.XHELP_CONTROL_TXTBOX}>
+                        <label for="<{$field.fieldname}>"></label>
                         <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                value="<{$field.value}>" maxlength="<{$field.maxlength}>" size="<{$field.fieldlength}>">
                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_TXTAREA}>
+                        <label for="<{$field.fieldname}>"></label>
                         <textarea name="<{$field.fieldname}>" id="<{$field.fieldname}>" cols="<{$field.fieldlength}>"
                                   rows="5"><{$field.value}></textarea>
                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_SELECT}>
+                        <label for="<{$field.fieldname}>"></label>
                         <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="1">
                             <{foreach from=$field.fieldvalues item=value key=key}>
                                 <option value="<{$key}>"
@@ -99,6 +103,7 @@
                             <{/foreach}>
                         </select>
                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_MULTISELECT}>
+                        <label for="<{$field.fieldname}>"></label>
                         <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="3" multiple="multiple">
                             <{foreach from=$field.fieldvalues item=value key=key}>
                                 <option value="<{$key}>"
@@ -106,24 +111,29 @@
                             <{/foreach}>
                         </select>
                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_YESNO}>
+                        <label for="<{$field.fieldname}>1"></label>
                         <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>1" value="1"
                                <{if $field.value == $smarty.const._YES}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                         <br>
+                        <label for="<{$field.fieldname}>0"></label>
                         <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>0" value="0"
                                <{if $field.value == $smarty.const._NO}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_CHECKBOX}>
                         <{foreach from=$field.fieldvalues item=value key=key}>
+                            <label for="<{$field.fieldname}><{$key}>"></label>
                             <input type="checkbox" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                    value="<{$key}>" <{if $value == $field.value}>checked<{/if}>><{$value}>
                             <br>
                         <{/foreach}>
                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_RADIOBOX}>
                         <{foreach from=$field.fieldvalues item=value key=key}>
+                            <label for="<{$field.fieldname}><{$key}>"></label>
                             <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                    value="<{$key}>" <{if $value == $field.value}>checked<{/if}>><{$value}>
                             <br>
                         <{/foreach}>
                     <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_DATETIME}>
+                        <label for="<{$field.fieldname}>"></label>
                         <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                value="<{$field.value}>" maxlength="<{$field.maxlength}>" size="<{$field.fieldlength}>">
                     <{else}>

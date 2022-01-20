@@ -153,7 +153,7 @@ class ParsedMessage
     /**
      * @param array|object $part
      */
-    public function loadAttachments($part)
+    public function loadAttachments($part): void
     {
         if (\is_array($part)) {
             foreach ($part as $subpart) {
@@ -176,7 +176,7 @@ class ParsedMessage
     /**
      * @param object $part
      */
-    private function addAttachment(object $part)
+    private function addAttachment(object $part): void
     {
         $_attach                 = [];
         $_attach['content-type'] = $part->ctype_primary . '/' . $part->ctype_secondary;

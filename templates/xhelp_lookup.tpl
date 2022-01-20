@@ -137,18 +137,22 @@
                 <tr>
                     <td class='head' align='right'><{$smarty.const._XHELP_TEXT_SEARCH}></td>
                     <td class='even'>
-                        <input type='text' name='searchText'>
+                        <label>
+                            <input type='text' name='searchText'>
+                        </label>
                     </td>
                 </tr>
                 <tr>
                     <td class='head' align='right'><{$smarty.const._XHELP_TEXT_SEARCHBY}></td>
                     <td class='even'>
-                        <select name='subject'>
-                            <option value='email'><{$smarty.const._XHELP_SEARCH_EMAIL}></option>
-                            <option value='name'><{$smarty.const._XHELP_TEXT_REALNAME}></option>
-                            <option value='uname'><{$smarty.const._XHELP_SEARCH_USERNAME}></option>
-                            <option value='uid'><{$smarty.const._XHELP_SEARCH_UID}></option>
-                        </select>
+                        <label>
+                            <select name='subject'>
+                                <option value='email'><{$smarty.const._XHELP_SEARCH_EMAIL}></option>
+                                <option value='name'><{$smarty.const._XHELP_TEXT_REALNAME}></option>
+                                <option value='uname'><{$smarty.const._XHELP_SEARCH_USERNAME}></option>
+                                <option value='uid'><{$smarty.const._XHELP_SEARCH_UID}></option>
+                            </select>
+                        </label>
                     </td>
                 </tr>
                 <tr>
@@ -192,8 +196,10 @@
                     <{foreach from=$xhelp_matches item=user}>
                         <tr class="<{cycle values="odd,even"}>">
                             <td>
-                                <input name="logFor" value="<{$user.uid}>^<{$user.uname}>" type="radio"
-                                       class="formButton">
+                                <label>
+                                    <input name="logFor" value="<{$user.uid}>^<{$user.uname}>" type="radio"
+                                           class="formButton">
+                                </label>
                                 <{$user.uid}>
                             </td>
                             <td>

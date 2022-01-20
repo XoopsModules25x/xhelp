@@ -46,7 +46,7 @@ class EmailStore
     /**
      * @param string|array $desc
      */
-    public function _setError($desc)
+    public function _setError($desc): void
     {
         if (\is_array($desc)) {
             foreach ($desc as $d) {
@@ -71,7 +71,7 @@ class EmailStore
     /**
      *
      */
-    public function clearErrors()
+    public function clearErrors(): void
     {
         $this->_errors = [];
     }
@@ -79,7 +79,7 @@ class EmailStore
     /**
      *
      */
-    public function renderErrors()
+    public function renderErrors(): void
     {
     }
 
@@ -166,7 +166,7 @@ class EmailStore
      * @param int           $ticketid
      * @param int           $responseid
      */
-    public function saveAttachments(ParsedMessage $msg, int $ticketid, int $responseid = 0)
+    public function saveAttachments(ParsedMessage $msg, int $ticketid, int $responseid = 0): void
     {
         $helper = Helper::getInstance();
 
@@ -227,7 +227,7 @@ class EmailStore
      * @param ParsedMessage $msg
      * @param string        $fname
      */
-    public function addAttachmentError(array $errors, ParsedMessage $msg, string $fname)
+    public function addAttachmentError(array $errors, ParsedMessage $msg, string $fname): void
     {
         if (0 != $errors) {
             $aErrors = [];

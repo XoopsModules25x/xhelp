@@ -156,10 +156,8 @@ class DepartmentMailBox extends \XoopsObject
         switch ($mboxType) {
             case \_XHELP_MAILBOXTYPE_IMAP:
                 return new MailBoxIMAP();
-                break;
             case \_XHELP_MAILBOXTYPE_POP3:
                 return new MailBoxPOP3();
-                break;
             default:
                 return false;
         }

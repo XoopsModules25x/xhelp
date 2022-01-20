@@ -26,7 +26,7 @@ trait FilesManagement
      *
      * @throws \RuntimeException
      */
-    public static function createFolder(string $folder)
+    public static function createFolder(string $folder): void
     {
         try {
             if (!\is_dir($folder)) {
@@ -55,7 +55,7 @@ trait FilesManagement
      * @param string $src
      * @param string $dst
      */
-    public static function recurseCopy(string $src, string $dst)
+    public static function recurseCopy(string $src, string $dst): void
     {
         $dir = \opendir($src);
         if (!\mkdir($dst) && !\is_dir($dst)) {

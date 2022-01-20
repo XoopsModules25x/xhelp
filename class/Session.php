@@ -2,8 +2,6 @@
 
 namespace XoopsModules\Xhelp;
 
-use RuntimeException;
-
 /**
  * A wrapper around PHP's session functions
  * @author  Harry Fuecks (PHP Anthology Volume II)
@@ -19,35 +17,35 @@ class Session
     public function __construct()
     {
         if (!@\session_start()) {
-            throw new RuntimeException('Session could not start.');
+            throw new \RuntimeException('Session could not start.');
         }
     }
 
     /**
      * Sets a session variable
-     * @param mixed $name
+     * @param string $name
      * @param mixed $value
      */
-    public function set($name, $value)
+    public function set($name, $value): void
     {
         $_SESSION[$name] = $value;
     }
 
     /**
      * Fetches a session variable
-     * @param mixed $name
-     * @return string|array|bool session variable
+     * @param string $name
+     * @return string|array|bool value of session variable
      */
-    public function get($name)
+    public function get(string $name)
     {
         return $_SESSION[$name] ?? false;
     }
 
     /**
      * Deletes a session variable
-     * @param mixed $name
+     * @param string $name
      */
-    public function del($name)
+    public function del($name): void
     {
         unset($_SESSION[$name]);
     }
@@ -55,7 +53,7 @@ class Session
     /**
      * Destroys the whole session
      */
-    public function destroy()
+    public function destroy(): void
     {
         $_SESSION = [];
         \session_destroy();

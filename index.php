@@ -218,7 +218,6 @@ switch ($op) {
             $helper->redirect('addTicket.php');
         }
         exit();
-        break;
     default:
         $helper->redirect(basename(__FILE__), 3);
         break;
@@ -841,7 +840,7 @@ function getAnnouncements(int $topicid, int $limit = 5, int $start = 0): bool
         $story['posttime'] = formatTimestamp($iValue->published());
         $story['text']     = $iValue->hometext();
         $introcount        = mb_strlen($story['text']);
-        $fullcount         = mb_strlen($iValue->bodytext());
+        $fullcount         = (int)mb_strlen($iValue->bodytext());
         $totalcount        = $introcount + $fullcount;
         $morelink          = '';
         if ($fullcount > 1) {

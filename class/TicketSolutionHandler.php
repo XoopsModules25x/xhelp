@@ -43,14 +43,22 @@ class TicketSolutionHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_ticket_solutions';
 
+    private const TABLE = 'xhelp_ticket_solutions';
+    private const ENTITY = TicketSolution::class;
+    private const ENTITYNAME = 'TicketSolution';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'ticketid';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**
@@ -176,7 +184,7 @@ class TicketSolutionHandler extends BaseObjectHandler
      * @param string $akey
      * @return array
      */
-    public function &multi_sort(array $array, string $akey)
+    public function &multi_sort(array $array, string $akey): array
     {
         /**
          * @param array $a

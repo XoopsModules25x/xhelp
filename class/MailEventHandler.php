@@ -47,14 +47,22 @@ class MailEventHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_mailevent';
 
+    private const TABLE = 'xhelp_mailevent';
+    private const ENTITY = MailEvent::class;
+    private const ENTITYNAME = 'MailEvent';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'mbox_id';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**
@@ -89,7 +97,7 @@ class MailEventHandler extends BaseObjectHandler
      * @param bool                                 $id_as_key Should the MailEvent ID be used as array key
      * @return array  array of {@link MailEvent} objects
      */
-    public function &getObjectsJoin($criteria = null, bool $id_as_key = false): array
+    public function &getObjectsJoin(\CriteriaElement $criteria = null, bool $id_as_key = false): array
     {
         $ret   = [];
         $limit = $start = 0;

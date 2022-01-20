@@ -755,7 +755,6 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
         $module_dir = $xoopsModule->getVar('mid');
         $xoopsTpl->display('db:xhelp_print.tpl');
         exit();
-        break;
     case 'updatePriority':
         if (!$hasRights = $staff->checkRoleRights(XHELP_SEC_TICKET_ADD)) {
             $message = _XHELP_MESSAGE_NO_ADD_TICKET;

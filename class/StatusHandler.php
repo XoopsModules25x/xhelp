@@ -47,14 +47,22 @@ class StatusHandler extends BaseObjectHandler
      */
     public $dbtable = 'xhelp_status';
 
+    private const TABLE = 'xhelp_status';
+    private const ENTITY = Status::class;
+    private const ENTITYNAME = 'Status';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'state';
+
     /**
      * Constructor
      *
-     * @param \XoopsDatabase|null $db reference to a xoopsDB object
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**

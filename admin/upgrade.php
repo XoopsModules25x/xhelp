@@ -126,6 +126,9 @@ function _openProgressWindow()
 }
     </script>";
 
+/**
+ * @throws \Exception
+ */
 function upgradeDB()
 {
     global $xoopsModule;
@@ -722,7 +725,7 @@ function upgradeDB()
             echo '</ul>';
             break;
         default:
-            throw new \Exception('Unexpected value');
+            throw new \RuntimeException('Unexpected value');
     }
 
     $newversion = round($xoopsModule->getVar('version') / 100, 2);

@@ -50,8 +50,8 @@
                 <{$smarty.const._XHELP_TEXT_NAME}>
             </td>
             <td class="even">
-                <input type="text" id="fullname" name="fullname" class="formButton" value="<{$xhelp_ticket_username}>"
-                       disabled="disabled">
+                <label for="fullname"></label><input type="text" id="fullname" name="fullname" class="formButton" value="<{$xhelp_ticket_username}>"
+                                                     disabled="disabled">
                 <{if $xhelp_isStaff && $xhelp_has_logUser}>
                     <input type="hidden" id="user_id" name="user_id" class="formButton" value="<{$xhelp_ticket_uid}>">
                     <a href="javascript:openWithSelfMain('lookup.php','lookup',400,300);"><img
@@ -68,7 +68,7 @@
                 <{$smarty.const._XHELP_TEXT_ASSIGNTO}>
             </td>
             <td class="even">
-                <select name="departments" id="departments">
+                <label for="departments"></label><select name="departments" id="departments">
                     <{foreach from=$xhelp_departments item=dept}>
                         <option value="<{$dept.id}>"
                                 <{if $xhelp_ticket_department eq $dept.id}>selected="selected"<{/if}>><{$dept.department}></option>
@@ -94,8 +94,8 @@
                 <{$smarty.const._XHELP_TEXT_SUBJECT}>
             </td>
             <td class="even">
-                <input type="text" name="subject" id="subject" maxlength="100" size="67"
-                       value="<{$xhelp_ticket_subject}>" class="<{$xhelp_element_subject}>">
+                <label for="subject"></label><input type="text" name="subject" id="subject" maxlength="100" size="67"
+                                                    value="<{$xhelp_ticket_subject}>" class="<{$xhelp_element_subject}>">
             </td>
         </tr>
         <tr>
@@ -103,8 +103,8 @@
                 <{$smarty.const._XHELP_TEXT_DESCRIPTION}>
             </td>
             <td class="even">
-                <textarea name="description" id="description" rows="5" cols="50"
-                          class="<{$xhelp_element_description}>"><{$xhelp_ticket_description}></textarea>
+                <label for="description"></label><textarea name="description" id="description" rows="5" cols="50"
+                                                           class="<{$xhelp_element_description}>"><{$xhelp_ticket_description}></textarea>
             </td>
         </tr>
         <{if $xhelp_isStaff && $xhelp_logMode eq 1}>
@@ -145,8 +145,8 @@
                     <{$smarty.const._XHELP_TEXT_RESPONSE}>
                 </td>
                 <td class="even">
-                    <textarea name="response" id="response" rows="5" cols="50"
-                              class="<{$xhelp_element_response|default:''}>"><{$xhelp_response_message}></textarea>
+                    <label for="response"></label><textarea name="response" id="response" rows="5" cols="50"
+                                                            class="<{$xhelp_element_response|default:''}>"><{$xhelp_response_message}></textarea>
                 </td>
             </tr>
             <tr>
@@ -154,8 +154,8 @@
                     <{$smarty.const._XHELP_TEXT_TIMESPENT}>
                 </td>
                 <td class="even">
-                    <input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent|default:''}>"
-                           class="<{$xhelp_element_timespent|default:''}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
+                    <label for="timespent"></label><input type="text" name="timespent" id="timespent" value="<{$xhelp_response_timespent|default:''}>"
+                                                          class="<{$xhelp_element_timespent|default:''}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
                 </td>
             </tr>
             <{if $xhelp_isStaff && $xhelp_logMode neq 1}>
@@ -179,7 +179,7 @@
                     <{$smarty.const._XHELP_TEXT_STATUS}>
                 </td>
                 <td class="even">
-                    <select name="status" id="status">
+                    <label for="status"></label><select name="status" id="status">
                         <{foreach from=$xhelp_statuses item=status}>
                             <option value="<{$status.id}>"
                                     <{if $status.id eq $xhelp_ticket_status}>selected="selected"<{/if}>><{$status.desc}></option>
@@ -193,7 +193,7 @@
                         <{$smarty.const._XHELP_TEXT_ASSIGN_OWNER}>
                     </td>
                     <td class="even">
-                        <select name="owner" id="owner" class="formButton">
+                        <label for="owner"></label><select name="owner" id="owner" class="formButton">
                             <{foreach from=$xhelp_aOwnership item=uname key=uid}>
                                 <option value="<{$uid}>"
                                         <{if $xhelp_ticket_ownership eq $uid}>selected="selected"<{/if}>><{$uname}></option>
@@ -208,9 +208,13 @@
                 </td>
                 <td class="even">
                     <{if $xhelp_response_private eq false}>
-                        <input type="checkbox" name="private" value="1" class="formButton">
+                        <label>
+                            <input type="checkbox" name="private" value="1" class="formButton">
+                        </label>
                     <{else}>
-                        <input type="checkbox" name="private" value="1" class="formButton" checked>
+                        <label>
+                            <input type="checkbox" name="private" value="1" class="formButton" checked>
+                        </label>
                     <{/if}>
                 </td>
             </tr>
@@ -230,13 +234,16 @@
                     </td>
                     <td class="even">
                         <{if $field.controltype == $smarty.const.XHELP_CONTROL_TXTBOX}>
+                            <label for="<{$field.fieldname}>"></label>
                             <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                    value="<{$field.defaultvalue}>" maxlength="<{$field.maxlength}>"
                                    size="<{$field.fieldlength}>">
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_TXTAREA}>
+                            <label for="<{$field.fieldname}>"></label>
                             <textarea name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                       cols="<{$field.fieldlength}>" rows="5"><{$field.defaultvalue}></textarea>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_SELECT}>
+                            <label for="<{$field.fieldname}>"></label>
                             <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="1">
                                 <{foreach from=$field.fieldvalues item=value key=key}>
                                     <option value="<{$key}>"
@@ -244,6 +251,7 @@
                                 <{/foreach}>
                             </select>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_MULTISELECT}>
+                            <label for="<{$field.fieldname}>"></label>
                             <select name="<{$field.fieldname}>" id="<{$field.fieldname}>" size="3" multiple="multiple">
                                 <{foreach from=$field.fieldvalues item=value key=key}>
                                     <option value="<{$key}>"
@@ -251,13 +259,16 @@
                                 <{/foreach}>
                             </select>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_YESNO}>
+                            <label for="<{$field.fieldname}>1"></label>
                             <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>1" value="1"
                                    <{if $field.defaultvalue == 1}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
                             <br>
+                            <label for="<{$field.fieldname}>0"></label>
                             <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}>0" value="0"
                                    <{if $field.defaultvalue == 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_CHECKBOX}>
                             <{foreach from=$field.fieldvalues item=value key=key}>
+                                <label for="<{$field.fieldname}><{$key}>"></label>
                                 <input type="checkbox" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                        value="<{$key}>"
                                        <{if $key == $field.defaultvalue}>checked<{/if}>><{$value}>
@@ -265,12 +276,14 @@
                             <{/foreach}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_RADIOBOX}>
                             <{foreach from=$field.fieldvalues item=value key=key}>
+                                <label for="<{$field.fieldname}><{$key}>"></label>
                                 <input type="radio" name="<{$field.fieldname}>" id="<{$field.fieldname}><{$key}>"
                                        value="<{$key}>"
                                        <{if $key == $field.defaultvalue}>checked<{/if}>><{$value}>
                                 <br>
                             <{/foreach}>
                         <{elseif $field.controltype == $smarty.const.XHELP_CONTROL_DATETIME}>
+                            <label for="<{$field.fieldname}>"></label>
                             <input type="text" name="<{$field.fieldname}>" id="<{$field.fieldname}>"
                                    value="<{$field.defaultvalue}>" maxlength="<{$field.maxlength}>"
                                    size="<{$field.fieldlength}>">

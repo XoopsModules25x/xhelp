@@ -86,28 +86,20 @@ class TicketValues extends \XoopsObject
         switch ($controltype) {
             case \XHELP_CONTROL_TXTBOX:
                 return $this->getXoopsDataType($datatype);
-                break;
             case \XHELP_CONTROL_TXTAREA:
                 return $this->getXoopsDataType($datatype);
-                break;
             case \XHELP_CONTROL_SELECT:
                 return \XOBJ_DTYPE_TXTAREA;
-                break;
             case \XHELP_CONTROL_YESNO:
                 return \XOBJ_DTYPE_INT;
-                break;
             case \XHELP_CONTROL_RADIOBOX:
                 return \XOBJ_DTYPE_TXTBOX;
-                break;
             case \XHELP_CONTROL_DATETIME:
                 return $this->getXoopsDataType($datatype);
-                break;
             case \XHELP_CONTROL_FILE:
                 return \XOBJ_DTYPE_TXTBOX;
-                break;
             default:
                 return \XOBJ_DTYPE_TXTBOX;
-                break;
         }
     }
 
@@ -120,16 +112,12 @@ class TicketValues extends \XoopsObject
         switch ($datatype) {
             case \_XHELP_DATATYPE_TEXT:
                 return \XOBJ_DTYPE_TXTBOX;
-                break;
             case \_XHELP_DATATYPE_NUMBER_INT:
                 return \XOBJ_DTYPE_INT;
-                break;
             case \_XHELP_DATATYPE_NUMBER_DEC:
                 return \XOBJ_DTYPE_OTHER;
-                break;
             default:
                 return \XOBJ_DTYPE_TXTBOX;
-                break;
         }
     }
 
@@ -143,16 +131,12 @@ class TicketValues extends \XoopsObject
             case \XOBJ_DTYPE_TXTBOX:
             case \XOBJ_DTYPE_TXTAREA:
                 return '';
-                break;
             case \XOBJ_DTYPE_INT:
                 return 0;
-                break;
             case \XOBJ_DTYPE_OTHER:
                 return 0.0;
-                break;
             default:
                 return null;
-                break;
         }
     }
 

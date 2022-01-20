@@ -64,7 +64,7 @@ class PluginHandler
         return $plugins;
     }
 
-    public function getActivePlugins()
+    public function getActivePlugins(): void
     {
         $plugin_files = $this->pluginList();
 
@@ -77,14 +77,14 @@ class PluginHandler
     /**
      * @param string $script
      */
-    public function activatePlugin(string $script)
+    public function activatePlugin(string $script): void
     {
     }
 
     /**
      * @param string $script
      */
-    public function deactivatePlugin(string $script)
+    public function deactivatePlugin(string $script): void
     {
     }
 

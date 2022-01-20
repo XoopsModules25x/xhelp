@@ -18,7 +18,6 @@
 // |          Tomas V.V.Cox <cox@idecnet.com>                             |
 // +----------------------------------------------------------------------+
 //
-// $Id: PEAR.php,v 1.1 2005/02/08 20:13:02 ackbarr Exp $
 //
 
 define('PEAR_ERROR_RETURN', 1);
@@ -871,7 +870,7 @@ class PEAR_Error
     // {{{ addUserInfo()
 
     /**
-     * @param $info
+     * @param string $info
      */
     public function addUserInfo($info): void
     {

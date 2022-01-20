@@ -124,7 +124,7 @@ class MediaUploader
     /**
      * @param string $value
      */
-    public function noAdminSizeCheck(string $value)
+    public function noAdminSizeCheck(string $value): void
     {
         $this->noadmin_sizecheck = $value;
     }
@@ -242,7 +242,7 @@ class MediaUploader
      *
      * @param string $value
      */
-    public function setTargetFileName(string $value)
+    public function setTargetFileName(string $value): void
     {
         $this->targetFileName = \trim($value);
     }
@@ -252,7 +252,7 @@ class MediaUploader
      *
      * @param string $value
      */
-    public function setPrefix(string $value)
+    public function setPrefix(string $value): void
     {
         $this->prefix = \trim($value);
     }
@@ -475,7 +475,7 @@ class MediaUploader
      *
      * @param string $error
      */
-    public function setErrors(string $error)
+    public function setErrors(string $error): void
     {
         $this->errors[] = \trim($error);
     }

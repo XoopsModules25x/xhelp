@@ -29,7 +29,9 @@
         <{foreach from=$xhelp_goodTickets item=ticket}>
             <tr class="<{cycle values="odd,even"}> pri<{$ticket.priority}><{if $ticket.overdue}> overdue<{/if}>">
                 <td nowrap="nowrap">
-                    <input type="checkbox" name="tickets[]" value="<{$ticket.id}>" checked> <a
+                    <label>
+                        <input type="checkbox" name="tickets[]" value="<{$ticket.id}>" checked>
+                    </label> <a
                             href="ticket.php?id=<{$ticket.id}>"><{$ticket.id}></a>
                 </td>
                 <td class="priority">
@@ -88,7 +90,9 @@
         <{foreach from=$xhelp_badTickets item=ticket}>
             <tr class="<{cycle values="odd,even"}> pri<{$ticket.priority}><{if $ticket.overdue}> overdue<{/if}>">
                 <td nowrap="nowrap">
-                    <input type="checkbox" name="tickets[]" value="<{$ticket.id}>"> <a
+                    <label>
+                        <input type="checkbox" name="tickets[]" value="<{$ticket.id}>">
+                    </label> <a
                             href="ticket.php?id=<{$ticket.id}>"><{$ticket.id}></a>
                 </td>
                 <td class="priority">

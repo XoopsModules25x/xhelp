@@ -666,7 +666,7 @@ class NotificationService extends Service
      * Confirm submission to user and notify staff members when new_ticket is triggered
      * @param Ticket $ticket Ticket that was added
      */
-    public function new_ticket(Ticket $ticket)
+    public function new_ticket(Ticket $ticket): void
     {
         global $xhelp_isStaff;
         global $xoopsUser;
@@ -732,7 +732,7 @@ class NotificationService extends Service
      * @param string     $password Password for new account
      * @param \XoopsUser $user     XOOPS user object for new account
      */
-    public function new_user_by_email(string $password, \XoopsUser $user)
+    public function new_user_by_email(string $password, \XoopsUser $user): void
     {
         // Send Welcome Email to submitter
         //global $xoopsUser;
@@ -757,7 +757,7 @@ class NotificationService extends Service
      * @param string     $password  Password for new account
      * @param \XoopsUser $xoopsUser XOOPS user object for new account
      */
-    public function new_user_activation0(string $password, \XoopsUser $xoopsUser)
+    public function new_user_activation0(string $password, \XoopsUser $xoopsUser): void
     {
         global $xoopsConfig;
         $newid = $newuser->getVar('uid');
@@ -784,7 +784,7 @@ class NotificationService extends Service
      * @param string     $password  Password for new account
      * @param \XoopsUser $xoopsUser XOOPS user object for new account
      */
-    public function new_user_activation1(string $password, \XoopsUser $xoopsUser)
+    public function new_user_activation1(string $password, \XoopsUser $xoopsUser): void
     {
         $tags                        = [];
         $tags['XOOPS_USER_NAME']     = $user->getVar('uname');
@@ -827,7 +827,7 @@ class NotificationService extends Service
      * @param string     $password  Password for new account
      * @param \XoopsUser $xoopsUser XOOPS user object for new account
      */
-    public function new_user_activation2(string $password, \XoopsUser $xoopsUser)
+    public function new_user_activation2(string $password, \XoopsUser $xoopsUser): void
     {
         global $xoopsConfig;
         $newid = $user->getVar('uid');
@@ -853,7 +853,7 @@ class NotificationService extends Service
      * @param Ticket|int $ticket   Ticket containing response
      * @param Response   $response Response that was added
      */
-    public function new_response($ticket, Response $response)
+    public function new_response($ticket, Response $response): void
     {
         // If response is from staff member, send message to ticket submitter
         // If response is from submitter, send message to owner, if no owner, send to department
@@ -952,7 +952,7 @@ class NotificationService extends Service
      * @param Ticket $ticket      Ticket that was modified
      * @param int    $oldpriority Previous ticket priority
      */
-    public function update_priority(Ticket $ticket, int $oldpriority)
+    public function update_priority(Ticket $ticket, int $oldpriority): void
     {
         //notify staff department of change
         //notify submitter
@@ -995,7 +995,7 @@ class NotificationService extends Service
      * @param Status $oldstatus The previous ticket status
      * @param Status $newstatus The new ticket status
      */
-    public function update_status(Ticket $ticket, Status $oldstatus, Status $newstatus)
+    public function update_status(Ticket $ticket, Status $oldstatus, Status $newstatus): void
     {
         //notify staff department of change
         //notify submitter
@@ -1040,7 +1040,7 @@ class NotificationService extends Service
      * @param int|string|null $oldOwner UID of previous owner
      * @param int             $newOwner UID of new owner
      */
-    public function update_owner(Ticket $ticket, $oldOwner, int $newOwner)
+    public function update_owner(Ticket $ticket, $oldOwner, int $newOwner): void
     {
         //notify old owner, if assigned
         //notify new owner
@@ -1115,7 +1115,7 @@ class NotificationService extends Service
      * Also See: update_status, reopen_ticket
      * @param Ticket $ticket The ticket that was closed
      */
-    public function close_ticket(Ticket $ticket)
+    public function close_ticket(Ticket $ticket): void
     {
         global $xoopsUser;
         $departmentHandler = $this->helper->getHandler('Department');
@@ -1159,7 +1159,7 @@ class NotificationService extends Service
      * Triggered after a ticket is deleted
      * @param Ticket $ticket Ticket that was deleted
      */
-    public function delete_ticket(Ticket $ticket)
+    public function delete_ticket(Ticket $ticket): void
     {
         //notify staff department
         //notify submitter
@@ -1207,7 +1207,7 @@ class NotificationService extends Service
      * @param array|Ticket $oldTicket  Ticket information before modifications
      * @param Ticket       $ticketInfo Ticket information after modifications
      */
-    public function edit_ticket($oldTicket, Ticket $ticketInfo)
+    public function edit_ticket($oldTicket, Ticket $ticketInfo): void
     {
         //notify staff department of change
         //notify submitter
@@ -1266,7 +1266,7 @@ class NotificationService extends Service
      * @param Response $oldresponse Response modifications
      * @internal param Ticket $nticket Ticket after modifications
      */
-    public function edit_response(Ticket $ticket, Response $response, Ticket $oldticket, Response $oldresponse)
+    public function edit_response(Ticket $ticket, Response $response, Ticket $oldticket, Response $oldresponse): void
     {
         //if not modified by response submitter, notify response submitter
         //notify ticket submitter
@@ -1392,7 +1392,7 @@ class NotificationService extends Service
      * @param array $tickets  The Ticket objects that were modified
      * @param int   $priority The new ticket priority
      */
-    public function batch_priority(array $tickets, int $priority)
+    public function batch_priority(array $tickets, int $priority): void
     {
         global $xoopsUser;
 
@@ -1648,7 +1648,7 @@ class NotificationService extends Service
      * @param array    $tickets  The Ticket objects that were modified
      * @param Response $response The response added to each ticket
      */
-    public function batch_response(array $tickets, Response $response)
+    public function batch_response(array $tickets, Response $response): void
     {
         global $xoopsUser, $xoopsConfig;
         $helper         = Helper::getInstance();
@@ -1752,7 +1752,7 @@ class NotificationService extends Service
      * @param int $ticket2   Second ticketid being merged
      * @param int $newTicket Resulting ticketid after merge
      */
-    public function merge_tickets(int $ticket1, int $ticket2, int $newTicket)
+    public function merge_tickets(int $ticket1, int $ticket2, int $newTicket): void
     {
         global $xoopsUser;
         /** @var \XoopsModules\Xhelp\TicketHandler $ticketHandler */
@@ -1794,7 +1794,7 @@ class NotificationService extends Service
      * @param Ticket $ticket Ticket used as base for FAQ
      * @param Faq    $faq    FAQ that was added
      */
-    public function new_faq(Ticket $ticket, Faq $faq)
+    public function new_faq(Ticket $ticket, Faq $faq): void
     {
     }
 
@@ -1812,7 +1812,7 @@ class NotificationService extends Service
         return $instance;
     }
 
-    public function attachEvents()
+    public function attachEvents(): void
     {
         $this->attachEvent('batch_delete_ticket', $this);
         $this->attachEvent('batch_dept', $this);

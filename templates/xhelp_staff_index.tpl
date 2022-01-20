@@ -39,7 +39,9 @@
                 <{foreach from=$xhelp_allTickets item=ticket}>
                     <tr class="<{cycle values="odd, even"}> pri<{$ticket.priority}><{if $ticket.overdue}> overdue<{/if}>">
                         <td nowrap="nowrap">
-                            <input type="checkbox" name="tickets[]" value="<{$ticket.id}>"> <a
+                            <label>
+                                <input type="checkbox" name="tickets[]" value="<{$ticket.id}>">
+                            </label> <a
                                     href="ticket.php?id=<{$ticket.id}>"><{$ticket.id}></a>
                         </td>
                         <td class="priority">
@@ -121,7 +123,9 @@
                         <{foreach from=$ticketList.tickets item=ticket}>
                             <tr class="<{cycle values="odd, even"}> pri<{$ticket.priority}><{if $ticket.overdue}> overdue<{/if}>">
                                 <td nowrap="nowrap">
-                                    <input type="checkbox" name="tickets[]" value="<{$ticket.id}>"> <a
+                                    <label>
+                                        <input type="checkbox" name="tickets[]" value="<{$ticket.id}>">
+                                    </label> <a
                                             href="ticket.php?id=<{$ticket.id}>"><{$ticket.id}></a>
                                 </td>
                                 <td class="priority">
@@ -175,14 +179,16 @@
                     <{$smarty.const._XHELP_TEXT_SELECTED}>
                 </td>
                 <td class="even">
-                    <select name="op">
-                        <option value="setdept"><{$smarty.const._XHELP_TEXT_BATCH_DEPARTMENT}></option>
-                        <option value="setpriority"><{$smarty.const._XHELP_TEXT_BATCH_PRIORITY}></option>
-                        <option value="setstatus"><{$smarty.const._XHELP_TEXT_BATCH_STATUS}></option>
-                        <option value="delete"><{$smarty.const._XHELP_TEXT_BATCH_DELETE}></option>
-                        <option value="addresponse"><{$smarty.const._XHELP_TEXT_BATCH_RESPONSE}></option>
-                        <option value="setowner"><{$smarty.const._XHELP_TEXT_BATCH_OWNERSHIP}></option>
-                    </select>
+                    <label>
+                        <select name="op">
+                            <option value="setdept"><{$smarty.const._XHELP_TEXT_BATCH_DEPARTMENT}></option>
+                            <option value="setpriority"><{$smarty.const._XHELP_TEXT_BATCH_PRIORITY}></option>
+                            <option value="setstatus"><{$smarty.const._XHELP_TEXT_BATCH_STATUS}></option>
+                            <option value="delete"><{$smarty.const._XHELP_TEXT_BATCH_DELETE}></option>
+                            <option value="addresponse"><{$smarty.const._XHELP_TEXT_BATCH_RESPONSE}></option>
+                            <option value="setowner"><{$smarty.const._XHELP_TEXT_BATCH_OWNERSHIP}></option>
+                        </select>
+                    </label>
                     <input type="submit" value="<{$smarty.const._GO}>">
                 </td>
             </tr>
@@ -198,18 +204,20 @@
             <tr>
                 <td>
                     <form name="formRefresh" method="get" action="<{$xhelp_current_file}>">
-                        <select name="refresh"
-                                onchange="window.location='<{$xhelp_baseURL}>/index.php?refresh='+this.options[this.selectedIndex].value;">
-                            <option value="<{$smarty.const._XHELP_AUTO_REFRESH0}>"><{$smarty.const._XHELP_TEXT_AUTO_REFRESH0}></option>
-                            <option value="<{$smarty.const._XHELP_AUTO_REFRESH1}>"
-                                    <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH1}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH1}></option>
-                            <option value="<{$smarty.const._XHELP_AUTO_REFRESH2}>"
-                                    <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH2}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH2}></option>
-                            <option value="<{$smarty.const._XHELP_AUTO_REFRESH3}>"
-                                    <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH3}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH3}></option>
-                            <option value="<{$smarty.const._XHELP_AUTO_REFRESH4}>"
-                                    <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH4}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH4}></option>
-                        </select>
+                        <label>
+                            <select name="refresh"
+                                    onchange="window.location='<{$xhelp_baseURL}>/index.php?refresh='+this.options[this.selectedIndex].value;">
+                                <option value="<{$smarty.const._XHELP_AUTO_REFRESH0}>"><{$smarty.const._XHELP_TEXT_AUTO_REFRESH0}></option>
+                                <option value="<{$smarty.const._XHELP_AUTO_REFRESH1}>"
+                                        <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH1}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH1}></option>
+                                <option value="<{$smarty.const._XHELP_AUTO_REFRESH2}>"
+                                        <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH2}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH2}></option>
+                                <option value="<{$smarty.const._XHELP_AUTO_REFRESH3}>"
+                                        <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH3}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH3}></option>
+                                <option value="<{$smarty.const._XHELP_AUTO_REFRESH4}>"
+                                        <{if $xhelp_refresh eq $smarty.const._XHELP_AUTO_REFRESH4}>selected="selected"<{/if}>><{$smarty.const._XHELP_TEXT_AUTO_REFRESH4}></option>
+                            </select>
+                        </label>
                         <input type="submit" value="<{$smarty.const._XHELP_BUTTON_SUBMIT}>">
                     </form>
                 </td>

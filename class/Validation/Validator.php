@@ -13,8 +13,10 @@ namespace XoopsModules\Xhelp\Validation;
  */
 
 /**
- * @copyright    XOOPS Project (https://xoops.org)
- * @license      GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Brian Wahoff <ackbarr@xoops.org>
+ * @author       Eric Juden <ericj@epcusa.com>
  * @author       XOOPS Development Team
  */
 
@@ -28,7 +30,6 @@ class Validator
      * $errorMsg stores error messages if not valid
      */
     public $errorMsg;
-    //! A constructor.
 
     /**
      * Constructs a new Validator object
@@ -52,7 +53,7 @@ class Validator
      * Adds an error message to the array
      * @param string $msg
      */
-    public function setError(string $msg)
+    public function setError(string $msg): void
     {
         $this->errorMsg[] = $msg;
     }

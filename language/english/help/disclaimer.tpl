@@ -37,12 +37,14 @@
             or any damages whatsoever, including, without limitation, those resulting from loss
             of use, data or profits, whether or not XOOPS Project has been advised of the possibility
             of such damages, and on any theory of liability, arising out of or in connection
-            with the use of this software.</b></p>
+            with the use of this software.</b>
+    </p>
     <br><b>
         <p>The use of the software downloaded through any XOOPS site is done at your own discretion
             and risk and with agreement that you will be solely responsible for any damage to
             your computer system or loss of data that results from such activities. No advice
             or information, whether oral or written, obtained by you from XOOPS or from XOOPS
-            website shall create any warranty for the software</p>
+            website shall create any warranty for the software
+        </p>
     </b>
 </div>

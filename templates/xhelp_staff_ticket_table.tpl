@@ -77,7 +77,9 @@
                 <tr class="<{cycle values="odd, even"}> pri<{$ticket.priority}>">
             <{/if}>
             <td nowrap="nowrap">
-                <input type="checkbox" name="tickets[]" value="<{$ticket.id}>"> <a
+                <label>
+                    <input type="checkbox" name="tickets[]" value="<{$ticket.id}>">
+                </label> <a
                         href="ticket.php?id=<{$ticket.id}>"><{$ticket.id}></a>
             </td>
             <td class="priority">

@@ -21,17 +21,17 @@ function gE(n) {
 }
 
 function selectAll(formObj, fieldname, isInverse) {
-    if (fieldname.length == 0) {
+    if (fieldname.length === 0) {
         for (var i = 0; i < formObj.length; i++) {
             fldObj = formObj.elements[i];
-            if (fldObj.type == 'checkbox') {
+            if (fldObj.type === 'checkbox') {
                 fldObj.checked = isInverse;
             }
         }
     } else {
         for (var i = 0; i < formObj.length; i++) {
             fldObj = formObj.elements[i];
-            if (fldObj.type == 'checkbox') {
+            if (fldObj.type === 'checkbox') {
                 if (fldObj.name.indexOf(fieldname) > -1) {
                     fldObj.checked = isInverse;
                 }
@@ -41,7 +41,7 @@ function selectAll(formObj, fieldname, isInverse) {
 }
 
 function xhelpRoleCustOnClick(frmName, roleName, roleParam, joinChr, className) {
-    if (joinChr.length == 0) {
+    if (joinChr.length === 0) {
         joinChr = '&amp;';
     }
     var aRoles = Array();
@@ -50,8 +50,8 @@ function xhelpRoleCustOnClick(frmName, roleName, roleParam, joinChr, className) 
     var newUrl = '';
     for (var i = 0; i < ele.length; i++) {
         var chk = ele[i];
-        if ((chk.type == 'checkbox') && (chk.name == roleName)) {
-            if (chk.checked == true) {
+        if ((chk.type === 'checkbox') && (chk.name == roleName)) {
+            if (chk.checked === true) {
                 aRoles[aRoles.length] = chk.value;
             }
         }
@@ -238,7 +238,7 @@ function xhelpFillCustomFlds(tbl, result, before) {
                         values[o] = Array(fieldValues[o][0], fieldValues[o][1]);
                     }
                 }
-                if (currentValue != '') {
+                if (currentValue !== '') {
                     for (m = 0; m < values.length; m++) {
                         if (values[m][0] == fieldName) {
                             currentValue = values[m][1];
@@ -344,11 +344,11 @@ function xhelpCreateSelect(fieldName, values, value, size, multiple) {
     l.id = fieldName;
     l.name = fieldName;
     l.setAttribute('size', size);
-    if (multiple == true) {
+    if (multiple === true) {
         l.setAttribute('multiple', 'multiple')
     }
     for (var n = 0; n < values.length; n++) {
-        if (value == values[n][0]) {
+        if (value === values[n][0]) {
             i = n;
         }
         l[n] = new Option(values[n][1], values[n][0]);
@@ -410,14 +410,14 @@ function xhelpCreateCustFldRow(name, description, ele) {
     tr.className = 'custfld';
     td1.className = 'head';
     td1.appendChild(d.createTextNode(name));
-    if (description != "") {
+    if (description !== "") {
         td1.appendChild(cE('br'));
         td1.appendChild(cE('br'));
         td1.appendChild(d.createTextNode(description));
     }
 
     td2.className = 'even';
-    if (isArray(ele) == false) {
+    if (isArray(ele) === false) {
         td2.appendChild(ele);
     } else {
         for (var i = 0; i < ele.length; i++) {
@@ -471,7 +471,7 @@ function xhelpInArray(needle, haystack) {
 
 function isArray(obj) {
     if (obj && obj.constructor) {
-        if (obj.constructor.toString().indexOf("Array") == -1) {
+        if (obj.constructor.toString().indexOf("Array") === -1) {
             return false;
         } else {
             return true;

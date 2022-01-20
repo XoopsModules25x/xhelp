@@ -11,8 +11,8 @@
             http = xhelpGetHTTPObject();
             http.open("GET", "https://bwahoff2/xoops/modules/xhelp/scripts/addTicketDeptChange.php?deptid=1", true);
             http.onreadystatechange = function () {
-                if (http.readyState == 4) {
-                    if (http.status == 200) {
+                if (http.readyState === 4) {
+                    if (http.status === 200) {
                         atProcessXML(http.responseXML, 'owner', 'custfld');
                     }
                 }
@@ -45,11 +45,11 @@
 <body>
 <h2>XMLHTTPRequest Tester</h2>
 <div id="tester">Click This!</div>
-<select id="owner" name="owner">
+<label for="owner"></label><select id="owner" name="owner">
     <option value="0">No Value</option>
     <option value="1">Default Value</option>
 </select><br>
-<textarea id="testerbox" cols="50" rows="10"></textarea>
+<label for="testerbox"></label><textarea id="testerbox" cols="50" rows="10"></textarea>
 <table id="custfld">
     <tr>
         <th colspan="2" align="left">Custom Fields</th>

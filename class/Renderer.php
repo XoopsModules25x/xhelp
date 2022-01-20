@@ -38,7 +38,7 @@ class Renderer
         exit();
     }
 
-    public function render()
+    public function render(): void
     {
     }
 }

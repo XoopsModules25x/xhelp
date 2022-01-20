@@ -77,7 +77,7 @@ class Wordpress extends Xhelp\FaqAdapterAbstract
             $this->dirname = $this->helper->dirname();
         }
 
-        parent::init();
+        $this->init();
     }
 
     /**
@@ -157,10 +157,10 @@ class Wordpress extends Xhelp\FaqAdapterAbstract
     }
 
     /**
-     * @param Xhelp\Faq $faq
+     * @param \XoopsModules\Xhelp\Faq $faq
      * @return string
      */
-    public function makeFaqUrl(Xhelp\Faq $faq): string
+    public function makeFaqUrl(\XoopsModules\Xhelp\Faq $faq): string
     {
         return \XHELP_WP_URL . '/?p=' . $faq->getVar('id');
     }
@@ -169,7 +169,7 @@ class Wordpress extends Xhelp\FaqAdapterAbstract
      * @param int    $post_ID
      * @param string $category
      */
-    private function insertCategory(int $post_ID, string $category)
+    private function insertCategory(int $post_ID, string $category): void
     {
         global $xoopsDB;
         $sql = 'INSERT INTO ' . $xoopsDB->prefix('wp_post2cat') . " (post_id, category_id) VALUES ($post_ID, $category)";

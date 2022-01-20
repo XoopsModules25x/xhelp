@@ -44,6 +44,12 @@ class TicketFieldHandler extends BaseObjectHandler
     public $dbtable = 'xhelp_ticket_fields';
     public $id      = 'id';
 
+    private const TABLE = 'xhelp_ticket_fields';
+    private const ENTITY = TicketField::class;
+    private const ENTITYNAME = 'TicketField';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'name';
+
     /**
      * Constructor
      *
@@ -51,7 +57,9 @@ class TicketFieldHandler extends BaseObjectHandler
      */
     public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        parent::init($db);
+        $this->init($db);
+        $this->helper = Helper::getInstance();
+        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
     }
 
     /**

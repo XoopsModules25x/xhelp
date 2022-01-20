@@ -30,20 +30,29 @@ class MembershipHandler
     private $departmentHandler;
     private $ticketHandler;
 
+//    private const TABLE = 'xhelp_mailevent';
+//    private const ENTITY = MailEvent::class;
+//    private const ENTITYNAME = 'MailEvent';
+//    private const KEYNAME = 'id';
+//    private const IDENTIFIER = 'mbox_id';
+
     /**
      * Constructor
+     *
+     * @param \XoopsMySQLDatabase|null $db reference to a xoopsDB object
      */
-    public function __construct(\XoopsDatabase $db = null)
+    public function __construct(\XoopsMySQLDatabase $db = null)
     {
-        //Constructor
         $this->db = $db;
-        $helper   = Helper::getInstance();
+        $this->helper = Helper::getInstance();
+//        parent::__construct($db, static::TABLE, static::ENTITY, static::KEYNAME, static::IDENTIFIER);
+
         /** @var \XoopsModules\Xhelp\StaffHandler $this- >staffHandler */
-        $this->staffHandler = $helper->getHandler('Staff');
+        $this->staffHandler = $this->helper->getHandler('Staff');
         /** @var \XoopsModules\Xhelp\DepartmentHandler $this- >departmentHandler */
-        $this->departmentHandler = $helper->getHandler('Department');
+        $this->departmentHandler = $this->helper->getHandler('Department');
         /** @var \XoopsModules\Xhelp\TicketHandler $this- >ticketHandler */
-        $this->ticketHandler = $helper->getHandler('Ticket');
+        $this->ticketHandler = $this->helper->getHandler('Ticket');
     }
 
     /**

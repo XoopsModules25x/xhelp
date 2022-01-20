@@ -86,7 +86,7 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
             $this->helper  = AdapterHelper::getInstance();
             $this->dirname = $this->helper->dirname();
         }
-        parent::init();
+        $this->init();
     }
 
     /**
@@ -185,7 +185,7 @@ class Smartfaq extends Xhelp\FaqAdapterAbstract
     /**
      * Create the url going to the faq article
      *
-     * @param Xhelp\Faq $faq object
+     * @param \XoopsModules\Xhelp\Faq $faq object
      * @return string
      */
     public function makeFaqUrl(Xhelp\Faq $faq): string

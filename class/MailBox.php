@@ -29,13 +29,13 @@ namespace XoopsModules\Xhelp;
  * needed to interact with a mailstore
  * @abstract
  */
-class MailBox
+abstract class MailBox
 {
     /**
      * @param string $server
      * @param int    $port
      */
-    public function connect(string $server, int $port = 110)
+    public function connect(string $server, int $port = 110): bool
     {
     }
 
@@ -43,11 +43,11 @@ class MailBox
      * @param string $username
      * @param string $password
      */
-    public function login(string $username, string $password)
+    public function login(string $username, string $password): bool
     {
     }
 
-    public function messageCount()
+    public function messageCount(): int
     {
     }
 

@@ -211,7 +211,7 @@ class Report extends \XoopsObject
      */
     public function generatePie3D(
         array $data, int $legend_index = 0, int $chartData_index = 1, bool $image = false, int $length = 500, int $width = 300, bool $hasShadow = true, $fontFamily = FF_FONT1, $fontStyle = FS_BOLD, string $fontSize = '', string $fontColor = 'black'
-    ) {
+    ): void {
         //        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_pie.php';
         //        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_pie3d.php';
 
@@ -274,7 +274,7 @@ class Report extends \XoopsObject
         'lightblue',
         'blue',
     ], int    $length = 500, int $width = 300, $fontFamily = FF_FONT1, $fontStyle = FS_BOLD, string $fontSize = '', string $fontColor = 'black', string $marginColor = 'white'
-    ) {
+    ): void {
         //        require_once \XHELP_JPGRAPH_PATH . '/jpgraph_bar.php';
 
         $graph = new Graph\Graph($length, $width);

@@ -134,7 +134,7 @@ class MigrateHelper
         foreach ($tables as $tkey => $table) {
             $schema[] = "{$tkey}:\n";
             foreach ($table as $lkey => $line) {
-                if ('keys' == $lkey) {
+                if ('keys' === $lkey) {
                     $schema[] = $level1 . "keys:\n";
                     foreach ($line as $kkey => $kvalue) {
                         foreach ($kvalue as $kkey2 => $kvalue2) {
@@ -143,7 +143,7 @@ class MigrateHelper
                             $schema[] = $level3 . 'unique: ' . $kvalue2['unique'] . "\n";
                         }
                     }
-                } elseif ('options' == $lkey) {
+                } elseif ('options' === $lkey) {
                     $schema[] = $level1 . 'options: ' . $line . "\n";
                 } else {
                     $schema[] = $level1 . 'columns: ' . "\n";

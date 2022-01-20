@@ -50,7 +50,7 @@ class FormRegex extends \XoopsFormElement
     /**
      * @param array $regexArray
      */
-    public function addOptionArray(array $regexArray)
+    public function addOptionArray(array $regexArray): void
     {
         $this->_select->addOptionArray($regexArray);
     }
@@ -59,7 +59,7 @@ class FormRegex extends \XoopsFormElement
      * @param string $value
      * @param string $name
      */
-    public function addOption(string $value, string $name = '')
+    public function addOption(string $value, string $name = ''): void
     {
         $this->_select->addOption($value, $name);
     }
@@ -67,7 +67,7 @@ class FormRegex extends \XoopsFormElement
     /**
      * @param string $value
      */
-    public function setValue(string $value)
+    public function setValue(string $value): void
     {
         $this->_value = $value;
     }

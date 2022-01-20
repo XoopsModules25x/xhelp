@@ -833,7 +833,7 @@ class Net_POP3
      */
 
     /**
-     * @param $pass
+     * @param string $pass
      * @return mixed|\PEAR_Error
      */
     public function _cmdPass($pass)

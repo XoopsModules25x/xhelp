@@ -36,7 +36,7 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      *
      * @param \XoopsDatabase|null $db reference to a xoopsDB object
      */
-    public function init(\XoopsDatabase $db = null)
+    public function init(\XoopsDatabase $db = null): void
     {
         $this->db = $db;
     }
@@ -48,6 +48,12 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      */
     public $dbtable = 'configoption';
 
+    private const TABLE = 'xhelp_ticket_fields';
+    private const ENTITY = TicketField::class;
+    private const ENTITYNAME = 'TicketField';
+    private const KEYNAME = 'id';
+    private const IDENTIFIER = 'name';
+
     /**
      * delete configoption matching a set of conditions
      *
@@ -55,7 +61,7 @@ class ConfigOptionHandler extends \XoopsConfigOptionHandler
      * @param bool                                 $force
      * @return bool FALSE if deletion failed
      */
-    public function deleteAll($criteria = null, bool $force = false): bool
+    public function deleteAll(\CriteriaElement $criteria = null, bool $force = false): bool
     {
         $sql = 'DELETE FROM ' . $this->db->prefix($this->dbtable);
         if (($criteria instanceof \CriteriaCompo) || ($criteria instanceof \Criteria)) {

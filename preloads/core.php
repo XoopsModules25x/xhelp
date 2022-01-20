@@ -24,7 +24,7 @@ class XhelpCorePreload extends \XoopsPreloadItem
     /**
      * @param array|null $args
      */
-    public static function eventCoreIncludeCommonEnd(?array $args)
+    public static function eventCoreIncludeCommonEnd(?array $args): void
     {
         require_once __DIR__ . '/autoloader.php';
     }

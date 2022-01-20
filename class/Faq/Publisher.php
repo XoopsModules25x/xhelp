@@ -95,7 +95,7 @@ class Publisher extends Xhelp\FaqAdapterAbstract
         }
         // Every class should call parent::init() to ensure that all class level
         // variables are initialized properly.
-        parent::init();
+        $this->init();
     }
 
     /**

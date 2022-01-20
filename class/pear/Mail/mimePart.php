@@ -264,13 +264,10 @@ class Mail_mimePart
             case '8bit':
             case '7bit':
                 return $data;
-                break;
             case 'quoted-printable':
                 return $this->_quotedPrintableEncode($data);
-                break;
             case 'base64':
                 return rtrim(chunk_split(base64_encode($data), 76, MAIL_MIMEPART_CRLF));
-                break;
             default:
                 return $data;
         }

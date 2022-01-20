@@ -13,7 +13,6 @@ namespace XoopsModules\Xhelp\Common;
 */
 
 /**
- * @category        Module
  * @author          XOOPS Development Team <https://xoops.org>
  * @copyright       {@link https://xoops.org/ XOOPS Project}
  * @license         GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
@@ -32,7 +31,7 @@ class TestdataButtons
      * @param \Xmf\Module\Admin $adminObject
      * @return void
      */
-    public static function loadButtonConfig(\Xmf\Module\Admin $adminObject)
+    public static function loadButtonConfig(\Xmf\Module\Admin $adminObject): void
     {
         $moduleDirName       = \basename(\dirname(__DIR__, 2));
         $moduleDirNameUpper  = \mb_strtoupper($moduleDirName);
@@ -54,7 +53,7 @@ class TestdataButtons
         }
     }
 
-    public static function hideButtons()
+    public static function hideButtons(): void
     {
         $yamlFile                   = \dirname(__DIR__, 2) . '/config/admin.yml';
         $app                        = [];
@@ -63,7 +62,7 @@ class TestdataButtons
         \redirect_header('index.php', 0, '');
     }
 
-    public static function showButtons()
+    public static function showButtons(): void
     {
         $yamlFile                   = \dirname(__DIR__, 2) . '/config/admin.yml';
         $app                        = [];

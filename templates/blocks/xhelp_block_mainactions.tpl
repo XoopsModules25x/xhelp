@@ -10,18 +10,22 @@
 <{if $block.savedSearches neq false}>
     <div align="center">
         <form name="savedSearches" method="post" action="<{$block.linkPath}>search.php">
-            <select name="savedSearch">
-                <{foreach from=$block.savedSearches item=search}>
-                    <option value="<{$search.id}>"><{$search.name}></option>
-                <{/foreach}>
-            </select>
+            <label>
+                <select name="savedSearch">
+                    <{foreach from=$block.savedSearches item=search}>
+                        <option value="<{$search.id}>"><{$search.name}></option>
+                    <{/foreach}>
+                </select>
+            </label>
             <input type="submit" name="runSavedSearch" id="runSavedSearch" value="<{$smarty.const._XHELP_BUTTON_RUN}>">
         </form>
     </div>
 <{/if}>
 <{if $block.whoami eq "staff"}>
     <form method="post" action="<{$block.linkPath}>ticket.php">
-        <input type="text" name="id" size="6">
+        <label>
+            <input type="text" name="id" size="6">
+        </label>
         <input type="submit" name="getTicket" value="<{$smarty.const._GO}>">
     </form>
 <{/if}>

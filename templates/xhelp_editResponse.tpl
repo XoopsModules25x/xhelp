@@ -26,14 +26,16 @@
                 </td>
                 <td class="even">
                     <form name="formRefresh" method="get" action="<{$xhelp_baseURL}>/response.php">
-                        <select name="replies"
-                                onchange="window.location='<{$xhelp_baseURL}>/response.php?op=staffEdit&amp;id=<{$xhelp_ticketID}>&amp;responseid=<{$xhelp_responseid}>&amp;refresh='+this.options[this.selectedIndex].value;">
-                            <option value="0">------------------</option>
-                            <{foreach from=$xhelp_responseTpl item=response}>
-                                <option value="<{$response.id}>"
-                                        <{if $xhelp_refresh eq $response.id}>selected="selected"<{/if}>><{$response.name}></option>
-                            <{/foreach}>
-                        </select>
+                        <label>
+                            <select name="replies"
+                                    onchange="window.location='<{$xhelp_baseURL}>/response.php?op=staffEdit&amp;id=<{$xhelp_ticketID}>&amp;responseid=<{$xhelp_responseid}>&amp;refresh='+this.options[this.selectedIndex].value;">
+                                <option value="0">------------------</option>
+                                <{foreach from=$xhelp_responseTpl item=response}>
+                                    <option value="<{$response.id}>"
+                                            <{if $xhelp_refresh eq $response.id}>selected="selected"<{/if}>><{$response.name}></option>
+                                <{/foreach}>
+                            </select>
+                        </label>
                     </form>
                 </td>
             </tr>
@@ -49,8 +51,8 @@
                     <{$smarty.const._XHELP_TEXT_RESPONSE}>
                 </td>
                 <td class="even">
-        <textarea name="response" id="response" rows="10" cols="50"
-                  class="<{$xhelp_element_response}>"><{if $xhelp_refresh neq 0}><{$xhelp_response_text}><{else}><{$xhelp_responseMessage}><{/if}>
+                    <label for="response"></label><textarea name="response" id="response" rows="10" cols="50"
+                                                            class="<{$xhelp_element_response}>"><{if $xhelp_refresh neq 0}><{$xhelp_response_text}><{else}><{$xhelp_responseMessage}><{/if}>
         </textarea>
                 </td>
             </tr>
@@ -59,8 +61,10 @@
                     <{$smarty.const._XHELP_TEXT_TIMESPENT}>
                 </td>
                 <td class="even">
-                    <input type="text" name="timespent" value="<{$xhelp_timeSpent}>"
-                           class="<{$xhelp_element_timespent}>"><{$smarty.const._XHELP_TEXT_MINUTES}>
+                    <label>
+                        <input type="text" name="timespent" value="<{$xhelp_timeSpent}>"
+                               class="<{$xhelp_element_timespent}>">
+                    </label><{$smarty.const._XHELP_TEXT_MINUTES}>
                 </td>
             </tr>
             <{if $xhelp_allowUpload eq 1}>
@@ -78,12 +82,14 @@
                     <{$smarty.const._XHELP_TEXT_STATUS}>
                 </td>
                 <td class="even">
-                    <select name="status">
-                        <{foreach from=$xhelp_statuses item=status}>
-                            <option value="<{$status.id}>"
-                                    <{if $xhelp_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
-                        <{/foreach}>
-                    </select>
+                    <label>
+                        <select name="status">
+                            <{foreach from=$xhelp_statuses item=status}>
+                                <option value="<{$status.id}>"
+                                        <{if $xhelp_status eq $status.id}>selected="selected"<{/if}>><{$status.desc}></option>
+                            <{/foreach}>
+                        </select>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -100,10 +106,14 @@
                         <{$smarty.const._XHELP_TEXT_CLAIMOWNER}>
                     </td>
                     <td class="even">
-                        <input name="claimOwner" value="<{$xhelp_currentUser}>" type="radio" class="formButton"
-                               <{if $xhelp_has_owner eq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_YES}>
-                        <input name="claimOwner" value="0" type="radio" class="formButton"
-                               <{if $xhelp_has_owner neq 0}>checked<{/if}>><{$smarty.const._XHELP_TEXT_NO}>
+                        <label>
+                            <input name="claimOwner" value="<{$xhelp_currentUser}>" type="radio" class="formButton"
+                                   <{if $xhelp_has_owner eq 0}>checked<{/if}>>
+                        </label><{$smarty.const._XHELP_TEXT_YES}>
+                        <label>
+                            <input name="claimOwner" value="0" type="radio" class="formButton"
+                                   <{if $xhelp_has_owner neq 0}>checked<{/if}>>
+                        </label><{$smarty.const._XHELP_TEXT_NO}>
                     </td>
                 </tr>
             <{/if}>
