@@ -12,9 +12,8 @@
 /**
  * feedback plugin for xoops modules
  *
- * @copyright      module for xoops
- * @license        GPL 2.0 or later
- * @since          1.0
+ * @copyright      XOOPS Project (https://xoops.org)
+ * @license        GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @min_xoops      2.5.9
  * @author         XOOPS - Website:<https://xoops.org>
  */

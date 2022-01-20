@@ -15,11 +15,11 @@ namespace XoopsModules\Xhelp;
 /**
  *  Publisher class
  *
- * @copyright       The XUUPS Project https://sourceforge.net/projects/xuups/
- * @license         https://www.fsf.org/copyleft/gpl.html GNU public license
- * @since           1.0
- * @author          trabis <lusopoemas@gmail.com>
- * @author          The SmartFactory <www.smartfactory.ca>
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @since        1.0
+ * @author       trabis <lusopoemas@gmail.com>
+ * @author       The SmartFactory <www.smartfactory.ca>
  */
 
 use Xmf\Request;

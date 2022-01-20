@@ -13,10 +13,13 @@ namespace XoopsModules\Xhelp\Validation;
  */
 
 /**
- * @copyright    XOOPS Project (https://xoops.org)
- * @license      GNU GPL 2.0 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Brian Wahoff <ackbarr@xoops.org>
+ * @author       Eric Juden <ericj@epcusa.com>
  * @author       XOOPS Development Team
  */
+
 
 /**
  * Class ValidateFileSize

@@ -15,6 +15,7 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Nazar Aziz <nazar@panthersoftware.com>
  * @author       XOOPS Development Team
  */
 
@@ -31,8 +32,6 @@ if (!\defined('XHELP_CLASS_PATH')) {
  *
  * Methods to work store / retrieve DepartmentMailBoxServer
  * objects from the database
- *
- * @author  Nazar Aziz <nazar@panthersoftware.com>
  */
 class DepartmentMailBoxHandler extends BaseObjectHandler
 {

@@ -15,8 +15,10 @@ namespace XoopsModules\Xhelp;
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Eric Juden <ericj@epcusa.com>
  * @author       XOOPS Development Team
  */
+
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
 }

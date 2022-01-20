@@ -12,14 +12,15 @@ namespace XoopsModules\Xhelp;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-use Xmf\Request;
-use XoopsModules\Songlist\RequestsHandler;
-
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
  * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Eric Juden <ericj@epcusa.com>
  * @author       XOOPS Development Team
  */
+
+use Xmf\Request;
+use XoopsModules\Xhelp\RequestsHandler;
 
 if (!\defined('XHELP_CLASS_PATH')) {
     exit();
