@@ -80,7 +80,7 @@ if (isset($_POST['addTicket'])) {
     $v['email'][]       = new Validation\ValidateEmail(Request::getString('email', '', 'POST'));
 
     // Get current dept's custom fields
-    $fields  = $ticketFieldDepartmentHandler->fieldsByDepartment($dept_id, true);
+    $fields  = $ticketFieldDepartmentHandler->fieldsByDepartment((int)$dept_id, true);
     $aFields = [];
 
     foreach ($fields as $field) {
@@ -306,7 +306,7 @@ if (isset($_POST['addTicket'])) {
     }
 
     // Get current dept's custom fields
-    $fields = $ticketFieldDepartmentHandler->fieldsByDepartment($dept_id, true);
+    $fields = $ticketFieldDepartmentHandler->fieldsByDepartment((int)$dept_id, true);
 
     if (!$savedFields = $session->get('xhelp_custFields')) {
         $savedFields = [];
