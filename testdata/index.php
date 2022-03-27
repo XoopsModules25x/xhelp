@@ -100,7 +100,9 @@ function loadSampleData()
     $utility      = new Utility();
     $configurator = new Configurator();
 
-    $tables = Helper::getInstance()->getModule()->getInfo('tables');
+    $tables = Helper::getInstance()
+                    ->getModule()
+                    ->getInfo('tables');
 
     $language = 'english/';
     if (\is_dir(__DIR__ . '/' . $xoopsConfig['language'])) {

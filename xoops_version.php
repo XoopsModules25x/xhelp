@@ -24,8 +24,8 @@ $moduleDirName      = basename(__DIR__);
 $moduleDirNameUpper = \mb_strtoupper($moduleDirName);
 
 $modversion['version']             = '1.0.0';
-$modversion['module_status']       = 'Alpha 2';
-$modversion['release_date']        = '2022/01/20';
+$modversion['module_status']       = 'Alpha 3';
+$modversion['release_date']        = '2022/03/27 NOT RELEASED';
 $modversion['name']                = _MI_XHELP_NAME;
 $modversion['description']         = _MI_XHELP_DESC;
 $modversion['author']              = '3dev.org';
@@ -40,7 +40,7 @@ $modversion['modicons32']          = 'assets/images/icons/32';
 $modversion['release_file']        = XOOPS_URL . '/modules/' . $modversion['dirname'] . '/docs/changelog.txt';
 $modversion['module_website_url']  = 'www.xoops.org';
 $modversion['module_website_name'] = 'XOOPS';
-$modversion['min_php']             = '7.3';
+$modversion['min_php']             = '7.4';
 $modversion['min_xoops']           = '2.5.10';
 $modversion['min_admin']           = '1.2';
 $modversion['mindb']               = ['mysql' => '5.5'];
@@ -179,7 +179,7 @@ $modversion['contributors']['code'][2]['website'] = 'https://www.arturin.it';
 $modversion['contributors']['code'][3]['name']    = 'Ricardo Costa';
 $modversion['contributors']['code'][3]['uname'] = 'trabis';
 $modversion['contributors']['code'][3]['email'] = 'lusopoemas@gmail.com';
-$modversion['contributors']['code'][3]['website'] = 'https://www.xuups.com';
+$modversion['contributors']['code'][3]['website'] = 'https://www.xoops.org';
 
 // ------------------- Mysql ------------------- //
 $modversion['sqlfile']['mysql'] = 'sql/mysql.sql';

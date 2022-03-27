@@ -99,7 +99,7 @@ switch ($op) {
                 $v['response'][]  = new Validation\ValidateLength(Request::getString('response', '', 'POST'), 2, 50000);
                 $v['timespent'][] = new Validation\ValidateNumber(Request::getString('timespent', '', 'POST'));
 
-                if ($helper->getConfig('xhelp_allowUpload') && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
+                if ($helper->getConfig('xhelp_allowUpload') && is_uploaded_file(($_FILES['userfile']['tmp_name'])??'')) {
                     /** @var \XoopsModules\Xhelp\MimetypeHandler $mimetypeHandler */
                     $mimetypeHandler = $helper->getHandler('Mimetype');
                     //Add File Upload Validation Rules

@@ -119,7 +119,7 @@ class DepartmentMailBoxHandler extends BaseObjectHandler
     /**
      * remove an email server
      *
-     * @param \XoopsObject $object      {@link DepartmentMailbox}
+     * @param \XoopsObject $object      {@link DepartmentMailBox}
      *                                  Mailbox to delete
      * @param bool         $force       Should bypass XOOPS delete restrictions
      * @return bool True on Successful delete

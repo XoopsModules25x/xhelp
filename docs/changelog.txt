@@ -1,4 +1,11 @@
-<h5>1.00 Alpha 2   [2022-01-20]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<h5>1.0.0 Alpha 3   [NOT RELEASED]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<hr>
+- fixed class names (JJDai54/mamba)
+- added check for false (JJDai54/mamba)
+- min PHP: 7.4 (mamba)
+
+
+<h5>1.0.0 Alpha 2   [2022-01-20]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
 <hr>
 - fix: when install i got blank white screen. No error. Module is installed (liomj/mamba)
 - fix: tried to install sample data. Failed with white screen. No error (liomj/mamba)
@@ -11,8 +18,7 @@
 - cosmetics, type hinting (mamba)
 
 
-
-<h5>1.00 Alpha 1   [2022-01-09]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<h5>1.0.0 Alpha 1   [2022-01-09]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
 <hr>
 - namespaces (mamba)
 - class autoloading (mamba)

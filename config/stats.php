@@ -29,7 +29,7 @@ return [
             ->getCount(),
         'totalfiles'           => $helper->getHandler('File')
             ->getCount(),
-        'totallogmessages'     => $helper->getHandler('Logmessage')
+        'totallogmessages'     => $helper->getHandler('LogMessage')
             ->getCount(),
         'totalresponses'       => $helper->getHandler('Response')
             ->getCount(),

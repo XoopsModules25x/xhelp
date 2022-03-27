@@ -16,6 +16,9 @@ namespace XoopsModules\Xhelp\Common;
  */
 
 use Xmf\Request;
+use XoopsModules\Xhelp\{
+    Helper
+};
 
 //require __DIR__ . '/admin_header.php';
 
@@ -29,7 +32,7 @@ class Blocksadmin
      */
     public $db;
     /**
-     * @var \Xmf\Module\Helper
+     * @var Helper
      */
     public $helper;
     /**
@@ -43,8 +46,10 @@ class Blocksadmin
 
     /**
      * Blocksadmin constructor.
+     * @param \XoopsDatabase|null $db
+     * @param Helper|null         $helper
      */
-    public function __construct(?\XoopsDatabase $db, \Xmf\Module\Helper $helper)
+    public function __construct(?\XoopsDatabase $db, Helper $helper)
     {
         if (null === $db) {
             $db = \XoopsDatabaseFactory::getDatabaseConnection();
@@ -61,7 +66,7 @@ class Blocksadmin
     }
 
     /**
-     *
+     * @return void
      */
     public function listBlocks(): void
     {
@@ -481,8 +486,9 @@ class Blocksadmin
 
     /**
      * @param int $bid
+     * @return void
      */
-    public function editBlock(int $bid): string
+    public function editBlock(int $bid): void
     {
         //        require_once \dirname(__DIR__,2) . '/admin/admin_header.php';
         //        \xoops_cp_header();
@@ -645,6 +651,7 @@ class Blocksadmin
 
     /**
      * @param array|null $block
+     * @return void
      */
     public function render(?array $block = null): void
     {

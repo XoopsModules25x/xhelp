@@ -124,7 +124,7 @@ $adminmenu[] = [
 
 //Clone
 $adminmenu[] = [
-    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'CLONE'),
+    'title' => _CLONE,
     'link'  => 'admin/clone.php',
     'icon'  => $pathIcon32 . '/page_copy.png',
 ];

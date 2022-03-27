@@ -58,7 +58,7 @@ $departmentHandler = $helper->getHandler('Department');
 /** @var \XoopsModules\Xhelp\FileHandler $fileHandler */
 $fileHandler = $helper->getHandler('File');
 /** @var \XoopsModules\Xhelp\LogMessageHandler $logmessageHandler */
-$logmessageHandler = $helper->getHandler('Logmessage');
+$logmessageHandler = $helper->getHandler('LogMessage');
 /** @var \XoopsModules\Xhelp\ResponseHandler $responseHandler */
 $responseHandler = $helper->getHandler('Response');
 /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
@@ -74,11 +74,11 @@ $responsetemplatesHandler = $helper->getHandler('ResponseTemplates');
 /** @var \XoopsModules\Xhelp\MimetypeHandler $mimetypeHandler */
 $mimetypeHandler = $helper->getHandler('Mimetype');
 /** @var \XoopsModules\Xhelp\DepartmentMailBoxHandler $departmentMailBoxHandler */
-$departmentMailBoxHandler = $helper->getHandler('DepartmentMailbox');
+$departmentMailBoxHandler = $helper->getHandler('DepartmentMailBox');
 /** @var \XoopsModules\Xhelp\RoleHandler $roleHandler */
 $roleHandler = $helper->getHandler('Role');
 /** @var \XoopsModules\Xhelp\StaffRoleHandler $staffRoleHandler */
-$staffRoleHandler = $helper->getHandler('Staffrole');
+$staffRoleHandler = $helper->getHandler('StaffRole');
 ///** @var \XoopsModules\Xhelp\MetaHandler $metaHandler */
 //$metaHandler = $helper->getHandler('Meta');
 /** @var \XoopsModules\Xhelp\MailEventHandler $mailEventHandler */

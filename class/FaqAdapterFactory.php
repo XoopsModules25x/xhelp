@@ -98,7 +98,7 @@ class FaqAdapterFactory
         $ret = null;
         if ('' === $name) {
             $name = Utility::getMeta('faq_adapter');
-            if ('' === $name) {
+            if ('' === $name || false === $name) {
                 return $ret;
             }
         }

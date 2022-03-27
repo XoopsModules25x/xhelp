@@ -231,7 +231,7 @@ if ($xoopsUser) {
 
                 if (XHELP_CONTROL_FILE == $fieldtype) {               // If custom field was a file upload
                     if ($helper->getConfig('xhelp_allowUpload')) {    // If uploading is allowed
-                        if (is_uploaded_file($_FILES[$fieldname]['tmp_name'])) {
+                        if (is_uploaded_file(($_FILES[$fieldname]['tmp_name'])??'')) {
                             if (!$ret = $ticket->checkUpload($fieldname, $allowed_mimetypes, $errors)) {
                                 $errorstxt = implode('<br>', $errors);
 

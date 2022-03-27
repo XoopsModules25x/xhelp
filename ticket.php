@@ -1327,7 +1327,7 @@ xhelpDOMAddEvent(window, 'load', window_onload, true);
                         $message = _XHELP_MESSAGE_USER_MOREINFO;
 
                         if ($helper->getConfig('xhelp_allowUpload')) {    // If uploading is allowed
-                            if (is_uploaded_file($_FILES['userfile']['tmp_name'])) {
+                            if (is_uploaded_file(($_FILES['userfile']['tmp_name'])??'')) {
                                 if (!$ret = $ticketInfo->checkUpload('userfile', $allowed_mimetypes, $errors)) {
                                     $errorstxt = implode('<br>', $errors);
 

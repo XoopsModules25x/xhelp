@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 /**
- * @copyright       The XUUPS Project http://sourceforge.net/projects/xuups/
+ * @copyright       XOOPS Project https://xoops.org
  * @license         http://www.fsf.org/copyleft/gpl.html GNU public license
  * @since           1.0
  * @author          trabis <lusopoemas@gmail.com>
@@ -34,7 +34,7 @@ $helper = Helper::getInstance();
 //Utility::cpHeader();
 xoops_cp_header();
 
-//Utility::openCollapsableBar('clone', 'cloneicon', constant('CO_' . $moduleDirNameUpper . '_' . 'CLONE'), constant('CO_' . $moduleDirNameUpper . '_' . 'CLONE_DSC'));
+//Utility::openCollapsableBar('clone', 'cloneicon', _CLONE, constant('CO_' . $moduleDirNameUpper . '_' . 'CLONE_DSC'));
 
 if ('submit' === Request::getString('op', '', 'POST')) {
     if (!$GLOBALS['xoopsSecurity']->check()) {
