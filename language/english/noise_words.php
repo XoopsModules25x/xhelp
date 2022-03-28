@@ -1,6 +1,7 @@
-<?php
+<?php declare(strict_types=1);
+
 global $xhelp_noise_words;
-$xhelp_noise_words = array(
+$xhelp_noise_words = [
     'about',
     'after',
     'all',
@@ -87,4 +88,5 @@ $xhelp_noise_words = array(
     'with',
     'would',
     'you',
-    'your');
+    'your',
+];

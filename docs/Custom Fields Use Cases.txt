@@ -1,6 +1,6 @@
 //1. Get the custom fields for a given department
-$hTicketCustField =& xoops_getmodulehandler('ticketCustomField');
-$fields =& $hTicketCustField->getByDept($deptid);
+$ticketCustomFieldHandler = $helper->getHandler('TicketCustomField');
+$fields =& $ticketCustomFieldHandler->getByDept($deptid);
 
 foreach($fields as $field) {
     echo $field->getVar('name'); //Display Pretty Name for field
@@ -10,17 +10,17 @@ foreach($fields as $field) {
     echo $field->getVar('required'); //Is this entry required?
     echo $field->getVar('weight'); //Which order should this field be displayed
     $values = $field->getValues(); // An hash of name / value pairs
-    
+
     echo $field->getVar('defaultvalue'); //Default value of field
     $validators = $field->getValidators(); //An array of validation objects to validate data entry
     echo $field->getVar('promptuser');
-    
-    echo $ticket->getCustomVar($field->getVar('fieldname')); // get the current fields value  
+
+    echo $ticket->getCustomVar($field->getVar('fieldname')); // get the current fields value
 }
 
 //2. Create a new custom field
-$hTicketCustField =& xoops_getmodulehandler('ticketCustomField');
-$field =& $hTicketCustField->create();
+$ticketCustomFieldHandler = $helper->getHandler('TicketCustomField');
+$field =& $ticketCustomFieldHandler->create();
 $field->setVar('name', $name);
 $field->setVar('description', $description);
 //... additional code
@@ -33,7 +33,7 @@ $field->addDepartment(4);
 
 $field->removeDepartment(5);
 
-$ret = $hTicketCustField->insert($field);
+$ret = $ticketCustomFieldHandler->insert($field);
 
 //3. Retriving a custom ticket var from form submission storing it in the ticket
 
@@ -45,16 +45,16 @@ $ret = $hTicketCustField->insert($field);
 foreach ($fields as $field) {
     $fieldname  = $field->getVar('fieldname');
     $submission = $_POST[$fieldname];
-    
+
     //... Validate Entry
-    
+
     if ($validEntry) {
         $ticket->setCustomVar($fieldname, $submission);
     }
 }
 
 // Store ticket (and custom fields)
-$ret = $hTicket->insert($ticket);
+$ret = $ticketHandler->insert($ticket);
 
 
 //4. Get Custom Fields for a ticket (after dept is set)

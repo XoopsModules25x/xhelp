@@ -15,6 +15,6 @@ Follow this link to view the ticket:
 
 ----------------------------------------------
 
-{X_SITENAME} ({X_SITEURL}) 
+{X_SITENAME} ({X_SITEURL})
 webmaster
 {TICKET_SUPPORT_EMAIL}

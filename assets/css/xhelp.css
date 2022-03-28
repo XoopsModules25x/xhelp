@@ -1,0 +1,103 @@
+input.validateError {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+textarea.validateError {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+tr.overdue td {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+#xhelp_dept_recent li {
+    list-style: none;
+}
+
+#xhelp_bOpenTickets li {
+    list-style: none;
+}
+
+#xhelp_dept_recent li.overdue {
+    background-color: #ff0000;
+}
+
+#xhelp_bOpenTickets li.overdue {
+    background-color: #ff0000;
+}
+
+#xhelp_dept_recent ul, #xhelp_dept_recent li {
+    margin: 0;
+    padding: 0;
+}
+
+#xhelp_bOpenTickets ul, #xhelp_bOpenTickets li {
+    margin: 0;
+    padding: 0;
+}
+
+#xhelp_dept_recent li {
+    margin: 0;
+    padding-left: 18px;
+    background: url('../images/ticket-small.png') no-repeat 0 50%;
+    line-height: 16px;
+    padding-bottom: 2px;
+}
+
+#xhelp_bOpenTickets li {
+    margin: 0;
+    padding-left: 18px;
+    background: url('../images/ticket-small.png') no-repeat 0 50%;
+    line-height: 16px;
+    padding-bottom: 2px;
+}
+
+#allTickets .head a {
+    display: block;
+}
+
+#allTickets .head img {
+    margin-left: 4px;
+    vertical-align: bottom;
+}
+
+div.errorMsg {
+    border: 1px solid #D24D00;
+    background: #FEFECC url(../images/important-32.png) no-repeat 7px 50%;
+    color: #333;
+    padding-left: 45px;
+    text-align: left;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (
+    enabled=true, sizingMethod=scale src='../images/important-32.png';)
+}
+
+div.errorMsg[class] {
+    background: #FEFECC url(../images/important-32.png) no-repeat 7px 50%;
+}
+
+div.errorMsg h4 {
+    text-align: left;
+    margin: 0;
+    padding-top: 0;
+    color: #333;
+}
+
+div#xhelp_reportParams {
+    background-color: #ECE9D8;
+    padding: 10px 0;
+}
+
+div#xhelp_reportParams label {
+    padding-left: 15px;
+}
+
+div#xhelp_reportHeader {
+    text-align: center;
+}
+
+div#xhelp_graph {
+    text-align: center;
+}

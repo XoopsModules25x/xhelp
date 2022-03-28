@@ -1,22 +1,43 @@
-<?php
-require('../../../mainfile.php');
+<?php declare(strict_types=1);
+
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Brian Wahoff <ackbarr@xoops.org>
+ * @author       Eric Juden <ericj@epcusa.com>
+ * @author       XOOPS Development Team
+ */
+
+use Xmf\Request;
+use XoopsModules\Xhelp;
+
+require_once \dirname(__DIR__, 3) . '/mainfile.php';
 
 if (!defined('XHELP_CONSTANTS_INCLUDED')) {
-    include_once(XOOPS_ROOT_PATH.'/modules/xhelp/include/constants.php');
+    require_once XOOPS_ROOT_PATH . '/modules/xhelp/include/constants.php';
 }
-require_once XHELP_JPSPAN_PATH.'/JPSpan.php';       // Including this sets up the JPSPAN constants
-require_once JPSPAN . 'Server/PostOffice.php';      // Load the PostOffice server
-include_once(XHELP_BASE_PATH.'/functions.php');
+require_once XHELP_JPSPAN_PATH . '/JPSpan.php';       // Including this sets up the JPSPAN constants
+require_once JPSPAN . 'Server/PostOffice.php';        // Load the PostOffice server
+//require_once XHELP_BASE_PATH . '/functions.php';
 
 // Create the PostOffice server
-$server = & new JPSpan_Server_PostOffice();
-$server->addHandler(new xhelpWebLib());
+$server = new JPSpan_Server_PostOffice();
+$webLib = new Xhelp\WebLib();
+$server->addHandler($webLib);
 
-if (isset($_SERVER['QUERY_STRING']) &&
-strcasecmp($_SERVER['QUERY_STRING'], 'client')==0) {
-
+if (Request::hasVar('QUERY_STRING', 'SERVER') && 0 === strcasecmp($_SERVER['QUERY_STRING'], 'client')) {
     // Compress the output Javascript (e.g. strip whitespace)
-    define('JPSPAN_INCLUDE_COMPRESS',TRUE);
+    define('JPSPAN_INCLUDE_COMPRESS', true);
 
     // Display the Javascript client
     $server->displayClient();
@@ -28,61 +49,4 @@ strcasecmp($_SERVER['QUERY_STRING'], 'client')==0) {
 
     // Start serving requests...
     $server->serve();
-}
-
-class xhelpWebLib {
-    function customFieldsByDept($deptid)
-    {
-        $deptid = intval($deptid);
-        $hFieldDept =& xhelpGetHandler('ticketFieldDepartment');
-        $fields =& $hFieldDept->fieldsByDepartment($deptid);
-
-        $aFields = array();
-        foreach ($fields as $field) {
-            $aFields[] = $field->toArray();
-        }
-
-        return $aFields;
-    }
-
-    function editTicketCustFields($deptid, $ticketid)
-    {
-        $deptid = intval($deptid);
-        $hFieldDept =& xhelpGetHandler('ticketFieldDepartment');
-        $hTicket    =& xhelpGetHandler('ticket');
-        $ticket     =& $hTicket->get($ticketid);
-        $custValues =& $ticket->getCustFieldValues();
-        $fields =& $hFieldDept->fieldsByDepartment($deptid);
-
-        $aFields = array();
-        foreach($fields as $field){
-            $_arr =& $field->toArray();
-            $_fieldname = $_arr['fieldname'];
-            $_arr['currentvalue'] = isset($custValues[$_fieldname]) ? $custValues[$_fieldname]['key'] : '';
-            $aFields[] = $_arr;
-
-        }
-
-        return $aFields;
-    }
-
-    function staffByDept($deptid)
-    {
-        $mc =& xhelpGetModuleConfig();
-        $field = $mc['xhelp_displayName']== 1 ? 'uname':'name';
-
-        $deptid = intval($deptid);
-        $hMembership =& xhelpGetHandler('membership');
-        $staff =& $hMembership->xoopsUsersByDept($deptid);
-
-        $aStaff = array();
-        $aStaff[] = array('uid' => 0,
-                          'name' => _XHELP_MESSAGE_NOOWNER);
-        foreach($staff as $s){
-            $aStaff[] = array('uid' => $s->getVar('uid'),
-                              'name' => $s->getVar($field));
-        }
-
-        return $aStaff;
-    }
 }

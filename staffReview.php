@@ -1,66 +1,91 @@
-<?php
-//$Id: staffReview.php,v 1.16 2005/12/01 22:36:21 ackbarr Exp $
-require_once('header.php');
-require_once(XHELP_INCLUDE_PATH.'/events.php');
+<?php declare(strict_types=1);
 
-if($xoopsUser){
-    if(isset($_POST['submit'])){
-        if(isset($_POST['staffid'])){
-            $staffid = intval($_POST['staffid']);
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Brian Wahoff <ackbarr@xoops.org>
+ * @author       Eric Juden <ericj@epcusa.com>
+ * @author       XOOPS Development Team
+ */
+
+use Xmf\Request;
+use XoopsModules\Xhelp;
+
+require_once __DIR__ . '/header.php';
+require_once XHELP_INCLUDE_PATH . '/events.php';
+$eventService = Xhelp\EventService::getInstance();
+
+if ($xoopsUser) {
+    if (Request::hasVar('submit', 'POST')) {
+        if (Request::hasVar('staffid', 'POST')) {
+            $staffid = Request::getInt('staffid', 0, 'POST');
         }
-        if(isset($_POST['ticketid'])){
-            $ticketid = intval($_POST['ticketid']);
+        if (Request::hasVar('ticketid', 'POST')) {
+            $ticketid = Request::getInt('ticketid', 0, 'POST');
         }
-        if(isset($_POST['responseid'])){
-            $responseid = intval($_POST['responseid']);
+        if (Request::hasVar('responseid', 'POST')) {
+            $responseid = Request::getInt('responseid', 0, 'POST');
         }
-        if(isset($_POST['rating'])){
-            $rating = intval($_POST['rating']);
+        if (Request::hasVar('rating', 'POST')) {
+            $rating = Request::getInt('rating', 0, 'POST');
         }
-        if(isset($_POST['comments'])){
+        if (Request::hasVar('comments', 'POST')) {
             $comments = $_POST['comments'];
         }
-        $hStaffReview =& xhelpGetHandler('staffReview');
-        $hTicket =& xhelpGetHandler('ticket');
-        $hResponse =& xhelpGetHandler('responses');
+        $staffReviewHandler = Xhelp\Helper::getInstance()
+            ->getHandler('StaffReview');
+        $ticketHandler      = Xhelp\Helper::getInstance()
+            ->getHandler('Ticket');
+        $responseHandler    = Xhelp\Helper::getInstance()
+            ->getHandler('Response');
 
-        $review =& $hStaffReview->create();
+        $review = $staffReviewHandler->create();
         $review->setVar('staffid', $staffid);
         $review->setVar('rating', $rating);
         $review->setVar('ticketid', $ticketid);
         $review->setVar('responseid', $responseid);
         $review->setVar('comments', $comments);
         $review->setVar('submittedBy', $xoopsUser->getVar('uid'));
-        $review->setVar('userIP', getenv("REMOTE_ADDR"));
-        if($hStaffReview->insert($review)){
-            $message = _XHELP_MESSAGE_ADD_STAFFREVIEW;
-            $ticket =& $hTicket->get($ticketid);
-            $response =& $hResponse->get($responseid);
-            $_eventsrv->trigger('new_response_rating', array(&$review, &$ticket, &$response));
+        $review->setVar('userIP', getenv('REMOTE_ADDR'));
+        if ($staffReviewHandler->insert($review)) {
+            $message  = _XHELP_MESSAGE_ADD_STAFFREVIEW;
+            $ticket   = $ticketHandler->get($ticketid);
+            $response = $responseHandler->get($responseid);
+            $eventService->trigger('new_response_rating', [&$review, &$ticket, &$response]);
         } else {
             $message = _XHELP_MESSAGE_ADD_STAFFREVIEW_ERROR;
         }
-        redirect_header(XHELP_BASE_URL."/ticket.php?id=$ticketid", 3, $message);
+        $helper->redirect("ticket.php?id=$ticketid", 3, $message);
     } else {
-        $xoopsOption['template_main'] = 'xhelp_staffReview.html';   // Set template
-        require(XOOPS_ROOT_PATH.'/header.php');                     // Include
+        $GLOBALS['xoopsOption']['template_main'] = 'xhelp_staffReview.tpl';   // Set template
+        require_once XOOPS_ROOT_PATH . '/header.php';                         // Include
 
-        if(isset($_GET['staff'])){
-            $xoopsTpl->assign('xhelp_staffid', intval($_GET['staff']));
+        if (Request::hasVar('staff', 'GET')) {
+            $xoopsTpl->assign('xhelp_staffid', Request::getInt('staff', 0, 'GET'));
         }
-        if(isset($_GET['ticketid'])){
-            $xoopsTpl->assign('xhelp_ticketid', intval($_GET['ticketid']));
+        if (Request::hasVar('ticketid', 'GET')) {
+            $xoopsTpl->assign('xhelp_ticketid', Request::getInt('ticketid', 0, 'GET'));
         }
-        if(isset($_GET['responseid'])){
-            $xoopsTpl->assign('xhelp_responseid', intval($_GET['responseid']));
+        if (Request::hasVar('responseid', 'GET')) {
+            $xoopsTpl->assign('xhelp_responseid', Request::getInt('responseid', 0, 'GET'));
         }
 
-        $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/images/');
+        $xoopsTpl->assign('xhelp_imagePath', XOOPS_URL . '/modules/xhelp/assets/images/');
         $xoopsTpl->assign('xoops_module_header', $xhelp_module_header);
         $xoopsTpl->assign('xhelp_baseURL', XHELP_BASE_URL);
 
-        require(XOOPS_ROOT_PATH.'/footer.php');
+        require_once XOOPS_ROOT_PATH . '/footer.php';
     }
 } else {    // If not a user
-    redirect_header(XOOPS_URL .'/user.php', 3);
+    redirect_header(XOOPS_URL . '/user.php', 3);
 }

@@ -1,87 +1,112 @@
-<?php
-//$Id: delete.php,v 1.24 2005/12/01 22:36:21 ackbarr Exp $
-//require_once('header.php');
-require('../../../include/cp_header.php');
-require_once('admin_header.php');
+<?php declare(strict_types=1);
 
-global $xoopsUser;
-$uid = $xoopsUser->getVar('uid');
+/*
+ * You may not change or alter any portion of this comment or credits
+ * of supporting developers from this source code or any supporting source code
+ * which is considered copyrighted (c) material of the original comment or credit authors.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
 
-if(isset($_REQUEST['deleteDept'])){
-    if (isset( $_REQUEST['deptid'])){
+/**
+ * @copyright    {@link https://xoops.org/ XOOPS Project}
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       Brian Wahoff <ackbarr@xoops.org>
+ * @author       Eric Juden <ericj@epcusa.com>
+ * @author       XOOPS Development Team
+ */
+
+use Xmf\Request;
+use XoopsModules\Xhelp;
+
+require_once __DIR__ . '/admin_header.php';
+
+global $xoopsUser, $eventService;
+$uid    = $xoopsUser->getVar('uid');
+$helper = Xhelp\Helper::getInstance();
+$deptID = 0;
+
+if (Request::hasVar('deleteDept', 'REQUEST')) {
+    if (Request::hasVar('deptid', 'REQUEST')) {
         $deptID = $_REQUEST['deptid'];
     } else {
-        redirect_header(XHELP_ADMIN_URL."/department.php?op=manageDepartments", 3, _AM_XHELP_MESSAGE_NO_DEPT);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, _AM_XHELP_MESSAGE_NO_DEPT);
     }
 
-    if (!isset($_POST['ok'])) {
-        xoops_cp_header();
-        //echo $oAdminButton->renderButtons('manDept');
-        xoops_confirm(array('deleteDept' => 1, 'deptid' => $deptID, 'ok' => 1), XHELP_BASE_URL .'/admin/delete.php', sprintf(_AM_XHELP_MSG_DEPT_DEL_CFRM, $deptID));
-        xoops_cp_footer();
-    } else {
-        $hDepartments =& xhelpGetHandler('department');
-        $hGroupPerm =& xoops_gethandler('groupperm');
-        $dept =& $hDepartments->get($deptID);
+    if (isset($_POST['ok'])) {
+        /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+        /** @var \XoopsModules\Xhelp\DepartmentHandler $departmentHandler */
+        $departmentHandler = $helper->getHandler('Department');
+        /** @var \XoopsGroupPermHandler $grouppermHandler */
+        $grouppermHandler = xoops_getHandler('groupperm');
+        $dept             = $departmentHandler->get($deptID);
 
-        $crit = new CriteriaCompo(new Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
-        $crit->add(new Criteria('gperm_itemid', $deptID));
-        $hGroupPerm->deleteAll($crit);
+        $criteria = new \CriteriaCompo(new \Criteria('gperm_name', _XHELP_GROUP_PERM_DEPT));
+        $criteria->add(new \Criteria('gperm_itemid', $deptID));
+        $grouppermHandler->deleteAll($criteria);
 
         $deptCopy = $dept;
 
-        if($hDepartments->delete($dept)){
-            $_eventsrv->trigger('delete_department', array(&$dept));
+        if ($departmentHandler->delete($dept)) {
+            $eventService->trigger('delete_department', [&$dept]);
             $message = _XHELP_MESSAGE_DEPT_DELETE;
 
-            // Remove configoption for department
-            $hConfigOption =& xoops_gethandler('configoption');
-            $crit = new CriteriaCompo(new Criteria('confop_name', $deptCopy->getVar('department')));
-            $crit->add(new Criteria('confop_value', $deptCopy->getVar('id')));
-            $configOption = $hConfigOption->getObjects($crit);
+            // Remove configOption for department
+            /** @var \XoopsModules\Xhelp\ConfigOptionHandler $configOptionHandler */
+            $configOptionHandler = $helper->getHandler('ConfigOption');
+            $criteria            = new \CriteriaCompo(new \Criteria('confop_name', $deptCopy->getVar('department')));
+            $criteria->add(new \Criteria('confop_value', $deptCopy->getVar('id')));
+            $configOption = $configOptionHandler->getObjects($criteria);
 
-            if(count($configOption) > 0){
-                if(!$hConfigOption->delete($configOption[0])){
+            if (count($configOption) > 0) {
+                if (!$configOptionHandler->delete($configOption[0])) {
                     $message = '';
                 }
                 unset($deptCopy);
             }
 
             // Change default department
-            $depts = $hDepartments->getObjects();
-            $aDepts = array();
-            foreach($depts as $dpt){
+            $depts  = $departmentHandler->getObjects();
+            $aDepts = [];
+            foreach ($depts as $dpt) {
                 $aDepts[] = $dpt->getVar('id');
             }
             if (isset($aDepts[0])) {
-                xhelpSetMeta("default_department", $aDepts[0]);
+                Xhelp\Utility::setMeta('default_department', $aDepts[0]);
             }
         } else {
             $message = _XHELP_MESSAGE_DEPT_DELETE_ERROR . $dept->getHtmlErrors();
         }
-        redirect_header(XHELP_ADMIN_URL."/department.php?op=manageDepartments", 3, $message);
+        $helper->redirect('admin/department.php?op=manageDepartments', 3, $message);
+    } else {
+        xoops_cp_header();
+        //echo $oAdminButton->renderButtons('manDept');
+        xoops_confirm(['deleteDept' => 1, 'deptid' => $deptID, 'ok' => 1], XHELP_BASE_URL . '/admin/delete.php', sprintf(_AM_XHELP_MSG_DEPT_DEL_CFRM, $deptID));
+        xoops_cp_footer();
     }
-} elseif(isset($_REQUEST['deleteStaff'])){
-    if (isset( $_REQUEST['uid'])){
-        $staffid = $_REQUEST['uid'];
+} elseif (Request::hasVar('deleteStaff', 'REQUEST')) {
+    if (Request::hasVar('uid', 'REQUEST')) {
+        $staffid = \Xmf\Request::getInt('uid', 0, 'REQUEST');
 
-        if (!isset($_POST['ok'])) {
-            xoops_cp_header();
-            //echo $oAdminButton->renderButtons('manDept');
-            xoops_confirm(array('deleteStaff' => 1, 'uid' => $staffid, 'ok' => 1), XHELP_BASE_URL .'/admin/delete.php', sprintf(_AM_XHELP_MSG_STAFF_DEL_CFRM, $staffid));
-            xoops_cp_footer();
-        } else {
-            $hStaff =& xhelpGetHandler('staff');
-            $staff =& $hStaff->getByUid($staffid);
+        if (isset($_POST['ok'])) {
+            /** @var \XoopsModules\Xhelp\StaffHandler $staffHandler */
+            $staffHandler = $helper->getHandler('Staff');
+            $staff        = $staffHandler->getByUid($staffid);
 
-            if($hStaff->delete($staff)){
-                $_eventsrv->trigger('delete_staff', array(&$staff));
+            if ($staffHandler->delete($staff)) {
+                $eventService->trigger('delete_staff', [&$staff]);
                 $message = _XHELP_MESSAGE_STAFF_DELETE;
             } else {
                 $message = _XHELP_MESSAGE_STAFF_DELETE_ERROR . $staff->getHtmlErrors();
             }
-            redirect_header(XHELP_ADMIN_URL."/staff.php?op=manageStaff", 3, $message);
+            $helper->redirect('admin/staff.php?op=manageStaff', 3, $message);
+        } else {
+            xoops_cp_header();
+            //echo $oAdminButton->renderButtons('manDept');
+            xoops_confirm(['deleteStaff' => 1, 'uid' => $staffid, 'ok' => 1], XHELP_BASE_URL . '/admin/delete.php', sprintf(_AM_XHELP_MSG_STAFF_DEL_CFRM, $staffid));
+            xoops_cp_footer();
         }
     }
-
 }

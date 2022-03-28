@@ -1,0 +1,228 @@
+<h5>1.0.0 Alpha 3   [NOT RELEASED]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<hr>
+- fixed class names (JJDai54/mamba)
+- added check for false (JJDai54/mamba)
+- min PHP: 7.4 (mamba)
+
+
+<h5>1.0.0 Alpha 2   [2022-01-20]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<hr>
+- fix: when install i got blank white screen. No error. Module is installed (liomj/mamba)
+- fix: tried to install sample data. Failed with white screen. No error (liomj/mamba)
+- fix:  try to create department. Department is created but with errors (liomj/mamba)
+- fix:  create role 404 error (liomj/mamba)
+- fix:  404 error when trying to customize - department (liomj/mamba)
+- fix:  error When trying to create custom fields (liomj/mamba)
+- renamed $imagearray to $icons (mamba)
+- refactored ModuleStats (mamba)
+- cosmetics, type hinting (mamba)
+
+
+<h5>1.0.0 Alpha 1   [2022-01-09]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
+<hr>
+- namespaces (mamba)
+- class autoloading (mamba)
+- update to JpGraph 4.2.2 (mamba)
+- added Blocksadmin class (mamba)
+- PHP 8 Smarty template defaults (mamba)
+- strict type checking (mamba)
+- refactored FaqAdapters with Interface and Abstract class (mamba)
+- refactored Handler classes to inherit from XoopsPersistableObjectHandler (mamba)
+- added module cloning (mamba)
+- included Confirm class from Goffy (mamba)
+- included MigrateHelper class from Goffy (mamba)
+
+WORK IN PROGRESS
+
+
+<h5>0.90 Alpha 1    [NOT RELEASED]</h5>  Dev: Xoops 2.5.9, PHP 7.2.3
+<hr>
+- XOOPS 2.5.9, PHP 7 (mamba)
+- Converted to XOOPS 2.5.8 Admin GUI (mamba)
+- removed @version (mamba)
+- PSR-2 code cosmetics (mamba)
+- addNavigation(basename(__FILE__))  (mamba)
+- dirname(__FILE__) to __DIR__ (mamba)
+- replaced < br /> with < br > (mamba)
+- Unnecessary double quotes (mamba)
+- reference mismatch (mamba)
+- Hardening to type safe (mamba)
+- update Help (mamba)
+- changed _handler to Handler (mamba)
+- removed '/' from void HTML elements (&lt;br&gt;, &lt;img&gt;, etc) (mamba)
+- HTML 5: removed 'selected' and 'checked' (mamba)
+- updated file headers for consistency (mamba)
+- renamed several $indexAdmin with $adminObject for consistency (mamba)
+- Updates for PayPal changes (zyspec)
+- added Contributing.md (mamba)
+- moved functions to Utility class (mamba)
+- include_once to require_once (mamba)
+- php-cs-fixer updates (mamba)
+- started conversion to XMF (mamba)
+    &nbsp;&nbsp;- updated addInfoBoxLine entries (mamba)
+    &nbsp;&nbsp;- displayNavigation(basename(__FILE__))  (mamba)
+    &nbsp;&nbsp;- changed to ->displayButton('left') (mamba)
+- namespaces conversion (mamba)
+- autoload (mamba)
+* replaced xoops_getModuleHandler() with Helper::getInstance()->getHandler() (geekwright/mamba)
+
+<h5>0.81 Beta 2       [NOT RELEASED]</h5>
+<hr>
+- moved all images, CSS, and JS files to /assets (mamba)
+- renamed .html Smarty templates to .tpl (mamba)
+- update to JpGraph 4.0.2 (mamba)
+- PSR-2 code cosmetics (mamba)
+- short array syntax (mamba)
+
+<h5>0.81</h5>
+<hr>
+- converted to XOOPS 2.5.5 Admin GUI (mamba)
+
+<h5>0.80</h5>
+<hr>
+1. Bug fix: Added support for 2.4.x when using nocommon option (trabis)
+2. Bug fix: Added some php5.3 compatibility (trabis)
+3. Feature: Added date range on search form (trabis)
+4. Bug fix: Setting default department not working correctly (trabis)
+
+<h5>0.79</h5>
+<hr>
+1. Patch for some bugfixes (iconeb)
+2. Feature: Reporting module (eric_juden)
+3. Feature: Move subnavigation to menu (eric_juden)
+4. Feature: Ability for users to add file attachment when responding to a ticket (eric_juden)
+5. Bug Fix: View All Ticket pages and Status / State (eric_juden)
+6. Bug Fix: Custom Field Edit (ackbarr)
+7. Bug Fix: viewing email attachments/enclosures in IE (ackbarr)
+8. Bug Fix: Signiture not added to responses (ackbarr)
+9. Bug Fix: Status shows closed - close ticket checkbox unchecked (eric_juden)
+10. Bug Fix: Update status / Add response (ackbarr)
+11. Feature: FAQ/Knowledgebase integration (eric_juden / ackbarr)
+
+<h5>0.78</h5>
+<hr>
+1. Bug Fix: Notification form broken in profile.php (ackbarr)
+2. Bug Fix: Ticket edit form broken (eric_juden)
+3. Bug Fix: Missing query constants in constants.php (eric_juden / ackbarr)
+4. Bug Fix: Removed debug lines when adding staff member (eric_juden)
+5. Bug Fix: Missing constants for email template folder permissions (eric_juden)
+6. Bug Fix: Staff member search says "Log for User" (eric_juden)
+7. Bug Fix: Custom fields not available to event handlers during new_ticket event (ackbarr)
+
+<h5>0.77</h5>
+<hr>
+1. Bug Fix: Inactive user still receives notifications (ackbarr)
+2. Bug Fix: Incorrect module paths in notification emails (XOOPS 2.2) (ackbarr)
+3. Bug Fix: Ticket actions block missing change department (ackbarr)
+4. Bug Fix: Print ticket page - staff usernames not showing for response (ackbarr)
+5. Bug Fix: Anonymous Ticket submission blocked for existing email addresses (ackbarr)
+6. Bug Fix: Missing DB Indexes, timeout in upgrade procedures (ackbarr / eric_juden)
+7. Bug Fix: Update Status Button is misleading (ackbarr / iconeb)
+8. Bug Fix: Staff Member always has "Add Response" permissions (ackbarr)
+9. Bug Fix: Fatal Error when assigning ticket to other departement (ackbarr)
+10. Feature: Upload multiple files simultaneously (eric_juden)
+11. Feature: User ability to submit file attachment for responses (eric_juden)
+12. Feature: Staff ticket lists (eric_juden)
+13. Bug Fix: View All Ticket pages showing statuses for wrong state (eric_juden)
+14. Bug Fix: Numeric custom fields displaying improperly (iconeb / eric_juden)
+
+<h5>0.75</h5>
+<hr>
+1. Ability of staff members to merge tickets (eric_juden)
+2. Add custom statuses (eric_juden)
+3. XOOPS group permissions for logging tickets in specific departments (eric_juden)
+4. Allow more than just the ticket submitter be notified via email of ticket changes (eric_juden)
+5. Portugues Language Added (_Vlad_)
+6. Ability to give reason for changing status (eric_juden)
+7. Ability to activate / deactivate mailboxes (ackbarr)
+8. Ability to test mail settings prior to saving (ackbarr)
+9. Ability to receive notifications via private message (eric_juden)
+10. Able to modify an existing department mailbox (eric_juden)
+11. Ability to remove file attachments (eric_juden)
+12. Ability of staff members to add a response while adding a ticket (eric_juden)
+13. Bug Fix: PEAR installed but not in open_basedir path (ackbarr)
+14. Administration UI Cleanup (ackbarr)
+15. Bug Fix: Take/Assign Ownership Batch Action not working (eric_juden)
+16. Bug Fix: Previous response sometimes displayed in Add Response page (eric_juden)
+17. Bug Fix: Announcments list from all categories in News 1.2.1 (eric_juden)
+18. Bug Fix: xoops_ smarty tags not filled in print ticket page (eric_juden)
+19. Bug Fix: Email sent from one dept mailbox to another causes a loop (ackbarr)
+20. Bug Fix: Email Attachments with spaces in filename not stored properly (ackbarr)
+21. Ability to set number of characters in open tickets block (marcan)
+22. Updates to notification service for removing action submitter from notification (marcan)
+23. User avatar displays for ticket responses (marcan)
+24. XOOPS 2.2 Compatibility (eric_juden)
+25. Ability to manage uploaded files from admin side (eric_juden)
+26. Bug Fix: Username not being display for staff ratings on Profile page (eric_juden)
+27. Ability to display real name instead of username in module preferences (eric_juden)
+28. Uploaded files now display the uploaded filename instead of having the ticketid appended to the ticket (eric_juden)
+29. End user can now see ticket id on ticket page (eric_juden)
+30. Updated Manage Mimetypes page with better searching (eric_juden)
+31. Display users in a department on the Edit Department page (eric_juden)
+32. Ability to set department visibility by XOOPS group (eric_juden)
+33. Ability to save searches (eric_juden)
+34. Patch for Manage staff to display grid view of departments and users (iconeb)
+35. Ability to add response to ticket upon ticket creation (eric_juden)
+36. Ability to search by one or multiple departments (iconeb)
+37. Ability to change department from ticket page (iconeb)
+38. Ability for staff to go directly to a ticket if they know the ticket id - in staff header (iconeb)
+39. Added xhelp main actions block (iconeb)
+
+<h5>0.71</h5>
+<hr>
+1. Fixed email activation link not being sent to new users (eric_juden)
+2. Fixed uploading files with undefined mimetypes bug (eric_juden)
+3. Fixed bug for ticket subject length being too short in edit ticket (eric_juden)
+4. Fixed bug for fatal error while in staff profiles (eric_juden)
+5. Fixed bug for users being allowed to look at other user's tickets (eric_juden)
+
+<h5>0.7</h5>
+<hr>
+1. Auto-create user profiles during ticket submission (eric_juden / ackbarr)
+2. Improved Form validation during ticket / response submission (eric_juden)
+3. Display available filetypes for upload (eric_juden)
+4. Customizable Permission roles for staff members (eric_juden)
+5. Email template modifications (alanjuden)
+6. Highlight overdue tickets (overdue time customizeable in options) (eric_juden)
+7. Increased size of ticket subject to 100 characters (eric_juden)
+8. Search for tickets by assignment in the staff view all tickets page (ackbarr)
+9. Ticket submission via POP3 Email (Nazar Aziz / ackbarr)
+10. Ability to set default department (eric_juden)
+11. Mail event log to track email submission problems (eric_juden)
+12. Changed all database tables to lowercase (eric_juden)
+13. PHP 5 support (eric_juden / ackbarr)
+
+<h5>0.6</h5>
+<hr>
+1. Fixed IP logging of Response Reviews (eric_juden)
+2. Javascript selectAll function not selecting pre-selected items (ackbarr)
+3. Timespent not being recorded properly (ackbarr)
+4. Fixed staff rating of Response Reviews (eric_juden)
+5. Fixed rendering of cells in /admin/index.php (ackbarr)
+6. Fixed deletion of staff (ackbarr)
+7. Fixed priority and department images(eric_juden)
+8. Removed pass-by-reference errors in admin/index.php (eric_juden)
+9. Ability of staff members to use alternate email address (eric_juden)
+10. Improved search (eric_juden)
+11. Add option to make a response private (eric_juden)
+12. Added more summary stats to admin/index.php - main page (eric_juden)
+13. Added Batch Actions: (ackbarr)
+    Set Status
+    Set Department
+    Set Owner
+    Set Priority
+    Delete
+    Add Response
+14. Filter By Department, Status in Staff/User View All Tickets page (ackbarr)
+15. Sortable columns in Staff/User View All Tickets, Search Results Page (ackbarr)
+16. Fixed display of Manage Staff page when site has large # of users. (ackbarr/eric_juden)
+17. Fixed Admin menu tabs :hover event in IE (ackbarr)
+18. Added Ticket Actions block, new config variable to switch between inline/block action forms (eric_juden)
+19. French Language Added (Outch)
+20. Brazilian Portugues Language Added (silviotech)
+21. "My Submitted Tickets" section added to staff index page
+22. Bug fix: fatal error when a submitted user account is deleted
+
+<h5>0.5</h5>
+<hr>
+Initial Release

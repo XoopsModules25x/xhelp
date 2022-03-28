@@ -1,5 +1,4 @@
-<?php
-// $Id: departmentSummary.php,v 1.1 2006/02/01 20:33:16 eric_juden Exp $
+<?php declare(strict_types=1);
 
 define('_XHELP_DS_NAME', 'Department Summary');
 define('_XHELP_DS_DESC', 'Retrieves department related information.');

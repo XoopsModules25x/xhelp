@@ -1,5 +1,4 @@
-<?php
-// $Id: staffRolesByDept.php,v 1.1 2006/01/31 16:34:32 eric_juden Exp $
+<?php declare(strict_types=1);
 
 define('_XHELP_SRD_NAME', 'Staff Roles By Department');
 define('_XHELP_SRD_DESC', 'Retrieves a list of roles by department that staff members have.');

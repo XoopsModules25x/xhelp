@@ -1,0 +1,12 @@
+- id: '1'
+  state: '1'
+  description: Open
+- id: '2'
+  state: '2'
+  description: Closed
+- id: '3'
+  state: '1'
+  description: 'Waiting for response'
+- id: '4'
+  state: '1'
+  description: Escalated
