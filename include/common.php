@@ -87,11 +87,16 @@ if (!isset($GLOBALS['xoopsTpl']) || !($GLOBALS['xoopsTpl'] instanceof \XoopsTpl)
 $GLOBALS['xoopsTpl']->assign('mod_url', $helper->url());
 // Local icons path
 if (is_object($helper->getModule())) {
-    $pathModIcon16 = $helper->getModule()
-        ->getInfo('modicons16');
-    $pathModIcon32 = $helper->getModule()
-        ->getInfo('modicons32');
+    $pathModIcon16 = $helper->getModule()->getInfo('modicons16');
+    $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
 
     $GLOBALS['xoopsTpl']->assign('pathModIcon16', XOOPS_URL . '/modules/' . $moduleDirName . '/' . $pathModIcon16);
     $GLOBALS['xoopsTpl']->assign('pathModIcon32', $pathModIcon32);
+}
+
+xoops_loadLanguage('main', $moduleDirName);
+if (class_exists('D3LanguageManager')) {
+    require_once XOOPS_TRUST_PATH . "/libs/altsys/class/D3LanguageManager.class.php";
+    $langman = D3LanguageManager::getInstance();
+    $langman->read('main.php', $moduleDirName);
 }
