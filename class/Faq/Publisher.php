@@ -80,7 +80,7 @@ class Publisher extends Xhelp\FaqAdapterAbstract
         'description'     => 'Create Publisher pages from xHelp helpdesk tickets',
         'version'         => '1.0',
         'tested_versions' => '1.05 Beta 1',
-        'url'             => 'https://www.xoops.org/',
+        'url'             => 'https://xoops.org/',
         'module_dir'      => 'publisher',
     ];
 

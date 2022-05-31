@@ -135,7 +135,6 @@ class MediaUploader
      * @param string $media_name Name of the file field
      * @param null   $index      Index of the file (if more than one uploaded under that name)
      * @return bool
-     * @global       $HTTP_POST_FILES
      */
     public function fetchMedia(string $media_name, $index = null): bool
     {
