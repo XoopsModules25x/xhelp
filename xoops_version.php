@@ -179,7 +179,7 @@ $modversion['contributors']['code'][2]['website'] = 'https://www.arturin.it';
 $modversion['contributors']['code'][3]['name']    = 'Ricardo Costa';
 $modversion['contributors']['code'][3]['uname'] = 'trabis';
 $modversion['contributors']['code'][3]['email'] = 'lusopoemas@gmail.com';
-$modversion['contributors']['code'][3]['website'] = 'https://www.xoops.org';
+$modversion['contributors']['code'][3]['website'] = 'https://xoops.org';
 
 // ------------------- Mysql ------------------- //
 $modversion['sqlfile']['mysql'] = 'sql/mysql.sql';

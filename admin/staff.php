@@ -37,7 +37,7 @@ $aLimitByS = ['10' => 10, '15' => 15, '20' => 20, '25' => 25, '50' => 50, '100' 
 $aLimitByD = ['1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '10' => 10];
 
 if (isset($_REQUEST['op'])) {
-    $op = Request::getString('op', 'default', $_REQUEST);
+    $op = Request::getString('op', 'default', 'REQUEST');
 }
 
 switch ($op) {
