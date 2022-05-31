@@ -4,6 +4,8 @@
 - added check for false (JJDai54/mamba)
 - min PHP: 7.4 (mamba)
 - fix  Error with xhelp staff and xmf #6 (Cesagonchu/mamba) https://github.com/XoopsModules25x/xhelp/issues/6
+- cosmetics (mamba)
+- add D3Language for altSys (mamba)
 
 
 <h5>1.0.0 Alpha 2   [2022-01-20]</h5>  Dev: XOOPS 2.5.10, PHP 7.4.26, PHP 8.1.1
